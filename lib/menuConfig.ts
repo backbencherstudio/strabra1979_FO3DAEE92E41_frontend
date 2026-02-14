@@ -43,8 +43,13 @@ export const operationMenu: MenuItem[] = [
   },
   {
     id: 'tasks',
-    label: 'Tasks',
-    href: '/operation/tasks',
+    label: 'Inspection List',
+    href: '/operation/inspection-list',
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    href: '/operation/settings',
   },
 ];
 
@@ -71,6 +76,6 @@ export const roleMenus = {
 };
 
 // Helper function to get menu by role
-export const getMenuByRole = (role: string): MenuItem[] => {
+export const getMenuByRole = (role: UserRole): MenuItem[] => {
   return roleMenus[role as keyof typeof roleMenus] || [];
 };
