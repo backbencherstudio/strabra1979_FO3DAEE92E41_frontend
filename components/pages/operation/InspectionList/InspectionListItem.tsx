@@ -1,10 +1,9 @@
 import ProgressStatusBadge, {
-  InspectionProgressStatus,
+    InspectionProgressStatus,
 } from "@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge";
 import { Clock } from "@/components/icons/Clock";
 import { LocationPin } from "@/components/icons/LocationPin";
 import { Property } from "@/components/icons/SideBarIcons";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

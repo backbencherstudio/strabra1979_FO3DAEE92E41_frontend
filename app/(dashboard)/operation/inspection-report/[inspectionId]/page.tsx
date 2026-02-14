@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
 import React, { useState } from "react";
 
@@ -22,6 +24,112 @@ export default function InspectionReportPage() {
           onSelect={(v) => setSelectedTab(v)}
         />
       </div>
+      <form>
+        <div className="grid gap-4 grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor="name">Property</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="name">Date</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="name">Property Type</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="name">Address</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">Inspection Title *</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">Inspector</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">Roof System Type</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">Drainage Type</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">Surface Condition (25 pts)</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">Seams & Flashings (20 pts)</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="name">Drainage & Ponding (15 pts)</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">
+              Penetrations & Accessories (10 pts)
+            </FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="name">
+              Repairs & Patch History (10 pts)
+            </FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="name">
+              Age vs. Expected Life (10 pts)
+            </FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="name">Structural & Safety (10 pts)</FieldLabel>
+            <InputGroup>
+              <InputGroupInput placeholder="" />
+            </InputGroup>
+          </Field>
+        </div>
+      </form>
     </div>
   );
 }
