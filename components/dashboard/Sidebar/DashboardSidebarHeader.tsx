@@ -3,17 +3,7 @@
 import { Notification } from "@/components/icons/Notification";
 import UserAvatar from "@/components/reusable/UserAvatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ChevronDown } from "lucide-react";
-// import NotificationBell from "./NotificationBell";
 
 export default function DashboardSidebarHeader() {
   // const { logOut } = useAuth();
@@ -34,21 +24,7 @@ export default function DashboardSidebarHeader() {
           <Notification className="size-6" />
         </Button>
 
-        <div className="h-12 px-1.5 gap-1.5 items-center justify-start rounded-full flex border border-opacity-dark-05">
-          <UserAvatar
-            src="https://github.com/shadcn.png"
-            name="Catherine Nolan"
-            className="size-9 border border-[#DFE1E7]"
-          />
-          <div className="flex  flex-col items-start justify-between gap-1.5 pr-6  ">
-            <span className="text-sm font-medium block leading-3">
-              Gustavo Xavier
-            </span>
-            <span className="bg-mid-orange text-center pb-px text-[10px] font-medium text-foreground rounded-full px-1.5 block">
-              Operation
-            </span>
-          </div>
-        </div>
+        <UserInfo />
       </div>
     </header>
   );
@@ -56,11 +32,20 @@ export default function DashboardSidebarHeader() {
 
 const UserInfo = () => {
   return (
-    <div className="flex flex-col text-left whitespace-nowrap">
-      <span className="text-heading-100 text-base font-medium">
-        {/* {data?.name} */}
-      </span>
-      <span className="text-xs capitalize"></span>
+    <div className="h-12 px-1.5 gap-1.5 items-center justify-start rounded-full flex border border-opacity-dark-05">
+      <UserAvatar
+        src="https://i.pravatar.cc/150?img=5"
+        name="Gustavo Xavier"
+        className="size-9 border border-pressed-100"
+      />
+      <div className="flex  flex-col items-start justify-between gap-1.5 pr-6  ">
+        <span className="text-sm font-medium block leading-3">
+          Gustavo Xavier
+        </span>
+        <span className="bg-mid-orange text-center pb-px text-[10px] font-medium text-foreground rounded-full px-1.5 block">
+          Operation
+        </span>
+      </div>
     </div>
   );
 };

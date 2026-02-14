@@ -12,7 +12,7 @@ export default function DashboardLayout({
       <DashBoardSidebr />
       <main className="w-full">
         <DashboardSidebarHeader />
-        {children}
+        <div className="p-6">{children}</div>
       </main>
     </SidebarProvider>
   );

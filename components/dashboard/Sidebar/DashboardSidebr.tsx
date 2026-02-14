@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function DashBoardSidebr({
   ...props
@@ -30,9 +31,16 @@ export default function DashBoardSidebr({
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
+              className="h-12 data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <div>
+                <Image
+                  className="size-10"
+                  width={40}
+                  height={40}
+                  alt="app logo"
+                  src="/app-logo.png"
+                />
                 <span className="text-2xl font-medium">Liberty Shield</span>
               </div>
             </SidebarMenuButton>
@@ -68,7 +76,7 @@ export function NavMain({ items }: { items: MenuItem[] }) {
                   tooltip={item.label}
                 >
                   <Link href={item.href}>
-                    {/* {item.icon && <item.icon />} */}
+                    <span>{item.icon && <item.icon className="size-6" />}</span>
                     <span className="text-base font-medium">{item.label}</span>
                   </Link>
                 </SidebarMenuButton>
