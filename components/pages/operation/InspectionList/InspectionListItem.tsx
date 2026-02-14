@@ -6,8 +6,10 @@ import { LocationPin } from "@/components/icons/LocationPin";
 import { Property } from "@/components/icons/SideBarIcons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type InspectionListItemProps = {
+  slug: string,
   title: string;
   time: string;
   propertyName: string;
@@ -16,6 +18,7 @@ type InspectionListItemProps = {
 };
 
 export default function InspectionListItem({
+  slug,
   title,
   time,
   status,
@@ -51,7 +54,9 @@ export default function InspectionListItem({
       </section>
 
       <section className="flex flex-col justify-center">
-        <Button variant="outline">Start Inspection</Button>
+        <Button variant="outline" asChild>
+          <Link href={`/operation/inspection-report/${slug}`}>Start Inspection</Link>
+        </Button>
       </section>
     </div>
   );

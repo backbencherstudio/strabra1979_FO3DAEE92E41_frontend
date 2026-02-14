@@ -20,6 +20,7 @@ export default function InspectionList() {
       <section className="space-y-3 mt-4">
         {mockInspections.map((inspection) => (
           <InspectionListItem
+            slug="123"
             status={inspection.status}
             key={inspection.id}
             title={inspection.title}

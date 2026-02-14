@@ -45,7 +45,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* Custom app colors */
-  --color-mid-orange: #ffcd71;
   --color-gray-black-50: #e9e9ea;
   --color-gray-black-100: #d2d2d5;
   --color-gray-black-200: #a5a5ab;
@@ -100,6 +99,9 @@
   --color-opacity-white-40: rgba(255, 255, 255, 0.4);
   --color-opacity-white-60: rgba(255, 255, 255, 0.6);
   --color-opacity-grey-dark-50: rgba(101, 104, 114, 0.5);
+  --color-heading: var(--color-gray-black-500);
+  --color-mid-orange: #ffcd71;
+  --color-navy-500: #0b2a3b;
 }
 
 :root {
