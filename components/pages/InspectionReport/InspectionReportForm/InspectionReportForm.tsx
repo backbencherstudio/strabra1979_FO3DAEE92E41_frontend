@@ -24,16 +24,7 @@ export default function InspectionReportForm() {
   const [open, setOpen] = React.useState(false)
 
   return (
-    <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
-      <h1 className="text-heading text-center text-2xl">LIBERTY SHIELD ROOF HEALTH INSPECTION</h1>
-      <div className="mt-2 flex justify-center gap-1 text-base font-medium">
-        <span className="text-gray-black-300">Inspection ID:</span>
-        <span className="text-gray-black-400">INS2323</span>
-      </div>
-      <div className="mt-4 flex justify-center">
-        <TabSwitcher selected={selectedTab} onSelect={(v) => setSelectedTab(v)} />
-      </div>
-      <form>
+    <form>
         <div className="grid grid-cols-2 gap-4">
           <Field>
             <FieldLabel htmlFor="name">Property</FieldLabel>
@@ -207,6 +198,5 @@ export default function InspectionReportForm() {
           </Field>
         </div>
       </form>
-    </div>
   )
 }
