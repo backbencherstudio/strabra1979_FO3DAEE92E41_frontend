@@ -1,6 +1,7 @@
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
 import InspectionReportForm from '@/components/pages/InspectionReport/InspectionReportForm/InspectionReportForm'
 import PriorityRepairPlanningForm from '@/components/pages/InspectionReport/PriorityRepairPlanning/PriorityRepairPlanningForm'
+import { Button } from '@/components/ui/button'
 
 export default function InspectionReportPage() {
   return (
@@ -18,6 +19,15 @@ export default function InspectionReportPage() {
       <div className="mt-4 grid grid-cols-2 gap-6">
         <PriorityRepairPlanningForm />
         <InspectionReportFinalScoreCard />
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <Button size="xl" variant="outline">
+          Save
+        </Button>
+        <Button size="xl" variant="default">
+          Next
+        </Button>
       </div>
     </div>
   )
