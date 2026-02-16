@@ -5,6 +5,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans:
+    var(--font-poppins-sans), ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
   --radius-sm: calc(var(--radius) - 4px); /*   6px  */
   --radius-md: calc(var(--radius) - 2px); /*   8px  */
   --radius-lg: var(--radius); /*               10px */
@@ -179,7 +185,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 
   button:not(:disabled),
@@ -189,5 +195,12 @@
 }
 
 .squircle {
-  corner-shape: squircle;
+  border-radius: 8px; /* fallback */
+}
+/* If browser supports corner-shape */
+@supports (corner-shape: squircle) {
+  .squircle {
+    corner-shape: squircle;
+    border-radius: 22px;
+  }
 }
