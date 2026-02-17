@@ -6,7 +6,7 @@ export interface MenuItem {
 
 export type UserRole = 'admin' | 'manager' | 'operation' | 'viewer';
 
-// ==================== ADMIN MENU - 2 ITEMS ====================
+ 
 export const adminMenu: MenuItem[] = [
   {
     id: 'dashboard',
@@ -20,7 +20,7 @@ export const adminMenu: MenuItem[] = [
   },
 ];
 
-// ==================== MANAGER MENU - 2 ITEMS ====================
+ 
 export const managerMenu: MenuItem[] = [
   {
     id: 'dashboard',
@@ -33,8 +33,7 @@ export const managerMenu: MenuItem[] = [
     href: '/manager/team',
   },
 ];
-
-// ==================== OPERATION MENU - 2 ITEMS ====================
+ 
 export const operationMenu: MenuItem[] = [
   {
     id: 'dashboard',
@@ -48,7 +47,7 @@ export const operationMenu: MenuItem[] = [
   },
 ];
 
-// ==================== VIEWER MENU - 2 ITEMS ====================
+ 
 export const viewerMenu: MenuItem[] = [
   {
     id: 'dashboard',
@@ -62,7 +61,7 @@ export const viewerMenu: MenuItem[] = [
   },
 ];
 
-// Role-based menu mapping
+ 
 export const roleMenus = {
   admin: adminMenu,
   manager: managerMenu,
@@ -70,7 +69,7 @@ export const roleMenus = {
   viewer: viewerMenu,
 };
 
-// Helper function to get menu by role
+ 
 export const getMenuByRole = (role: string): MenuItem[] => {
   return roleMenus[role as keyof typeof roleMenus] || [];
 };
