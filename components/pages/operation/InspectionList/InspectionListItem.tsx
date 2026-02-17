@@ -33,7 +33,7 @@ export default function InspectionListItem({
         </div>
 
         <div className="mt-3">
-          <div className="flex text-secondary gap-1 items-center">
+          <div className="flex text-[#4988c4] gap-1 items-center">
             <Clock className="size-4" />
             <span className="text-sm leading-none font-medium">{time}</span>
           </div>

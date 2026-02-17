@@ -1,5 +1,6 @@
 'use client'
 
+import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
 import InspectionReportForm from '@/components/pages/InspectionReport/InspectionReportForm/InspectionReportForm'
 import PriorityRepairPlanningForm from '@/components/pages/InspectionReport/PriorityRepairPlanning/PriorityRepairPlanningForm'
@@ -21,19 +22,23 @@ export default function InspectionReportPage() {
         <TabSwitcher selected={selectedTab} onSelect={(v) => setSelectedTab(v)} />
       </div>
 
-      <div className="mt-5">
+      <section style={{ display: selectedTab !== 0 ? 'none' : 'block' }} className="mt-5">
         <InspectionReportForm />
-      </div>
-      <div className="mt-4 grid grid-cols-2 gap-6">
-        <PriorityRepairPlanningForm />
-        <InspectionReportFinalScoreCard />
-      </div>
+        <div className="mt-4 grid grid-cols-2 gap-6">
+          <PriorityRepairPlanningForm />
+          <InspectionReportFinalScoreCard />
+        </div>
+      </section>
+
+      <section style={{ display: selectedTab !== 1 ? 'none' : 'block' }} className="mt-5">
+        <InspectionMediaForm/>
+      </section>
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <Button size="xl" variant="outline">
           Save
         </Button>
-        <Button size="xl" variant="default">
+        <Button onClick={() => setSelectedTab(1)} size="xl" variant="default">
           Next
         </Button>
       </div>
