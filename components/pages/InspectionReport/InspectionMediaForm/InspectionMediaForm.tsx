@@ -1,10 +1,9 @@
 'use client'
 
-import { FileVideo, FileImage, PlusSignSquare } from '@/components/icons/File'
+import { FileImage, FileVideo, PlusSignSquare } from '@/components/icons/File'
 import { FileInput, mbToBytes } from '@/components/reusable/FileInput/FileInput'
 import FileInputPreview from '@/components/reusable/FileInput/FileInputPreview'
 import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
-import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupTextarea } from '@/components/ui/input-group'
 import { useState } from 'react'
@@ -33,7 +32,7 @@ export default function InspectionMediaForm() {
           <div className="flex gap-2">
             <FileInputProvider>
               <FileInput
-                replaceInputWithChldren
+                replaceInputWithChldren={true}
                 showPreview={false}
                 onChange={(files) => onSelectNewImage(files[0], 0)}
                 multiple={false}
@@ -49,7 +48,7 @@ export default function InspectionMediaForm() {
 
             <FileInputProvider>
               <FileInput
-                replaceInputWithChldren
+                replaceInputWithChldren={true}
                 showPreview={false}
                 onChange={(files) => onSelectNewImage(files[0], 0)}
                 multiple={false}
@@ -69,7 +68,7 @@ export default function InspectionMediaForm() {
               className="border-border/50 focus-visible:border-ring/50 focus-within:outline-input flex h-35 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed bg-white px-6 outline-none"
             >
               <PlusSignSquare />
-              <span className="text-gray-black-200 text-sm whitespace-nowrap">Add More</span>
+              <span className="text-foreground text-sm whitespace-nowrap">Add More</span>
             </button>
           </div>
         </Field>
@@ -78,7 +77,7 @@ export default function InspectionMediaForm() {
           <FieldLabel>Aerial Map</FieldLabel>
           <FileInputProvider>
             <FileInput
-              replaceInputWithChldren
+              replaceInputWithChldren={true}
               showPreview={false}
               onChange={(files) => onSelectNewImage(files[0], 0)}
               multiple={false}
@@ -86,7 +85,7 @@ export default function InspectionMediaForm() {
               placeholder="Upload your file"
               maxSize={maxVideoSize}
               inputContainerClassName="h-65"
-              accept="videos/*"
+              accept="video/*"
             >
               <FileInputPreview />
             </FileInput>
@@ -98,6 +97,27 @@ export default function InspectionMediaForm() {
           <InputGroup>
             <InputGroupTextarea placeholder="Paste Source URL / iframe Code" />
           </InputGroup>
+        </Field>
+
+        <Field>
+          <FieldLabel>Upload Documents</FieldLabel>
+
+          <FileInputProvider>
+            <div className="grid gap-3">
+              <FileInputPreview className="py-3" />
+
+              <FileInput
+                showPreview={false}
+                onChange={(files) => onSelectNewImage(files[0], 0)}
+                multiple={true}
+                icon={<PlusSignSquare />}
+                placeholder="Add More"
+                // maxSize={maxImageSize}
+                inputContainerClassName="h-[92px]"
+                accept="/*"
+              ></FileInput>
+            </div>
+          </FileInputProvider>
         </Field>
       </FieldGroup>
     </form>
