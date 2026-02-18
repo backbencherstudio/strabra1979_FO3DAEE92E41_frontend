@@ -18,7 +18,7 @@ export default function InspectionReportTab() {
   const isMediaFilesTab = currentTab === 'media-files'
 
   const switchTab = (tab: string | null) => {
-    const nextTab = tab == 'checklist' ? 'media-files' : 'checklist'
+    const nextTab = tab == 'media-files' ? 'checklist' : 'media-files'
     router.replace(`${pathname}/${createQueryParams({ tab: nextTab })}`)
   }
 
