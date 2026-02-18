@@ -40,9 +40,9 @@ export default function InspectionReportTab() {
 
       <section style={{ display: !isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <InspectionReportForm />
-        <div className="mt-4 grid grid-cols-2 gap-6">
+        <div className="mt-5 grid grid-cols-2 gap-6">
           <PriorityRepairPlanningForm />
-          <InspectionReportFinalScoreCard />
+          <InspectionReportFinalScoreCard score={60} />
         </div>
       </section>
 

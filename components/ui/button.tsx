@@ -30,6 +30,9 @@ const buttonVariants = cva(
         'icon-md': 'size-10.5',
         'icon-lg': 'size-11',
       },
+      theme: {
+        text: 'text-foreground',
+      },
     },
     defaultVariants: {
       variant: 'default',
@@ -43,6 +46,7 @@ function Button({
   variant = 'default',
   size = 'default',
   asChild = false,
+  theme,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
@@ -55,7 +59,8 @@ function Button({
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      data-theme={theme}
+      className={cn(buttonVariants({ theme, variant, size, className }))}
       {...props}
     />
   )

@@ -3,13 +3,17 @@
 import {
   CircularProgressWithMeta,
   scoreScale,
-} from '@/components/reusable/ CircularProgress/CircularProgress'
+} from '@/components/reusable/CircularProgress/CircularProgress'
+import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+interface InspectionReportFinalScoreCardProps {
+  score: number
+}
 
-export default function InspectionReportFinalScoreCard() {
-  const score = 40
-
+export default function InspectionReportFinalScoreCard({
+  score = 0,
+}: InspectionReportFinalScoreCardProps) {
   return (
-    <div className="border-input rounded-2xl border px-4 py-5">
+    <SectionCard>
       <h3>
         Final Score <span className="text-gray-black-300">(Average Health Score)</span>
       </h3>
@@ -32,6 +36,6 @@ export default function InspectionReportFinalScoreCard() {
           </div>
         </section>
       </div>
-    </div>
+    </SectionCard>
   )
 }
