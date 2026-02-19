@@ -1,6 +1,6 @@
 interface InfoCardProps {
   title: string
-  description: string
+  description?: string
   children?: React.ReactNode
 }
 
@@ -12,7 +12,7 @@ export default function InfoCard({ title, description, children }: InfoCardProps
         {children}
       </div>
 
-      <div className="text-sm">{description}</div>
+      {description ? <div className="text-sm">{description}</div> : null}
     </div>
   )
 }
