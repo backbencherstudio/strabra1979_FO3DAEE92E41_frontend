@@ -9,14 +9,14 @@ const settingsMenu: MenuItem[] = [
   {
     id: 'dashboard',
     label: 'Profile & Account',
-    href: '/operation/settings',
+    href: '/settings',
     isActive: (item: MenuItem, pathname: string) => item.href === pathname,
     icon: User,
   },
   {
     id: 'browse',
     label: 'Notifications',
-    href: '/operation/settings/notifications',
+    href: '/settings/notifications',
     icon: Notification,
   },
 ]

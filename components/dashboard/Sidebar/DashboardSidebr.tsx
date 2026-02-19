@@ -1,9 +1,10 @@
 'use client'
 
 import { SidebarFooter, SidebarGroup, SidebarGroupContent } from '@/components/ui/sidebar'
-import { getMenuByRole, MenuItem } from '@/lib/menuConfig'
+import { getMenuByRole, MenuItem, UserRole } from '@/lib/menuConfig'
 import * as React from 'react'
 
+import { Button } from '@/components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -12,14 +13,31 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import { NavigationMenu } from 'radix-ui'
-import { cn } from '@/lib/utils'
+
+export function useGetRoleFromPathName(): UserRole {
+  const pathname = usePathname()
+  if (pathname.startsWith('/operation')) {
+    return 'operation'
+  }
+
+  if (pathname.startsWith('/manager')) {
+    return 'manager'
+  }
+
+  if (pathname.startsWith('/admin')) {
+    return 'admin'
+  }
+
+  return 'viewer'
+}
 
 export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const role = useGetRoleFromPathName()
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -42,7 +60,7 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <NavMain items={getMenuByRole('operation')} />
+          <NavMain items={getMenuByRole(role)} />
         </SidebarGroup>
       </SidebarContent>
 
