@@ -1,4 +1,4 @@
-import { Calendar } from '@/components/icons/Calender'
+import { CalendarIcon } from '@/components/icons/Calender'
 import { Button } from '@/components/ui/button'
 import InspectionListItem from './InspectionListItem'
 import { InspectionProgressStatus } from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
@@ -10,7 +10,7 @@ export default function InspectionList() {
         <h3 className="text-foreground text-xl font-medium">Today's Inspections</h3>
 
         <Button className="" variant="outline">
-          <Calendar className="size-5" />
+          <CalendarIcon className="size-5" />
           <hr className="border-gray-black-50 h-4 border" />
           <span>February 4, 2026</span>
         </Button>

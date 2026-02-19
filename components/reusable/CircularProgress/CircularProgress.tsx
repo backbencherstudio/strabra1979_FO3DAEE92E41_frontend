@@ -5,6 +5,7 @@ interface CircularProgressProps {
   size?: number // px
   strokeWidth?: number
   className?: string
+  labelClassName?: string
 }
 
 export default function CircularProgress({
@@ -12,6 +13,7 @@ export default function CircularProgress({
   size = 120,
   strokeWidth = 10,
   className,
+  labelClassName,
 }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
@@ -50,7 +52,9 @@ export default function CircularProgress({
       </svg>
 
       {/* Center text */}
-      <span className="absolute text-xl font-semibold text-gray-900">{value}%</span>
+      <span className={cn('absolute text-xl font-semibold text-gray-900', labelClassName)}>
+        {value}%
+      </span>
     </div>
   )
 }
