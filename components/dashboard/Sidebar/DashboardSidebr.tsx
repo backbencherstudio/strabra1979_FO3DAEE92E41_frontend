@@ -16,6 +16,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import { NavigationMenu } from 'radix-ui'
+import { cn } from '@/lib/utils'
 
 export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -39,7 +41,9 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={getMenuByRole('operation')} />
+        <SidebarGroup>
+          <NavMain items={getMenuByRole('operation')} />
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
@@ -49,37 +53,40 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
   )
 }
 
-export function NavMain({ items }: { items: MenuItem[] }) {
+interface NavMainProps extends React.ComponentProps<'div'> {
+  items: MenuItem[]
+  linkClassName?: string
+}
+
+export function NavMain({ items, className, linkClassName }: NavMainProps) {
   const pathName = usePathname()
 
   return (
-    <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
-          {items.map((item) => {
-            const isActive =
-              typeof item?.isActive == 'function'
-                ? item?.isActive(item, pathName)
-                : pathName === item.href || pathName.startsWith(item.href + '/')
+    <SidebarGroupContent className="flex flex-col gap-2">
+      <SidebarMenu className={cn(className)}>
+        {items.map((item) => {
+          const isActive =
+            typeof item?.isActive == 'function'
+              ? item?.isActive(item, pathName)
+              : pathName === item.href || pathName.startsWith(item.href + '/')
 
-            return (
-              <SidebarMenuItem key={item.id}>
-                <SidebarMenuButton
-                  isActive={isActive}
-                  className="text-foreground h-12 px-3"
-                  asChild
-                  tooltip={item.label}
-                >
-                  <Link href={item.href}>
-                    <span>{item.icon && <item.icon className="size-6" />}</span>
-                    <span className="text-base font-medium">{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )
-          })}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+          return (
+            <SidebarMenuItem key={item.id}>
+              <SidebarMenuButton
+                isActive={isActive}
+                className={cn('text-foreground h-12 px-3', linkClassName)}
+                asChild
+                tooltip={item.label}
+              >
+                <Link href={item.href}>
+                  <span>{item.icon && <item.icon className="size-6" />}</span>
+                  <span className="text-base font-medium">{item.label}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )
+        })}
+      </SidebarMenu>
+    </SidebarGroupContent>
   )
 }

@@ -24,7 +24,9 @@ export default function InspectionReportTab() {
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
-      <h1 className="text-heading text-center text-2xl">LIBERTY SHIELD ROOF HEALTH INSPECTION</h1>
+      <h1 className="text-heading text-center text-2xl uppercase">
+        Liberty Shield Roof Health Inspection
+      </h1>
       <div className="mt-2 flex justify-center gap-1 text-base font-medium">
         <span className="text-gray-black-300">Inspection ID:</span>
         <span className="text-gray-black-400">INS2323</span>
@@ -38,9 +40,12 @@ export default function InspectionReportTab() {
         />
       </div>
 
-      <section style={{ display: !isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
+      <section
+        style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
+        className="@container/form mt-5"
+      >
         <InspectionReportForm />
-        <div className="mt-5 grid grid-cols-2 gap-6">
+        <div className="mt-5 grid gap-4 @3xl:gap-6 @6xl:grid-cols-2">
           <PriorityRepairPlanningForm />
           <InspectionReportFinalScoreCard score={60} />
         </div>
@@ -50,7 +55,7 @@ export default function InspectionReportTab() {
         <InspectionMediaForm />
       </section>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <Button size="xl" variant="outline">
           Save
         </Button>

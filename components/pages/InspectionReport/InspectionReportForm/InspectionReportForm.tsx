@@ -3,7 +3,7 @@
 import { DatePickerWrapper } from '@/components/reusable/DatePicker/DatePicker'
 import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 import { Calendar } from '@/components/ui/calendar'
-import { Field, FieldLabel } from '@/components/ui/field'
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import {
   Select,
@@ -23,11 +23,11 @@ export default function InspectionReportForm() {
 
   return (
     <form>
-      <div className="grid grid-cols-2 gap-4">
+      <FieldGroup className="grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
         <Field>
           <FieldLabel htmlFor="name">Property</FieldLabel>
           <InputGroup>
-            <InputGroupInput placeholder="" />
+            <InputGroupInput placeholder="Enter property name" />
           </InputGroup>
         </Field>
 
@@ -69,7 +69,7 @@ export default function InspectionReportForm() {
         <Field>
           <FieldLabel htmlFor="name">Address</FieldLabel>
           <InputGroup>
-            <InputGroupInput placeholder="" />
+            <InputGroupInput placeholder="Enter property address" />
           </InputGroup>
         </Field>
 
@@ -88,7 +88,7 @@ export default function InspectionReportForm() {
         <Field>
           <FieldLabel htmlFor="name">Inspector</FieldLabel>
           <InputGroup>
-            <InputGroupInput placeholder="" />
+            <InputGroupInput placeholder="Enter inspector name" />
           </InputGroup>
         </Field>
 
@@ -135,7 +135,7 @@ export default function InspectionReportForm() {
 
         <Field>
           <FieldLabel htmlFor="name">Seams & Flashings (20 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={20} onChange={setMark} />
+          <MarkInput value={12} maxValue={20} onChange={() => {}} />
           <InputGroup>
             <InputGroupTextarea placeholder="Add Observations Notes" />
           </InputGroup>
@@ -143,7 +143,7 @@ export default function InspectionReportForm() {
 
         <Field>
           <FieldLabel htmlFor="name">Drainage & Ponding (15 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={15} onChange={setMark} />
+          <MarkInput value={3} maxValue={15} onChange={() => {}} />
           <InputGroup>
             <InputGroupTextarea placeholder="Add Observations Notes" />
           </InputGroup>
@@ -151,7 +151,7 @@ export default function InspectionReportForm() {
 
         <Field>
           <FieldLabel htmlFor="name">Penetrations & Accessories (10 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={10} onChange={setMark} />
+          <MarkInput value={6} maxValue={10} onChange={() => {}} />
           <InputGroup>
             <InputGroupTextarea placeholder="Add Observations Notes" />
           </InputGroup>
@@ -159,7 +159,7 @@ export default function InspectionReportForm() {
 
         <Field>
           <FieldLabel htmlFor="name">Repairs & Patch History (10 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={10} onChange={setMark} />
+          <MarkInput value={7} maxValue={10} onChange={() => {}} />
           <InputGroup>
             <InputGroupTextarea placeholder="Add Observations Notes" />
           </InputGroup>
@@ -167,7 +167,7 @@ export default function InspectionReportForm() {
 
         <Field>
           <FieldLabel htmlFor="name">Age vs. Expected Life (10 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={10} onChange={setMark} />
+          <MarkInput value={9} maxValue={10} onChange={() => {}} />
           <InputGroup>
             <InputGroupTextarea placeholder="Add Observations Notes" />
           </InputGroup>
@@ -175,26 +175,26 @@ export default function InspectionReportForm() {
 
         <Field>
           <FieldLabel htmlFor="name">Structural & Safety (10 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={10} onChange={setMark} />
+          <MarkInput value={8} maxValue={10} onChange={() => {}} />
           <InputGroup>
             <InputGroupTextarea placeholder="Add Observations Notes" />
           </InputGroup>
         </Field>
 
-        <Field className="col-span-2">
+        <Field className="col-span-full">
           <FieldLabel htmlFor="name">NTE (Not-To-Exceed):</FieldLabel>
           <InputGroup>
             <InputGroupInput placeholder="Enter NTE" />
           </InputGroup>
         </Field>
 
-        <Field className="col-span-2">
+        <Field className="col-span-full">
           <FieldLabel htmlFor="">Additional Notes/Comments</FieldLabel>
           <InputGroup>
             <InputGroupTextarea placeholder="Type Any Additional Notes/Comments" />
           </InputGroup>
         </Field>
-      </div>
+      </FieldGroup>
     </form>
   )
 }

@@ -14,7 +14,7 @@ export default function SettingListItem({
   return (
     <div
       className={cn(
-        'border-input flex items-center justify-between rounded-md border bg-white p-3',
+        'border-input flex items-center justify-between gap-3 rounded-md border bg-white p-3',
         className,
       )}
       {...props}

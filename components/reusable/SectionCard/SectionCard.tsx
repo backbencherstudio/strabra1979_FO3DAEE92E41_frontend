@@ -9,6 +9,10 @@ export default function SectionCard({ className, ...props }: React.ComponentProp
   )
 }
 
+export function SettingSectionCard({ className, ...props }: React.ComponentProps<'div'>) {
+  return <SectionCard className={cn('border-none px-3 py-3 md:p-8', className)} {...props} />
+}
+
 export function SectionTitle({ className, ...props }: React.ComponentProps<'h3'>) {
   return <h3 className={cn('text-xl font-medium', className)} {...props} />
 }

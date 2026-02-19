@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import { ChevronRight } from 'lucide-react'
+import Image from 'next/image'
 
 export default function InspectionListItemDetailsPage() {
   const details = {
@@ -50,42 +51,58 @@ export default function InspectionListItemDetailsPage() {
         </ul>
       </div>
 
-      <SectionCard className="grid grid-cols-3 bg-white">
+      <SectionCard className="grid max-lg:divide-y bg-white lg:grid-cols-3">
         {rowInfos.map((info) => (
-          <div key={info.label} className="flex flex-col gap-1">
+          <div key={info.label} className="flex flex-col gap-1 py-3">
             <span className="text-gray-black-300 text-sm">{info.label}</span>
             <span className="text-sm font-medium">{info.value}</span>
           </div>
         ))}
       </SectionCard>
 
-      <div className="flex gap-4.5">
+      <div className="flex flex-col gap-4.5 lg:flex-row">
         <SectionCard className="bg-white">
           <SectionTitle className="text-center">Roof Health Snapshot</SectionTitle>
           <p className="text-center text-sm">Average Health Score</p>
           <CircularProgressWithMeta placeholder="Remaining Life: 5-7 Years" value={details.score} />
         </SectionCard>
 
-        <SectionCard className="grid flex-1 grid-cols-2 gap-2 bg-white">
-          <div className="row-span-2 rounded-md bg-gray-100"></div>
-          <div className="rounded-md bg-gray-100"></div>
-          <div className="rounded-md bg-gray-100"></div>
+        <SectionCard className="grid flex-1 gap-2 bg-white sm:grid-cols-2">
+          <div className="row-span-2 min-h-35 rounded-md bg-gray-100"></div>
+          <div className="min-h-35 rounded-md bg-gray-100"></div>
+          <div className="min-h-35 rounded-md bg-gray-100"></div>
         </SectionCard>
       </div>
 
-      <div className="grid grid-cols-2 gap-4.5">
+      <div className="grid gap-4.5 lg:grid-cols-2">
         <SectionCard className="space-y-2 bg-white">
           <SectionTitle className="text-center">Aerial Map</SectionTitle>
-          <div className="aspect-video rounded-md bg-gray-100"></div>
+          <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
+            <Image
+              className="h-full w-full object-cover"
+              width={800}
+              height={450}
+              alt=""
+              src={'/images/inspectin-list/aerial-map.png'}
+            />
+          </div>
         </SectionCard>
         <SectionCard className="space-y-2 bg-white">
           <SectionTitle className="text-center">3D Roof Tour</SectionTitle>
-          <div className="aspect-video rounded-md bg-gray-100"></div>
+          <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
+            <Image
+              className="h-full w-full object-cover"
+              width={800}
+              height={450}
+              alt=""
+              src={'/images/inspectin-list/3d-roof-tour.png'}
+            />
+          </div>
         </SectionCard>
       </div>
 
       <SectionCard>
-        <SectionTitle>Add Priority Repair Planning</SectionTitle>
+        <SectionTitle>Priority Repair Planning</SectionTitle>
         <PiorityRepairPlanList />
       </SectionCard>
 
@@ -111,10 +128,10 @@ export default function InspectionListItemDetailsPage() {
         </div>
       </SectionCard>
 
-      <div className="mt-8">
+      <div className="@container/form mt-8">
         <h2 className="text-center text-2xl font-medium">Roof Health Rating</h2>
 
-        <div className="mt-5 grid grid-cols-2 gap-4">
+        <div className="mt-5 grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
           {roofHealthRatings.map((item) => {
             if (item.type == 'input') {
               return (
@@ -132,14 +149,7 @@ export default function InspectionListItemDetailsPage() {
                 <Field key={item.label}>
                   <FieldLabel>{item.label}</FieldLabel>
                   <MarkInput value={item.value} maxValue={item.maxValue} onChange={() => {}} />
-                  <InputGroup>
-                    <InputGroupTextarea
-                      contentEditable={false}
-                      readOnly
-                      value={item.desc}
-                      placeholder="No additional noto is provided"
-                    />
-                  </InputGroup>
+                  <InfoCard description={item.desc} />
                 </Field>
               )
             }
@@ -148,7 +158,7 @@ export default function InspectionListItemDetailsPage() {
           })}
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-5 grid gap-4 @3xl:gap-6 @4xl:grid-cols-2">
           <SectionCard>
             <SectionTitle>Additional Information</SectionTitle>
             <div className="mt-4 space-y-3">

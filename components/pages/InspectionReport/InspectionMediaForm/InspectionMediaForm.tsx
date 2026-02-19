@@ -29,7 +29,7 @@ export default function InspectionMediaForm() {
       <FieldGroup>
         <Field>
           <FieldLabel>Upload Media Files</FieldLabel>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 md:flex-row">
             <FileInputProvider>
               <FileInput
                 replaceInputWithChldren={true}
@@ -65,7 +65,7 @@ export default function InspectionMediaForm() {
             {/* Add More btn */}
             <button
               type="button"
-              className="border-border/50 focus-visible:border-ring/50 focus-within:outline-input flex h-35 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed bg-white px-6 outline-none"
+              className="border-border/50 focus-visible:border-ring/50 focus-within:outline-input flex h-23 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed bg-white px-6 outline-none md:h-auto"
             >
               <PlusSignSquare />
               <span className="text-foreground text-sm whitespace-nowrap">Add More</span>

@@ -11,7 +11,7 @@ export default function PiorityRepairPlanList() {
 
   return (
     <div>
-      <div className="mt-5 flex gap-2">
+      <div className="mt-5 flex flex-wrap gap-2">
         {tabs.map((t) => (
           <Button
             onClick={() => setTab(t)}
