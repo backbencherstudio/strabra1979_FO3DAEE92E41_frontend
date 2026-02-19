@@ -45,7 +45,7 @@ export default function InspectionReportTab() {
         className="@container/form mt-5"
       >
         <InspectionReportForm />
-        <div className="mt-5 grid gap-4 @3xl:gap-6 @6xl:grid-cols-2">
+        <div className="mt-5 grid gap-4 @3xl:gap-6 @3xl:grid-cols-2">
           <PriorityRepairPlanningForm />
           <InspectionReportFinalScoreCard score={60} />
         </div>

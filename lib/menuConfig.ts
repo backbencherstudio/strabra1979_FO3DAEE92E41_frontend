@@ -5,7 +5,7 @@ export interface MenuItem {
   id: string
   label: string
   href: string
-  icon: ComponentType<{ className?: string }>
+  icon?: ComponentType<{ className?: string }>
   isActive?: (item: MenuItem, pathname: string) => boolean
 }
 
@@ -46,7 +46,8 @@ export const operationMenu: MenuItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     href: '/operation',
-    isActive: (item: MenuItem, pathname: string) => item.href === pathname,
+    isActive: (item: MenuItem, pathname: string) =>
+      item.href === pathname || pathname.startsWith('/operation/inspection-report'),
     icon: DashboardSquare03,
   },
   {
@@ -68,7 +69,8 @@ export const viewerMenu: MenuItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     href: '/',
-    isActive: (item: MenuItem, pathname: string) => item.href === pathname,
+    isActive: (item: MenuItem, pathname: string) =>
+      item.href === pathname || pathname.startsWith('/property'),
     icon: DashboardSquare03,
   },
   {

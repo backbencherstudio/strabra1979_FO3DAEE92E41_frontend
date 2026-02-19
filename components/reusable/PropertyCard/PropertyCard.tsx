@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
+import Link from 'next/link'
 
-export interface PropertyCardProps {
+export interface Property {
   title: string
   property: string
   id: string
@@ -19,7 +20,11 @@ export interface PropertyCardProps {
   accessExpiration: string
   score: number
   imageUrl: string
+}
+
+export interface PropertyCardProps extends Property {
   hasAccess?: boolean
+  slug: string
 }
 
 export default function PropertyCard({
@@ -30,6 +35,7 @@ export default function PropertyCard({
   score,
   imageUrl,
   hasAccess,
+  slug = '#',
 }: PropertyCardProps) {
   const rowInfos = [
     { label: 'Type', value: type },
@@ -76,8 +82,8 @@ export default function PropertyCard({
         </section>
         <section className="mt-4.5">
           {hasAccess ? (
-            <Button size="lg" className="w-full" variant="outline">
-              View Details
+            <Button asChild size="lg" className="w-full" variant="outline">
+              <Link href={slug}>View Details</Link>
             </Button>
           ) : (
             <ConfirmDialog

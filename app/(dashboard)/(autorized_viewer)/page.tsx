@@ -1,10 +1,10 @@
 'use client'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import Pagination from '@/components/reusable/Pagination/Pagination'
-import PropertyCard, { PropertyCardProps } from '@/components/reusable/PropertyCard/PropertyCard'
+import PropertyCard, { Property } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 
-const properties: PropertyCardProps[] = [
+const properties: Property[] = [
   {
     title: '2024 Annual Roof Inspection',
     property: 'Sunset Office Complex',
@@ -123,7 +123,7 @@ export default function AutorizedViewerLandingPage() {
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {properties.map((p, index) => (
-            <PropertyCard hasAccess={index == 1} key={p.title} {...p} />
+            <PropertyCard slug="/property/123" hasAccess={index == 1} key={p.title} {...p} />
           ))}
         </div>
       </SectionCard>
