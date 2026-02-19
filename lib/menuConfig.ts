@@ -10,6 +10,7 @@ export interface MenuItem {
   label: string;
   href: string;
   icon: ComponentType<{ className?: string }>;
+  isActive?: (item: MenuItem, pathname: string) => boolean
 }
 
 export type UserRole = "admin" | "manager" | "operation" | "viewer";
@@ -51,6 +52,7 @@ export const operationMenu: MenuItem[] = [
     id: "dashboard",
     label: "Dashboard",
     href: "/operation",
+    isActive: (item: MenuItem, pathname: string) => item.href === pathname,
     icon: DashboardSquare03,
   },
   {

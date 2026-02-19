@@ -66,12 +66,22 @@ export default function InspectionListItemDetailsPage() {
           <CircularProgressWithMeta placeholder="Remaining Life: 5-7 Years" value={details.score} />
         </SectionCard>
 
-        <SectionCard className="flex-1 bg-white"></SectionCard>
+        <SectionCard className="grid flex-1 grid-cols-2 gap-2 bg-white">
+          <div className="row-span-2 rounded-md bg-gray-100"></div>
+          <div className="rounded-md bg-gray-100"></div>
+          <div className="rounded-md bg-gray-100"></div>
+        </SectionCard>
       </div>
 
-      <div className="grid grid-cols-2 gap-4.5 h-32">
-        <SectionCard className="bg-white"></SectionCard>
-        <SectionCard className="bg-white"></SectionCard>
+      <div className="grid grid-cols-2 gap-4.5">
+        <SectionCard className="space-y-2 bg-white">
+          <SectionTitle className="text-center">Aerial Map</SectionTitle>
+          <div className="aspect-video rounded-md bg-gray-100"></div>
+        </SectionCard>
+        <SectionCard className="space-y-2 bg-white">
+          <SectionTitle className="text-center">3D Roof Tour</SectionTitle>
+          <div className="aspect-video rounded-md bg-gray-100"></div>
+        </SectionCard>
       </div>
 
       <SectionCard>
