@@ -54,3 +54,29 @@ export default function CircularProgress({
     </div>
   )
 }
+
+export const scoreScale = [
+  { label: 'Good', min: 70, max: 100, color: 'var(--success)' },
+  { label: 'Fair', min: 30, max: 69, color: 'var(--warning)' },
+  { label: 'Poor', min: 0, max: 29, color: 'var(--danger)' },
+]
+
+const getScoreMeta = (score: number) => scoreScale.find((s) => score >= s.min && score <= s.max)
+
+export function CircularProgressWithMeta({
+  placeholder,
+  ...props
+}: { placeholder?: string } & CircularProgressProps) {
+  const meta = getScoreMeta(props.value)
+
+  return (
+    <section
+      style={{ color: meta?.color ?? 'black' }}
+      className="flex flex-col items-center justify-center gap-1 p-4.5 pt-6"
+    >
+      <CircularProgress {...props} />
+      <p className="mt-2 text-center text-base font-medium">{meta?.label}</p>
+      {placeholder && <p className="text-foreground text-center text-sm">{placeholder}</p>}
+    </section>
+  )
+}

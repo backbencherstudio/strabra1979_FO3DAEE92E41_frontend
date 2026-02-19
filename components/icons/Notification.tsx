@@ -11,7 +11,7 @@ export const Notification = (props: SVGProps<SVGSVGElement>) => {
       {...props}
     >
       <g
-        stroke="#4A4C56"
+        stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.5"

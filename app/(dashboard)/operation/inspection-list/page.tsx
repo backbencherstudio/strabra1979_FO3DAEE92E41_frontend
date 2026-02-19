@@ -1,6 +1,8 @@
 export default function InspectionList() {
   return (
-    <div>InspectionList</div>
+    <div>
+      InspectionList table
+      {/* TODO: table */}
+    </div>
   )
 }
-

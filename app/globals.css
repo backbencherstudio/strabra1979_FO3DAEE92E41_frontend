@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-/* @import "tw-animate-css"; */
+@import "tw-animate-css";
 @import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
@@ -125,13 +125,13 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: #0b2a3b;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: #4988c4;
+  --secondary: #f6f8fa;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #eb3d4d;
   --border: oklch(0.922 0 0);
   --input: #e9e9ea;
   --ring: oklch(0.708 0 0);
