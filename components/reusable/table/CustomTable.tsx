@@ -121,7 +121,7 @@ export default function CustomTable({
                       padding: headerStyles.padding,
                       fontWeight: headerStyles.fontWeight,
                     }}
-                    className={`text-[#fff] px-4 py-3 whitespace-nowrap text-base font-light capitalize text-descriptionColor border-b border-[#272725]
+                    className={`text-[#fff] px-4 py-3 whitespace-nowrap text-base font-light capitalize text-descriptionColor border-b  
                    
                       ${
                         index === columns.length - 1 &&
@@ -160,9 +160,8 @@ export default function CustomTable({
                           key={idx}
                           style={{
                             minWidth: col.width || "auto",
-                            borderBottom: isLastRow
-                              ? "none"
-                              : `1px solid ${cellBorderColor}`,
+                            borderBottom:  
+                               `1px solid ${cellBorderColor}`,
                           }}
                           className="px-4 py-3 text-[#4a4c56]"
                           onClick={(e) => {

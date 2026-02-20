@@ -1,7 +1,26 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Ellipsis, Eye, Edit, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { Dot } from "../icons/Dot";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { TrashIcon } from "../icons/TrashIcon";
 
 // Define ColumnConfig interface
 interface ColumnConfig {
@@ -12,75 +31,37 @@ interface ColumnConfig {
   formatter?: (value: any, row: any) => React.ReactNode;
 }
 
-// ==================== USER TYPE BADGE COMPONENT ====================
-const UserTypeBadge = ({ type }: { type: string }) => {
-  let bgColor = "";
-  let textColor = "";
-  let dotColor = "";
-
-  switch (type.toLowerCase()) {
-    case "property manager":
-      bgColor = "bg-[#2ABA3B]/10";
-      textColor = "text-[#2ABA3B]";
-      dotColor = "bg-[#2ABA3B]";
-      break;
-    case "authorized viewer":
-      bgColor = "bg-[#3B7AFF]/10";
-      textColor = "text-[#3B7AFF]";
-      dotColor = "bg-[#3B7AFF]";
-      break;
-    case "operation":
-      bgColor = "bg-[#FE5000]/10";
-      textColor = "text-[#FE5000]";
-      dotColor = "bg-[#FE5000]";
-      break;
-    default:
-      bgColor = "bg-gray-400/10";
-      textColor = "text-gray-400";
-      dotColor = "bg-gray-400";
-  }
-
-  return (
-    <div className={`${bgColor} ${textColor} px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-2`}>
-      <span className={`w-1 h-1 rounded-full ${dotColor}`}></span>
-      {type}
-    </div>
-  );
-};
-
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
   let textColor = "";
   let borderColor = "";
-  let dotColor = "";
+  let backgroundColor = "";
 
   switch (status.toLowerCase()) {
     case "active":
-      borderColor = "border-[#2ABA3B]";
-      textColor = "text-[#2ABA3B]";
-      dotColor = "bg-[#2ABA3B]";
+      borderColor = "border-[#D9E5FF]";
+      textColor = "text-[#3366CF]";
+      backgroundColor = "bg-[#e5f3fe]";
       break;
-    case "deactive":
-      borderColor = "border-[#EB3D4D]";
-      textColor = "text-[#EB3D4D]";
-      dotColor = "bg-[#EB3D4D]";
+    case "deactivated":
+      borderColor = "border-[#f6e7dc]";
+      textColor = "text-[#9a6036]";
+      backgroundColor = "bg-[#fbf5db]";
       break;
     case "deleted":
-      borderColor = "border-[#909296]";
-      textColor = "text-[#909296]";
-      dotColor = "bg-[#909296]";
+      borderColor = "border-[#ffd5d5]";
+      textColor = "text-[#a12a24]";
+      backgroundColor = "bg-[#ffdede]";
       break;
     default:
       borderColor = "border-gray-400";
       textColor = "text-gray-400";
-      dotColor = "bg-gray-400";
   }
 
   return (
     <p
-      className={`${borderColor} ${textColor} border px-3 py-1.5 rounded-full text-xs font-medium inline-flex items-center gap-2`}
+      className={`${borderColor} ${textColor} ${backgroundColor} border px-3 py-1.5 rounded-[4px] text-xs font-medium inline-block`}
     >
-      <span className={`w-1 h-1 rounded-full ${dotColor}`}></span>
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </p>
   );
@@ -96,177 +77,201 @@ const formatUserDate = (dateString: string) => {
   return `${day} ${month}, ${year}`;
 };
 
+// ==================== DEACTIVATE USER DIALOG ====================
+const DeactivateUserDialog = ({ 
+  children, 
+  rowData 
+}: { 
+  children: React.ReactNode;
+  rowData: any;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          {children}
+        </DialogTrigger>
+      <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12"   >
+      
+        <div className="">
+          <h2 className="text-2xl font-semibold text-center text-[#1d1f2c]">Deactivate User</h2>
+          <p className="text-base text-[#777980] mt-2 text-center">
+          Are you sure you want to deactivate this user?
+          </p>
+          <div className=" flex justify-center items-center gap-4 mt-6">
+            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={()=>setOpen(false)}>Cancel</button>
+            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={()=>setOpen(false)}>Deactive</button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// ==================== ASSIGN PROPERTY DIALOG ====================
+const AssignPropertyDialog = ({ 
+  children, 
+  rowData 
+}: { 
+  children: React.ReactNode;
+  rowData: any;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+      <div className="">
+          <h2 className="text-2xl font-semibold text-center text-[#1d1f2c]">Deactivate User</h2>
+          <p className="text-base text-[#777980] mt-2 text-center">
+          Are you sure you want to deactivate this user?
+          </p>
+          <div className=" flex justify-center items-center gap-4 mt-6">
+            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={()=>setOpen(false)}>Cancel</button>
+            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={()=>setOpen(false)}>Deactive</button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// ==================== DELETE USER DIALOG ====================
+const DeleteUserDialog = ({ 
+  children, 
+  rowData,
+  onConfirm 
+}: { 
+  children: React.ReactNode;
+  rowData: any;
+  onConfirm?: () => void;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const handleConfirm = () => {
+    if (onConfirm) {
+      onConfirm();
+    }
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12">
+      <div className="">
+        <div className=" flex justify-center">
+        <div className=" bg-[#eb3d4d] inline-block rounded-[12px] px-4 py-3.5">
+        <TrashIcon/>
+        </div>
+
+        </div>
+
+          <h2 className="text-2xl font-semibold text-center text-[#1d1f2c] mt-3">Delete User Account</h2>
+          <p className="text-base text-[#777980] mt-2 text-center">
+          Are you sure you want to delete this user account?
+          </p>
+          <div className=" flex justify-center items-center gap-4 mt-6">
+            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={()=>setOpen(false)}>Cancel</button>
+            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={()=>setOpen(false)}>Delete Account</button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // ==================== USER ACTION BUTTON COMPONENT ====================
-const UserActionButton = ({ rowData, onView, onEdit, onDelete }: { 
+const UserActionButton = ({ 
+  rowData, 
+  onView, 
+  onEdit, 
+  onDelete 
+}: { 
   rowData: any;
   onView?: (row: any) => void;
   onEdit?: (row: any) => void;
   onDelete?: (row: any) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState<"bottom" | "top">("bottom");
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
   // Check if user is deleted - disable actions for deleted users
   const isUserDeleted = rowData.status?.toLowerCase() === "deleted";
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const buttonRect = buttonRef.current.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const dropdownHeight = 120;
-
-      const spaceBelow = viewportHeight - buttonRect.bottom;
-
-      if (spaceBelow < dropdownHeight && buttonRect.top > dropdownHeight) {
-        setDropdownPosition("top");
-      } else {
-        setDropdownPosition("bottom");
-      }
-    }
-  }, [isOpen]);
-
-  const handleViewUser = () => {
-    setIsOpen(false);
-    if (onView) {
-      onView(rowData);
-    }
-  };
-
-  const handleEditUser = () => {
-    setIsOpen(false);
-    if (onEdit) {
-      onEdit(rowData);
-    }
-  };
-
-  const handleDeleteClick = () => {
-    setIsOpen(false);
-    setShowDeleteConfirm(true);
-  };
 
   const handleConfirmDelete = () => {
     if (onDelete) {
       onDelete(rowData);
     }
-    setShowDeleteConfirm(false);
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirm(false);
   };
 
   return (
     <>
-      <div className="relative" ref={dropdownRef}>
-        <button
-          ref={buttonRef}
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-1 hover:bg-[#2D2D2D] rounded flex items-center justify-center cursor-pointer"
-          disabled={isUserDeleted}
-        >
-          <Ellipsis size={16} className={isUserDeleted ? "text-gray-600" : "text-gray-500"} />
-        </button>
-
-        {isOpen && (
-          <div
-            className={`fixed bg-[#2D2D2D] rounded-md shadow-lg p-1 z-50 overflow-hidden w-[160px]`}
-            style={{
-              top: dropdownPosition === "top"
-                ? `${buttonRef.current?.getBoundingClientRect().top! - 120}px`
-                : `${buttonRef.current?.getBoundingClientRect().bottom! + 5}px`,
-              left: `${buttonRef.current?.getBoundingClientRect().left! - 140}px`,
-            }}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 p-0 hover:bg-[#f6f8fa]"
+            disabled={isUserDeleted}
           >
+            <Dot className={`h-4 w-4 ${isUserDeleted ? "text-gray-600" : "text-gray-500"}`} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent 
+          align="end" 
+          className="bg-[#f6f8fa] text-white min-w-[167px] shadow-xl p-3"
+        >
+          <DropdownMenuGroup>
             {onView && (
-              <button
-                onClick={handleViewUser}
-                disabled={isUserDeleted}
-                className={`w-full p-2 text-sm text-left rounded-[4px] cursor-pointer flex items-center gap-2 ${
-                  isUserDeleted
-                    ? "text-gray-500 cursor-not-allowed opacity-50"
-                    : "text-[#909296] hover:bg-[#1D1D1D]"
-                }`}
-              >
-                <Eye size={14} />
-                View Details
-              </button>
+              <DeactivateUserDialog rowData={rowData}>
+                <DropdownMenuItem 
+                  onSelect={(e) => e.preventDefault()}
+                  disabled={isUserDeleted}
+                  className={`cursor-pointer focus:bg-[#1D1D1D] focus:text-white text-[#5c707c] text-sm ${
+                    isUserDeleted ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  Deactivate User
+                </DropdownMenuItem>
+              </DeactivateUserDialog>
             )}
             
             {onEdit && (
-              <button
-                onClick={handleEditUser}
-                disabled={isUserDeleted}
-                className={`w-full p-2 text-sm text-left rounded-[4px] cursor-pointer flex items-center gap-2 ${
-                  isUserDeleted
-                    ? "text-gray-500 cursor-not-allowed opacity-50"
-                    : "text-[#909296] hover:bg-[#1D1D1D]"
-                }`}
-              >
-                <Edit size={14} />
-                Edit User
-              </button>
-            )}
-            
-            {onDelete && !isUserDeleted && (
-              <button
-                onClick={handleDeleteClick}
-                className="w-full p-2 text-sm text-left rounded-[4px] cursor-pointer flex items-center gap-2 text-[#EB3D4D] hover:bg-[#1D1D1D]"
-              >
-                <Trash2 size={14} />
-                Delete User
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Simple Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
-          <div className="bg-[#1D1D1D] rounded-2xl max-w-[400px] w-full mx-4">
-            <div className="p-6 flex flex-col justify-center items-center">
-              <div className="bg-[#321D1F] h-16 w-16 flex justify-center items-center rounded-full">
-                <Trash2 className="text-[#EB3D4D]" size={24} />
-              </div>
-              <h2 className="text-white text-xl font-semibold my-4 text-center">
-                Delete User Account?
-              </h2>
-              <p className="text-[#909296] text-sm text-center mb-4">
-                Are you sure you want to delete <span className="text-white font-medium">{rowData.name}</span>? This action cannot be undone.
-              </p>
-              
-              <div className="flex justify-center items-center gap-3 mt-4 w-full">
-                <button
-                  onClick={handleCancelDelete}
-                  className="text-white text-sm font-semibold border border-[#383A3F] flex-1 py-2 px-4 rounded-[8px] cursor-pointer hover:bg-[#2D2D2D] transition-colors"
+              <AssignPropertyDialog rowData={rowData}>
+                <DropdownMenuItem 
+                  onSelect={(e) => e.preventDefault()}
+                  disabled={isUserDeleted}
+                  className={`cursor-pointer focus:bg-[#1D1D1D] focus:text-white text-[#5c707c] text-sm ${
+                    isUserDeleted ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleConfirmDelete}
-                  className="text-white text-sm font-semibold border border-[#EB3D4D] bg-[#EB3D4D] hover:bg-[#EB3D4D]/80 py-2 px-4 rounded-[8px] cursor-pointer transition-colors flex-1"
+                  Assign to a property
+                </DropdownMenuItem>
+              </AssignPropertyDialog>
+            )}
+          </DropdownMenuGroup>
+          
+          {onDelete && !isUserDeleted && (
+            <DropdownMenuGroup>
+              <DeleteUserDialog 
+                rowData={rowData} 
+                onConfirm={handleConfirmDelete}
+              >
+                <DropdownMenuItem 
+                  onSelect={(e) => e.preventDefault()}
+                  className="cursor-pointer focus:bg-[#1D1D1D] focus:text-white text-[#5c707c] text-sm"
                 >
-                  Yes, Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+                  Delete User
+                </DropdownMenuItem>
+              </DeleteUserDialog>
+            </DropdownMenuGroup>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 };
@@ -282,7 +287,7 @@ export const UserManagementColumns: ColumnConfig[] = [
       const num = typeof item === "string" ? parseInt(item) : item;
       return (
         <div className="flex items-center">
-          <p className="text-sm text-[#909296]">
+          <p className="text-xs text-[#4a4c56]">
             {num < 10 ? `0${num}` : num}
           </p>
         </div>
@@ -297,7 +302,7 @@ export const UserManagementColumns: ColumnConfig[] = [
     formatter: (value: string, row: any) => {
       return (
         <div>
-          <p className="text-sm text-[#909296] font-medium">{value}</p>
+          <p className="text-xs text-[#4a4c56] ">{value}</p>
         </div>
       );
     },
@@ -308,7 +313,7 @@ export const UserManagementColumns: ColumnConfig[] = [
     accessor: "userType",
     sortable: true,
     formatter: (value: string, row: any) => {
-      return <UserTypeBadge type={value} />;
+      return <p className="text-xs text-[#4a4c56] ">{value}</p>;
     },
   },
   {
@@ -319,7 +324,7 @@ export const UserManagementColumns: ColumnConfig[] = [
     formatter: (value: string, row: any) => {
       return (
         <div>
-          <p className="text-sm text-[#909296]">{value}</p>
+          <p className="text-xs text-[#4a4c56]">{value}</p>
         </div>
       );
     },
@@ -332,7 +337,7 @@ export const UserManagementColumns: ColumnConfig[] = [
     formatter: (value: string, row: any) => {
       return (
         <div>
-          <p className="text-sm text-[#909296]">{formatUserDate(value)}</p>
+          <p className="text-xs text-[#4a4c56]">{formatUserDate(value)}</p>
         </div>
       );
     },
@@ -347,28 +352,16 @@ export const UserManagementColumns: ColumnConfig[] = [
     },
   },
   {
-    label: "Action",
+    label: "",
     accessor: "action",
     width: "5%",
     formatter: (value: any, row: any) => {
       return (
         <UserActionButton 
           rowData={row} 
-          onView={(row) => {
-            // Handle view user
-            console.log("View user:", row);
-            // You can open a modal or navigate to user details page
-          }}
-          onEdit={(row) => {
-            // Handle edit user
-            console.log("Edit user:", row);
-            // You can open an edit modal
-          }}
-          onDelete={(row) => {
-            // Handle delete user
-            console.log("Delete user:", row);
-            // API call to delete user
-          }}
+          onView={(row) => console.log("View", row)}
+          onEdit={(row) => console.log("Edit", row)}
+          onDelete={(row) => console.log("Delete", row)}
         />
       );
     },
@@ -402,7 +395,7 @@ export const demoUserData = [
     userType: "Operation",
     email: "michael.chen@example.com",
     date: "2026-01-10T09:15:00Z",
-    status: "deactive"
+    status: "deactivated"
   },
   {
     id: "usr_004",
@@ -456,7 +449,7 @@ export const demoUserData = [
     userType: "Property Manager",
     email: "robert.brown@example.com",
     date: "2025-12-20T12:00:00Z",
-    status: "deactive"
+    status: "deactivated"
   },
   {
     id: "usr_010",

@@ -6,7 +6,7 @@ export default function page() {
   return (
     <div>
          <CustomTable
-      columns={UserManagementColumns}
+     columns={UserManagementColumns}
       data={demoUserData}
     //   currentPage={currentPage}
     //   itemsPerPage={itemsPerPage}
@@ -15,15 +15,17 @@ export default function page() {
     //   onSort={handleSort}
       minWidth={1000}
       headerStyles={{
-        backgroundColor: "#1A1A1A",
-        textColor: "#FFFFFF",
+        backgroundColor: "#eceff3",
+        textColor: "#4a4c56",
         fontSize: "14px",
-        fontWeight: "500",
+        fontWeight: "400",
         padding: "12px 16px"
+        
+
       }}
-      cellBorderColor="#2D2D2D"
-      hasWrapperBorder={true}
-      wrapperBorderColor="#2D2D2D"
+      cellBorderColor="#eceff3"
+      hasWrapperBorder={false}
+      
       roundedClass="rounded-lg"
     />
     </div>
