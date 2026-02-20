@@ -1,10 +1,9 @@
-'use client';
+'use client'
 // components/DynamicForm.tsx
 import React from 'react';
 import { MessageIcon } from '../icons/MessageIcon';
 import { LockIcon } from '../icons/LockIcon';
- 
- 
+import Link from 'next/link';
 
 interface DynamicFormProps {
   values?: {
@@ -15,9 +14,17 @@ interface DynamicFormProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+const DEFAULT_VALUES = {
+  username: '',
+  email: '',
+  password: ''
+};
+
+const DEFAULT_ONCHANGE = () => {};
+
 const DynamicForm: React.FC<DynamicFormProps> = ({ 
-  values = { username: '', email: '', password: '' }, // Default values
-  onChange = () => {} // Default empty function
+  values = DEFAULT_VALUES,
+  onChange = DEFAULT_ONCHANGE 
 }) => {
   return (
     <div className="space-y-5 mt-4.5">
@@ -30,7 +37,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           name="username"
           id="username"
           placeholder="Username"
-          value={values.username || ''}
+          value={values.username ?? ''}
           onChange={onChange}
           className="py-3.5 px-5 border border-[#f0ece4] bg-white rounded-xl"
         />
@@ -47,7 +54,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             name="email"
             id="email"
             placeholder="Email"
-            value={values.email || ''}
+            value={values.email ?? ''}
             onChange={onChange}
             className="py-3.5 pr-5 pl-12 border border-[#f0ece4] bg-white rounded-xl w-full"
           />
@@ -65,14 +72,15 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             name="password"
             id="password"
             placeholder="Password"
-            value={values.password || ''}
+            value={values.password ?? ''}
             onChange={onChange}
             className="py-3.5 pr-5 pl-12 border border-[#f0ece4] bg-white rounded-xl w-full"
           />
         </div>
       </div>
 
-      <button className=' py-3.5 bg-[#0b2a3b] w-full rounded-xl text-base font-medium text-white mt-2'>Sign up</button>
+      <button className=' w-full my-3.5 bg-[#0b2a3b] py-3.5 rounded-xl text-white font-medium'>Sign up</button>
+      <p className=' text-center'>Already have an account? <Link href="#" className=' text-[#0b2a3b] font-medium'>Log In</Link></p>
     </div>
   );
 };
