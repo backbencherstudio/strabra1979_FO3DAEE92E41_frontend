@@ -11,11 +11,13 @@ interface PropertyDetailsReportsProps {
   id: string
   property: Property
   accessExpiration?: string
+  headerRightContent?: React.ReactNode
 }
 
 export default function PropertyDetailsReports({
   property,
   accessExpiration,
+  headerRightContent = null,
 }: PropertyDetailsReportsProps) {
   const rowInfos = [
     { label: 'Type', value: property.type },
@@ -30,7 +32,9 @@ export default function PropertyDetailsReports({
         rightContent={
           accessExpiration ? (
             <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
-          ) : null
+          ) : (
+            headerRightContent
+          )
         }
       >
         <InfoList items={[{ label: 'Last updated', value: property.updated_at ?? '' }]} />

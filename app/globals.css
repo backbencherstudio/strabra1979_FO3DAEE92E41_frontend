@@ -107,7 +107,8 @@
   --color-opacity-grey-dark-50: rgba(101, 104, 114, 0.5);
   --color-heading: var(--color-gray-black-500);
   --color-mid-orange: #ffcd71;
-  --color-navy-500: #0b2a3b;
+  --color-navy-500: var(--navy-500);
+  --color-navy-300: var(--navy-300);
   --color-foundation-light-blue: #abc8e4;
 
   --color-success: var(--success);
@@ -152,6 +153,9 @@
   --success: #10b981;
   --warning: #f5be0b;
   --danger: #ef4444;
+
+  --navy-500: #0b2a3b;
+  --navy-300: #5C707C;
 }
 
 .dark {

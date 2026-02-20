@@ -1,8 +1,7 @@
 import { cn } from '@/lib/utils'
 import SectionCard from '../SectionCard/SectionCard'
-import { FolderIcon } from '@/components/icons/FolderIconr'
 
-interface InfoItem {
+export interface InfoItem {
   label: string
   value: string
 }

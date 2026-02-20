@@ -1,9 +1,12 @@
 import { ChevronsLeft, ChevronsLeftDouble } from '@/components/icons/Chevrons'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-export default function Pagination() {
+interface PaginationProps extends React.ComponentProps<'div'> {}
+
+export default function Pagination({ className }: PaginationProps) {
   return (
-    <div className="mt-6 flex justify-center gap-3">
+    <div className={cn('flex justify-center gap-3', className)}>
       <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
         <ChevronsLeftDouble className="size-5" />
       </Button>
