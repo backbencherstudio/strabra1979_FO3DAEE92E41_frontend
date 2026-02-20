@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils'
 import SectionCard from '../SectionCard/SectionCard'
+import { FolderIcon } from '@/components/icons/FolderIconr'
 
 interface InfoItem {
   label: string
@@ -24,3 +25,4 @@ export function InfoGrid({ items, className, labelClassName }: InfoGridProps) {
     </SectionCard>
   )
 }
+
