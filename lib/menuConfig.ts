@@ -4,6 +4,7 @@ import {
   Property,
   PropertyNew,
   Settings02,
+  Users,
 } from '@/components/icons/SideBarIcons'
 
 import { ComponentType } from 'react'
@@ -39,6 +40,12 @@ export const adminMenu: MenuItem[] = [
     href: '/admin/templates',
     icon: Archive02,
   },
+  {
+    id:'user-management',
+    label: 'User Management',
+    href: '/admin/user-management',
+    icon:  Users,
+  }
 ]
 
 export const managerMenu: MenuItem[] = [
