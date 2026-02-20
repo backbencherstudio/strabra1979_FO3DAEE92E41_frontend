@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export function useGetRoleFromPathName(): UserRole {
   const pathname = usePathname()
@@ -72,12 +72,31 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
 }
 
 interface NavMainProps extends React.ComponentProps<'div'> {
+  replaceRoute?: boolean
   items: MenuItem[]
   linkClassName?: string
 }
 
-export function NavMain({ items, className, linkClassName }: NavMainProps) {
+function checkIsActive(item: MenuItem, pathName: string) {
+  if (item.checks && item.checks == 'exectMatch') {
+    return pathName === item.href
+  }
+  if (item.checks && item.checks == 'startsWith') {
+    return pathName.startsWith(item.href + '/')
+  }
+  return pathName === item.href || pathName.startsWith(item.href + '/')
+}
+
+export function NavMain({ items, replaceRoute, className, linkClassName }: NavMainProps) {
   const pathName = usePathname()
+  const router = useRouter()
+  const handleOnClick = (href: string) => {
+    if (replaceRoute) {
+      router.replace(href)
+      return
+    }
+    router.push(href)
+  }
 
   return (
     <SidebarGroupContent className="flex flex-col gap-2">
@@ -86,7 +105,7 @@ export function NavMain({ items, className, linkClassName }: NavMainProps) {
           const isActive =
             typeof item?.isActive == 'function'
               ? item?.isActive(item, pathName)
-              : pathName === item.href || pathName.startsWith(item.href + '/')
+              : checkIsActive(item, pathName)
 
           return (
             <SidebarMenuItem key={item.id}>
@@ -96,7 +115,13 @@ export function NavMain({ items, className, linkClassName }: NavMainProps) {
                 asChild
                 tooltip={item.label}
               >
-                <Link href={item.href}>
+                <Link
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleOnClick(item.href)
+                  }}
+                  href={item.href}
+                >
                   <span>{item.icon && <item.icon className="size-6" />}</span>
                   <span className="text-base font-medium">{item.label}</span>
                 </Link>

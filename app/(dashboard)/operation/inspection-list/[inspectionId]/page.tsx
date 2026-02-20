@@ -1,11 +1,13 @@
 'use client'
 
-import PropertyDetails from '@/components/reusable/PropertyDetails/PropertyDetails'
+import PropertyDetails, {
+  propertyDetails,
+} from '@/components/reusable/PropertyDetails/PropertyDetails'
 
 export default function InspectionListItemDetailsPage() {
   return (
     <div>
-      <PropertyDetails />
+      <PropertyDetails property={propertyDetails} />
     </div>
   )
 }

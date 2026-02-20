@@ -15,7 +15,7 @@ const properties: Property[] = [
     date: 'May 15, 2025',
     accessExpiration: 'May 15, 2025',
     score: 76,
-    imageUrl: '/images/property-card/property-01.png',
+    previewImageUrl: '/images/property-card/property-01.png',
   },
   {
     title: '2024 Spring Roof Inspection',
@@ -27,7 +27,7 @@ const properties: Property[] = [
     date: 'Jun 10, 2025',
     accessExpiration: 'Jun 10, 2025',
     score: 89,
-    imageUrl: '/images/property-card/property-02.png',
+    previewImageUrl: '/images/property-card/property-02.png',
   },
   {
     title: '2024 Winter Roof Inspection',
@@ -39,7 +39,7 @@ const properties: Property[] = [
     date: 'May 15, 2025',
     accessExpiration: 'Jul 22, 2025',
     score: 62,
-    imageUrl: '/images/property-card/property-03.png',
+    previewImageUrl: '/images/property-card/property-03.png',
   },
   {
     title: '2024 Quarterly Roof Inspection',
@@ -51,7 +51,7 @@ const properties: Property[] = [
     date: 'Aug 30, 2025',
     accessExpiration: 'Aug 30, 2025',
     score: 91,
-    imageUrl: '/images/property-card/property-04.png',
+    previewImageUrl: '/images/property-card/property-04.png',
   },
   {
     title: '2024 Emergency Roof Inspection',
@@ -63,7 +63,7 @@ const properties: Property[] = [
     date: 'Sep 14, 2025',
     accessExpiration: 'Sep 14, 2025',
     score: 45,
-    imageUrl: '/images/property-card/property-05.png',
+    previewImageUrl: '/images/property-card/property-05.png',
   },
   {
     title: '2024 Routine Roof Inspection',
@@ -75,7 +75,7 @@ const properties: Property[] = [
     date: 'Oct 3, 2025',
     accessExpiration: 'Oct 3, 2025',
     score: 73,
-    imageUrl: '/images/property-card/property-06.png',
+    previewImageUrl: '/images/property-card/property-06.png',
   },
   {
     title: '2024 Mid-Year Roof Inspection',
@@ -87,7 +87,7 @@ const properties: Property[] = [
     date: 'Nov 20, 2025',
     accessExpiration: 'Nov 20, 2025',
     score: 58,
-    imageUrl: '/images/property-card/property-07.png',
+    previewImageUrl: '/images/property-card/property-07.png',
   },
   {
     title: '2024 Annual Structural Inspection',
@@ -99,7 +99,7 @@ const properties: Property[] = [
     date: 'Dec 8, 2025',
     accessExpiration: 'Dec 8, 2025',
     score: 84,
-    imageUrl: '/images/property-card/property-08.png',
+    previewImageUrl: '/images/property-card/property-08.png',
   },
   {
     title: '2024 Post-Storm Roof Inspection',
@@ -111,7 +111,7 @@ const properties: Property[] = [
     date: 'Jan 17, 2026',
     accessExpiration: 'Jan 17, 2026',
     score: 37,
-    imageUrl: '/images/property-card/property-09.png',
+    previewImageUrl: '/images/property-card/property-09.png',
   },
 ]
 

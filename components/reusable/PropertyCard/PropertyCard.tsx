@@ -17,14 +17,16 @@ export interface Property {
   }
   address: string
   date: string
-  accessExpiration: string
+  nextInspection?: string
+  updated_at?: string
   score: number
-  imageUrl: string
+  previewImageUrl?: string
 }
 
 export interface PropertyCardProps extends Property {
   hasAccess?: boolean
   slug: string
+  accessExpiration?: string
 }
 
 export default function PropertyCard({
@@ -33,7 +35,7 @@ export default function PropertyCard({
   type,
   accessExpiration,
   score,
-  imageUrl,
+  previewImageUrl,
   hasAccess,
   slug = '#',
 }: PropertyCardProps) {
@@ -50,7 +52,7 @@ export default function PropertyCard({
           width={550}
           height={380}
           alt=""
-          src={imageUrl}
+          src={previewImageUrl!}
         />
         <div className="absolute bottom-0 left-0 px-4.5 pb-3">
           <h3 className="text-lg font-medium text-white">{property}</h3>

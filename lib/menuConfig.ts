@@ -1,12 +1,20 @@
-import { DashboardSquare03, Property, Settings02 } from '@/components/icons/SideBarIcons'
+import {
+    Archive02,
+  DashboardSquare03,
+  Property,
+  PropertyNew,
+  Settings02,
+} from '@/components/icons/SideBarIcons'
 
 import { ComponentType } from 'react'
+type MatchType = 'exectMatch' | 'startsWith'
 export interface MenuItem {
   id: string
   label: string
   href: string
   icon?: ComponentType<{ className?: string }>
   isActive?: (item: MenuItem, pathname: string) => boolean
+  checks?: MatchType
 }
 
 export type UserRole = 'admin' | 'manager' | 'operation' | 'viewer'
@@ -15,14 +23,21 @@ export const adminMenu: MenuItem[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',
+    checks: 'exectMatch',
     href: '/admin',
     icon: DashboardSquare03,
   },
   {
-    id: 'users',
-    label: 'Users',
-    href: '/admin/users',
-    icon: DashboardSquare03,
+    id: 'properties-list',
+    label: 'Properties List',
+    href: '/admin/properties-list',
+    icon: PropertyNew,
+  },
+  {
+    id: 'templates',
+    label: 'Templates',
+    href: '/admin/templates',
+    icon: Archive02,
   },
 ]
 

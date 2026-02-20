@@ -1,7 +1,6 @@
-import { NavMain } from '@/components/dashboard/Sidebar/DashboardSidebr'
-import PropertyDetails from '@/components/reusable/PropertyDetails/PropertyDetails'
-import SectionCard from '@/components/reusable/SectionCard/SectionCard'
-import { MenuItem } from '@/lib/menuConfig'
+import PropertyDetails, {
+  propertyDetails,
+} from '@/components/reusable/PropertyDetails/PropertyDetails'
 
 interface PropertyDetailPageProps {
   params: Promise<{
@@ -11,32 +10,7 @@ interface PropertyDetailPageProps {
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { propertyId } = await params
-
-  const menu: MenuItem[] = [
-    {
-      id: 'dashboard',
-      label: 'Property Dashboard',
-      href: `/property/${propertyId}`,
-    },
-    {
-      id: 'browse',
-      label: 'All reports',
-      href: `/property/${propertyId}/reports`,
-    },
-  ]
-
   return (
-    <div>
-      <SectionCard className="p-1.5">
-        <NavMain
-          linkClassName="justify-center data-[active=true]:text-[#284B6C] data-[active=true]:bg-foundation-light-blue"
-          className="flex flex-row *:flex-1"
-          items={menu}
-        />
-      </SectionCard>
-      <div className="mt-4">
-        <PropertyDetails />
-      </div>
-    </div>
+    <PropertyDetails id={propertyId} accessExpiration="12 Jan, 2025" property={propertyDetails} />
   )
 }
