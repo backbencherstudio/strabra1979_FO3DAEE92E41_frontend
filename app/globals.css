@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
@@ -155,7 +155,7 @@
   --danger: #ef4444;
 
   --navy-500: #0b2a3b;
-  --navy-300: #5C707C;
+  --navy-300: #5c707c;
 }
 
 .dark {
@@ -215,4 +215,26 @@
     corner-shape: squircle;
     border-radius: 22px;
   }
+}
+
+/* yet-another-react-lightbox */
+.yarl__button {
+  --yarl__color_button: var(--foreground);
+  --yarl__color_button_active: var(--foreground);
+  --yarl__button_background_color: var(--color-normal-25);
+  --yarl__button_filter: drop-shadow(0px 0px 1px hsl(0 0% 0% / 60%));
+  --yarl__button_padding: 6px;
+  border-radius: 40px;
+  padding: 6px !important;
+
+  &.yarl__navigation_next {
+    margin-right: 2px;
+  }
+  &.yarl__navigation_prev {
+    margin-left: 2px;
+  }
+}
+.dialog-light-box .yarl__container {
+  margin-inline: -20px;
+  background: transparent !important;
 }
