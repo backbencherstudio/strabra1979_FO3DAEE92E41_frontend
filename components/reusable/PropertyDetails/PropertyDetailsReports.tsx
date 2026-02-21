@@ -1,8 +1,8 @@
 'use client'
 
-import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
-import { Button } from '@/components/ui/button'
-import { ChevronRight } from 'lucide-react'
+import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
+import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import { Folder } from '../Folder/Folder'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import { Property } from '../PropertyCard/PropertyCard'
@@ -11,11 +11,13 @@ interface PropertyDetailsReportsProps {
   id: string
   property: Property
   accessExpiration?: string
+  headerRightContent?: React.ReactNode
 }
 
 export default function PropertyDetailsReports({
   property,
   accessExpiration,
+  headerRightContent = null,
 }: PropertyDetailsReportsProps) {
   const rowInfos = [
     { label: 'Type', value: property.type },
@@ -30,7 +32,9 @@ export default function PropertyDetailsReports({
         rightContent={
           accessExpiration ? (
             <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
-          ) : null
+          ) : (
+            headerRightContent
+          )
         }
       >
         <InfoList items={[{ label: 'Last updated', value: property.updated_at ?? '' }]} />
@@ -38,14 +42,39 @@ export default function PropertyDetailsReports({
 
       <InfoGrid items={rowInfos} />
 
-      <SectionCard className="">
-        <div className="flex items-center justify-between">
-          <SectionTitle>Documents</SectionTitle>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+      </div>
 
-          <Button variant="link" theme="text">
-            View All <ChevronRight />
-          </Button>
-        </div>
+      <SectionCard className="">
+        <SharedPropertyCardListActions titleClassName="text-forground" title="Report Updates" />
         {/* TODO: table */}
       </SectionCard>
     </SectionCard>

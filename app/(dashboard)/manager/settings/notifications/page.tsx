@@ -6,10 +6,10 @@ export default function NotificationPage() {
   return (
     <div className="space-y-4.5">
       <NotificationSettings>
-        <SettingListItem title="New Property Dashboard Invitation">
+        <SettingListItem title="New Property Dashboard Assigned">
           <Switch />
         </SettingListItem>
-        <SettingListItem title="Access Request update">
+        <SettingListItem title="Property Dashboard Access Request">
           <Switch />
         </SettingListItem>
         <SettingListItem title="Property Dashboard Update">

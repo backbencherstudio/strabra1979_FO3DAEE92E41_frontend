@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import Link from 'next/link'
+import { InfoGrid, InfoItem } from '../InfoGrid/InfoGrid'
 
 export interface Property {
   title: string
@@ -23,7 +24,7 @@ export interface Property {
   previewImageUrl?: string
 }
 
-export interface PropertyCardProps extends Property {
+export interface PropertyCardProps extends Property, React.PropsWithChildren {
   hasAccess?: boolean
   slug: string
   accessExpiration?: string
@@ -32,18 +33,12 @@ export interface PropertyCardProps extends Property {
 export default function PropertyCard({
   property,
   address,
-  type,
-  accessExpiration,
   score,
   previewImageUrl,
   hasAccess,
   slug = '#',
+  children,
 }: PropertyCardProps) {
-  const rowInfos = [
-    { label: 'Type', value: type },
-    { label: 'Access expiration', value: accessExpiration },
-  ]
-
   return (
     <div className="border-input overflow-hidden rounded-md border bg-white">
       <div className="relative bg-gray-200 max-sm:h-50 sm:aspect-video">
@@ -63,18 +58,12 @@ export default function PropertyCard({
         </div>
       </div>
       <div className="p-4.5 pt-4">
-        <section className="grid grid-cols-2">
-          <div className="space-y-4">
-            {rowInfos.map((info) => (
-              <div key={info.label} className="flex flex-col gap-1">
-                <span className="text-gray-black-300 text-sm">{info.label}</span>
-                <span className="text-sm font-medium">{info.value}</span>
-              </div>
-            ))}
-          </div>
+        <section className="grid grid-cols-2 divide-x">
+          {children}
           <div className="flex flex-col items-end pr-3">
             <p className="text-gray-black-300 text-center text-sm">Roof Health</p>
             <CircularProgressWithMeta
+              containerClassName="pb-0 pt-1"
               labelClassName="text-xs text-gray-black-300 font-medium"
               strokeWidth={4}
               size={50}
@@ -105,6 +94,23 @@ export default function PropertyCard({
           )}
         </section>
       </div>
+    </div>
+  )
+}
+
+interface PropertyCardInfoListProps {
+  items: InfoItem[]
+}
+
+export function PropertyCardInfoList({ items }: PropertyCardInfoListProps) {
+  return (
+    <div className="space-y-4">
+      {items.map((info) => (
+        <div key={info.label} className="flex flex-col gap-1">
+          <span className="text-gray-black-300 text-sm">{info.label}</span>
+          <span className="text-sm font-medium">{info.value}</span>
+        </div>
+      ))}
     </div>
   )
 }

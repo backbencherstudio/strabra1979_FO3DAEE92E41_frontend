@@ -11,11 +11,13 @@ import { Property } from '../PropertyCard/PropertyCard'
 import PropertyScoreListPreview from './PropertyScoreList'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
+import { demoSlides, MediaFiles, MediaFilesGridPreview } from '../MediaFiles/MediaFiles'
 
 interface PropertyDetailsProps {
   id: string
   property: Property
   accessExpiration?: string
+  headerRightContent?: React.ReactNode
 }
 
 export const propertyDetails: Property = {
@@ -33,7 +35,11 @@ export const propertyDetails: Property = {
   score: 76,
 }
 
-export default function PropertyDetails({ property, accessExpiration }: PropertyDetailsProps) {
+export default function PropertyDetails({
+  property,
+  accessExpiration,
+  headerRightContent = null,
+}: PropertyDetailsProps) {
   const rowInfos = [
     { label: 'Type', value: property.type },
     { label: 'Address', value: property.address },
@@ -47,7 +53,9 @@ export default function PropertyDetails({ property, accessExpiration }: Property
         rightContent={
           accessExpiration ? (
             <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
-          ) : null
+          ) : (
+            headerRightContent
+          )
         }
       >
         <InfoList
@@ -71,11 +79,9 @@ export default function PropertyDetails({ property, accessExpiration }: Property
           />
         </SectionCard>
 
-        <SectionCard className="grid flex-1 gap-2 bg-white sm:grid-cols-2">
-          <div className="row-span-2 min-h-35 rounded-md bg-gray-100"></div>
-          <div className="min-h-35 rounded-md bg-gray-100"></div>
-          <div className="min-h-35 rounded-md bg-gray-100"></div>
-        </SectionCard>
+        <MediaFiles slides={demoSlides}>
+         <MediaFilesGridPreview slides={demoSlides} />
+        </MediaFiles>
       </div>
       <div className="grid gap-4.5 lg:grid-cols-2">
         <SectionCard className="space-y-2 bg-white">

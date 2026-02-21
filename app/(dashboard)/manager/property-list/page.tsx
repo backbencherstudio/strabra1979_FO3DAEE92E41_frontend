@@ -1,30 +1,28 @@
-'use client'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
-import Pagination from '@/components/reusable/Pagination/Pagination'
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
-import { properties } from './mock'
+import { properties } from '../../(autorized_viewer)/mock'
+import Pagination from '@/components/reusable/Pagination/Pagination'
 
-export default function AutorizedViewerLandingPage() {
+export default function page() {
   return (
-    <div>
+    <div className="space-y-6">
       <SectionCard className="">
-        <SharedPropertyCardListActions title="Shared Property Dashboards" />
+        <SharedPropertyCardListActions title="My Properties" />
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {properties.map((p, index) => (
-            <PropertyCard slug="/property/123" hasAccess={index == 1} key={p.title} {...p}>
+          {properties.map((p) => (
+            <PropertyCard slug="/manager/property-list/123" hasAccess key={p.title} {...p}>
               <PropertyCardInfoList
                 items={[
                   { label: 'Type', value: p.type },
-                  { label: 'Access expiration', value: p.date },
+                  { label: 'Next Inspection', value: p.date },
                 ]}
               />
             </PropertyCard>
           ))}
         </div>
       </SectionCard>
-
       <Pagination />
     </div>
   )

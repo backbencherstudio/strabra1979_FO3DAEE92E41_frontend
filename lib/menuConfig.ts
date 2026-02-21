@@ -1,8 +1,9 @@
 import {
-    Archive02,
+  Archive02,
   DashboardSquare03,
   Property,
   PropertyNew,
+  ReportFile,
   Settings02,
   Users,
 } from '@/components/icons/SideBarIcons'
@@ -53,13 +54,26 @@ export const managerMenu: MenuItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     href: '/manager',
+    checks: 'exectMatch',
     icon: DashboardSquare03,
   },
   {
-    id: 'team',
-    label: 'Team',
-    href: '/manager/team',
-    icon: DashboardSquare03,
+    id: 'property-list',
+    label: 'Property List',
+    href: '/manager/property-list',
+    icon: Property,
+  },
+  {
+    id: 'report',
+    label: 'Reports',
+    href: '/manager/report',
+    icon: ReportFile,
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    href: '/manager/settings',
+    icon: Settings02,
   },
 ]
 
