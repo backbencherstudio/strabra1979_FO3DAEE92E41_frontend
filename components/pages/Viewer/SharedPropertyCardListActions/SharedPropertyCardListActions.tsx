@@ -5,6 +5,13 @@ import { DatePickerWrapper } from '@/components/reusable/DatePicker/DatePicker'
 import { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
@@ -30,7 +37,7 @@ export default function SharedPropertyCardListActions({
       </SectionTitle>
 
       <div className="flex items-center gap-3">
-        <InputGroup className="h-10.5 bg-transparen">
+        <InputGroup className="bg-transparen h-10.5">
           <InputGroupInput placeholder="Search..." />
           <InputGroupAddon>
             <Search />
@@ -63,10 +70,22 @@ export default function SharedPropertyCardListActions({
           />
         </DatePickerWrapper>
 
-        <Button variant="muted">
-          <SortingIcon className="size-5" />
-          <span className="max-xl:hidden">Sort</span>
-        </Button>
+        {/* TODO: date picker same as the design */}
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="muted">
+              <SortingIcon className="size-5" />
+              <span className="max-xl:hidden">Sort</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="text-navy-300">
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Newest First</DropdownMenuItem>
+              <DropdownMenuItem>Oldest First</DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )
