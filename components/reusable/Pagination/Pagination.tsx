@@ -2,45 +2,58 @@ import { ChevronsLeft, ChevronsLeftDouble } from '@/components/icons/Chevrons'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-interface PaginationProps extends React.ComponentProps<'div'> {}
+interface PaginationProps extends React.ComponentProps<'div'> {
+  size?: React.ComponentProps<typeof Button>['size']
+  showHomeAndEnd?: boolean
+}
 
-export default function Pagination({ className }: PaginationProps) {
+export default function Pagination({
+  className,
+  size = 'icon-lg',
+  showHomeAndEnd = true,
+}: PaginationProps) {
   return (
     <div className={cn('flex justify-center gap-3', className)}>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
-        <ChevronsLeftDouble className="size-5" />
-      </Button>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
+      {showHomeAndEnd ? (
+        <Button className="text-sm font-semibold" size={size} variant="muted">
+          <ChevronsLeftDouble className="size-5" />
+        </Button>
+      ) : null}
+      <Button className="text-sm font-semibold" size={size} variant="muted">
         <ChevronsLeft className="size-5" />
       </Button>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="default">
+      <Button className="text-sm font-semibold" size={size} variant="default">
         1
       </Button>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
+      <Button className="text-sm font-semibold" size={size} variant="muted">
         2
       </Button>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
+      <Button className="text-sm font-semibold" size={size} variant="muted">
         3
       </Button>
 
       <Button
         disabled
         className="pointer-events-none bg-transparent text-sm font-semibold hover:bg-transparent"
-        size="icon-lg"
+        size={size}
         variant="muted"
       >
         ...
       </Button>
 
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
+      <Button className="text-sm font-semibold" size={size} variant="muted">
         8
       </Button>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
-        <ChevronsLeftDouble className="size-5 rotate-180" />
-      </Button>
-      <Button className="text-sm font-semibold" size="icon-lg" variant="muted">
+
+      <Button className="text-sm font-semibold" size={size} variant="muted">
         <ChevronsLeft className="size-5 rotate-180" />
       </Button>
+
+      {showHomeAndEnd ? (
+        <Button className="text-sm font-semibold" size={size} variant="muted">
+          <ChevronsLeftDouble className="size-5 rotate-180" />
+        </Button>
+      ) : null}
     </div>
   )
 }
