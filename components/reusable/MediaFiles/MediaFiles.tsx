@@ -69,11 +69,13 @@ export function MediaFilesGridPreview({ slides, className }: MediaFilesProps) {
 }
 
 interface PosterPreviewProps extends React.ComponentProps<'div'> {
-  slide: Slide | undefined
+  slide: Slide
 }
 
 export function PosterPreview({ slide, ...props }: PosterPreviewProps) {
   if (!slide) return null
+
+  const img = (slide as any)?.poster ?? (slide as any)?.src
 
   return (
     <div className="relative h-full w-full cursor-pointer overflow-hidden rounded-md" {...props}>
@@ -81,7 +83,8 @@ export function PosterPreview({ slide, ...props }: PosterPreviewProps) {
         alt=""
         width={300}
         height={200}
-        src={slide!.poster ?? slide?.src}
+        // src={slide?.poster ?? slide?.src}
+        src={img}
         className="h-full w-full object-cover"
       />
       {slide.type === 'video' && (

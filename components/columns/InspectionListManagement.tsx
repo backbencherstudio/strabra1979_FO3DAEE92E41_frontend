@@ -94,7 +94,7 @@ export const InspectionListManagementColums: ColumnConfig[] = [
     width: '12%',
     accessor: 'status',
     formatter: (value: string, row: any) => {
-      return <ProgressStatusBadge status={value} />
+      return <ProgressStatusBadge status={value as InspectionProgressStatus} />
     },
   },
   {
