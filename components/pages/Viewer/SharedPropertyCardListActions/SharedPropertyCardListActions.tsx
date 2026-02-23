@@ -86,7 +86,7 @@ export default function SharedPropertyCardListActions({
                       setDate(newDate)
                       setOpen(false)
                     }}
-                    initialFocus
+                    autoFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -141,7 +141,7 @@ export default function SharedPropertyCardListActions({
                     setDate(newDate)
                     setOpen(false)
                   }}
-                  initialFocus
+                  autoFocus
                 />
               </PopoverContent>
             </Popover>
@@ -166,4 +166,3 @@ export default function SharedPropertyCardListActions({
     </div>
   )
 }
-
