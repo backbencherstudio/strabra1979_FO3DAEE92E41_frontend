@@ -1,79 +1,57 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import Image from "next/image"
-import buildingImg from '@/public/building.svg'
-import analyticsImg from '@/public/analytics.svg'
-import viewerImg from '@/public/document.svg'
- import SignUpForm from "./SignUpForm"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Property } from '../icons/SideBarIcons'
+import SignUpForm from './SignUpForm'
+import { cn } from '@/lib/utils'
+
+const tabs = [
+  {
+    lable: 'Property Manager',
+    value: 'property-manager',
+  },
+  {
+    lable: 'Authorized Viewer',
+    value: 'authorized-viewer',
+  },
+  {
+    lable: 'Operational',
+    value: 'operational',
+  },
+]
 
 export function AccountTypeTabs() {
   return (
-    <Tabs defaultValue="property-manager" className="w-full mt-4.5">
+    <Tabs defaultValue="property-manager" className="mt-4.5 w-full">
       {/* Responsive TabsList - stacks vertically on mobile, row on desktop */}
-      <TabsList className="w-full flex flex-col sm:flex-row gap-3 h-auto bg-transparent">
-        <TabsTrigger 
-          value="property-manager"  
-          className="w-full sm:w-1/3 data-[state=active]:border-[#427cb2] data-[state=active]:bg-[#edf3f9] 
-            data-[state=active]:border-2 data-[state=active]:text-[#284b6c] data-[state=active]:font-semibold 
-            text-[#4a4c56] text-sm sm:text-base border border-[#ede9df] bg-[#fcfbfa] 
-            hover:text-gray-900 py-4 sm:py-6 flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4"
-        >
-          <Image src={buildingImg} alt="building img" className="w-5 h-5 sm:w-6 sm:h-6" />
-         Property Manager 
-        </TabsTrigger>
-        
-        <TabsTrigger 
-          value="authorized-viewer" 
-          className="w-full sm:w-1/3 data-[state=active]:border-[#427cb2] data-[state=active]:bg-[#edf3f9] 
-            data-[state=active]:border-2 data-[state=active]:text-[#284b6c] data-[state=active]:font-semibold 
-            text-[#4a4c56] text-sm sm:text-base border border-[#ede9df] bg-[#fcfbfa] 
-            hover:text-gray-900 py-4 sm:py-6 flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4"
-        >
-          <Image src={analyticsImg} alt="analytics img" className="w-5 h-5 sm:w-6 sm:h-6" />
-          Authorized Viewer 
-        </TabsTrigger>
-        
-        <TabsTrigger 
-          value="operational" 
-          className="w-full sm:w-1/3 data-[state=active]:border-[#427cb2] data-[state=active]:bg-[#edf3f9] 
-            data-[state=active]:border-2 data-[state=active]:text-[#284b6c] data-[state=active]:font-semibold 
-            text-[#4a4c56] text-sm sm:text-base border border-[#ede9df] bg-[#fcfbfa] 
-            hover:text-gray-900 py-4 sm:py-6 flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4"
-        >
-          <Image src={viewerImg} alt="viewer img" className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="truncate">Operational</span>
-        </TabsTrigger>
+      <TabsList className="grid h-fit! w-full grid-cols-1 gap-3 md:grid-cols-3">
+        {tabs.map((item) => (
+          <TabsTrigger
+            key={item.value}
+            value={item.value}
+            className={cn(
+              'text-foreground h-12 w-full justify-start md:h-14 md:justify-center',
+              'bg-[#fcfbfa] outline outline-[#ede9df]',
+              'hover:text-gray-900 data-[state=active]:bg-[#edf3f9] data-[state=active]:text-[#284b6c] data-[state=active]:outline-2 data-[state=active]:outline-[#427cb2]',
+            )}
+          >
+            <Property className="size-6" />
+            {item.lable}
+          </TabsTrigger>
+        ))}
       </TabsList>
-      
+
       {/* Property Manager Tab Content - Responsive Form */}
       <TabsContent value="property-manager">
-        <div className="space-y-4 sm:space-y-5 mt-4.5 px-2 sm:px-0">
-        
-        </div>
-        <div className="mt-4 sm:mt-5 px-2 sm:px-0">
-          <SignUpForm />
-        </div>
+        <SignUpForm />
       </TabsContent>
 
       {/* Authorized Viewer Tab Content - Responsive Card */}
       <TabsContent value="authorized-viewer">
-      <SignUpForm/>
+        <SignUpForm />
       </TabsContent>
 
       {/* Operational Tab Content - Responsive Card */}
       <TabsContent value="operational">
-        <SignUpForm/>
+        <SignUpForm />
       </TabsContent>
     </Tabs>
   )

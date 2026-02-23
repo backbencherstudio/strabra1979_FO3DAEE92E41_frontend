@@ -135,7 +135,7 @@
   --destructive: #eb3d4d;
   --border: oklch(0.922 0 0);
   --input: #e9e9ea;
-  --ring: oklch(0.708 0 0);
+  --ring: hsl(201 69% 14%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

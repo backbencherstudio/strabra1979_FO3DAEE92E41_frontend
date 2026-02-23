@@ -1,46 +1,48 @@
-import React from 'react'
-import Image from 'next/image'
+import { AccountTypeTabs } from '@/components/auth/AccountTypeTabs'
+import authImgMobile from '@/public/auth/auth-img-mobile.png'
 import authImg from '@/public/auth/auth-img.png'
 import authLogo from '@/public/auth/auth-logo.png'
-import { AccountTypeTabs } from '@/components/auth/AccountTypeTabs'
+import Image from 'next/image'
 
 export default function AuthPage() {
   return (
-    <div className='min-h-screen p-4 sm:p-6 flex items-center'>
-      <div className='flex flex-col lg:flex-row gap-4 sm:gap-6 max-w-[1390px] mx-auto w-full h-full'>
-        
+    <div className="pb-6 xl:h-svh xl:p-6">
+      <div className="mx-auto grid h-full grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-2">
         {/* Left Section - Image */}
-        <div className='flex-1 h-[300px] sm:h-[400px] lg:h-auto'>
-          <Image 
-            src={authImg} 
-            alt='auth Image'   
-            className='w-full h-full object-cover rounded-[16px] sm:rounded-[24px]'
+        <div className="relative h-full w-full">
+          <Image
+            fill
+            src={authImg}
+            alt="auth Image"
+            className="hidden h-full w-full rounded-[24px] object-cover object-bottom xl:block"
+            priority
+          />
+
+          <Image
+            src={authImgMobile}
+            alt="auth Image"
+            className="h-full w-full rounded-b-3xl object-cover object-bottom xl:hidden"
             priority
           />
         </div>
 
         {/* Right Section - Form */}
-        <div className='flex-1 bg-[#f8f6f3] rounded-[16px] sm:rounded-[24px] 
-          py-8 sm:py-12 lg:py-29.75 
-          px-4 sm:px-6 md:px-8 lg:px-12 
-          flex flex-col items-center justify-center
-          h-[300px] sm:h-[400px] lg:h-auto'>
-          
-          <Image 
-            src={authLogo} 
-            alt='auth Logo' 
-            className='w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24'
+        <div className="mx-4 flex flex-1 flex-col items-center justify-center rounded-3xl bg-[#f8f6f3] px-4 py-8 md:mx-6 xl:mx-0">
+          <Image
+            src={authLogo}
+            alt="auth Logo"
+            className="h-16 w-16 mix-blend-multiply sm:h-20 sm:w-20 md:h-24 md:w-24"
           />
-          
-          <h2 className='text-xl sm:text-2xl md:text-3xl font-semibold mt-4 sm:mt-6 text-center'>
+
+          <h2 className="mt-4 text-center text-xl font-semibold sm:mt-6 sm:text-2xl md:text-3xl">
             Create your Account
           </h2>
-          
-          <p className='text-[#777980] text-sm sm:text-base mt-1 sm:mt-2 text-center'>
+
+          <p className="mt-1 text-center text-sm text-[#777980] sm:mt-2 sm:text-base">
             Choose your account type
           </p>
-          
-          <div className='w-full mt-4 sm:mt-6'>
+
+          <div className="mt-4 w-full sm:mt-6">
             <AccountTypeTabs />
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { SidebarFooter, SidebarGroup, SidebarGroupContent } from '@/components/ui/sidebar'
 import { getMenuByRole, MenuItem, UserRole } from '@/lib/menuConfig'
 import * as React from 'react'
+import authLogo from '@/public/auth/auth-logo.png'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -45,13 +46,7 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="h-12 data-[slot=sidebar-menu-button]:p-1.5!">
               <div>
-                <Image
-                  className="size-10"
-                  width={40}
-                  height={40}
-                  alt="app logo"
-                  src="/app-logo.png"
-                />
+                <Image className="size-10 mix-blend-multiply" alt="app logo" src={authLogo} />
                 <span className="text-2xl font-medium">Liberty Shield</span>
               </div>
             </SidebarMenuButton>
