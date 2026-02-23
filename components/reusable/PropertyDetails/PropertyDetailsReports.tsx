@@ -29,7 +29,7 @@ export default function PropertyDetailsReports({
   ]
 
   return (
-    <SectionCard className="grid gap-5">
+    <SectionCard className="grid grid-cols-1 gap-5">
       <PropertyHeaderWrapper
         title={property.property}
         rightContent={
@@ -40,7 +40,14 @@ export default function PropertyDetailsReports({
           )
         }
       >
-        <InfoList items={[{ label: 'Last updated', value: property.updated_at ?? '' }]} />
+        <InfoList
+          items={[
+            // { label: 'Last updated', value: property.updated_at ?? '' },
+            { label: 'Inspection ID', value: property.id },
+            { value: property.property },
+            { label: 'Date', value: property.date },
+          ]}
+        />
       </PropertyHeaderWrapper>
 
       <InfoGrid items={rowInfos} />

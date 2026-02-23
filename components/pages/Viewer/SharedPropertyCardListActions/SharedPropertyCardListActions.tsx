@@ -44,20 +44,20 @@ export default function SharedPropertyCardListActions({
       {showActionButton ? (
         /* Layout when button exists: Title - Button (justified between) */
         <>
-          <div className="flex justify-between items-center mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <SectionTitle className={cn('text-[#051218] md:text-2xl', titleClassName)}>
               {title}
             </SectionTitle>
-            
-            <Button 
-              variant="default" 
+
+            <Button
+              variant="default"
               className={actionButtonClassName}
               onClick={onActionButtonClick}
             >
               {actionButtonText}
             </Button>
           </div>
-          
+
           {/* Filter options - right aligned */}
           <div className="flex justify-end">
             <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export default function SharedPropertyCardListActions({
         </>
       ) : (
         /* Layout when no button: Title left, Filter options right */
-        <div className="flex justify-between items-center gap-3 max-lg:flex-col lg:items-center">
+        <div className="flex justify-between gap-3 max-lg:flex-col lg:items-center">
           <SectionTitle className={cn('text-[#051218] md:text-2xl', titleClassName)}>
             {title}
           </SectionTitle>
@@ -166,3 +166,4 @@ export default function SharedPropertyCardListActions({
     </div>
   )
 }
+

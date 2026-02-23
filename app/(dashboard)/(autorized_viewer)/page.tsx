@@ -7,7 +7,7 @@ import { properties } from './mock'
 
 export default function AutorizedViewerLandingPage() {
   return (
-    <div>
+    <div className="grid grid-cols-1 gap-6">
       <SectionCard>
         <SharedPropertyCardListActions title="Shared Property Dashboards" />
 
