@@ -1,21 +1,26 @@
 'use client'
 
-import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
-import { Button } from '@/components/ui/button'
-import { ChevronRight } from 'lucide-react'
+import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
+import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import { Folder } from '../Folder/Folder'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import { Property } from '../PropertyCard/PropertyCard'
+import CustomTable from '../table/CustomTable'
+import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
+import Pagination from '../Pagination/Pagination'
 
 interface PropertyDetailsReportsProps {
   id: string
   property: Property
   accessExpiration?: string
+  headerRightContent?: React.ReactNode
 }
 
 export default function PropertyDetailsReports({
   property,
   accessExpiration,
+  headerRightContent = null,
 }: PropertyDetailsReportsProps) {
   const rowInfos = [
     { label: 'Type', value: property.type },
@@ -30,7 +35,9 @@ export default function PropertyDetailsReports({
         rightContent={
           accessExpiration ? (
             <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
-          ) : null
+          ) : (
+            headerRightContent
+          )
         }
       >
         <InfoList items={[{ label: 'Last updated', value: property.updated_at ?? '' }]} />
@@ -38,15 +45,63 @@ export default function PropertyDetailsReports({
 
       <InfoGrid items={rowInfos} />
 
-      <SectionCard className="">
-        <div className="flex items-center justify-between">
-          <SectionTitle>Documents</SectionTitle>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+        <Folder
+          meta={{
+            label: '2023 Inspection',
+            fileCount: '24',
+            size: '12 GB',
+          }}
+        />
+      </div>
 
-          <Button variant="link" theme="text">
-            View All <ChevronRight />
-          </Button>
+      <SectionCard className="space-y-4.5">
+        <SharedPropertyCardListActions titleClassName="text-forground" title="Report Updates" />
+
+        <div>
+          <CustomTable
+            columns={DocumentsTableColumns}
+            data={demoDocumentsData}
+            //   currentPage={currentPage}
+            //   itemsPerPage={itemsPerPage}
+            //   onPageChange={setCurrentPage}
+            //   sortConfig={sortConfig}
+            //   onSort={handleSort}
+            minWidth={1000}
+            headerStyles={{
+              backgroundColor: '#eceff3',
+              textColor: '#4a4c56',
+              fontSize: '14px',
+              fontWeight: '400',
+              padding: '12px 16px',
+            }}
+            cellBorderColor="#eceff3"
+            hasWrapperBorder={false}
+            roundedClass="rounded-lg"
+          />
         </div>
-        {/* TODO: table */}
+        <Pagination showHomeAndEnd={false} className="justify-start" size="icon-xs" />
       </SectionCard>
     </SectionCard>
   )

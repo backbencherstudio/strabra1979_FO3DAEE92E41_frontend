@@ -6,6 +6,7 @@ interface CircularProgressProps {
   strokeWidth?: number
   className?: string
   labelClassName?: string
+  containerClassName?: string
 }
 
 export default function CircularProgress({
@@ -69,6 +70,7 @@ const getScoreMeta = (score: number) => scoreScale.find((s) => score >= s.min &&
 
 export function CircularProgressWithMeta({
   placeholder,
+  containerClassName,
   ...props
 }: { placeholder?: string } & CircularProgressProps) {
   const meta = getScoreMeta(props.value)
@@ -76,7 +78,10 @@ export function CircularProgressWithMeta({
   return (
     <section
       style={{ color: meta?.color ?? 'black' }}
-      className="flex flex-col items-center justify-center gap-1 p-4.5 pt-6"
+      className={cn(
+        'flex flex-col items-center justify-center gap-1 p-4.5 pt-6',
+        containerClassName,
+      )}
     >
       <CircularProgress {...props} />
       <p className="mt-2 text-center text-base font-medium">{meta?.label}</p>

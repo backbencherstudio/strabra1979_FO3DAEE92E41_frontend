@@ -30,7 +30,7 @@ export function AccountTypeTabs() {
             hover:text-gray-900 py-4 sm:py-6 flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4"
         >
           <Image src={buildingImg} alt="building img" className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="truncate">Property Manager</span>
+         Property Manager 
         </TabsTrigger>
         
         <TabsTrigger 
@@ -41,7 +41,7 @@ export function AccountTypeTabs() {
             hover:text-gray-900 py-4 sm:py-6 flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4"
         >
           <Image src={analyticsImg} alt="analytics img" className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="truncate">Authorized Viewer</span>
+          Authorized Viewer 
         </TabsTrigger>
         
         <TabsTrigger 

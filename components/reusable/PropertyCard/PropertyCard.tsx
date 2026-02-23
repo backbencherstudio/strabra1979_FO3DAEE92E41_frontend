@@ -1,3 +1,4 @@
+'use client'
 import { LocationPin } from '@/components/icons/LocationPin'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
@@ -6,6 +7,10 @@ import Image from 'next/image'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import Link from 'next/link'
+import { InfoGrid, InfoItem } from '../InfoGrid/InfoGrid'
+import { Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useState, useEffect } from 'react'
 
 export interface Property {
   title: string
@@ -23,30 +28,62 @@ export interface Property {
   previewImageUrl?: string
 }
 
-export interface PropertyCardProps extends Property {
+export interface PropertyCardProps extends Property, React.PropsWithChildren {
   hasAccess?: boolean
   slug: string
   accessExpiration?: string
+  isSelectable?: boolean
+  onSelect?: (selected: boolean) => void
+  defaultSelected?: boolean
 }
 
 export default function PropertyCard({
   property,
   address,
-  type,
-  accessExpiration,
   score,
   previewImageUrl,
   hasAccess,
   slug = '#',
+  children,
+  isSelectable = false,
+  onSelect,
+  defaultSelected = false,
+  id,
 }: PropertyCardProps) {
-  const rowInfos = [
-    { label: 'Type', value: type },
-    { label: 'Access expiration', value: accessExpiration },
-  ]
+  const [isSelected, setIsSelected] = useState(defaultSelected)
+
+  useEffect(() => {
+    setIsSelected(defaultSelected)
+  }, [defaultSelected])
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (isSelectable) {
+      const newSelectedState = !isSelected
+      setIsSelected(newSelectedState)
+      onSelect?.(newSelectedState)
+    }
+  }
 
   return (
-    <div className="border-input overflow-hidden rounded-md border bg-white">
-      <div className="relative bg-gray-200 max-sm:h-50 sm:aspect-video">
+    <div 
+      className={cn(
+        "border-input overflow-hidden rounded-md border bg-white transition-all duration-200 relative", // relative যোগ করা হয়েছে
+        isSelectable && "cursor-pointer",
+        isSelected && "border-[3px] border-blue-500"
+      )}
+      onClick={handleCardClick}
+    >
+      {/* Selected checkmark - সরাসরি card এর নিচে কিন্তু position absolute */}
+      {isSelectable && isSelected && (
+        <div className="absolute top-3 right-3 z-50">
+          <div className="bg-blue-500 rounded-full p-1 shadow-lg">
+            <Check className="h-4 w-4 text-white" />
+          </div>
+        </div>
+      )}
+      
+      <div className="relative bg-gray-200 max-sm:h-50">
         <Image
           className="h-full w-full object-cover"
           width={550}
@@ -63,18 +100,12 @@ export default function PropertyCard({
         </div>
       </div>
       <div className="p-4.5 pt-4">
-        <section className="grid grid-cols-2">
-          <div className="space-y-4">
-            {rowInfos.map((info) => (
-              <div key={info.label} className="flex flex-col gap-1">
-                <span className="text-gray-black-300 text-sm">{info.label}</span>
-                <span className="text-sm font-medium">{info.value}</span>
-              </div>
-            ))}
-          </div>
+        <section className="grid grid-cols-2 divide-x">
+          {children}
           <div className="flex flex-col items-end pr-3">
             <p className="text-gray-black-300 text-center text-sm">Roof Health</p>
             <CircularProgressWithMeta
+              containerClassName="pb-0 pt-1"
               labelClassName="text-xs text-gray-black-300 font-medium"
               strokeWidth={4}
               size={50}
@@ -105,6 +136,23 @@ export default function PropertyCard({
           )}
         </section>
       </div>
+    </div>
+  )
+}
+
+interface PropertyCardInfoListProps {
+  items: InfoItem[]
+}
+
+export function PropertyCardInfoList({ items }: PropertyCardInfoListProps) {
+  return (
+    <div className="space-y-4">
+      {items.map((info) => (
+        <div key={info.label} className="flex flex-col gap-1">
+          <span className="text-gray-black-300 text-sm">{info.label}</span>
+          <span className="text-sm font-medium">{info.value}</span>
+        </div>
+      ))}
     </div>
   )
 }

@@ -1,9 +1,12 @@
 import {
-    Archive02,
+  Activity,
+  Archive02,
   DashboardSquare03,
   Property,
   PropertyNew,
+  ReportFile,
   Settings02,
+  Users,
 } from '@/components/icons/SideBarIcons'
 
 import { ComponentType } from 'react'
@@ -39,6 +42,18 @@ export const adminMenu: MenuItem[] = [
     href: '/admin/templates',
     icon: Archive02,
   },
+  {
+    id:'user-management',
+    label: 'User Management',
+    href: '/admin/user-management',
+    icon:  Users,
+  },
+  {
+    id:'Activity-Log',
+    label: 'Activity Log',
+    href: '/admin/activity-log',
+    icon:Activity
+  }
 ]
 
 export const managerMenu: MenuItem[] = [
@@ -46,13 +61,26 @@ export const managerMenu: MenuItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     href: '/manager',
+    checks: 'exectMatch',
     icon: DashboardSquare03,
   },
   {
-    id: 'team',
-    label: 'Team',
-    href: '/manager/team',
-    icon: DashboardSquare03,
+    id: 'property-list',
+    label: 'Property List',
+    href: '/manager/property-list',
+    icon: Property,
+  },
+  {
+    id: 'report',
+    label: 'Reports',
+    href: '/manager/report',
+    icon: ReportFile,
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    href: '/manager/settings',
+    icon: Settings02,
   },
 ]
 

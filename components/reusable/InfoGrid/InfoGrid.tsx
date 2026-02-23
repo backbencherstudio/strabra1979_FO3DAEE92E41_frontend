@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import SectionCard from '../SectionCard/SectionCard'
 
-interface InfoItem {
+export interface InfoItem {
   label: string
   value: string
 }
@@ -24,3 +24,4 @@ export function InfoGrid({ items, className, labelClassName }: InfoGridProps) {
     </SectionCard>
   )
 }
+
