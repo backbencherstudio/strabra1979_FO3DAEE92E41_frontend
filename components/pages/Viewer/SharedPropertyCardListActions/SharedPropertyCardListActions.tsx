@@ -14,60 +14,133 @@ import React from 'react'
 interface SharedPropertyCardListActionsProps {
   title: string
   titleClassName?: string
+  showActionButton?: boolean
+  actionButtonText?: string
+  onActionButtonClick?: () => void
+  actionButtonClassName?: string
 }
 
 export default function SharedPropertyCardListActions({
   title,
   titleClassName,
+  showActionButton = false,
+  actionButtonText = 'Action',
+  onActionButtonClick,
+  actionButtonClassName,
 }: SharedPropertyCardListActionsProps) {
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [open, setOpen] = React.useState(false)
 
   return (
-    <div className="flex justify-between gap-3 max-lg:flex-col lg:items-center">
-      <SectionTitle className={cn('text-[#051218] md:text-2xl', titleClassName)}>
-        {title}
-      </SectionTitle>
+    <div>
+      {showActionButton ? (
+        /* Layout when button exists: Title - Button (justified between) */
+        <>
+          <div className="flex justify-between items-center mb-4">
+            <SectionTitle className={cn('text-[#051218] md:text-2xl', titleClassName)}>
+              {title}
+            </SectionTitle>
+            
+            <Button 
+              variant="default" 
+              className={actionButtonClassName}
+              onClick={onActionButtonClick}
+            >
+              {actionButtonText}
+            </Button>
+          </div>
+          
+          {/* Filter options - right aligned */}
+          <div className="flex justify-end">
+            <div className="flex items-center gap-3">
+              <InputGroup className="h-10.5 bg-transparen">
+                <InputGroupInput placeholder="Search..." />
+                <InputGroupAddon>
+                  <Search />
+                </InputGroupAddon>
+              </InputGroup>
 
-      <div className="flex items-center gap-3">
-        <InputGroup className="h-10.5 bg-transparen">
-          <InputGroupInput placeholder="Search..." />
-          <InputGroupAddon>
-            <Search />
-          </InputGroupAddon>
-        </InputGroup>
+              <DatePickerWrapper
+                placeholder="Select date"
+                value={date?.toLocaleDateString()}
+                open={open}
+                setOpen={setOpen}
+                trigger={
+                  <PopoverTrigger asChild>
+                    <Button variant="muted">
+                      <CalendarIcon className="size-5" />
+                      <span className="max-xl:hidden">Filter by Date</span>
+                    </Button>
+                  </PopoverTrigger>
+                }
+              >
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  defaultMonth={date}
+                  captionLayout="dropdown"
+                  onSelect={(date) => {
+                    setDate(date)
+                    setOpen(false)
+                  }}
+                />
+              </DatePickerWrapper>
 
-        <DatePickerWrapper
-          placeholder="Select date"
-          value={date?.toLocaleDateString()}
-          open={open}
-          setOpen={setOpen}
-          trigger={
-            <PopoverTrigger asChild>
               <Button variant="muted">
-                <CalendarIcon className="size-5" />
-                <span className="max-xl:hidden">Filter by Date</span>
+                <SortingIcon className="size-5" />
+                <span className="max-xl:hidden">Sort</span>
               </Button>
-            </PopoverTrigger>
-          }
-        >
-          <Calendar
-            mode="single"
-            selected={date}
-            defaultMonth={date}
-            captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date)
-              setOpen(false)
-            }}
-          />
-        </DatePickerWrapper>
+            </div>
+          </div>
+        </>
+      ) : (
+        /* Layout when no button: Title left, Filter options right */
+        <div className="flex justify-between items-center gap-3 max-lg:flex-col lg:items-center">
+          <SectionTitle className={cn('text-[#051218] md:text-2xl', titleClassName)}>
+            {title}
+          </SectionTitle>
 
-        <Button variant="muted">
-          <SortingIcon className="size-5" />
-          <span className="max-xl:hidden">Sort</span>
-        </Button>
-      </div>
+          <div className="flex items-center gap-3">
+            <InputGroup className="h-10.5 bg-transparen">
+              <InputGroupInput placeholder="Search..." />
+              <InputGroupAddon>
+                <Search />
+              </InputGroupAddon>
+            </InputGroup>
+
+            <DatePickerWrapper
+              placeholder="Select date"
+              value={date?.toLocaleDateString()}
+              open={open}
+              setOpen={setOpen}
+              trigger={
+                <PopoverTrigger asChild>
+                  <Button variant="muted">
+                    <CalendarIcon className="size-5" />
+                    <span className="max-xl:hidden">Filter by Date</span>
+                  </Button>
+                </PopoverTrigger>
+              }
+            >
+              <Calendar
+                mode="single"
+                selected={date}
+                defaultMonth={date}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  setDate(date)
+                  setOpen(false)
+                }}
+              />
+            </DatePickerWrapper>
+
+            <Button variant="muted">
+              <SortingIcon className="size-5" />
+              <span className="max-xl:hidden">Sort</span>
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

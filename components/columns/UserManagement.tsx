@@ -21,6 +21,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { TrashIcon } from "../icons/TrashIcon";
+import SelectPropertyDialog from "../pages/admin/user-management/SelectPropertyDialog";
+ 
 
 // Define ColumnConfig interface
 interface ColumnConfig {
@@ -89,50 +91,18 @@ const DeactivateUserDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          {children}
-        </DialogTrigger>
-      <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12"   >
-      
-        <div className="">
-          <h2 className="text-2xl font-semibold text-center text-[#1d1f2c]">Deactivate User</h2>
-          <p className="text-base text-[#777980] mt-2 text-center">
-          Are you sure you want to deactivate this user?
-          </p>
-          <div className=" flex justify-center items-center gap-4 mt-6">
-            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={()=>setOpen(false)}>Cancel</button>
-            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={()=>setOpen(false)}>Deactive</button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-// ==================== ASSIGN PROPERTY DIALOG ====================
-const AssignPropertyDialog = ({ 
-  children, 
-  rowData 
-}: { 
-  children: React.ReactNode;
-  rowData: any;
-}) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-      <div className="">
+      <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12">
+        <div className="">
           <h2 className="text-2xl font-semibold text-center text-[#1d1f2c]">Deactivate User</h2>
           <p className="text-base text-[#777980] mt-2 text-center">
-          Are you sure you want to deactivate this user?
+            Are you sure you want to deactivate this user?
           </p>
-          <div className=" flex justify-center items-center gap-4 mt-6">
-            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={()=>setOpen(false)}>Cancel</button>
-            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={()=>setOpen(false)}>Deactive</button>
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={() => setOpen(false)}>Cancel</button>
+            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={() => setOpen(false)}>Deactivate</button>
           </div>
         </div>
       </DialogContent>
@@ -165,21 +135,19 @@ const DeleteUserDialog = ({
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12">
-      <div className="">
-        <div className=" flex justify-center">
-        <div className=" bg-[#eb3d4d] inline-block rounded-[12px] px-4 py-3.5">
-        <TrashIcon/>
-        </div>
-
-        </div>
-
+        <div className="">
+          <div className="flex justify-center">
+            <div className="bg-[#eb3d4d] inline-block rounded-[12px] px-4 py-3.5">
+              <TrashIcon />
+            </div>
+          </div>
           <h2 className="text-2xl font-semibold text-center text-[#1d1f2c] mt-3">Delete User Account</h2>
           <p className="text-base text-[#777980] mt-2 text-center">
-          Are you sure you want to delete this user account?
+            Are you sure you want to delete this user account?
           </p>
-          <div className=" flex justify-center items-center gap-4 mt-6">
-            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={()=>setOpen(false)}>Cancel</button>
-            <button className=" border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={()=>setOpen(false)}>Delete Account</button>
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={() => setOpen(false)}>Cancel</button>
+            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={handleConfirm}>Delete Account</button>
           </div>
         </div>
       </DialogContent>
@@ -190,12 +158,13 @@ const DeleteUserDialog = ({
 // ==================== USER ACTION BUTTON COMPONENT ====================
 const UserActionButton = ({ 
   rowData, 
-  onView, 
-  onEdit, 
+  onDeactivate, 
+  onPropertySelect, 
   onDelete 
 }: { 
   rowData: any;
-  onView?: (row: any) => void;
+  onDeactivate?: (row: any) => void;
+  onPropertySelect?: (row: any) => void;
   onEdit?: (row: any) => void;
   onDelete?: (row: any) => void;
 }) => {
@@ -206,6 +175,11 @@ const UserActionButton = ({
     if (onDelete) {
       onDelete(rowData);
     }
+  };
+
+  const handlePropertySelect = (propertyId: string) => {
+    console.log('Assigning property:', propertyId, 'to user:', rowData);
+    
   };
 
   return (
@@ -223,10 +197,10 @@ const UserActionButton = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="end" 
-          className="bg-[#f6f8fa] text-white min-w-[167px] shadow-xl p-3"
+          className="bg-[#f6f8fa] min-w-[167px] shadow-xl p-3"
         >
           <DropdownMenuGroup>
-            {onView && (
+            {onDeactivate && (
               <DeactivateUserDialog rowData={rowData}>
                 <DropdownMenuItem 
                   onSelect={(e) => e.preventDefault()}
@@ -240,8 +214,10 @@ const UserActionButton = ({
               </DeactivateUserDialog>
             )}
             
-            {onEdit && (
-              <AssignPropertyDialog rowData={rowData}>
+            {onPropertySelect && (
+              <SelectPropertyDialog
+                onPropertySelect={handlePropertySelect}
+              >
                 <DropdownMenuItem 
                   onSelect={(e) => e.preventDefault()}
                   disabled={isUserDeleted}
@@ -251,7 +227,7 @@ const UserActionButton = ({
                 >
                   Assign to a property
                 </DropdownMenuItem>
-              </AssignPropertyDialog>
+              </SelectPropertyDialog>
             )}
           </DropdownMenuGroup>
           
@@ -359,9 +335,9 @@ export const UserManagementColumns: ColumnConfig[] = [
       return (
         <UserActionButton 
           rowData={row} 
-          onView={(row) => console.log("View", row)}
-          onEdit={(row) => console.log("Edit", row)}
+          onDeactivate={(row) => console.log("Deactivate", row)}
           onDelete={(row) => console.log("Delete", row)}
+          onPropertySelect={(row) => console.log("Assign Property", row)}
         />
       );
     },

@@ -2,9 +2,9 @@ import { Property } from "@/components/reusable/PropertyCard/PropertyCard";
 
 export const properties: Property[] = [
   {
+    id: 'INS2323',  // ID
     title: '2024 Annual Roof Inspection',
     property: 'Sunset Office Complex',
-    id: 'INS2323',
     type: 'Commercial',
     inspector: { name: 'John Doe' },
     address: '1234 Sunset Blvd, Los Angeles, USA',
@@ -13,9 +13,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-01.png',
   },
   {
+    id: 'INS2324',  // ID
     title: '2024 Spring Roof Inspection',
     property: 'Riverside Apartments',
-    id: 'INS2324',
     type: 'Residential',
     inspector: { name: 'Jane Smith' },
     address: '456 Riverside Dr, Chicago, USA',
@@ -24,9 +24,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-02.png',
   },
   {
+    id: 'INS2325',  // ID
     title: '2024 Winter Roof Inspection',
     property: 'Downtown Retail Hub',
-    id: 'INS2325',
     type: 'Commercial',
     inspector: { name: 'Mike Johnson' },
     address: '789 Main St, New York, USA',
@@ -35,9 +35,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-03.png',
   },
   {
+    id: 'INS2326',  // ID
     title: '2024 Quarterly Roof Inspection',
     property: 'Greenwood Mall',
-    id: 'INS2326',
     type: 'Industrial',
     inspector: { name: 'Sarah Lee' },
     address: '321 Oak Ave, Houston, USA',
@@ -46,9 +46,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-04.png',
   },
   {
+    id: 'INS2327',  // ID
     title: '2024 Emergency Roof Inspection',
     property: 'Harbor View Condos',
-    id: 'INS2327',
     type: 'Residential',
     inspector: { name: 'Chris Brown' },
     address: '654 Harbor Blvd, Miami, USA',
@@ -57,9 +57,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-05.png',
   },
   {
+    id: 'INS2328',  // ID
     title: '2024 Routine Roof Inspection',
     property: 'Pinecrest Warehouse',
-    id: 'INS2328',
     type: 'Industrial',
     inspector: { name: 'Emily Davis' },
     address: '987 Pine Rd, Seattle, USA',
@@ -68,9 +68,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-06.png',
   },
   {
+    id: 'INS2329',  // ID
     title: '2024 Mid-Year Roof Inspection',
     property: 'Lakeside Townhomes',
-    id: 'INS2329',
     type: 'Residential',
     inspector: { name: 'David Wilson' },
     address: '147 Lake Shore Dr, Denver, USA',
@@ -79,9 +79,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-07.png',
   },
   {
+    id: 'INS2330',  // ID
     title: '2024 Annual Structural Inspection',
     property: 'Elmwood Business Park',
-    id: 'INS2330',
     type: 'Commercial',
     inspector: { name: 'Olivia Martinez' },
     address: '258 Elm St, Phoenix, USA',
@@ -90,9 +90,9 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-08.png',
   },
   {
+    id: 'INS2331',  // ID
     title: '2024 Post-Storm Roof Inspection',
     property: 'Maplewood Residences',
-    id: 'INS2331',
     type: 'Residential',
     inspector: { name: 'James Anderson' },
     address: '369 Maple Ave, Atlanta, USA',
