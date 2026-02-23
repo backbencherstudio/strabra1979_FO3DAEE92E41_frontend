@@ -1,4 +1,5 @@
 import {
+  Activity,
   Archive02,
   DashboardSquare03,
   Property,
@@ -46,6 +47,12 @@ export const adminMenu: MenuItem[] = [
     label: 'User Management',
     href: '/admin/user-management',
     icon:  Users,
+  },
+  {
+    id:'Activity-Log',
+    label: 'Activity Log',
+    href: '/admin/activity-log',
+    icon:Activity
   }
 ]
 
