@@ -12,6 +12,8 @@ import { ChevronRight, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group'
 import Link from 'next/link'
+import { ReportManagementColumns, demoReportData } from '@/components/columns/ReportsManagement'
+import CustomTable from '@/components/reusable/table/CustomTable'
 
 const stats: Stat[] = [
   {
@@ -36,7 +38,6 @@ export default function page() {
     <div className="space-y-6">
       <StatsList stats={stats} isLoading={false} />
       <SectionCard className="">
-        {/* <SharedPropertyCardListActions title="" titleClassName="text-forground" /> */}
         <div className="flex items-center justify-between">
           <SectionTitle>My Properties</SectionTitle>
 
@@ -70,7 +71,7 @@ export default function page() {
         </div>
       </SectionCard>
 
-      <SectionCard className="">
+      <SectionCard className="space-y-4.5">
         <div className="flex items-center justify-between">
           <SectionTitle>Recent Reports Updates</SectionTitle>
 
@@ -81,6 +82,28 @@ export default function page() {
           </Button>
         </div>
         {/* TODO: table */}
+        <div>
+          <CustomTable
+            columns={ReportManagementColumns}
+            data={demoReportData}
+            //   currentPage={currentPage}
+            //   itemsPerPage={itemsPerPage}
+            //   onPageChange={setCurrentPage}
+            //   sortConfig={sortConfig}
+            //   onSort={handleSort}
+            minWidth={1000}
+            headerStyles={{
+              backgroundColor: '#eceff3',
+              textColor: '#4a4c56',
+              fontSize: '14px',
+              fontWeight: '400',
+              padding: '12px 16px',
+            }}
+            cellBorderColor="#eceff3"
+            hasWrapperBorder={false}
+            roundedClass="rounded-lg"
+          />
+        </div>
       </SectionCard>
     </div>
   )

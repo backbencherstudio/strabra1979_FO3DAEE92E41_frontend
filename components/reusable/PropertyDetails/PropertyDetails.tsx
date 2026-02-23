@@ -1,5 +1,6 @@
 'use client'
 
+import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
 import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import { CircularProgressWithMeta } from '@/components/reusable/CircularProgress/CircularProgress'
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
@@ -7,11 +8,12 @@ import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/Sec
 import { Button } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import { Property } from '../PropertyCard/PropertyCard'
-import PropertyScoreListPreview from './PropertyScoreList'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
-import { demoSlides, MediaFiles, MediaFilesGridPreview } from '../MediaFiles/MediaFiles'
+import { MediaFiles, MediaFilesGridPreview, demoSlides } from '../MediaFiles/MediaFiles'
+import { Property } from '../PropertyCard/PropertyCard'
+import CustomTable from '../table/CustomTable'
+import PropertyScoreListPreview from './PropertyScoreList'
 
 interface PropertyDetailsProps {
   id: string
@@ -80,7 +82,7 @@ export default function PropertyDetails({
         </SectionCard>
 
         <MediaFiles slides={demoSlides}>
-         <MediaFilesGridPreview slides={demoSlides} />
+          <MediaFilesGridPreview slides={demoSlides} />
         </MediaFiles>
       </div>
       <div className="grid gap-4.5 lg:grid-cols-2">
@@ -126,7 +128,7 @@ export default function PropertyDetails({
           />
         </div>
       </SectionCard>
-      <SectionCard className="">
+      <SectionCard className="space-y-4.5">
         <div className="flex items-center justify-between">
           <SectionTitle>Documents</SectionTitle>
 
@@ -134,7 +136,28 @@ export default function PropertyDetails({
             View All <ChevronRight />
           </Button>
         </div>
-        {/* TODO: table */}
+        <div>
+          <CustomTable
+            columns={DocumentsTableColumns}
+            data={demoDocumentsData}
+            //   currentPage={currentPage}
+            //   itemsPerPage={itemsPerPage}
+            //   onPageChange={setCurrentPage}
+            //   sortConfig={sortConfig}
+            //   onSort={handleSort}
+            minWidth={1000}
+            headerStyles={{
+              backgroundColor: '#eceff3',
+              textColor: '#4a4c56',
+              fontSize: '14px',
+              fontWeight: '400',
+              padding: '12px 16px',
+            }}
+            cellBorderColor="#eceff3"
+            hasWrapperBorder={false}
+            roundedClass="rounded-lg"
+          />
+        </div>
       </SectionCard>
     </SectionCard>
   )

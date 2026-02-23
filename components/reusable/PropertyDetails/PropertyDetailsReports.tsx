@@ -6,6 +6,9 @@ import { Folder } from '../Folder/Folder'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import { Property } from '../PropertyCard/PropertyCard'
+import CustomTable from '../table/CustomTable'
+import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
+import Pagination from '../Pagination/Pagination'
 
 interface PropertyDetailsReportsProps {
   id: string
@@ -73,9 +76,32 @@ export default function PropertyDetailsReports({
         />
       </div>
 
-      <SectionCard className="">
+      <SectionCard className="space-y-4.5">
         <SharedPropertyCardListActions titleClassName="text-forground" title="Report Updates" />
-        {/* TODO: table */}
+
+        <div>
+          <CustomTable
+            columns={DocumentsTableColumns}
+            data={demoDocumentsData}
+            //   currentPage={currentPage}
+            //   itemsPerPage={itemsPerPage}
+            //   onPageChange={setCurrentPage}
+            //   sortConfig={sortConfig}
+            //   onSort={handleSort}
+            minWidth={1000}
+            headerStyles={{
+              backgroundColor: '#eceff3',
+              textColor: '#4a4c56',
+              fontSize: '14px',
+              fontWeight: '400',
+              padding: '12px 16px',
+            }}
+            cellBorderColor="#eceff3"
+            hasWrapperBorder={false}
+            roundedClass="rounded-lg"
+          />
+        </div>
+        <Pagination showHomeAndEnd={false} className="justify-start" size="icon-xs" />
       </SectionCard>
     </SectionCard>
   )

@@ -154,7 +154,7 @@ export default function CustomTable({
                   const isLastRow = i === paginatedData.length - 1;
 
                   return (
-                    <tr key={i} className="border-none">
+                    <tr key={i} className="border-none bg-white">
                       {columns.map((col, idx) => (
                         <td
                           key={idx}
