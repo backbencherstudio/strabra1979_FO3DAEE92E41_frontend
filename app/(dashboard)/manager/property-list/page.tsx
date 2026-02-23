@@ -6,7 +6,7 @@ import Pagination from '@/components/reusable/Pagination/Pagination'
 
 export default function page() {
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 gap-6">
       <SectionCard className="">
         <SharedPropertyCardListActions title="My Properties" />
 

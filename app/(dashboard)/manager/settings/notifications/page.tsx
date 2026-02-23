@@ -4,7 +4,7 @@ import { Switch } from '@/components/ui/switch'
 
 export default function NotificationPage() {
   return (
-    <div className="space-y-4.5">
+    <div className="grid grid-cols-1 gap-4.5">
       <NotificationSettings>
         <SettingListItem title="New Property Dashboard Assigned">
           <Switch />
