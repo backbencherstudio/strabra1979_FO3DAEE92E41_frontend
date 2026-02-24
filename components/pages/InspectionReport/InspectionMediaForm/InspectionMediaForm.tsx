@@ -6,6 +6,8 @@ import FileInputPreview from '@/components/reusable/FileInput/FileInputPreview'
 import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupTextarea } from '@/components/ui/input-group'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from 'postcss'
 import { useState } from 'react'
 
 export default function InspectionMediaForm() {
@@ -73,31 +75,34 @@ export default function InspectionMediaForm() {
           </div>
         </Field>
 
-        <Field>
-          <FieldLabel>Aerial Map</FieldLabel>
-          <FileInputProvider>
-            <FileInput
-              replaceInputWithChldren={true}
-              showPreview={false}
-              onChange={(files) => onSelectNewImage(files[0], 0)}
-              multiple={false}
-              icon={<FileVideo />}
-              placeholder="Upload your file"
-              maxSize={maxVideoSize}
-              inputContainerClassName="h-65"
-              accept="video/*"
-            >
-              <FileInputPreview />
-            </FileInput>
-          </FileInputProvider>
-        </Field>
+        <FieldGroup className="grid md:grid-cols-2">
+          <Field>
+            <FieldLabel>Aerial Map</FieldLabel>
+            <FileInputProvider>
+              <FileInput
+                replaceInputWithChldren={true}
+                showPreview={false}
+                onChange={(files) => onSelectNewImage(files[0], 0)}
+                multiple={false}
+                icon={<FileVideo />}
+                placeholder="Upload your file"
+                maxSize={maxVideoSize}
+                inputContainerClassName="h-65"
+                accept="video/*"
+              >
+                <FileInputPreview />
+              </FileInput>
+            </FileInputProvider>
+          </Field>
 
-        <Field>
-          <FieldLabel>3D Tours </FieldLabel>
-          <InputGroup>
-            <InputGroupTextarea placeholder="Paste Source URL / iframe Code" />
-          </InputGroup>
-        </Field>
+          <Field className="">
+            <FieldLabel>3D Tours </FieldLabel>
+            <Textarea
+              className="squircle h-65 resize-none bg-white md:h-full"
+              placeholder="Paste Source URL / iframe Code"
+            />
+          </Field>
+        </FieldGroup>
 
         <Field>
           <FieldLabel>Upload Documents</FieldLabel>

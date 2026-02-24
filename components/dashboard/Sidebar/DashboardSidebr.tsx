@@ -2,9 +2,12 @@
 
 import { SidebarFooter, SidebarGroup, SidebarGroupContent } from '@/components/ui/sidebar'
 import { getMenuByRole, MenuItem, UserRole } from '@/lib/menuConfig'
-import * as React from 'react'
 import authLogo from '@/public/auth/auth-logo.png'
+import * as React from 'react'
 
+import { LogoutIcon } from '@/components/icons/LogoutIcon'
+import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
   Sidebar,
@@ -60,7 +63,16 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
       </SidebarContent>
 
       <SidebarFooter>
-        <Button>Logout</Button>
+        <ConfirmDialog
+          iconContainerClass="bg-destructive"
+          icon={<LogoutIcon className="size-6" />}
+          trigger={<Button>Logout</Button>}
+          title="Logout your Account"
+          desc="Are you sure you want to logout?"
+        >
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Confirm</AlertDialogAction>
+        </ConfirmDialog>
       </SidebarFooter>
     </Sidebar>
   )

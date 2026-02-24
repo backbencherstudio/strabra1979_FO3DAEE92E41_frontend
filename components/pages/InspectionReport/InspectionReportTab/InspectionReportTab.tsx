@@ -10,17 +10,7 @@ import { createQueryParams } from '@/lib/farmatters'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 export default function InspectionReportTab() {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const currentTab = searchParams.get('tab')
-  const isMediaFilesTab = currentTab === 'media-files'
-
-  const switchTab = (tab: string | null) => {
-    const nextTab = tab == 'media-files' ? 'checklist' : 'media-files'
-    router.replace(`${pathname}/${createQueryParams({ tab: nextTab })}`)
-  }
+  const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
@@ -45,7 +35,7 @@ export default function InspectionReportTab() {
         className="@container/form mt-5"
       >
         <InspectionReportForm />
-        <div className="mt-5 grid gap-4 @3xl:gap-6 @3xl:grid-cols-2">
+        <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           <PriorityRepairPlanningForm />
           <InspectionReportFinalScoreCard score={60} />
         </div>
@@ -71,4 +61,20 @@ export default function InspectionReportTab() {
       </div>
     </div>
   )
+}
+
+export function useChecklistAndMediaTabName() {
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const currentTab = searchParams.get('tab')
+  const isMediaFilesTab = currentTab === 'media-files'
+
+  const switchTab = (tab: string | null) => {
+    const nextTab = tab == 'media-files' ? 'checklist' : 'media-files'
+    router.replace(`${pathname}/${createQueryParams({ tab: nextTab })}`)
+  }
+
+  return { isMediaFilesTab, switchTab, currentTab }
 }

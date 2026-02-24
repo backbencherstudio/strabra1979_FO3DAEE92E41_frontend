@@ -1,13 +1,20 @@
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
+import { cn } from '@/lib/utils'
 
-export default function NotificationSettings({children}: React.PropsWithChildren) {
+interface NotificationSettingsProps extends React.ComponentProps<'div'> {
+  title?: string
+}
+
+export default function NotificationSettings({
+  children,
+  title = 'Notification Settings',
+  className,
+}: NotificationSettingsProps) {
   return (
-    <SectionCard className="border-none p-8">
-      <SectionTitle className="text-lg">Notification Settings</SectionTitle>
+    <SectionCard className={cn('border-none p-8', className)}>
+      <SectionTitle className="text-lg">{title}</SectionTitle>
 
-      <div className="mt-4.5 space-y-2">
-        {children}
-      </div>
+      <div className="mt-4.5 space-y-2">{children}</div>
     </SectionCard>
   )
 }
