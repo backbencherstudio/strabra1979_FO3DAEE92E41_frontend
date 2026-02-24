@@ -8,9 +8,17 @@ import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import Link from 'next/link'
 import { InfoGrid, InfoItem } from '../InfoGrid/InfoGrid'
-import { Check } from 'lucide-react'
+import { Check, MoreVertical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState, useEffect } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { ScheduleInspectionDialog } from '@/components/pages/admin/inspection-craiteria/ScheduleInspectionDialog'
+ 
 
 export interface Property {
   title: string
@@ -35,6 +43,10 @@ export interface PropertyCardProps extends Property, React.PropsWithChildren {
   isSelectable?: boolean
   onSelect?: (selected: boolean) => void
   defaultSelected?: boolean
+  isAdmin?: boolean
+  onSchedule?: () => void
+  onAssign?: () => void
+  onViewAccess?: () => void
 }
 
 export default function PropertyCard({
@@ -49,8 +61,13 @@ export default function PropertyCard({
   onSelect,
   defaultSelected = false,
   id,
+  isAdmin = false,
+  onSchedule,
+  onAssign,
+  onViewAccess
 }: PropertyCardProps) {
   const [isSelected, setIsSelected] = useState(defaultSelected)
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
 
   useEffect(() => {
     setIsSelected(defaultSelected)
@@ -65,22 +82,77 @@ export default function PropertyCard({
     }
   }
 
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
+  const handleScheduleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setScheduleDialogOpen(true)
+  }
+
+  const handleScheduleConfirm = (data: any) => {
+    console.log('Schedule confirmed:', data)
+    if (onSchedule) {
+      onSchedule()
+    }
+    setScheduleDialogOpen(false)
+  }
+
   return (
     <div 
       className={cn(
-        "border-input overflow-hidden rounded-md border bg-white transition-all duration-200 relative", // relative যোগ করা হয়েছে
+        "border-input overflow-hidden rounded-md border bg-white transition-all duration-200 relative", 
         isSelectable && "cursor-pointer",
         isSelected && "border-[3px] border-blue-500"
       )}
       onClick={handleCardClick}
     >
-      {/* Selected checkmark - সরাসরি card এর নিচে কিন্তু position absolute */}
+    
       {isSelectable && isSelected && (
         <div className="absolute top-3 right-3 z-50">
           <div className="bg-blue-500 rounded-full p-1 shadow-lg">
             <Check className="h-4 w-4 text-white" />
           </div>
         </div>
+      )}
+
+      {isAdmin && (
+        <>
+          <div className="absolute top-3 right-3 z-40" onClick={handleDropdownClick}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 bg-[#bfcbce] shadow-lg hover:bg-[#bfcbce]/50 border border-[#eceff3]">
+                  <MoreVertical className="h-4 w-4 text-white hover:text-black" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className='bg-[#f6f8fa] p-2'>
+                <DropdownMenuItem 
+                  onClick={handleScheduleClick} 
+                  className='cursor-pointer'
+                >
+                  Schedule Inspection
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onAssign} className='cursor-pointer'>
+                  Assign Inspector
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onViewAccess} className='cursor-pointer'>
+                  View Access Details
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Schedule Inspection Dialog */}
+          <ScheduleInspectionDialog
+            open={scheduleDialogOpen}
+            onOpenChange={setScheduleDialogOpen}
+            onSchedule={handleScheduleConfirm}
+            propertyName={property}
+            propertyAddress={address}
+          />
+        </>
       )}
       
       <div className="relative bg-gray-200 max-sm:h-50">

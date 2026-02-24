@@ -2,6 +2,7 @@ import {
   Activity,
   Archive02,
   DashboardSquare03,
+  FileSearch,
   Property,
   PropertyNew,
   ReportFile,
@@ -53,6 +54,12 @@ export const adminMenu: MenuItem[] = [
     label: 'Activity Log',
     href: '/admin/activity-log',
     icon:Activity
+  },
+  {
+    id:'inspection-criteria',
+    label: 'Inspection Criteria',
+    href: '/admin/inspection-criteria',
+    icon:  FileSearch,
   }
 ]
 
