@@ -23,7 +23,7 @@ const DEFAULT_VALUES = {
 
 const DEFAULT_ONCHANGE = () => {}
 
-const DynamicForm: React.FC<DynamicFormProps> = ({
+const SignInForm: React.FC<DynamicFormProps> = ({
   values = DEFAULT_VALUES,
   onChange = DEFAULT_ONCHANGE,
 }) => {
@@ -32,25 +32,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   return (
     <div>
       <div className="mt-4.5 space-y-5">
-        <div className="flex flex-col">
-          <label htmlFor="username" className="mb-2 text-base text-[#4a4c56]">
-            Username
-          </label>
-          <InputGroup>
-            <InputGroupAddon>
-              <UserIcon className="size-5" />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="text"
-              name="username"
-              id="username"
-              placeholder="Username"
-              value={values.username ?? ''}
-              onChange={onChange}
-            />
-          </InputGroup>
-        </div>
-
         <div className="flex flex-col">
           <label htmlFor="email" className="mb-2 text-base text-[#4a4c56]">
             Email
@@ -104,12 +85,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         </div>
 
         <button className="my-3.5 w-full rounded-xl bg-[#0b2a3b] py-3.5 font-medium text-white">
-          Sign up
+          Log In
         </button>
         <p className="text-center">
-          Already have an account?{' '}
-          <Link href="/sign-in" className="font-medium text-[#0b2a3b] hover:underline">
-            Log In
+          Don’t have an account?{' '}
+          <Link href="/sign-up" className="font-medium text-[#0b2a3b] hover:underline">
+            Sign up
           </Link>
         </p>
       </div>
@@ -117,4 +98,4 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   )
 }
 
-export default DynamicForm
+export default SignInForm

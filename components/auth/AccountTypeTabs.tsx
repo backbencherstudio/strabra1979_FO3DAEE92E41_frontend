@@ -1,20 +1,25 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
+import { LineChartIcon } from '../icons/LineChartIcon'
 import { Property } from '../icons/SideBarIcons'
 import SignUpForm from './SignUpForm'
-import { cn } from '@/lib/utils'
+import { Edit, EditDocIcon } from '../icons/Edit'
 
 const tabs = [
   {
     lable: 'Property Manager',
     value: 'property-manager',
+    icon: Property,
   },
   {
     lable: 'Authorized Viewer',
     value: 'authorized-viewer',
+    icon: LineChartIcon,
   },
   {
     lable: 'Operational',
     value: 'operational',
+    icon: EditDocIcon,
   },
 ]
 
@@ -28,12 +33,12 @@ export function AccountTypeTabs() {
             key={item.value}
             value={item.value}
             className={cn(
-              'text-foreground h-12 w-full justify-start md:h-14 md:justify-center',
+              'text-foreground h-12 w-full justify-start md:h-14 md:px-3',
               'bg-[#fcfbfa] outline outline-[#ede9df]',
               'hover:text-gray-900 data-[state=active]:bg-[#edf3f9] data-[state=active]:text-[#284b6c] data-[state=active]:outline-2 data-[state=active]:outline-[#427cb2]',
             )}
           >
-            <Property className="size-6" />
+            <item.icon className="size-6" />
             {item.lable}
           </TabsTrigger>
         ))}
