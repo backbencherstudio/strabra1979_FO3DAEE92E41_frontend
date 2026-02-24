@@ -1,6 +1,7 @@
 'use client'
 
 import { Edit } from '@/components/icons/Edit'
+import PlusIcon from '@/components/icons/PlusIcon'
 import HealthStatusThresholdsSetup from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/HealthStatusThresholdsSetup'
 import InputAndChecklistSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/InputAndChecklistSetupForm'
 import PriorityRepairPlanningSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/PriorityRepairPlanningSetupForm'
@@ -45,16 +46,23 @@ export default function InspectionCriteriaPage() {
           </div>
         </div>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button className="rounded-full border" variant="muted" size="icon-lg">
-              <Edit />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent align="end">
-            <p>Change existing Input field labels and points</p>
-          </TooltipContent>
-        </Tooltip>
+        {isMediaFilesTab ? (
+          <Button variant="outline">
+            <PlusIcon />
+            Add More Supporting Media & Documents
+          </Button>
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="rounded-full border" variant="muted" size="icon-lg">
+                <Edit />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent align="end">
+              <p>Change existing Input field labels and points</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
       </div>
 
       <section
