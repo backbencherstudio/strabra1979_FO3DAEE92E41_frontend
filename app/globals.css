@@ -135,7 +135,7 @@
   --destructive: #eb3d4d;
   --border: oklch(0.922 0 0);
   --input: #e9e9ea;
-  --ring: oklch(0.708 0 0);
+  --ring: hsl(201 69% 14%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -237,4 +237,30 @@
 .dialog-light-box .yarl__container {
   margin-inline: -20px;
   background: transparent !important;
+}
+
+.slim-scrollbar {
+  --sb-track-color: var(--color-white);
+  --sb-thumb-color: var(--input);
+  --sb-size: 4px;
+
+  &::-webkit-scrollbar {
+    width: var(--sb-size);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 3px;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    & {
+      scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
+  }
 }

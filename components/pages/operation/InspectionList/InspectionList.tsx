@@ -1,19 +1,42 @@
+'use client'
+import { InspectionProgressStatus } from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
 import { CalendarIcon } from '@/components/icons/Calender'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { format } from 'date-fns'
+import { useState } from 'react'
 import InspectionListItem from './InspectionListItem'
-import { InspectionProgressStatus } from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
 
 export default function InspectionList() {
+  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [open, setOpen] = useState(false)
+
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4 py-5">
       <section className="flex items-center justify-between">
         <h3 className="text-foreground text-xl font-medium">Today's Inspections</h3>
 
-        <Button className="" variant="outline">
-          <CalendarIcon className="size-5" />
-          <hr className="border-gray-black-50 h-4 border" />
-          <span>February 4, 2026</span>
-        </Button>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <CalendarIcon className="size-5" />
+              <hr className="border-gray-black-50 h-4 border max-xl:hidden" />
+              <span className="max-xl:hidden">{date ? format(date, 'PPP') : 'Pick a date'}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(newDate) => {
+                setDate(newDate)
+                setOpen(false)
+              }}
+              autoFocus
+            />
+          </PopoverContent>
+        </Popover>
       </section>
 
       <section className="mt-4 space-y-3">

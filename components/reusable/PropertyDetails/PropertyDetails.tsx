@@ -49,7 +49,7 @@ export default function PropertyDetails({
   ]
 
   return (
-    <SectionCard className="grid gap-5">
+    <SectionCard className="grid grid-cols-1 gap-5">
       <PropertyHeaderWrapper
         title={property.property}
         rightContent={

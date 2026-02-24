@@ -35,7 +35,7 @@ const stats: Stat[] = [
 
 export default function page() {
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 gap-6">
       <StatsList stats={stats} isLoading={false} />
       <SectionCard className="">
         <div className="flex items-center justify-between">

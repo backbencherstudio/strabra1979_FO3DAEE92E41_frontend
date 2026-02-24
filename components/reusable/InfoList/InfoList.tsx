@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 
 interface InfoListItem {
   label?: string
@@ -26,17 +26,16 @@ interface PropertyHeaderProps extends React.PropsWithChildren {
   rightContent?: React.ReactNode
 }
 
-export function PropertyHeaderWrapper({
-  title,
-  children,
-  rightContent
-}: PropertyHeaderProps) {
+export function PropertyHeaderWrapper({ title, children, rightContent }: PropertyHeaderProps) {
   return (
-    <section className="mt-1 flex items-center justify-between">
+    <section className="mt-1 flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold">{title}</h1>
         {children}
       </div>
+
+      {rightContent && <hr className="lg:hidden" />}
+
       {rightContent}
     </section>
   )

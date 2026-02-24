@@ -6,7 +6,7 @@ import CustomTable from '@/components/reusable/table/CustomTable'
 
 export default function page() {
   return (
-    <div>
+    <div className="w-full">
       <SectionCard className="space-y-4.5">
         <SharedPropertyCardListActions title="Reports Updates" titleClassName="text-forground" />
         <div>

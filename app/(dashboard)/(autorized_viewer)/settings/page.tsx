@@ -5,7 +5,7 @@ import TimeZoneSettings from '@/components/pages/Settings/TimeZoneSettings/TimeZ
 
 export default function SettingsPage() {
   return (
-    <div className="space-y-4.5">
+    <div className="grid grid-cols-1 gap-4.5">
       <GeneralSettings />
       <ChangePasswordSettings />
       <TimeZoneSettings />
