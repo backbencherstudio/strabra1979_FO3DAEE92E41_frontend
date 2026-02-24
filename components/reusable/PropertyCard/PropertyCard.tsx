@@ -18,8 +18,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
+import { AssignInspectorDialog } from '@/components/pages/admin/property-list/AssignInspectiorDialog'
+import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccess'
  
-
 export interface Property {
   title: string
   property: string
@@ -68,6 +69,8 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   const [isSelected, setIsSelected] = useState(defaultSelected)
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false)
+  const [viewAccessDialogOpen, setViewAccessDialogOpen] = useState(false)
 
   useEffect(() => {
     setIsSelected(defaultSelected)
@@ -92,12 +95,32 @@ export default function PropertyCard({
     setScheduleDialogOpen(true)
   }
 
+  const handleAssignClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setAssignDialogOpen(true)
+  }
+
+  const handleViewAccessClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setViewAccessDialogOpen(true)
+  }
+
   const handleScheduleConfirm = (data: any) => {
     console.log('Schedule confirmed:', data)
     if (onSchedule) {
       onSchedule()
     }
     setScheduleDialogOpen(false)
+  }
+
+  const handleAssignConfirm = (data: any) => {
+    console.log('Assign confirmed:', data)
+    if (onAssign) {
+      onAssign()
+    }
+    setAssignDialogOpen(false)
   }
 
   return (
@@ -134,10 +157,16 @@ export default function PropertyCard({
                 >
                   Schedule Inspection
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onAssign} className='cursor-pointer'>
+                <DropdownMenuItem 
+                  onClick={handleAssignClick} 
+                  className='cursor-pointer'
+                >
                   Assign Inspector
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={onViewAccess} className='cursor-pointer'>
+                <DropdownMenuItem 
+                  onClick={handleViewAccessClick} 
+                  className='cursor-pointer'
+                >
                   View Access Details
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -149,6 +178,23 @@ export default function PropertyCard({
             open={scheduleDialogOpen}
             onOpenChange={setScheduleDialogOpen}
             onSchedule={handleScheduleConfirm}
+            propertyName={property}
+            propertyAddress={address}
+          />
+
+          {/* Assign Inspector Dialog */}
+          <AssignInspectorDialog
+            open={assignDialogOpen}
+            onOpenChange={setAssignDialogOpen}
+            onAssign={handleAssignConfirm}
+            propertyName={property}
+            propertyAddress={address}
+          />
+
+          {/* View Access Dialog */}
+          <ViewAccessDialog
+            open={viewAccessDialogOpen}
+            onOpenChange={setViewAccessDialogOpen}
             propertyName={property}
             propertyAddress={address}
           />
