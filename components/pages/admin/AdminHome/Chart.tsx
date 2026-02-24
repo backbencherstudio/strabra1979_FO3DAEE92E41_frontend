@@ -21,12 +21,18 @@ import {
 export const description = "A linear line chart"
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", desktop: 0 },
+  { month: "February", desktop: 65 },
+  { month: "March", desktop: 95 },
+  { month: "April", desktop: 105 },
+  { month: "May", desktop: 125 },
+  { month: "June", desktop: 135 },
+  { month: "July", desktop: 150 },
+  { month: "August", desktop: 190 },
+  { month: "September", desktop: 190 },
+    { month: "October", desktop: 210 },
+    { month: "November", desktop: 240 },
+    { month: "December", desktop: 300 },
 ]
 
 const chartConfig = {
