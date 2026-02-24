@@ -238,3 +238,29 @@
   margin-inline: -20px;
   background: transparent !important;
 }
+
+.slim-scrollbar {
+  --sb-track-color: var(--color-white);
+  --sb-thumb-color: var(--input);
+  --sb-size: 4px;
+
+  &::-webkit-scrollbar {
+    width: var(--sb-size);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 3px;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    & {
+      scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
+  }
+}
