@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ScheduleInspectionDialog } from '@/components/pages/admin/inspection-craiteria/ScheduleInspectionDialog'
+import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
  
 
 export interface Property {
