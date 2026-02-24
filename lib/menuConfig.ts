@@ -59,8 +59,14 @@ export const adminMenu: MenuItem[] = [
     id:'inspection-criteria',
     label: 'Inspection Criteria',
     href: '/admin/inspection-criteria',
-    icon:  FileSearch,
-  }
+    icon: FileSearch,
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    href: '/admin/settings',
+    icon: Settings02,
+  },
 ]
 
 export const managerMenu: MenuItem[] = [
