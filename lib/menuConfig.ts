@@ -1,3 +1,5 @@
+import { DocumentIcon } from '@/components/icons/DocumentIcon'
+import { FilePdf, FileText } from '@/components/icons/File'
 import {
   Activity,
   Archive02,
@@ -60,6 +62,12 @@ export const adminMenu: MenuItem[] = [
     label: 'Inspection Criteria',
     href: '/admin/inspection-criteria',
     icon: FileSearch,
+  },
+  {
+    id:'inspection-list',
+    label: 'Inspection List',
+    href: '/admin/inspection-list',
+    icon: FileText,
   },
   {
     id: 'settings',
