@@ -54,7 +54,7 @@ export default function PropertyHome() {
         {properties.map((p) => (
             
           <PropertyCard 
-            slug="/manager/property-list/123" 
+            slug="/admin/properties-list/123"
             hasAccess 
             key={p.id} 
             {...p}
