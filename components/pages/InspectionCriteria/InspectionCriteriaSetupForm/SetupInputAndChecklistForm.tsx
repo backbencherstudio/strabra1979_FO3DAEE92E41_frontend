@@ -30,7 +30,7 @@ interface InputAndChecklistSetupFormProps {
   editMode: boolean
 }
 
-export default function InputAndChecklistSetupForm({ editMode }: InputAndChecklistSetupFormProps) {
+export default function SetupInputAndChecklistForm({ editMode }: InputAndChecklistSetupFormProps) {
   const [mark, setMark] = useState(1)
 
   const [date, setDate] = React.useState<Date | undefined>(undefined)

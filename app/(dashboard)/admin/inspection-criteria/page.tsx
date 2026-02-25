@@ -3,13 +3,15 @@
 import { Edit } from '@/components/icons/Edit'
 import PlusIcon from '@/components/icons/PlusIcon'
 import HealthStatusThresholdsSetup from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/HealthStatusThresholdsSetup'
-import InputAndChecklistSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/InputAndChecklistSetupForm'
 import PriorityRepairPlanningSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/PriorityRepairPlanningSetupForm'
-import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
+import SetupInputAndChecklistForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/SetupInputAndChecklistForm'
+import SetupMediaAndDocumentFrom from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/SetupMediaAndDocumentFrom'
 import { useChecklistAndMediaTabName } from '@/components/pages/InspectionReport/InspectionReportTab/InspectionReportTab'
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Save } from 'lucide-react'
+import React from 'react'
 import { useState } from 'react'
 
 export function TooltipDemo() {
@@ -29,6 +31,12 @@ export default function InspectionCriteriaPage() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
 
   const [editMode, setEditMode] = useState(false)
+
+  const [openCreateFileAndDocFieldsModal, setOpenCreateFileAndDocFieldsModal] =
+    React.useState(false)
+  const handleCreateFieldOpen = () => {
+    setOpenCreateFileAndDocFieldsModal((v) => !v)
+  }
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
@@ -50,7 +58,7 @@ export default function InspectionCriteriaPage() {
         </div>
 
         {isMediaFilesTab ? (
-          <Button variant="outline">
+          <Button onClick={() => handleCreateFieldOpen()} variant="outline">
             <PlusIcon />
             Add More Supporting Media & Documents
           </Button>
@@ -64,11 +72,15 @@ export default function InspectionCriteriaPage() {
                   variant="muted"
                   size="icon-lg"
                 >
-                  <Edit />
+                  {editMode ? <Save className="size-5" /> : <Edit className="size-5" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent align="end">
-                <p>Change existing Input field labels and points</p>
+                <p>
+                  {editMode
+                    ? 'Exit edit mode & save chnges'
+                    : 'Change existing Input field labels and points'}
+                </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -79,7 +91,7 @@ export default function InspectionCriteriaPage() {
         style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
         className="@container/form mt-5"
       >
-        <InputAndChecklistSetupForm editMode={editMode} />
+        <SetupInputAndChecklistForm editMode={editMode} />
         <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           <PriorityRepairPlanningSetupForm />
           <HealthStatusThresholdsSetup />
@@ -87,7 +99,12 @@ export default function InspectionCriteriaPage() {
       </section>
 
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
-        <InspectionMediaForm />
+        <SetupMediaAndDocumentFrom
+          createModalOpts={{
+            open: openCreateFileAndDocFieldsModal,
+            onOpenChange: setOpenCreateFileAndDocFieldsModal,
+          }}
+        />
       </section>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">

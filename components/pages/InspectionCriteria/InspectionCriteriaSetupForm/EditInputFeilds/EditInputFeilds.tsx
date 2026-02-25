@@ -9,27 +9,27 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupTextarea,
+} from '@/components/ui/input-group'
 import { cn } from '@/lib/utils'
 import { ReactNode, useState } from 'react'
 
+import { FileImage, PlusSignSquare } from '@/components/icons/File'
 import { Trush } from '@/components/icons/Trush'
+import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { DialogClose } from '@/components/ui/dialog'
+import { Select, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Plus } from 'lucide-react'
 import React from 'react'
-import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
-import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
-import { Switch } from '@/components/ui/switch'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { PlusSignSquare } from '@/components/icons/File'
+import { FileInput } from '@/components/reusable/FileInput/FileInput'
+import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
 
 export type InputFieldType =
   | 'input-text'
@@ -37,6 +37,7 @@ export type InputFieldType =
   | 'input-date'
   | 'input-mark'
   | 'input-textarea'
+  | 'input-media'
 
 interface EditInputFeildsProps
   extends React.PropsWithChildren, React.ComponentProps<typeof Dialog> {
@@ -97,6 +98,8 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
   const [isInputRequired, setIsInputRequired] = useState(false)
   const [isInputDropDown, setIsInputDropDown] = useState(false)
 
+  const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
+
   return (
     <EditInputFeilds
       title="Add More Input fileds"
@@ -140,6 +143,21 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
                 <li className="p-2.5">Dropdown option 1</li>
               </ul>
             </>
+          ) : editFieldType === 'input-media' ? (
+            <Field>
+              <FieldLabel htmlFor="name">
+                Input Label {isInputRequired ? <span className="text-destructive">*</span> : null}
+              </FieldLabel>
+              {mediaInputType === 'media' ? (
+                <FileInputProvider>
+                  <FileInput icon={<FileImage />} placeholder="Upload your file" />
+                </FileInputProvider>
+              ) : (
+                <InputGroup>
+                  <InputGroupTextarea disabled placeholder="Enter placeholder" />
+                </InputGroup>
+              )}
+            </Field>
           ) : (
             <Field>
               <FieldLabel htmlFor="name">
@@ -173,19 +191,45 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
             </InputGroup>
           </Field>
 
-          <Field className="grid grid-cols-[1fr_3fr]">
-            <FieldLabel className="text-nowrap" htmlFor="name">
-              Required
-            </FieldLabel>
-            <Switch checked={isInputRequired} onClick={() => setIsInputRequired((v) => !v)} />
-          </Field>
+          {editFieldType == 'input-media' ? (
+            <>
+              <Field className="grid grid-cols-[1fr_3fr]">
+                <FieldLabel className="text-nowrap" htmlFor="name">
+                  Media Files
+                </FieldLabel>
+                <Switch
+                  checked={mediaInputType == 'media'}
+                  onClick={() => setMediaInputType('media')}
+                />
+              </Field>
 
-          <Field className="grid grid-cols-[1fr_3fr]">
-            <FieldLabel className="text-nowrap" htmlFor="name">
-              Dropdown
-            </FieldLabel>
-            <Switch checked={isInputDropDown} onClick={() => setIsInputDropDown((v) => !v)} />
-          </Field>
+              <Field className="grid grid-cols-[1fr_3fr]">
+                <FieldLabel className="text-nowrap" htmlFor="name">
+                  Embedded
+                </FieldLabel>
+                <Switch
+                  checked={mediaInputType == 'embedded'}
+                  onClick={() => setMediaInputType('embedded')}
+                />
+              </Field>
+            </>
+          ) : (
+            <>
+              <Field className="grid grid-cols-[1fr_3fr]">
+                <FieldLabel className="text-nowrap" htmlFor="name">
+                  Required
+                </FieldLabel>
+                <Switch checked={isInputRequired} onClick={() => setIsInputRequired((v) => !v)} />
+              </Field>
+
+              <Field className="grid grid-cols-[1fr_3fr]">
+                <FieldLabel className="text-nowrap" htmlFor="name">
+                  Dropdown
+                </FieldLabel>
+                <Switch checked={isInputDropDown} onClick={() => setIsInputDropDown((v) => !v)} />
+              </Field>
+            </>
+          )}
 
           {isInputDropDown ? (
             <div className="space-y-2">
