@@ -54,7 +54,7 @@ export default function Chart() {
   const data = filter === "year" ? yearlyData : monthlyData
 
   return (
-    <Card className="rounded-2xl border border-white/10 bg-[#f8fafb] text-black ">
+    <Card className="rounded-2xl border border-white/10 bg-[#f8fafb] text-black  h-full">
 
       {/* Header */}
       <CardHeader className="flex flex-row items-center justify-between pb-2">

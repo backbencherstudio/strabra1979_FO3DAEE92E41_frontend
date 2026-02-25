@@ -32,7 +32,7 @@ export default function page() {
         <section className="mt-4 grid grid-cols-3 gap-5">
           {templates.map((item) => (
             <SectionCard key={item} className="flex items-center justify-between bg-white py-3">
-              <SectionTitle className="text-lg">Add New Template</SectionTitle>
+              <SectionTitle className="text-lg">{item}</SectionTitle>
 
               <DropdownMenuIcons />
             </SectionCard>

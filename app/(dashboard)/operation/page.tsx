@@ -36,7 +36,14 @@ export default function page() {
   return (
     <div className="grid grid-cols-1 gap-6">
       <StatsList stats={stats} isLoading={false} />
-      <TodaysInspectionList />
+      <TodaysInspectionList
+        title="Today's Inspections"
+        actionButton={
+          <Button variant="outline" asChild>
+            <Link href={`/operation/inspection-report/${123}`}>Start Inspection</Link>
+          </Button>
+        }
+      />
 
       <SectionCard className="space-y-4.5">
         <div className="flex items-center justify-between">

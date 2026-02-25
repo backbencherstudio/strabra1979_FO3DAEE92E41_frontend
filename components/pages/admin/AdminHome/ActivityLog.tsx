@@ -126,7 +126,7 @@ export default function ActivityLog() {
             </div>
 
             <ul className='flex flex-col gap-6 bg-white p-4 rounded-2xl '>
-                {mockActivityLogs.slice(0, 3).map(log => (
+                {mockActivityLogs.slice(0, 2).map(log => (
                     <li key={log.id} className='flex items-start gap-3'>
                         <div className={`p-1.5 ${log.icon === 'FileEditBlue' ? 'bg-[#e5f3fe]' : 'bg-[#fbf5db]'} rounded-full inline-block`}>
                             {log.icon === 'FileEditBlue' ? <FileEditBlue /> : <User />}

@@ -3,7 +3,7 @@ import { PiorityRepairPlanItem } from './PiorityRepairPlanItem'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
-const tabs = ['All', 'Urgent', 'Maintenance', 'Replacement Planning'] as const
+export const tabs = ['All', 'Urgent', 'Maintenance', 'Replacement Planning'] as const
 export type RepairTab = (typeof tabs)[number]
 
 export default function PiorityRepairPlanList() {

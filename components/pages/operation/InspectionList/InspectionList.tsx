@@ -5,17 +5,23 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { format } from 'date-fns'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import InspectionListItem from './InspectionListItem'
 
-export default function InspectionList() {
+interface InspectionListProps {
+  title: string
+  subTitle?: ReactNode
+  actionButton: ReactNode
+}
+
+export default function InspectionList({ title, subTitle, actionButton }: InspectionListProps) {
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [open, setOpen] = useState(false)
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4 py-5">
       <section className="flex items-center justify-between">
-        <h3 className="text-foreground text-xl font-medium">Today's Inspections</h3>
+        <h3 className="text-foreground text-xl font-medium">{title}</h3>
 
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -39,6 +45,8 @@ export default function InspectionList() {
         </Popover>
       </section>
 
+      {subTitle}
+
       <section className="mt-4 space-y-3">
         {mockInspections.map((inspection) => (
           <InspectionListItem
@@ -49,6 +57,7 @@ export default function InspectionList() {
             time={inspection.time}
             propertyName={inspection.propertyName}
             address={inspection.address}
+            actionButton={actionButton}
           />
         ))}
       </section>

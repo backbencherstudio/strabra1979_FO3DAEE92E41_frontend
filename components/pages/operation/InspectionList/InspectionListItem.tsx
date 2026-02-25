@@ -4,8 +4,7 @@ import ProgressStatusBadge, {
 import { Clock } from '@/components/icons/Clock'
 import { LocationPin } from '@/components/icons/LocationPin'
 import { Property } from '@/components/icons/SideBarIcons'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { ReactNode } from 'react'
 
 type InspectionListItemProps = {
   slug: string
@@ -14,6 +13,7 @@ type InspectionListItemProps = {
   propertyName: string
   address: string
   status: InspectionProgressStatus
+  actionButton: ReactNode
 }
 
 export default function InspectionListItem({
@@ -22,6 +22,7 @@ export default function InspectionListItem({
   time,
   status,
   propertyName,
+  actionButton,
   address,
 }: InspectionListItemProps) {
   return (
@@ -53,11 +54,7 @@ export default function InspectionListItem({
           </div>
         </section>
 
-        <section className="flex flex-col justify-center">
-          <Button variant="outline" asChild>
-            <Link href={`/operation/inspection-report/${slug}`}>Start Inspection</Link>
-          </Button>
-        </section>
+        <section className="flex flex-col justify-center">{actionButton}</section>
       </div>
     </div>
   )
