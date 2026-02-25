@@ -11,7 +11,7 @@ import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Save } from 'lucide-react'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { useState } from 'react'
 
 export function TooltipDemo() {
@@ -27,7 +27,15 @@ export function TooltipDemo() {
   )
 }
 
-export default function InspectionCriteriaPage() {
+export default function Page() {
+  return (
+    <Suspense fallback={<div />}>
+      <InspectionCriteriaPage />
+    </Suspense>
+  )
+}
+
+export function InspectionCriteriaPage() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
 
   const [editMode, setEditMode] = useState(false)

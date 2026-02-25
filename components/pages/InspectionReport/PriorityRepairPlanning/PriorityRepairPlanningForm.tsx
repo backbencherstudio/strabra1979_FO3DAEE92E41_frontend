@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { PlusIcon } from 'lucide-react'
-import PiorityRepairPlanList from '../PiorityRepairPlan/PiorityRepairPlanList'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 
 export default function PriorityRepairPlanningForm() {
   return (
