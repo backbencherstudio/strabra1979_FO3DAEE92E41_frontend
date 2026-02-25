@@ -7,6 +7,10 @@ import React from 'react'
 import ProgressStatusBadge, {
   InspectionProgressStatus,
 } from '../dashboard/ProgressStatusBadge/ProgressStatusBadge'
+import { Edit } from '../icons/Edit'
+import { Trush } from '../icons/Trush'
+import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
+import { AlertDialogCancel, AlertDialogAction } from '../ui/alert-dialog'
 
 // Define ColumnConfig interface
 interface ColumnConfig {
@@ -108,6 +112,113 @@ export const InspectionListManagementColums: ColumnConfig[] = [
             <EyeIcon />
           </Link>
         </Button>
+      )
+    },
+  },
+]
+
+// ==================== Report COLUMNS CONFIGURATION ====================
+export const AdminInspectionListManagementColums: ColumnConfig[] = [
+  {
+    label: 'Inspection ID',
+    width: '8%',
+    accessor: 'inspectin_id',
+    formatter: (value: string, row: any) => {
+      return (
+        <div className="flex items-center">
+          <p className="text-forground text-xs">{value}</p>
+        </div>
+      )
+    },
+  },
+  {
+    label: 'Property',
+    width: '44%',
+    accessor: 'property',
+    formatter: (value: string, row: any) => {
+      return (
+        <div>
+          <p className="text-forground text-xs">{value}</p>
+        </div>
+      )
+    },
+  },
+  {
+    label: 'Property Type',
+    width: '10%',
+    accessor: 'property_type',
+    formatter: (value: string, row: any) => {
+      return (
+        <div>
+          <p className="text-forground text-xs">{value}</p>
+        </div>
+      )
+    },
+  },
+  {
+    label: 'Address',
+    width: '15%',
+    accessor: 'address',
+    formatter: (value: string, row: any) => {
+      return (
+        <div>
+          <p className="text-forground text-xs">{value}</p>
+        </div>
+      )
+    },
+  },
+  {
+    label: 'Date',
+    width: '10%',
+    accessor: 'date',
+    formatter: (value: string, row: any) => {
+      return (
+        <div>
+          <p className="text-forground text-xs">{formatUserDate(value)}</p>
+        </div>
+      )
+    },
+  },
+  {
+    label: 'Status',
+    width: '12%',
+    accessor: 'status',
+    formatter: (value: string, row: any) => {
+      return <ProgressStatusBadge status={value as InspectionProgressStatus} />
+    },
+  },
+  {
+    label: '',
+    accessor: 'action',
+    width: '5%',
+    formatter: (value: any, row: any) => {
+      return (
+        <div className="flex gap-2">
+          <Button asChild variant="muted" size="icon" className="rounded-full">
+            <Link href={`/admin/inspection-list/${row.id}`}>
+              <EyeIcon />
+            </Link>
+          </Button>
+
+          <Button asChild variant="muted" size="icon" className="rounded-full">
+            <Link href={`/admin/inspection-list/${row.id}`}>
+              <Edit />
+            </Link>
+          </Button>
+
+          <ConfirmDialog
+            title="Delete Inspection Report"
+            desc="Are you sure you want to delete this Inspection Report?"
+            trigger={
+              <Button variant="muted" size="icon" className="text-destructive rounded-full">
+                <Trush />
+              </Button>
+            }
+          >
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+          </ConfirmDialog>
+        </div>
       )
     },
   },

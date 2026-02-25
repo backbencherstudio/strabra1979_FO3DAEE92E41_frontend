@@ -16,14 +16,14 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Search } from 'lucide-react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { format } from 'date-fns'
 
 interface SharedPropertyCardListActionsProps {
   title: string
   titleClassName?: string
   showActionButton?: boolean
-  actionButtonText?: string
+  actionButtonText?: string | ReactNode
   onActionButtonClick?: () => void
   actionButtonClassName?: string
 }
