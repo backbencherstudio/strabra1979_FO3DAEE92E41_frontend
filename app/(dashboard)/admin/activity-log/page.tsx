@@ -8,7 +8,6 @@ import React from 'react'
 
 // Mock data for activity logs (10 entries)
 const mockActivityLogs = [
-  // Property Updates - Operation badge (5 entries)
   {
     id: 1,
     type: 'property-updates',
@@ -54,7 +53,7 @@ const mockActivityLogs = [
     timestamp: '4.20 PM, 10 Jan, 2026',
     badge: 'Operation'
   },
-  
+
   // User Access - Admin badge (2 entries)
   {
     id: 6,
@@ -78,7 +77,7 @@ const mockActivityLogs = [
     timestamp: '12.45 PM, 11 Jan, 2026',
     badge: 'admin'
   },
-  
+
   // User Access - Authorized Viewer badge (1 entry)
   {
     id: 8,
@@ -91,7 +90,7 @@ const mockActivityLogs = [
     timestamp: '3.22 PM, 12 Jan, 2026',
     badge: 'Authorized Viewer'
   },
-  
+
   // User Access - Property Manager badge (2 entries)
   {
     id: 9,
@@ -124,27 +123,27 @@ export default function ActivityLogPage() {
 
   return (
     <div className='bg-[#f8fafb] p-4.5 rounded-3xl border border-[#ebeeef]'>
-      <SharedPropertyCardListActions 
-        title='Activity Log' 
+      <SharedPropertyCardListActions
+        title='Activity Log'
         titleClassName='md:text-base font-medium text-[#4a4c56]'
       />
 
       <Tabs defaultValue="all" className="w-full">
         <TabsList className='bg-transparent gap-4'>
-          <TabsTrigger 
-            value="all"  
+          <TabsTrigger
+            value="all"
             className='data-[state=active]:bg-[#abc8e4] data-[state=active]:text-medium data-[state=active]:font-medium data-[state=active]:text-black rounded-lg'
           >
             All
           </TabsTrigger>
-          <TabsTrigger 
-            value="property-updates" 
+          <TabsTrigger
+            value="property-updates"
             className='data-[state=active]:bg-[#abc8e4] data-[state=active]:text-medium data-[state=active]:font-medium data-[state=active]:text-black rounded-lg'
           >
             Property dashboard updates
           </TabsTrigger>
-          <TabsTrigger 
-            value="user-access" 
+          <TabsTrigger
+            value="user-access"
             className='data-[state=active]:bg-[#abc8e4] data-[state=active]:text-medium data-[state=active]:font-medium data-[state=active]:text-black rounded-lg'
           >
             User Access
@@ -172,13 +171,12 @@ export default function ActivityLogPage() {
                   )}
                   <p className='text-xs'>{log.timestamp}</p>
                 </div>
-                <p className={`py-1 px-2 rounded-full text-xs inline-block text-black ${
-                  log.badge === 'Operation' ? 'bg-[#ffcd71]' : 
-                  log.badge === 'admin' ? 'bg-[#d2d2d5]' : 
-                  log.badge === 'Authorized Viewer' ? 'bg-[#4ba7ff]' : 
-                  log.badge === 'Property Manager' ? 'bg-[#05d945]' : 
-                  'bg-[#d2d2d5]'
-                }`}>
+                <p className={`py-1 px-2 rounded-full text-xs inline-block text-black ${log.badge === 'Operation' ? 'bg-[#ffcd71]' :
+                    log.badge === 'admin' ? 'bg-[#d2d2d5]' :
+                      log.badge === 'Authorized Viewer' ? 'bg-[#4ba7ff]' :
+                        log.badge === 'Property Manager' ? 'bg-[#05d945]' :
+                          'bg-[#d2d2d5]'
+                  }`}>
                   {log.badge}
                 </p>
               </li>
@@ -223,12 +221,11 @@ export default function ActivityLogPage() {
                   </h3>
                   <p className='text-xs'>{log.timestamp}</p>
                 </div>
-                <p className={`py-1 px-2 rounded-full text-xs inline-block text-black ${
-                  log.badge === 'admin' ? 'bg-[#d2d2d5]' : 
-                  log.badge === 'Authorized Viewer' ? 'bg-[#4ba7ff]' : 
-                  log.badge === 'Property Manager' ? 'bg-[#05d945]' : 
-                  'bg-[#d2d2d5]'
-                }`}>
+                <p className={`py-1 px-2 rounded-full text-xs inline-block text-black ${log.badge === 'admin' ? 'bg-[#d2d2d5]' :
+                    log.badge === 'Authorized Viewer' ? 'bg-[#4ba7ff]' :
+                      log.badge === 'Property Manager' ? 'bg-[#05d945]' :
+                        'bg-[#d2d2d5]'
+                  }`}>
                   {log.badge}
                 </p>
               </li>
