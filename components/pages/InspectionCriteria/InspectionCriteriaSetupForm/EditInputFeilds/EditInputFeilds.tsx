@@ -31,6 +31,8 @@ import React from 'react'
 import { FileInput } from '@/components/reusable/FileInput/FileInput'
 import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
 
+export type DialogProps = React.ComponentProps<typeof Dialog>
+
 export type InputFieldType =
   | 'input-text'
   | 'input-dropdown'
@@ -90,7 +92,7 @@ export default function EditInputFeilds({
   )
 }
 
-interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
+export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
   editFieldType?: InputFieldType
 }
 

@@ -8,7 +8,7 @@ export default function DashboardSidebarHeader() {
   // const { logOut } = useAuth();
 
   return (
-    <header className="border-sidebar-border sticky top-0 z-10 flex h-20 items-center justify-between border-b bg-white px-4 z-50">
+    <header className="border-sidebar-border sticky top-0 z-50 flex h-(--dashboard-header-height) items-center justify-between border-b bg-white px-4">
       <div className="text-heading-100 flex items-center gap-2">
         <SidebarTrigger />
         <h3 className="font-heading text-lg font-medium md:text-2xl">Dashboard</h3>

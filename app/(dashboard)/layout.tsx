@@ -2,6 +2,8 @@ import DashboardSidebarHeader from '@/components/dashboard/Sidebar/DashboardSide
 import DashBoardSidebr from '@/components/dashboard/Sidebar/DashboardSidebr'
 import { SidebarProvider } from '@/components/ui/sidebar'
 
+const DASHBOARD_HEADER_HEIGHT = '5rem'
+
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -10,9 +12,18 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <DashBoardSidebr />
-      <main className="w-full flex-1 md:w-[calc(100vw-var(--sidebar-width))]">
+      <main
+        style={
+          {
+            '--dashboard-header-height': DASHBOARD_HEADER_HEIGHT,
+          } as React.CSSProperties
+        }
+        className="w-full flex-1 md:w-[calc(100vw-var(--sidebar-width))]"
+      >
         <DashboardSidebarHeader />
-        <div className="w-full p-4 xl:p-6">{children}</div>
+        <div className="dashboard-layout-wrapper flex min-h-[calc(100vh-var(--dashboard-header-height))] w-full flex-col">
+          {children}
+        </div>
       </main>
     </SidebarProvider>
   )

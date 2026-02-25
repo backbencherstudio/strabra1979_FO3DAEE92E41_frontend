@@ -206,6 +206,10 @@
   }
 }
 
+.dashboard-layout-wrapper:not(:has(.full-page)) {
+  @apply p-4 xl:p-6;
+}
+
 .squircle {
   border-radius: 8px; /* fallback */
 }

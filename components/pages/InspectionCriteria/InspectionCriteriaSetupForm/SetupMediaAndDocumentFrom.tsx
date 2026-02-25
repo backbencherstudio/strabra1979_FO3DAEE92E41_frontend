@@ -1,8 +1,5 @@
-import { Dialog } from '@/components/ui/dialog'
 import InspectionMediaForm from '../../InspectionReport/InspectionMediaForm/InspectionMediaForm'
-import { CreateMoreInputModal } from './EditInputFeilds/EditInputFeilds'
-
-type DialogProps = React.ComponentProps<typeof Dialog>
+import { CreateMoreInputModal, DialogProps } from './EditInputFeilds/EditInputFeilds'
 
 interface SetupMediaAndDocumentFromProps {
   createModalOpts: DialogProps
