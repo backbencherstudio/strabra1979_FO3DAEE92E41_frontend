@@ -2,18 +2,15 @@
 
 import { Edit } from '@/components/icons/Edit'
 import PlusIcon from '@/components/icons/PlusIcon'
-import EditInputFeilds from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/EditInputFeilds/EditInputFeilds'
 import HealthStatusThresholdsSetup from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/HealthStatusThresholdsSetup'
 import InputAndChecklistSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/InputAndChecklistSetupForm'
 import PriorityRepairPlanningSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/PriorityRepairPlanningSetupForm'
 import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import { useChecklistAndMediaTabName } from '@/components/pages/InspectionReport/InspectionReportTab/InspectionReportTab'
-import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
-import { Field, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useState } from 'react'
 
 export function TooltipDemo() {
   return (
@@ -30,6 +27,8 @@ export function TooltipDemo() {
 
 export default function InspectionCriteriaPage() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
+
+  const [editMode, setEditMode] = useState(false)
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
@@ -50,17 +49,6 @@ export default function InspectionCriteriaPage() {
           </div>
         </div>
 
-        {/* <Tooltip> */}
-        {/*   <TooltipTrigger asChild> */}
-        {/* <Button className="rounded-full border" variant="muted" size="icon-lg"> */}
-        {/*   <Edit /> */}
-        {/* </Button> */}
-        {/*   </TooltipTrigger> */}
-        {/*   <TooltipContent align="end"> */}
-        {/*     <p>Change existing Input field labels and points</p> */}
-        {/*   </TooltipContent> */}
-        {/* </Tooltip> */}
-
         {isMediaFilesTab ? (
           <Button variant="outline">
             <PlusIcon />
@@ -68,21 +56,21 @@ export default function InspectionCriteriaPage() {
           </Button>
         ) : (
           <div>
-            <EditInputFeilds
-              title="Edit Input fileds"
-              trigger={
-                <Button className="rounded-full border" variant="muted" size="icon-lg">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setEditMode((v) => !v)}
+                  className="rounded-full border"
+                  variant="muted"
+                  size="icon-lg"
+                >
                   <Edit />
                 </Button>
-              }
-            >
-              <Field>
-                <FieldLabel htmlFor="name">Property</FieldLabel>
-                <InputGroup className="border-b">
-                  <InputGroupInput placeholder="Enter property name" />
-                </InputGroup>
-              </Field>
-            </EditInputFeilds>
+              </TooltipTrigger>
+              <TooltipContent align="end">
+                <p>Change existing Input field labels and points</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         )}
       </div>
@@ -91,7 +79,7 @@ export default function InspectionCriteriaPage() {
         style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
         className="@container/form mt-5"
       >
-        <InputAndChecklistSetupForm />
+        <InputAndChecklistSetupForm editMode={editMode} />
         <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           <PriorityRepairPlanningSetupForm />
           <HealthStatusThresholdsSetup />

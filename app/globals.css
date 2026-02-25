@@ -241,7 +241,7 @@
 
 .slim-scrollbar {
   --sb-track-color: var(--color-white);
-  --sb-thumb-color: var(--input);
+  --sb-thumb-color: var(--color-gray-400);
   --sb-size: 4px;
 
   &::-webkit-scrollbar {
