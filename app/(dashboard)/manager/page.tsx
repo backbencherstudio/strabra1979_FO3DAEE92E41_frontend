@@ -76,7 +76,7 @@ export default function page() {
           <SectionTitle>Recent Reports Updates</SectionTitle>
 
           <Button asChild variant="link" theme="text">
-            <Link href="/manager/property-list">
+            <Link href="/manager/report">
               View All <ChevronRight />
             </Link>
           </Button>

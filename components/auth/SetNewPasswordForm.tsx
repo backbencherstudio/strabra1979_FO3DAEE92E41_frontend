@@ -45,8 +45,8 @@ const SetNewPasswordForm: React.FC<DynamicFormProps> = ({
                 name="password"
                 id="password"
                 placeholder="Password"
-                value={values.password ?? ''}
-                onChange={onChange}
+                // value={values.password ?? ''}
+                // onChange={onChange}
               />
 
               <InputGroupAddon align="inline-end">
@@ -76,8 +76,8 @@ const SetNewPasswordForm: React.FC<DynamicFormProps> = ({
                 name="password"
                 id="password"
                 placeholder="Confirm Password"
-                value={values.password ?? ''}
-                onChange={onChange}
+                // value={values.password ?? ''}
+                // onChange={onChange}
               />
             </InputGroup>
           </div>

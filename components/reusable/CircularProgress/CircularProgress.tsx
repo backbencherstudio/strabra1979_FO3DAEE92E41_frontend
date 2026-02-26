@@ -61,9 +61,9 @@ export default function CircularProgress({
 }
 
 export const scoreScale = [
-  { label: 'Good', min: 70, max: 100, color: 'var(--success)' },
-  { label: 'Fair', min: 30, max: 69, color: 'var(--warning)' },
-  { label: 'Poor', min: 0, max: 29, color: 'var(--danger)' },
+  { id: 'good', label: 'Good', min: 70, max: 100, color: 'var(--success)' },
+  { id: 'fair', label: 'Fair', min: 30, max: 69, color: 'var(--warning)' },
+  { id: 'poor', label: 'Poor', min: 0, max: 29, color: 'var(--danger)' },
 ]
 
 const getScoreMeta = (score: number) => scoreScale.find((s) => score >= s.min && score <= s.max)

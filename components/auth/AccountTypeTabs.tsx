@@ -39,7 +39,7 @@ export function AccountTypeTabs() {
             )}
           >
             <item.icon className="size-6" />
-            {item.lable}
+            <span>{item.lable}</span>
           </TabsTrigger>
         ))}
       </TabsList>

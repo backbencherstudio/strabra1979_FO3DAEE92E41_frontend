@@ -119,7 +119,7 @@ const mockActivityLogs = [
 
 export default function ActivityLog() {
     return (
-        <div className='bg-[#f8fafb] p-4 rounded-3xl border border-[#ebeeef] '>
+        <div className='bg-[#f8fafb] h-full p-4 rounded-3xl border border-[#ebeeef] '>
             <div className='flex justify-between mb-4'>
                 <h1 className='font-semibold'>Activity Log</h1>
                 <Link href={'/'}>View All</Link>

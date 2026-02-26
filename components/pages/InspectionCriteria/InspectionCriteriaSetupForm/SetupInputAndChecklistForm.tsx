@@ -149,7 +149,10 @@ export default function SetupInputAndChecklistForm({ editMode }: InputAndCheckli
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem value="residential">Residential</SelectItem>
                   <SelectItem value="commercial">Commercial</SelectItem>
+                  <SelectItem value="industrial">Industrial</SelectItem>
+                  <SelectItem value="mixed-use">Mixed Use</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

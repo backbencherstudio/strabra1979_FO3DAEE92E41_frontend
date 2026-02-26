@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export default function AuthPage() {
   return (
-    <div className="mx-4 flex flex-1 flex-col items-center justify-center rounded-3xl bg-[#f8f6f3] px-4 py-8 md:mx-6 md:px-12 xl:mx-0">
+    <div className="mx-4 flex flex-1 flex-col items-center justify-center rounded-3xl bg-[#f8f6f3] px-4 py-8 md:mx-6 md:px-6 2xl:px-12 xl:mx-0">
       <Image
         src={authLogo}
         alt="auth Logo"

@@ -46,8 +46,8 @@ const SignInForm: React.FC<DynamicFormProps> = ({
                 name="email"
                 id="email"
                 placeholder="Email"
-                value={values.email ?? ''}
-                onChange={onChange}
+                // value={values.email ?? ''}
+                // onChange={onChange}
               />
             </InputGroup>
           </div>
@@ -67,8 +67,8 @@ const SignInForm: React.FC<DynamicFormProps> = ({
                 name="password"
                 id="password"
                 placeholder="Password"
-                value={values.password ?? ''}
-                onChange={onChange}
+                // value={values.password ?? ''}
+                // onChange={onChange}
               />
 
               <InputGroupAddon align="inline-end">

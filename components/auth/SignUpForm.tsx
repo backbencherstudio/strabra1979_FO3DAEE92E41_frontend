@@ -45,8 +45,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
               name="username"
               id="username"
               placeholder="Username"
-              value={values.username ?? ''}
-              onChange={onChange}
+              // value={values.username ?? ''}
+              // onChange={onChange}
             />
           </InputGroup>
         </div>
@@ -65,8 +65,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 name="email"
                 id="email"
                 placeholder="Email"
-                value={values.email ?? ''}
-                onChange={onChange}
+                // value={values.email ?? ''}
+                // onChange={onChange}
               />
             </InputGroup>
           </div>
@@ -86,8 +86,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 name="password"
                 id="password"
                 placeholder="Password"
-                value={values.password ?? ''}
-                onChange={onChange}
+                // value={values.password ?? ''}
+                // onChange={onChange}
               />
 
               <InputGroupAddon align="inline-end">

@@ -39,8 +39,8 @@ const ForgetPasswordForm: React.FC<DynamicFormProps> = ({
                 name="email"
                 id="email"
                 placeholder="Email"
-                value={values.email ?? ''}
-                onChange={onChange}
+                // value={values.email ?? ''}
+                // onChange={onChange}
               />
             </InputGroup>
           </div>
