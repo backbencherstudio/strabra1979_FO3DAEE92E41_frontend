@@ -42,10 +42,10 @@ export default function PropertyDetailsReports({
       >
         <InfoList
           items={[
-            // { label: 'Last updated', value: property.updated_at ?? '' },
-            { label: 'Inspection ID', value: property.id },
-            { value: property.property },
-            { label: 'Date', value: property.date },
+            { label: 'Last updated', value: property.updated_at ?? '' },
+            // { label: 'Inspection ID', value: property.id },
+            // { value: property.property },
+            // { label: 'Date', value: property.date },
           ]}
         />
       </PropertyHeaderWrapper>
