@@ -1,92 +1,145 @@
 'use client'
 
+import { getErrorMessage } from '@/lib/farmatters'
+import { useAuth } from '@/redux/features/auth/useAuth'
+import { useForm } from '@tanstack/react-form'
+import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from 'lucide-react'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import { toast } from 'sonner'
+import z from 'zod'
 import { Button } from '../ui/button'
+import { Field, FieldError } from '../ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import { Spinner } from '../ui/spinner'
 
-interface DynamicFormProps {
-  values?: {
-    username?: string
-    email?: string
-    password?: string
-  }
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
+interface DynamicFormProps {}
 
-const DEFAULT_VALUES = {
-  username: '',
-  email: '',
-  password: '',
-}
+const signInSchema = z.object({
+  email: z.email('Enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+})
 
-const DEFAULT_ONCHANGE = () => {}
+const SignInForm: React.FC<DynamicFormProps> = ({}) => {
+  const router = useRouter()
 
-const SignInForm: React.FC<DynamicFormProps> = ({
-  values = DEFAULT_VALUES,
-  onChange = DEFAULT_ONCHANGE,
-}) => {
+  const { logIn, isLoading: isLoginLoading, logOut } = useAuth()
+
+  const form = useForm({
+    defaultValues: {
+      email: 'admin@gmail.com',
+      password: '12345678',
+    },
+    validators: {
+      onSubmit: signInSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await logIn({
+          email: value.email,
+          password: value.password,
+        }).unwrap()
+        // const isCurrentUserAdmin = RoleUtils.isAdmin(res?.type);
+        //
+        //
+        // router.replace(redirectTo);
+      } catch (error) {
+        toast.error(getErrorMessage(error, 'Failed to SignIn. Please try again.'))
+      }
+    },
+  })
+
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <div className="mt-4.5 space-y-5">
-        <div className="flex flex-col">
-          <label htmlFor="email" className="mb-2 text-base text-[#4a4c56]">
-            Email
-          </label>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <MailIcon className="size-4" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="text"
-                name="email"
-                id="email"
-                placeholder="Email"
-                // value={values.email ?? ''}
-                // onChange={onChange}
-              />
-            </InputGroup>
-          </div>
-        </div>
+        {/* Email */}
+        <form.Field name="email">
+          {(field) => (
+            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+              <label htmlFor={field.name} className="text-gray-black-400 mb-2 text-base">
+                Email
+              </label>
+              <div className="relative">
+                <InputGroup>
+                  <InputGroupAddon>
+                    <MailIcon className="size-4" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    placeholder="Email"
+                    type="text"
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </InputGroup>
+              </div>
 
-        <div className="flex flex-col">
-          <label htmlFor="password" className="mb-2 text-base text-[#4a4c56]">
-            Password
-          </label>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <LockIcon className="size-4" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                id="password"
-                placeholder="Password"
-                // value={values.password ?? ''}
-                // onChange={onChange}
-              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        </form.Field>
 
-              <InputGroupAddon align="inline-end">
-                <Button onClick={() => setShowPassword((v) => !v)} variant="ghost" size="icon">
-                  {showPassword ? (
-                    <EyeOffIcon className="size-4" />
-                  ) : (
-                    <EyeIcon className="size-4" />
-                  )}
-                </Button>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </div>
+        <form.Field name="password">
+          {(field) => (
+            <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+              <label htmlFor={field.name} className="text-gray-black-400 mb-2 text-base">
+                Password
+              </label>
+              <div className="relative">
+                <InputGroup>
+                  <InputGroupAddon>
+                    <LockIcon className="size-4" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    placeholder="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
 
-        <button className="my-3.5 w-full rounded-xl bg-[#0b2a3b] py-3.5 font-medium text-white">
-          Log In
-        </button>
+                  <InputGroupAddon align="inline-end">
+                    <Button onClick={() => setShowPassword((v) => !v)} variant="ghost" size="icon">
+                      {showPassword ? (
+                        <EyeOffIcon className="size-4" />
+                      ) : (
+                        <EyeIcon className="size-4" />
+                      )}
+                    </Button>
+                  </InputGroupAddon>
+                </InputGroup>
+              </div>
+            </Field>
+          )}
+        </form.Field>
+
+        <Button disabled={isLoginLoading} size="xl" className="w-full">
+          {isLoginLoading ? (
+            <>
+              <Spinner />
+              Loading
+            </>
+          ) : (
+            <>Log In</>
+          )}
+        </Button>
+
+        <Button type="button" onClick={logOut}>
+          Logout
+        </Button>
+
         <p className="text-center">
           Don’t have an account?{' '}
           <Link href="/sign-up" className="font-medium text-[#0b2a3b] hover:underline">
@@ -94,7 +147,7 @@ const SignInForm: React.FC<DynamicFormProps> = ({
           </Link>
         </p>
       </div>
-    </div>
+    </form>
   )
 }
 

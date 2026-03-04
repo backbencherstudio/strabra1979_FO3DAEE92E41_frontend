@@ -3,19 +3,18 @@
 import { BuildingIcon } from '@/components/icons/BuildingIcon'
 import { Calender2Icon } from '@/components/icons/Calender2Icon'
 import TodaysInspectionList from '@/components/pages/operation/InspectionList/InspectionList'
-import { ChevronRight, Search, User2 } from 'lucide-react'
+import { ChevronRight, User2 } from 'lucide-react'
 
+import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
+import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
+import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 import { useState } from 'react'
 import { RepairTab, tabs } from '../../InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import ActivityLog from './ActivityLog'
 import Chart from './Chart'
-import Link from 'next/link'
-import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
-import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
-import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group'
 
 // Demo data
 const statsData = [
