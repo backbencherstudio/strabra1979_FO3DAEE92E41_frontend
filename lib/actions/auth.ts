@@ -3,15 +3,9 @@
 // 2. Call a Server Action to set the httpOnly cookie
 
 'use server'
-import { cookieAge } from '@/constant'
+import { cookieAge, TOKENS } from '@/constant'
 import { AuthCredential, IAuthUserRole } from '@/types'
 import { cookies } from 'next/headers'
-
-const TOKENS = {
-  token: 'auth-token',
-  role: 'role',
-  refreshToken: 'refresh-token',
-} as const
 
 export async function setAuthCookies({ token, refreshToken, role }: AuthCredential) {
   const cookieStore = await cookies()

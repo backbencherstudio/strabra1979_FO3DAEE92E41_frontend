@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/redux/features/auth/useAuth'
 
 export function useGetRoleFromPathName(): UserRole {
   const pathname = usePathname()
@@ -41,6 +42,8 @@ export function useGetRoleFromPathName(): UserRole {
 
 export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const role = useGetRoleFromPathName()
+
+  const { logOut } = useAuth()
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -71,7 +74,7 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
           desc="Are you sure you want to logout?"
         >
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Confirm</AlertDialogAction>
+          <AlertDialogAction onClick={() => logOut()}>Confirm</AlertDialogAction>
         </ConfirmDialog>
       </SidebarFooter>
     </Sidebar>

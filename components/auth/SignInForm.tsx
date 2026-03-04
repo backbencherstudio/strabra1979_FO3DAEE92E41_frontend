@@ -1,13 +1,11 @@
 'use client'
 
-import { getErrorMessage } from '@/lib/farmatters'
 import { useAuth } from '@/redux/features/auth/useAuth'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { toast } from 'sonner'
 import z from 'zod'
 import { Button } from '../ui/button'
 import { Field, FieldError } from '../ui/field'
@@ -35,18 +33,10 @@ const SignInForm: React.FC<DynamicFormProps> = ({}) => {
       onSubmit: signInSchema,
     },
     onSubmit: async ({ value }) => {
-      try {
-        await logIn({
-          email: value.email,
-          password: value.password,
-        }).unwrap()
-        // const isCurrentUserAdmin = RoleUtils.isAdmin(res?.type);
-        //
-        //
-        // router.replace(redirectTo);
-      } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to SignIn. Please try again.'))
-      }
+      await logIn({
+        email: value.email,
+        password: value.password,
+      })
     },
   })
 
@@ -129,7 +119,7 @@ const SignInForm: React.FC<DynamicFormProps> = ({}) => {
           {isLoginLoading ? (
             <>
               <Spinner />
-              Loading
+              Logging In
             </>
           ) : (
             <>Log In</>

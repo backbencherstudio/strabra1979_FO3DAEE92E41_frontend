@@ -43,7 +43,7 @@ export interface ILoginPayload {
   type: string
   access_token: string
   refresh_token: string
-  role: string
+  role: IAuthUserRole
 }
 
 export interface IAuthUser {

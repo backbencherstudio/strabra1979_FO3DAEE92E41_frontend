@@ -1,21 +1,44 @@
-// proxy.ts
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-
-const publicRoutes = ['/login', '/unauthorized']
+import { publicRoutes, roleHomePage, roleRoutes, TOKENS } from './constant'
+import { IAuthUserRole } from './types'
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const token = request.cookies.get('auth-token')?.value
-  const role = request.cookies.get('role')?.value
-  console.log('token from proxy ------------------ ', token)
+  const token = request.cookies.get(TOKENS.token)?.value
+  const role = request.cookies.get(TOKENS.role)?.value as IAuthUserRole | undefined
 
-  // if (publicRoutes.includes(pathname)) return NextResponse.next();
-  //
-  // // No token at all → kick to login
-  // if (!token) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  // 1. Allow public routes
+  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+    // Already logged in → redirect to their home page
+    if (token && role) {
+      return NextResponse.redirect(new URL(roleHomePage[role], request.url))
+    }
+    return NextResponse.next()
+  }
+
+  // 2. No token → redirect to signin
+  if (!token) {
+    const signinUrl = new URL('/signin', request.url)
+    signinUrl.searchParams.set('callbackUrl', pathname)
+    return NextResponse.redirect(signinUrl)
+  }
+
+  // 3. Role based access check
+  const matchedRoute = Object.keys(roleRoutes).find(
+    (route) =>
+      route === '/'
+        ? pathname === '/' // exact match for root
+        : pathname.startsWith(route), // prefix match for all others
+  )
+
+  if (matchedRoute && role) {
+    const allowedRoles = roleRoutes[matchedRoute]
+
+    if (!allowedRoles.includes(role)) {
+      return NextResponse.redirect(new URL('/unauthorized', request.url))
+    }
+  }
 
   return NextResponse.next()
 }
@@ -23,17 +46,3 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: ['/((?!_next|favicon.ico|api).*)'],
 }
-
-// ## Full Flow
-// ```
-// User logs in
-//   → baseApi saves token + role in Redux ✅
-//   → LoginPage useEffect redirects to role-specific route
-//
-// User visits /admin/dashboard
-//   → proxy.ts checks cookie exists → passes through
-//   → (admin)/layout.tsx checks Redux role → renders or redirects
-//
-// Token expires
-//   → baseQueryWithReauth refreshes it automatically ✅
-//   → role stays in Redux, layouts keep working
