@@ -2,7 +2,7 @@ import { baseApiURL } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
 import { logOut, setCredentials } from '@/redux/features/auth/authSlice'
 import { RootState } from '@/redux/store'
-import { IRefreshTokenPayload } from '@/types'
+import { IAuthRefreshTokenPayload } from '@/types'
 import {
   BaseQueryApi,
   BaseQueryFn,
@@ -86,7 +86,8 @@ async function handleRefreshToken(
         const refreshResult = await refreshPromise
 
         if (refreshResult?.data) {
-          const newToken = (refreshResult.data as IRefreshTokenPayload)?.authorization?.access_token
+          const newToken = (refreshResult.data as IAuthRefreshTokenPayload)?.authorization
+            ?.access_token
 
           api.dispatch(
             setCredentials({

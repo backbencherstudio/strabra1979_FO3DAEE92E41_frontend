@@ -1,120 +1,147 @@
 'use client'
 
+import { useRegisterUserMutation } from '@/api/auth/authApi'
+import { appRoutes } from '@/constant'
+import { getErrorMessage } from '@/lib/farmatters'
+import { IAuthUserRole } from '@/types'
+import { useForm } from '@tanstack/react-form'
+import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from 'lucide-react'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import { toast } from 'sonner'
+import z from 'zod'
+import FormInputField from '../form/form-input-field'
 import { Button } from '../ui/button'
+import { Spinner } from '../ui/spinner'
 
-interface DynamicFormProps {
-  values?: {
-    username?: string
-    email?: string
-    password?: string
-  }
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+export const signupSchema = z
+  .object({
+    username: z.string().min(2, 'Full name is required'),
+    email: z.email('Enter a valid email'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    // .regex(/[A-Z]/, 'Must contain an uppercase letter')
+    // .regex(/[a-z]/, 'Must contain a lowercase letter')
+    // .regex(/[0-9]/, 'Must contain a number'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  })
+
+export type SignupFormValues = z.infer<typeof signupSchema>
+
+interface SignUpFormProps {
+  role: IAuthUserRole
 }
 
-const DEFAULT_VALUES = {
-  username: '',
-  email: '',
-  password: '',
-}
-
-const DEFAULT_ONCHANGE = () => {}
-
-const DynamicForm: React.FC<DynamicFormProps> = ({
-  values = DEFAULT_VALUES,
-  onChange = DEFAULT_ONCHANGE,
-}) => {
+const SignUpForm: React.FC<SignUpFormProps> = ({ role }) => {
   const [showPassword, setShowPassword] = useState(false)
+  const [registerUser, { isLoading: registerUserIsLoading }] = useRegisterUserMutation()
+
+  const form = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validators: {
+      onSubmit: signupSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const data = await registerUser({
+          role: role,
+          username: value.username,
+          email: value.email,
+          password: value.password,
+        }).unwrap()
+        console.log(data)
+
+        toast.message(data.message ?? 'Sugnn up succefuull')
+      } catch (error) {
+        toast.error('Signup Failed — please try again.', {
+          description: getErrorMessage(error),
+        })
+      }
+    },
+  })
 
   return (
-    <div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <div className="mt-4.5 space-y-5">
-        <div className="flex flex-col">
-          <label htmlFor="username" className="mb-2 text-base text-[#4a4c56]">
-            Username
-          </label>
-          <InputGroup>
-            <InputGroupAddon>
-              <UserIcon className="size-5" />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="text"
-              name="username"
-              id="username"
-              placeholder="Username"
-              // value={values.username ?? ''}
-              // onChange={onChange}
-            />
-          </InputGroup>
-        </div>
+        {/* Usernae */}
+        <FormInputField<SignupFormValues>
+          form={form}
+          name="username"
+          label="Username"
+          placeholder="Username"
+          icon={<UserIcon className="size-4" />}
+        />
 
-        <div className="flex flex-col">
-          <label htmlFor="email" className="mb-2 text-base text-[#4a4c56]">
-            Email
-          </label>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <MailIcon className="size-4" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="text"
-                name="email"
-                id="email"
-                placeholder="Email"
-                // value={values.email ?? ''}
-                // onChange={onChange}
-              />
-            </InputGroup>
-          </div>
-        </div>
+        <FormInputField<SignupFormValues>
+          form={form}
+          name="email"
+          label="Email"
+          placeholder="Email"
+          icon={<MailIcon className="size-4" />}
+        />
 
-        <div className="flex flex-col">
-          <label htmlFor="password" className="mb-2 text-base text-[#4a4c56]">
-            Password
-          </label>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <LockIcon className="size-4" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                id="password"
-                placeholder="Password"
-                // value={values.password ?? ''}
-                // onChange={onChange}
-              />
+        <FormInputField<SignupFormValues>
+          form={form}
+          name="password"
+          label="Password"
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Password"
+          icon={<LockIcon className="size-4" />}
+          rightElement={
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </Button>
+          }
+        />
 
-              <InputGroupAddon align="inline-end">
-                <Button onClick={() => setShowPassword((v) => !v)} variant="ghost" size="icon">
-                  {showPassword ? (
-                    <EyeOffIcon className="size-4" />
-                  ) : (
-                    <EyeIcon className="size-4" />
-                  )}
-                </Button>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </div>
+        <FormInputField<SignupFormValues>
+          form={form}
+          name="confirmPassword"
+          label="Confirm password"
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Confirm password"
+          icon={<LockIcon className="size-4" />}
+        />
 
-        <button className="my-3.5 w-full rounded-xl bg-[#0b2a3b] py-3.5 font-medium text-white">
-          Sign up
-        </button>
+        {/* Submit */}
+        <Button size="xl" className="w-full">
+          {registerUserIsLoading ? (
+            <>
+              <Spinner />
+              Signing Up
+            </>
+          ) : (
+            <>Sign Up</>
+          )}
+        </Button>
+
         <p className="text-center">
           Already have an account?{' '}
-          <Link href="/sign-in" className="font-medium text-[#0b2a3b] hover:underline">
+          <Link href={appRoutes.signin} className="font-medium text-[#0b2a3b] hover:underline">
             Log In
           </Link>
         </p>
       </div>
-    </div>
+    </form>
   )
 }
 
-export default DynamicForm
+export default SignUpForm

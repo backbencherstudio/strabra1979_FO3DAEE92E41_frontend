@@ -1,9 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { EditDocIcon } from '../icons/Edit'
 import { LineChartIcon } from '../icons/LineChartIcon'
 import { Property } from '../icons/SideBarIcons'
 import SignUpForm from './SignUpForm'
-import { Edit, EditDocIcon } from '../icons/Edit'
 
 const tabs = [
   {
@@ -44,19 +44,16 @@ export function AccountTypeTabs() {
         ))}
       </TabsList>
 
-      {/* Property Manager Tab Content - Responsive Form */}
       <TabsContent value="property-manager">
-        <SignUpForm />
+        <SignUpForm role="PROPERTY_MANAGER" />
       </TabsContent>
 
-      {/* Authorized Viewer Tab Content - Responsive Card */}
       <TabsContent value="authorized-viewer">
-        <SignUpForm />
+        <SignUpForm role="AUTHORIZED_VIEWER" />
       </TabsContent>
 
-      {/* Operational Tab Content - Responsive Card */}
       <TabsContent value="operational">
-        <SignUpForm />
+        <SignUpForm role="OPERATIONAL" />
       </TabsContent>
     </Tabs>
   )

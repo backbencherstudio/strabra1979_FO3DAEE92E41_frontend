@@ -25,12 +25,13 @@ export const RoleUtils = {
   },
 }
 
-export type IRefreshTokenPayload = {
-  success: boolean
-  authorization: {
-    type: 'bearer'
-    access_token: string
-  }
+export type IAuthUser = {
+  id: string
+  name: string
+  email: string
+  avatar: string
+  role: string
+  created_at: string
 }
 
 export interface ILoginParams {
@@ -46,27 +47,19 @@ export interface ILoginPayload {
   role: IAuthUserRole
 }
 
-export type IAuthUser = {
-  id: string
-  name: string
-  email: string
-  avatar: string
-  role: string
-  created_at: string
-}
-export type IAuthUpdateUserParams = Omit<Partial<IAuthUser>, 'avatar'> & {
-  avatar?: File
-}
-
 export interface IAuthRegisterParams {
-  name: string
+  username: string
+  role: IAuthUserRole
   email: string
   password: string
 }
 
 export interface IAuthRegisterResponse {
-  success: boolean
-  message: string
+  id: string
+  email: string
+  username: string
+  role: string
+  status: string
 }
 
 export interface IAuthVerifyEmailParams {
@@ -77,4 +70,16 @@ export interface IAuthVerifyEmailParams {
 export interface IAuthChangePasswordParams {
   old_password: string
   new_password: string
+}
+
+export type IAuthRefreshTokenPayload = {
+  success: boolean
+  authorization: {
+    type: 'bearer'
+    access_token: string
+  }
+}
+
+export type IAuthUpdateUserParams = Omit<Partial<IAuthUser>, 'avatar'> & {
+  avatar?: File
 }

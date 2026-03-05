@@ -8,6 +8,7 @@ export const TOKENS = {
 
 export const appRoutes = {
   signin: '/signin',
+  signup: '/signup',
 } as const
 
 export const publicRoutes = ['/signin', '/signup']

@@ -39,9 +39,9 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
-    registerUser: builder.mutation<IAuthRegisterResponse, IAuthRegisterParams>({
+    registerUser: builder.mutation<WithApiStatus<IAuthRegisterResponse>, IAuthRegisterParams>({
       query: (body) => ({
-        url: '/auth/register',
+        url: '/auth/register-user',
         method: 'POST',
         body,
       }),
