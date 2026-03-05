@@ -32,8 +32,10 @@ export function useAuth() {
 
   function logOut() {
     dispatch(reduxLogout())
-    dispatch(baseApi.util.resetApiState())
     router.push('/signin')
+    setTimeout(() => {
+      dispatch(baseApi.util.resetApiState())
+    }, 500)
   }
 
   function invalidUserToken() {
@@ -42,9 +44,7 @@ export function useAuth() {
 
   async function logIn(params: ILoginParams) {
     try {
-      const {
-        data: { role },
-      } = await logInMutatin(params).unwrap()
+      await logInMutatin(params).unwrap()
       router.replace('/') // proxy.ts will redirect the user in correct path
     } catch (error) {
       toast.error(getErrorMessage(error, 'Failed to SignIn. Please try again.'))

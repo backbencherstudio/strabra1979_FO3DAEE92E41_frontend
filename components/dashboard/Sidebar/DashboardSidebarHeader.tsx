@@ -1,5 +1,6 @@
 'use client'
 
+import { useGetMeQuery } from '@/api/auth/authApi'
 import NotificationPanel from '@/components/reusable/NotificationPanel/NotificationPanel'
 import UserAvatar from '@/components/reusable/UserAvatar'
 import { SidebarTrigger } from '@/components/ui/sidebar'
@@ -24,17 +25,18 @@ export default function DashboardSidebarHeader() {
 }
 
 const UserInfo = () => {
+  const { data } = useGetMeQuery()
   return (
     <div className="border-opacity-dark-05 flex h-12 items-center justify-start gap-1.5 rounded-full border px-1.5">
       <UserAvatar
-        src="https://i.pravatar.cc/150?img=5"
-        name="Gustavo Xavier"
+        src={data?.avatar}
+        name={data?.name}
         className="border-pressed-100 size-9 border"
       />
-      <div className="hidden flex-col items-start justify-between gap-1.5 pr-6 sm:flex">
-        <span className="block text-sm leading-3 font-medium">Gustavo Xavier</span>
+      <div className="hidden min-w-28 flex-col items-start justify-between gap-1.5 pr-6 sm:flex">
+        <span className="block text-sm leading-3 font-medium">{data?.name ?? 'N/A'}</span>
         <span className="bg-mid-orange text-foreground block rounded-full px-1.5 pb-px text-center text-[10px] font-medium">
-          Operation
+          {data?.role ?? 'Role N/A'}
         </span>
       </div>
     </div>

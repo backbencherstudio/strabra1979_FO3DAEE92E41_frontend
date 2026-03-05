@@ -46,20 +46,14 @@ export interface ILoginPayload {
   role: IAuthUserRole
 }
 
-export interface IAuthUser {
+export type IAuthUser = {
   id: string
   name: string
   email: string
-  avatar: string | null
-  avatar_url: string | null
-  address: string | null
-  phone_number: string | null
-  type: 'user' | 'admin' // User Role
-  gender: 'male' | 'female' | 'other' | null
-  date_of_birth: string | null // ISO date string
-  created_at: string // ISO datetime string
+  avatar: string
+  role: string
+  created_at: string
 }
-
 export type IAuthUpdateUserParams = Omit<Partial<IAuthUser>, 'avatar'> & {
   avatar?: File
 }

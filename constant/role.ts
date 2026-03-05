@@ -12,12 +12,6 @@ export const appRoutes = {
 
 export const publicRoutes = ['/signin', '/signup']
 
-// export const roleRoutes: Record<string, IAuthUserRole[]> = {
-//   '/': ['AUTHORIZED_VIEWER'],
-//   '/admin': ['ADMIN'],
-//   '/manager': ['PROPERTY_MANAGER'],
-//   '/operation': ['OPERATIONAL'],
-// }
 export const roleRoutes: Record<string, IAuthUserRole[]> = {
   '/': ['AUTHORIZED_VIEWER'],
   '/settings': ['AUTHORIZED_VIEWER'],
