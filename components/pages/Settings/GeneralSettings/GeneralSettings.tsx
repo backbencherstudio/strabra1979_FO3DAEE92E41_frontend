@@ -1,3 +1,6 @@
+'use client'
+
+import { useUpdateGenerelSettingMutation } from '@/api/profile/profileAccountApi'
 import { SectionTitle, SettingSectionCard } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -5,6 +8,8 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Edit } from 'lucide-react'
 
 export default function GeneralSettings() {
+  const [updateUser, { isLoading }] = useUpdateGenerelSettingMutation()
+
   return (
     <SettingSectionCard>
       <SectionTitle className="text-lg">General Settings</SectionTitle>
@@ -44,7 +49,23 @@ export default function GeneralSettings() {
 
         <hr className="border-gray-black-50 my-6" />
         <div className="flex justify-end">
-          <Button size="xl">Save Change</Button>
+          <Button
+            disabled={isLoading}
+            type="button"
+            onClick={async () => {
+              try {
+                const res = await updateUser({
+                  username: 'Kuddus khan',
+                }).unwrap()
+                console.log(res)
+              } catch (error) {
+                console.log(error)
+              }
+            }}
+            size="xl"
+          >
+            Save Change
+          </Button>
         </div>
       </form>
     </SettingSectionCard>

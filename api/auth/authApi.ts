@@ -65,26 +65,6 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    updateAuthUser: builder.mutation<IAuthRegisterResponse, IAuthUpdateUserParams>({
-      query: (body) => {
-        const formData = new FormData()
-
-        if (body.name) {
-          formData.append('name', body.name)
-        }
-
-        if (body.avatar) {
-          formData.append('avatar', body.avatar)
-        }
-
-        return {
-          url: '/auth/update',
-          method: 'PATCH',
-          body: formData,
-        }
-      },
-      invalidatesTags: ['Me'],
-    }),
   }),
   overrideExisting: false,
 })
@@ -94,7 +74,6 @@ export const {
   useGetMeQuery,
   useRegisterUserMutation,
   useVerifyEmailMutation,
-  useUpdateAuthUserMutation,
   useChangePasswordMutation,
 } = authApi
 export default authApi

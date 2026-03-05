@@ -80,6 +80,18 @@ export type IAuthRefreshTokenPayload = {
   }
 }
 
-export type IAuthUpdateUserParams = Omit<Partial<IAuthUser>, 'avatar'> & {
-  avatar?: File
+export type IAuthUpdateUserParams = {
+  username: string
+  role: string
+  email: string
+  password: string
+  country: string
+  state: string
+  city: string
+  local_government: string
+  zip_code: string
+  phone_number: string
+  address: string
+  gender: string
+  date_of_birth: string
 }
