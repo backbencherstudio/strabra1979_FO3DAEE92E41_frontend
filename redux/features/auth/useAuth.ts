@@ -1,18 +1,17 @@
 import { useLoginMutation } from '@/api/auth/authApi'
 import { baseApi } from '@/api/baseApi'
+import { getErrorMessage } from '@/lib/farmatters'
 import { useAppDispatch } from '@/redux/store'
+import { ILoginParams } from '@/types'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useSelector } from 'react-redux'
+import { toast } from 'sonner'
 import {
   invalidToken,
   logOut as reduxLogout,
   selectCurrentRole,
   selectCurrentToken,
 } from './authSlice'
-import { ILoginParams } from '@/types'
-import { toast } from 'sonner'
-import { getErrorMessage } from '@/lib/farmatters'
-import { roleHomePage } from '@/constant'
 
 // Validate redirect URL
 const isValidRedirect = (url: string) => {
@@ -46,16 +45,7 @@ export function useAuth() {
       const {
         data: { role },
       } = await logInMutatin(params).unwrap()
-      // const redirectParams = searchParams.get('callbackUrl')
-      //
-      // const roleHome = roleHomePage[role] ?? '/'
-      //
-      // const redirectTo =
-      //   redirectParams && isValidRedirect(redirectParams)
-      //     ? decodeURIComponent(redirectParams)
-      //     : roleHome
-
-      router.replace('/admin/user-management')
+      router.replace('/') // proxy.ts will redirect the user in correct path
     } catch (error) {
       toast.error(getErrorMessage(error, 'Failed to SignIn. Please try again.'))
     }
