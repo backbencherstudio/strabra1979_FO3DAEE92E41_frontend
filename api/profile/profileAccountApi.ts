@@ -4,6 +4,8 @@ import type {
   IProfileGeneralSettingParams,
   IProfileGeneralSettingResponse,
   IUserProfile,
+  UpdateTimezonePayload,
+  UpdateTimezoneResponse,
 } from '@/types'
 
 const profileAccountApi = baseApi.injectEndpoints({
@@ -26,9 +28,17 @@ const profileAccountApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Me'],
     }),
+    updateTimezone: builder.mutation<WithApiStatus<UpdateTimezoneResponse>, UpdateTimezonePayload>({
+      query: (body) => ({
+        url: '/profile/timezone',
+        method: 'PATCH',
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useUpdateGeneralSettingMutation, useGetProfileQuery } = profileAccountApi
+export const { useGetProfileQuery, useUpdateGeneralSettingMutation, useUpdateTimezoneMutation } =
+  profileAccountApi
 export default profileAccountApi

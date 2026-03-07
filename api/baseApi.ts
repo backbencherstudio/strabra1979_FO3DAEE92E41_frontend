@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 
 const baseQuery = fetchBaseQuery({
   baseUrl: baseApiURL,
-  credentials: 'include',
+  // credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     // Setting header on every API call
     const token = (getState() as RootState).auth.token

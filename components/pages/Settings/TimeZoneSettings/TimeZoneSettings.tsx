@@ -1,16 +1,82 @@
+'use client'
+
+import { useGetProfileQuery, useUpdateTimezoneMutation } from '@/api/profile/profileAccountApi'
+import { TimezoneCombobox, TimezoneItem } from '@/components/form/timezone-combobox'
 import { SettingSectionCard } from '@/components/reusable/SectionCard/SectionCard'
 import SettingListItem from '@/components/reusable/SettingListItem/SettingListItem'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { getErrorMessage } from '@/lib/farmatters'
+import { cn } from '@/lib/utils'
+import { IUserProfile } from '@/types'
+import { useEffect, useEffectEvent, useState } from 'react'
+import { toast } from 'sonner'
 
 export default function TimeZoneSettings() {
+  const { data, isLoading } = useGetProfileQuery()
+
+  const [autoTimezone, setAutoTimezone] = useState<boolean | undefined>(undefined)
+  const [timezone, setTimezone] = useState<TimezoneItem | null>(null)
+
+  const updateInitialData = useEffectEvent((data: IUserProfile) => {
+    if (autoTimezone === undefined) {
+      setAutoTimezone(data.is_set_timezone_automatic)
+    }
+
+    if (data.timezone) {
+      setTimezone({
+        value: data.timezone,
+        label: data.timezone,
+      })
+    }
+  })
+
+  useEffect(() => {
+    if (!data) return
+    updateInitialData(data)
+  }, [data])
+
+  const [updateTimezone, { isLoading: updateIsLoading }] = useUpdateTimezoneMutation()
+
+  const handleAutoToggle = async (checked: boolean) => {
+    setAutoTimezone(checked)
+
+    const payload = {
+      auto_timezone: checked,
+      timezone: data?.timezone ?? '',
+    }
+
+    try {
+      const res = await updateTimezone(payload).unwrap()
+
+      toast.success(res.message ?? 'Timezone updated successfully')
+    } catch (error) {
+      toast.error('Failed to update timezone', {
+        description: getErrorMessage(error),
+      })
+    }
+  }
+
+  const handleTimezoneChange = async (tz: TimezoneItem | null) => {
+    setTimezone(tz)
+
+    try {
+      if (!tz || !tz.value) {
+        return
+      }
+
+      const res = await updateTimezone({
+        auto_timezone: false,
+        timezone: tz.value,
+      }).unwrap()
+
+      toast.success(res.message ?? 'Timezone updated successfully')
+    } catch (error) {
+      toast.error('Failed to update timezone', {
+        description: getErrorMessage(error),
+      })
+    }
+  }
+
   return (
     <SettingSectionCard>
       <SettingListItem
@@ -18,7 +84,11 @@ export default function TimeZoneSettings() {
         className="border-none bg-transparent"
         titleClassName="text-forground tex-base"
       >
-        <Switch />
+        <Switch
+          disabled={isLoading || updateIsLoading}
+          checked={autoTimezone}
+          onCheckedChange={handleAutoToggle}
+        />
       </SettingListItem>
 
       <hr className="border-gray-black-50 my-1" />
@@ -27,35 +97,14 @@ export default function TimeZoneSettings() {
         title="Time zone"
         className="border-none bg-transparent"
         titleClassName="text-forground tex-base text-nowrap"
-        // flex-col items-start
       >
-        <Select defaultValue="UTC-06:00">
-          <SelectTrigger className="min-w-0" id="time-zone">
-            <SelectValue placeholder="Select your time zone" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="UTC-12:00">(UTC-12:00) International Date Line West</SelectItem>
-              <SelectItem value="UTC-08:00">(UTC-08:00) Pacific Time (US & Canada)</SelectItem>
-              <SelectItem value="UTC-07:00">(UTC-07:00) Mountain Time (US & Canada)</SelectItem>
-              <SelectItem value="UTC-06:00">(UTC-06:00) Central Time / Central America</SelectItem>
-              <SelectItem value="UTC-05:00">(UTC-05:00) Eastern Time (US & Canada)</SelectItem>
-              <SelectItem value="UTC-04:00">(UTC-04:00) Atlantic Time / Venezuela</SelectItem>
-              <SelectItem value="UTC-03:00">(UTC-03:00) Brazil / Argentina / Greenland</SelectItem>
-              <SelectItem value="UTC+00:00">(UTC+00:00) London / Dublin / Lisbon</SelectItem>
-              <SelectItem value="UTC+01:00">(UTC+01:00) Paris / Berlin / Rome / Madrid</SelectItem>
-              <SelectItem value="UTC+02:00">(UTC+02:00) Cairo / Johannesburg / Athens</SelectItem>
-              <SelectItem value="UTC+03:00">(UTC+03:00) Moscow / Nairobi / Riyadh</SelectItem>
-              <SelectItem value="UTC+05:30">(UTC+05:30) India (Mumbai / Delhi)</SelectItem>
-              <SelectItem value="UTC+06:00">(UTC+06:00) Bangladesh / Kazakhstan</SelectItem>
-              <SelectItem value="UTC+07:00">(UTC+07:00) Bangkok / Jakarta / Hanoi</SelectItem>
-              <SelectItem value="UTC+08:00">(UTC+08:00) Beijing / Singapore / Manila</SelectItem>
-              <SelectItem value="UTC+09:00">(UTC+09:00) Tokyo / Seoul</SelectItem>
-              <SelectItem value="UTC+10:00">(UTC+10:00) Sydney / Melbourne</SelectItem>
-              <SelectItem value="UTC+12:00">(UTC+12:00) Auckland / Fiji</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className={cn({ 'pointer-events-none opacity-40': autoTimezone })}>
+          <TimezoneCombobox
+            disabled={autoTimezone || isLoading || updateIsLoading}
+            value={timezone}
+            onValueChange={(v) => handleTimezoneChange(v)}
+          />
+        </div>
       </SettingListItem>
     </SettingSectionCard>
   )
