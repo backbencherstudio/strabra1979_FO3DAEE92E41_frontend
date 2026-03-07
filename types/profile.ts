@@ -15,3 +15,17 @@ export type IUserProfile = {
   created_at: string
   updated_at: string
 }
+
+export type IProfileGeneralSettingParams = {
+  first_name: string
+  last_name: string
+  email: string
+}
+
+export type IProfileGeneralSettingResponse = {
+  id: string
+  email: string
+  first_name: string
+  last_name: string
+  updated_at: string
+}

@@ -95,3 +95,4 @@ export type IAuthUpdateUserParams = {
   gender: string
   date_of_birth: string
 }
+
