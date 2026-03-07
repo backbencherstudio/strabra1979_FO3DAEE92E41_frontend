@@ -33,7 +33,7 @@ const generalSettingsSchema = z.object({
 export type GeneralSettingsSchemeFormValues = z.infer<typeof generalSettingsSchema>
 
 export default function GeneralSettings() {
-  const [updateGeneralSetting, { isLoading }] = useUpdateGeneralSettingMutation()
+  const [updateGeneralSetting, { isLoading: savingChanges }] = useUpdateGeneralSettingMutation()
   const { data, isLoading: profileIsLoading } = useGetProfileQuery()
   const dataFetching = profileIsLoading
 
@@ -97,9 +97,9 @@ export default function GeneralSettings() {
 
         <hr className="border-gray-black-50 my-6" />
         <div className="flex justify-end">
-          <Button type="submit" disabled={isLoading} size="xl">
-            {isLoading && <Spinner />}
-            {isLoading ? 'Saving...' : 'Save Changes'}
+          <Button type="submit" disabled={savingChanges || dataFetching} size="xl">
+            {savingChanges && <Spinner />}
+            {savingChanges ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
       </form>

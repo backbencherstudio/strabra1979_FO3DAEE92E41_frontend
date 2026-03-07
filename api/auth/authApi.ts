@@ -58,12 +58,14 @@ const authApi = baseApi.injectEndpoints({
       providesTags: ['Me'] as const,
       transformResponse: (response: WithApiStatus<IAuthUser>) => response.data,
     }),
-    changePassword: builder.mutation<WithApiStatus<void>, IAuthChangePasswordParams>({
-      query: (body) => ({
-        url: '/auth/change-password',
-        method: 'POST',
-        body,
-      }),
+    changePassword: builder.mutation<WithApiStatus<void>, Partial<IAuthChangePasswordParams>>({
+      query: (body) => {
+        return {
+          url: '/profile/change-password',
+          method: 'PATCH',
+          body: body,
+        }
+      },
     }),
   }),
   overrideExisting: false,

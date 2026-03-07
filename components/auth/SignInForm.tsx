@@ -28,7 +28,7 @@ const SignInForm: React.FC<DynamicFormProps> = ({}) => {
 
   const form = useForm({
     defaultValues: {
-      email: 'admin@gmail.com',
+      email: 'authorized_viewer@gmail.com',
       password: '12345678',
     },
     validators: {
