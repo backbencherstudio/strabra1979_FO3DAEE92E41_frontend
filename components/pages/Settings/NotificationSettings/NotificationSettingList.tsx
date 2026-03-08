@@ -1,51 +1,59 @@
 'use client'
 
-import {
-  useGetProfileQuery,
-  useUpdateNotificationConfigMutation,
-} from '@/api/profile/profileAccountApi'
-import NotificationSettings from '@/components/pages/Settings/NotificationSettings/NotificationSettings'
+import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import SettingListItem from '@/components/reusable/SettingListItem/SettingListItem'
 import { Switch } from '@/components/ui/switch'
-import { getErrorMessage } from '@/lib/farmatters'
-import { NotificationSettingItem } from '@/components/pages/Settings/NotificationSettings/notificationSettings.config'
-import { INotificationConfigPayload } from '@/types'
-import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
-interface Props {
-  settings: NotificationSettingItem[]
+export type NotificationSettingItem<T> = {
+  title: string
+  key: keyof T
 }
 
-export default function NotificationSettingList({ settings }: Props) {
-  const { data, isLoading } = useGetProfileQuery()
+interface Props<T extends Record<string, boolean>> {
+  settings: NotificationSettingItem<T>[]
+  data?: T
+  isLoading?: boolean
+  updating?: boolean
+  onToggle: (key: keyof T, checked: boolean) => void
+}
 
-  const [updateNotificationConfig, { isLoading: updating }] = useUpdateNotificationConfigMutation()
-
-  const handleToggle = async (key: keyof INotificationConfigPayload, checked: boolean) => {
-    try {
-      const res = await updateNotificationConfig({ [key]: checked }).unwrap()
-
-      toast.success(res?.message ?? 'Notification setting updated')
-    } catch (error) {
-      toast.error('Failed to update notification setting', {
-        description: getErrorMessage(error),
-      })
-    }
-  }
-
+export default function NotificationSettingList<T extends Record<string, boolean>>({
+  settings,
+  data,
+  isLoading,
+  updating,
+  onToggle,
+}: Props<T>) {
   return (
-    <div className="grid grid-cols-1 gap-4.5">
-      <NotificationSettings>
-        {settings.map((setting) => (
-          <SettingListItem key={setting.key} title={setting.title}>
-            <Switch
-              checked={data?.[setting.key]}
-              disabled={isLoading || updating}
-              onCheckedChange={(checked) => handleToggle(setting.key, checked)}
-            />
-          </SettingListItem>
-        ))}
-      </NotificationSettings>
-    </div>
+    <>
+      {settings.map((setting) => (
+        <SettingListItem key={String(setting.key)} title={setting.title}>
+          <Switch
+            checked={Boolean(data?.[setting.key])}
+            disabled={isLoading || updating}
+            onCheckedChange={(checked) => onToggle(setting.key, checked)}
+          />
+        </SettingListItem>
+      ))}
+    </>
+  )
+}
+
+interface NotificationSettingsProps extends React.ComponentProps<'div'> {
+  title?: string
+}
+
+export function NotificationSettingsWrapper({
+  children,
+  title = 'Notification Settings',
+  className,
+}: NotificationSettingsProps) {
+  return (
+    <SectionCard className={cn('border-none p-8', className)}>
+      <SectionTitle className="text-lg">{title}</SectionTitle>
+
+      <div className="mt-4.5 space-y-2">{children}</div>
+    </SectionCard>
   )
 }

@@ -8,6 +8,8 @@ import type {
   UpdateTimezoneResponse,
   INotificationConfigPayload,
   INotificationConfigResponse,
+  IUserLevelNotificationSettings,
+  IUserLevelNotificationSettingsResponse,
 } from '@/types'
 
 const profileAccountApi = baseApi.injectEndpoints({
@@ -48,6 +50,25 @@ const profileAccountApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Profile'],
     }),
+    getUserLevelNotificationSettings: builder.query<IUserLevelNotificationSettingsResponse, void>({
+      query: () => ({
+        url: '/admin/settings/notifications/user-level',
+        method: 'GET',
+      }),
+      transformResponse: (res: WithApiStatus<IUserLevelNotificationSettingsResponse>) => res.data,
+      providesTags: ['UserLevelNotificationSettings'],
+    }),
+    updateUserLevelNotificationSettings: builder.mutation<
+      WithApiStatus<IUserLevelNotificationSettingsResponse>,
+      Partial<IUserLevelNotificationSettings>
+    >({
+      query: (body) => ({
+        url: '/admin/settings/notifications/user-level',
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['UserLevelNotificationSettings'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -57,5 +78,7 @@ export const {
   useUpdateGeneralSettingMutation,
   useUpdateTimezoneMutation,
   useUpdateNotificationConfigMutation,
+  useGetUserLevelNotificationSettingsQuery,
+  useUpdateUserLevelNotificationSettingsMutation,
 } = profileAccountApi
 export default profileAccountApi

@@ -1,6 +1,6 @@
-import NotificationSettingList from '@/components/pages/Settings/NotificationSettings/NotificationSettingList'
-import { authorizedViewerNotificationSettings } from '@/components/pages/Settings/NotificationSettings/notificationSettings.config'
+import { authorizedViewerNotificationSettings } from '@/components/pages/Settings/NotificationSettings/profileNotificationSettings.config'
+import ProfileNotificationSettings from '@/components/pages/Settings/NotificationSettings/ProfileNotificationSettings'
 
 export default function NotificationPage() {
-  return <NotificationSettingList settings={authorizedViewerNotificationSettings} />
+  return <ProfileNotificationSettings settings={authorizedViewerNotificationSettings} />
 }

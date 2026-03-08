@@ -54,12 +54,15 @@ export type INotificationConfigPayload = {
   notif_pm_new_property_dashboard_assigned: boolean
   notif_pm_property_dashboard_access_request: boolean
   notif_pm_property_dashboard_update: boolean
+
   notif_av_new_property_dashboard_invitation: boolean
   notif_av_access_request_update: boolean
   notif_av_property_dashboard_update: boolean
+
   notif_ot_new_inspection_assigned: boolean
   notif_ot_due_inspection: boolean
   notif_ot_incomplete_inspection_report: boolean
+
   notif_admin_new_user_registration: boolean
   notif_admin_due_inspection: boolean
   notif_admin_new_inspection_report_update: boolean
@@ -68,4 +71,34 @@ export type INotificationConfigPayload = {
 export interface INotificationConfigResponse extends Partial<INotificationConfigPayload> {
   id: string
   updated_at: string
+}
+
+export interface INotificationConfigResponse extends Partial<INotificationConfigPayload> {
+  id: string
+  updated_at: string
+}
+
+export interface IUserLevelNotificationSettingsResponse extends IUserLevelNotificationSettings {
+  id: string
+  created_at: string
+  updated_at: string
+  updated_by: string
+}
+
+export type IUserLevelNotificationSettings = {
+  pm_new_property_dashboard_assigned: boolean
+  pm_property_dashboard_access_request: boolean
+  pm_property_dashboard_update: boolean
+
+  av_new_property_dashboard_invitation: boolean
+  av_access_request_update: boolean
+  av_property_dashboard_update: boolean
+
+  ot_new_inspection_assigned: boolean
+  ot_due_inspection: boolean
+  ot_incomplete_inspection_report: boolean
+
+  admin_new_user_registration: boolean
+  admin_new_inspection_report_update: boolean
+  admin_due_inspection: boolean
 }

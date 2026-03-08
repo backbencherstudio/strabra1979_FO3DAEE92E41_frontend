@@ -1,7 +1,7 @@
 'use client'
 
 import { Edit } from '@/components/icons/Edit'
-import NotificationSettings from '@/components/pages/Settings/NotificationSettings/NotificationSettings'
+import { NotificationSettingsWrapper } from '@/components/pages/Settings/NotificationSettings/NotificationSettingList'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { useState } from 'react'
@@ -10,7 +10,7 @@ export default function BrandingPageSettings() {
   const [color, setColor] = useState('#ff0000')
 
   return (
-    <NotificationSettings className="@container" title="Platform Branding Settings">
+    <NotificationSettingsWrapper className="@container" title="Platform Branding Settings">
       <form>
         <FieldGroup className="grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
           <Field>
@@ -73,6 +73,6 @@ export default function BrandingPageSettings() {
           </Field>
         </FieldGroup>
       </form>
-    </NotificationSettings>
+    </NotificationSettingsWrapper>
   )
 }
