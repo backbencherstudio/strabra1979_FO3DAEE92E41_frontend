@@ -6,6 +6,8 @@ import type {
   IUserProfile,
   UpdateTimezonePayload,
   UpdateTimezoneResponse,
+  INotificationConfigPayload,
+  INotificationConfigResponse,
 } from '@/types'
 
 const profileAccountApi = baseApi.injectEndpoints({
@@ -35,10 +37,25 @@ const profileAccountApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    updateNotificationConfig: builder.mutation<
+      WithApiStatus<INotificationConfigResponse>,
+      Partial<INotificationConfigPayload>
+    >({
+      query: (body) => ({
+        url: '/profile/notifications',
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['Profile'],
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetProfileQuery, useUpdateGeneralSettingMutation, useUpdateTimezoneMutation } =
-  profileAccountApi
+export const {
+  useGetProfileQuery,
+  useUpdateGeneralSettingMutation,
+  useUpdateTimezoneMutation,
+  useUpdateNotificationConfigMutation,
+} = profileAccountApi
 export default profileAccountApi
