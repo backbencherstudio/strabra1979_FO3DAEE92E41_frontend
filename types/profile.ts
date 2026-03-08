@@ -102,3 +102,16 @@ export type IUserLevelNotificationSettings = {
   admin_new_inspection_report_update: boolean
   admin_due_inspection: boolean
 }
+
+export interface IBrandingSettingsResponse {
+  id: string
+  created_at: string
+  updated_at: string
+  updated_by: string
+  platform_name: string
+  platform_logo_url: string
+  signup_onboarding_image_url: string
+  login_onboarding_image_url: string
+  primary_color: string
+  primary_color_label: string
+}

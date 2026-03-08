@@ -10,6 +10,7 @@ import type {
   INotificationConfigResponse,
   IUserLevelNotificationSettings,
   IUserLevelNotificationSettingsResponse,
+  IBrandingSettingsResponse,
 } from '@/types'
 
 const profileAccountApi = baseApi.injectEndpoints({
@@ -69,6 +70,14 @@ const profileAccountApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['UserLevelNotificationSettings'],
     }),
+    getAdminBrandingSettings: builder.query<IBrandingSettingsResponse, void>({
+      query: () => ({
+        url: '/admin/settings/branding',
+        method: 'GET',
+      }),
+      transformResponse: (res: WithApiStatus<IBrandingSettingsResponse>) => res.data,
+      providesTags: ['UserLevelNotificationSettings'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -80,5 +89,6 @@ export const {
   useUpdateNotificationConfigMutation,
   useGetUserLevelNotificationSettingsQuery,
   useUpdateUserLevelNotificationSettingsMutation,
+  useGetAdminBrandingSettingsQuery,
 } = profileAccountApi
 export default profileAccountApi

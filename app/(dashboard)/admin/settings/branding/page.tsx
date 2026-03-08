@@ -1,13 +1,28 @@
 'use client'
 
+import FormInputField from '@/components/form/form-input-field'
 import { Edit } from '@/components/icons/Edit'
 import { NotificationSettingsWrapper } from '@/components/pages/Settings/NotificationSettings/NotificationSettingList'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
+import z from 'zod'
+
+export const brandingSettingsSceme = z.object({})
+
+export type BrandingSettingsFormValues = z.infer<typeof brandingSettingsSceme>
 
 export default function BrandingPageSettings() {
   const [color, setColor] = useState('#ff0000')
+
+  const form = useForm({
+    defaultValues: {},
+    validators: {
+      onSubmit: brandingSettingsSceme,
+    },
+    onSubmit: async ({ value }) => {},
+  })
 
   return (
     <NotificationSettingsWrapper className="@container" title="Platform Branding Settings">
