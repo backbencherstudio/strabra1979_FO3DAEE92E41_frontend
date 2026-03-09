@@ -29,6 +29,7 @@ export interface Property {
   nextInspection?: string
   updated_at?: string
   score: number
+  scoreTitle?: string
   previewImageUrl?: string
   // type: string
   // date: string
@@ -51,6 +52,7 @@ export default function PropertyCard({
   property,
   address,
   score,
+  scoreTitle = 'Overall Health',
   previewImageUrl,
   hasAccess,
   slug = '#',
@@ -214,14 +216,16 @@ export default function PropertyCard({
         <section className="grid grid-cols-2 divide-x">
           {children}
           <div className="flex flex-col items-end pr-3">
-            <p className="text-gray-black-300 text-center text-sm">Roof Health</p>
-            <CircularProgressWithMeta
-              containerClassName="pb-0 pt-1"
-              labelClassName="text-xs text-gray-black-300 font-medium"
-              strokeWidth={4}
-              size={50}
-              value={score}
-            />
+            <div>
+              <p className="text-gray-black-300 text-center text-sm">{scoreTitle}</p>
+              <CircularProgressWithMeta
+                containerClassName="pb-0 pt-1"
+                labelClassName="text-xs text-gray-black-300 font-medium"
+                strokeWidth={4}
+                size={50}
+                value={score}
+              />
+            </div>
           </div>
         </section>
         <section className="mt-4.5">

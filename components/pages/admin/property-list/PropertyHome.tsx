@@ -7,7 +7,8 @@ import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list
 import { AddNewDialog } from '@/components/pages/admin/property-list/AddNewDialog'
 import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
 import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
-import { formatDate } from '@/lib/farmatters'
+import { formatDate, naIfEmpty } from '@/lib/farmatters'
+import { notAvailableLabel } from '@/constant'
 
 export default function PropertyHome() {
   const handleSchedule = (propertyId: string) => {
@@ -69,15 +70,16 @@ export default function PropertyHome() {
             title={p.name}
             property={p.name}
             id={p.name}
+            address={naIfEmpty(p.address)}
+            score={p?.dashboard?.latestInspection?.overallScore}
             // previewImageUrl={'/images/property-card/property-01.png'}
-            address={p.address}
-            // score={}
+            // p?.dashboard?.latestInspection?.healthLabel
           >
             <PropertyCardInfoList
               items={[
-                { label: 'Type', value: p.propertyType },
-                { label: 'Next Inspection', value: formatDate(p.nextInspectionDate) },
-                { label: 'Property Manager', value: p.propertyManager.name ?? 'N/A' },
+                { label: 'Type', value: naIfEmpty(p.propertyType) },
+                { label: 'Next Inspection', value: naIfEmpty(formatDate(p.nextInspectionDate)) },
+                { label: 'Property Manager', value: naIfEmpty(p.propertyManager.name) },
               ]}
             />
           </PropertyCard>

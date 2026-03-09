@@ -42,3 +42,9 @@ export function getErrorMessage(
 
   return defaultMessage
 }
+
+export const notAvailableLabel = '........'
+
+export function naIfEmpty(value: string | null | undefined): string {
+  return value ?? notAvailableLabel
+}

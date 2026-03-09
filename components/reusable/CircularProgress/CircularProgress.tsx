@@ -68,6 +68,8 @@ export const scoreScale = [
 
 const getScoreMeta = (score: number) => scoreScale.find((s) => score >= s.min && score <= s.max)
 
+// TODO: get meta from the parent
+
 export function CircularProgressWithMeta({
   placeholder,
   containerClassName,

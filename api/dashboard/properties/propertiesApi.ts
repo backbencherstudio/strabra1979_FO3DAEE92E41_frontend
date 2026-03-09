@@ -1,29 +1,5 @@
 import { baseApi } from '@/api/baseApi'
-import type { IUserProfile, WithApiStatus } from '@/types'
-
-export type IPropertyListItem = {
-  id: string
-  name: string
-  address: string
-  propertyType: string
-  nextInspectionDate: string
-  propertyManagerId: string
-  activeTemplateId: string
-  status: string
-  createdAt: string
-  updatedAt: string
-  propertyManager: {
-    id: string
-    name?: string
-    email?: string
-    avatar?: string
-    inspections: Array<string>
-  }
-  dashboard: {
-    id: string
-    updatedAt: string
-  }
-}
+import type { IPropertyListItem, WithApiStatus } from '@/types'
 
 const propertiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
