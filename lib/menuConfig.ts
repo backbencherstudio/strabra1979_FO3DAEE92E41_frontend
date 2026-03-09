@@ -46,25 +46,25 @@ export const adminMenu: MenuItem[] = [
     icon: Archive02,
   },
   {
-    id:'user-management',
+    id: 'user-management',
     label: 'User Management',
     href: '/admin/user-management',
-    icon:  Users,
+    icon: Users,
   },
   {
-    id:'Activity-Log',
+    id: 'activity-log',
     label: 'Activity Log',
     href: '/admin/activity-log',
-    icon:Activity
+    icon: Activity,
   },
   {
-    id:'inspection-criteria',
+    id: 'inspection-criteria',
     label: 'Inspection Criteria',
     href: '/admin/inspection-criteria',
     icon: FileSearch,
   },
   {
-    id:'inspection-list',
+    id: 'inspection-list',
     label: 'Inspection List',
     href: '/admin/inspection-list',
     icon: FileText,

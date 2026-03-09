@@ -1,40 +1,37 @@
 'use client'
 import { LocationPin } from '@/components/icons/LocationPin'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
+import { AssignInspectorDialog } from '@/components/pages/admin/property-list/AssignInspectiorDialog'
+import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
+import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccess'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
-import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
-import Link from 'next/link'
-import { InfoGrid, InfoItem } from '../InfoGrid/InfoGrid'
-import { Check, MoreVertical } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useState, useEffect } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
-import { AssignInspectorDialog } from '@/components/pages/admin/property-list/AssignInspectiorDialog'
-import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccess'
- 
+import { cn } from '@/lib/utils'
+import { Check, MoreVertical } from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
+import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
+import { InfoItem } from '../InfoGrid/InfoGrid'
+
 export interface Property {
+  id: string
   title: string
   property: string
-  id: string
-  type: string
-  inspector: {
-    name: string
-  }
   address: string
-  date: string
   nextInspection?: string
   updated_at?: string
   score: number
   previewImageUrl?: string
+  // type: string
+  // date: string
 }
 
 export interface PropertyCardProps extends Property, React.PropsWithChildren {
@@ -65,7 +62,7 @@ export default function PropertyCard({
   isAdmin = false,
   onSchedule,
   onAssign,
-  onViewAccess
+  onViewAccess,
 }: PropertyCardProps) {
   const [isSelected, setIsSelected] = useState(defaultSelected)
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
@@ -124,18 +121,17 @@ export default function PropertyCard({
   }
 
   return (
-    <div 
+    <div
       className={cn(
-        "border-input overflow-hidden rounded-md border bg-white transition-all duration-200 relative", 
-        isSelectable && "cursor-pointer",
-        isSelected && "border-[3px] border-blue-500"
+        'border-input relative overflow-hidden rounded-md border bg-white transition-all duration-200',
+        isSelectable && 'cursor-pointer',
+        isSelected && 'border-[3px] border-blue-500',
       )}
       onClick={handleCardClick}
     >
-    
       {isSelectable && isSelected && (
         <div className="absolute top-3 right-3 z-50">
-          <div className="bg-blue-500 rounded-full p-1 shadow-lg">
+          <div className="rounded-full bg-blue-500 p-1 shadow-lg">
             <Check className="h-4 w-4 text-white" />
           </div>
         </div>
@@ -146,27 +142,22 @@ export default function PropertyCard({
           <div className="absolute top-3 right-3 z-40" onClick={handleDropdownClick}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 bg-[#bfcbce] shadow-lg hover:bg-[#bfcbce]/50 border border-[#eceff3]">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 border border-[#eceff3] bg-[#bfcbce] shadow-lg hover:bg-[#bfcbce]/50"
+                >
                   <MoreVertical className="h-4 w-4 text-white hover:text-black" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className='bg-[#f6f8fa] p-2'>
-                <DropdownMenuItem 
-                  onClick={handleScheduleClick} 
-                  className='cursor-pointer'
-                >
+              <DropdownMenuContent align="end" className="bg-[#f6f8fa] p-2">
+                <DropdownMenuItem onClick={handleScheduleClick} className="cursor-pointer">
                   Schedule Inspection
                 </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={handleAssignClick} 
-                  className='cursor-pointer'
-                >
+                <DropdownMenuItem onClick={handleAssignClick} className="cursor-pointer">
                   Assign Inspector
                 </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={handleViewAccessClick} 
-                  className='cursor-pointer'
-                >
+                <DropdownMenuItem onClick={handleViewAccessClick} className="cursor-pointer">
                   View Access Details
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -200,15 +191,17 @@ export default function PropertyCard({
           />
         </>
       )}
-      
-      <div className="relative bg-gray-200 max-sm:h-50">
-        <Image
-          className="h-full w-full object-cover"
-          width={550}
-          height={380}
-          alt=""
-          src={previewImageUrl!}
-        />
+
+      <div className="relative aspect-video bg-gray-400 max-sm:h-50">
+        {previewImageUrl && (
+          <Image
+            className="h-full w-full object-cover"
+            width={550}
+            height={380}
+            alt=""
+            src={previewImageUrl!}
+          />
+        )}
         <div className="absolute bottom-0 left-0 px-4.5 pb-3">
           <h3 className="text-lg font-medium text-white">{property}</h3>
           <div className="text-gray-black-50 space-x-1 text-balance">

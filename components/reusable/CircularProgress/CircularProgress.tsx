@@ -10,7 +10,7 @@ interface CircularProgressProps {
 }
 
 export default function CircularProgress({
-  value,
+  value = 0,
   size = 120,
   strokeWidth = 10,
   className,
@@ -73,7 +73,10 @@ export function CircularProgressWithMeta({
   containerClassName,
   ...props
 }: { placeholder?: string } & CircularProgressProps) {
-  const meta = getScoreMeta(props.value)
+  const meta =
+    typeof props.value === 'number'
+      ? getScoreMeta(props.value)
+      : { id: '', label: '', min: 0, max: 0, color: '' }
 
   return (
     <section

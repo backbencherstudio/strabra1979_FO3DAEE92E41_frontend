@@ -1,5 +1,6 @@
 export * from './number'
 export * from './error'
+export * from './date'
 
 import qs from 'qs'
 

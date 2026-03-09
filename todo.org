@@ -1,0 +1,23 @@
+
+* Settings
+** General Settings
+- [X] General Settings
+- [x] Change password
+- [x] Time zone
+
+** Notification Settings
+- [X] autorized_viewer, property_manager, operation_team
+- [X] admin own Notifications
+- [X] admin user level Notification
+- [X] Branding Settings
+
+* Admin
+** Dashboard
+** Properties List
+** Templates
+** User Management
+** Activity Log
+** Inspection Criteria
+** Inspection List
+
+

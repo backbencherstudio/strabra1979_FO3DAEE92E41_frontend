@@ -1,14 +1,13 @@
 'use client'
 
-import React from 'react'
- 
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import Building3Icon from '@/components/icons/Building3Icon'
 import PlusIcon from '@/components/icons/PlusIcon'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
 import { AddNewDialog } from '@/components/pages/admin/property-list/AddNewDialog'
 import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
- 
+import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
+import { formatDate } from '@/lib/farmatters'
 
 export default function PropertyHome() {
   const handleSchedule = (propertyId: string) => {
@@ -26,47 +25,59 @@ export default function PropertyHome() {
     console.log('View access details for property:', propertyId)
   }
 
-   const handleAddNew = (data: any) => {
+  const handleAddNew = (data: any) => {
     console.log('Create new property:', data)
     // Add your logic here to create a new property
     // For example: router.push('/manager/property-list/new')
     // Or make an API call
   }
 
+  const { data = [], isLoading } = useGetPropertiesQuery()
+
   return (
-    <div className=' p-4 bg-[#f6f8fa] rounded-3xl'>
-      <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 ">
-        <div className=' bg-[#ffffff] rounded-[12px] flex items-center justify-center border border-[#e9e9ea]'>
-        <div className=' flex flex-col justify-center items-center py-24'>
+    <div className="rounded-3xl bg-[#f6f8fa] p-4">
+      <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3">
+        <div className="flex items-center justify-center rounded-[12px] border border-[#e9e9ea] bg-[#ffffff]">
+          <div className="flex flex-col items-center justify-center py-24">
+            <Building3Icon />
+            <h2 className="mt-3 text-center text-base font-medium text-[#4a4c56]">
+              Create New Property Dashboard
+            </h2>
+            <p className="mt-1.5 text-center text-sm text-[#5f6166]">
+              Set up a dashboard to manage <br /> inspections, and all property reports.
+            </p>
 
-           <Building3Icon/>
-           <h2 className=' text-base text-[#4a4c56] font-medium text-center mt-3'>Create New Property Dashboard</h2>
-           <p className=' text-sm text-[#5f6166] text-center mt-1.5'>Set up a dashboard to manage <br /> inspections, and all property reports.</p>
-
-           <AddNewDialog onAdd={handleAddNew} trigger={
-
-       <button className=' text-[#0b2a3b] text-sm font-medium border border-[#eceff3] py-3.5 w-full rounded-[8px] mt-6 flex items-center justify-center gap-1.5'> <PlusIcon/> Create New</button>
-           }/>
-         
-
-            </div>
+            <AddNewDialog
+              onAdd={handleAddNew}
+              trigger={
+                <button className="mt-6 flex w-full items-center justify-center gap-1.5 rounded-[8px] border border-[#eceff3] py-3.5 text-sm font-medium text-[#0b2a3b]">
+                  <PlusIcon /> Create New
+                </button>
+              }
+            />
+          </div>
         </div>
-        {properties.map((p) => (
-            
-          <PropertyCard 
-            slug="/admin/properties-list/123"
-            hasAccess 
-            key={p.id} 
-            {...p}
+        {data.map((p) => (
+          <PropertyCard
+            hasAccess
+            key={p.id}
+            slug={`/admin/properties-list/${p.id}`}
             isAdmin={true}
             onSchedule={() => handleSchedule(p.id)}
             onAssign={() => handleAssign(p.id)}
             onViewAccess={() => handleViewAccess(p.id)}
+            title={p.name}
+            property={p.name}
+            id={p.name}
+            // previewImageUrl={'/images/property-card/property-01.png'}
+            address={p.address}
+            // score={}
           >
             <PropertyCardInfoList
               items={[
-                { label: 'Type', value: p.type },
-                { label: 'Next Inspection', value: p.date },
+                { label: 'Type', value: p.propertyType },
+                { label: 'Next Inspection', value: formatDate(p.nextInspectionDate) },
+                { label: 'Property Manager', value: p.propertyManager.name ?? 'N/A' },
               ]}
             />
           </PropertyCard>

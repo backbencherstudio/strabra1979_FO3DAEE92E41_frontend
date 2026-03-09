@@ -50,6 +50,8 @@ export const baseApi = createApi({
     'Profile',
     'UserLevelNotificationSettings',
     'AdminBrandingSetting',
+
+    'Property',
   ] as const,
   endpoints: () => ({}),
 })
