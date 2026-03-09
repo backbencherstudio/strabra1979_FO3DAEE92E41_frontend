@@ -52,6 +52,7 @@ export const baseApi = createApi({
     'AdminBrandingSetting',
 
     'Property',
+    'ActivityLog',
   ] as const,
   endpoints: () => ({}),
 })
