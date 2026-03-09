@@ -11,6 +11,7 @@ import type {
   IUserLevelNotificationSettings,
   IUserLevelNotificationSettingsResponse,
   IBrandingSettingsResponse,
+  IUpdateBrandingPayload,
 } from '@/types'
 
 const profileAccountApi = baseApi.injectEndpoints({
@@ -76,7 +77,15 @@ const profileAccountApi = baseApi.injectEndpoints({
         method: 'GET',
       }),
       transformResponse: (res: WithApiStatus<IBrandingSettingsResponse>) => res.data,
-      providesTags: ['UserLevelNotificationSettings'],
+      providesTags: ['AdminBrandingSetting'],
+    }),
+    updateBranding: builder.mutation({
+      query: (brandingData: IUpdateBrandingPayload) => ({
+        url: '/admin/settings/branding',
+        method: 'PATCH',
+        body: brandingData,
+      }),
+      invalidatesTags: ['AdminBrandingSetting'],
     }),
   }),
   overrideExisting: false,
@@ -90,5 +99,6 @@ export const {
   useGetUserLevelNotificationSettingsQuery,
   useUpdateUserLevelNotificationSettingsMutation,
   useGetAdminBrandingSettingsQuery,
+  useUpdateBrandingMutation,
 } = profileAccountApi
 export default profileAccountApi

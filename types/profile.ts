@@ -115,3 +115,11 @@ export interface IBrandingSettingsResponse {
   primary_color: string
   primary_color_label: string
 }
+export interface IUpdateBrandingPayload {
+  platform_name: string
+  platform_logo_url: string
+  signup_onboarding_image_url: string
+  login_onboarding_image_url: string
+  primary_color: string
+  primary_color_label: string
+}

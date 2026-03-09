@@ -1,8 +1,8 @@
-import { Property } from "@/components/reusable/PropertyCard/PropertyCard";
+import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
 
 export const properties: Property[] = [
   {
-    id: 'INS2323',  // ID
+    id: 'INS2323', // ID
     title: '2024 Annual Roof Inspection',
     property: 'Sunset Office Complex',
     type: 'Commercial',
@@ -13,7 +13,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-01.png',
   },
   {
-    id: 'INS2324',  // ID
+    id: 'INS2324', // ID
     title: '2024 Spring Roof Inspection',
     property: 'Riverside Apartments',
     type: 'Residential',
@@ -24,7 +24,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-02.png',
   },
   {
-    id: 'INS2325',  // ID
+    id: 'INS2325', // ID
     title: '2024 Winter Roof Inspection',
     property: 'Downtown Retail Hub',
     type: 'Commercial',
@@ -35,7 +35,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-03.png',
   },
   {
-    id: 'INS2326',  // ID
+    id: 'INS2326', // ID
     title: '2024 Quarterly Roof Inspection',
     property: 'Greenwood Mall',
     type: 'Industrial',
@@ -46,7 +46,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-04.png',
   },
   {
-    id: 'INS2327',  // ID
+    id: 'INS2327', // ID
     title: '2024 Emergency Roof Inspection',
     property: 'Harbor View Condos',
     type: 'Residential',
@@ -57,7 +57,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-05.png',
   },
   {
-    id: 'INS2328',  // ID
+    id: 'INS2328', // ID
     title: '2024 Routine Roof Inspection',
     property: 'Pinecrest Warehouse',
     type: 'Industrial',
@@ -68,7 +68,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-06.png',
   },
   {
-    id: 'INS2329',  // ID
+    id: 'INS2329', // ID
     title: '2024 Mid-Year Roof Inspection',
     property: 'Lakeside Townhomes',
     type: 'Residential',
@@ -79,7 +79,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-07.png',
   },
   {
-    id: 'INS2330',  // ID
+    id: 'INS2330', // ID
     title: '2024 Annual Structural Inspection',
     property: 'Elmwood Business Park',
     type: 'Commercial',
@@ -90,7 +90,7 @@ export const properties: Property[] = [
     previewImageUrl: '/images/property-card/property-08.png',
   },
   {
-    id: 'INS2331',  // ID
+    id: 'INS2331', // ID
     title: '2024 Post-Storm Roof Inspection',
     property: 'Maplewood Residences',
     type: 'Residential',

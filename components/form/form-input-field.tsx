@@ -1,6 +1,6 @@
 'use client'
 
-import { Field, FieldError } from '@/components/ui/field'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { ReactNode } from 'react'
 
@@ -27,9 +27,9 @@ export default function FormInputField<T>({
     <form.Field name={name as string}>
       {(field: any) => (
         <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
-          <label className="text- mb-2 text-base" htmlFor={field.name}>
+          <FieldLabel className="text-base font-normal" htmlFor={field.name}>
             {label}
-          </label>
+          </FieldLabel>
 
           <InputGroup>
             {icon && <InputGroupAddon>{icon}</InputGroupAddon>}

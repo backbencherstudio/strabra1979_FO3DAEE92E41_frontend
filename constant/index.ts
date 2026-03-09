@@ -8,4 +8,4 @@ export const cookieAge = {
 }
 
 export const baseApiURL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://ons-steel-segments-interact.trycloudflare.com/api'
+  process.env.NEXT_PUBLIC_API_URL || 'https://gem-prospective-minus-brunette.trycloudflare.com/api'
