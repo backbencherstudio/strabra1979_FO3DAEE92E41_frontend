@@ -1,5 +1,6 @@
 import { ReportManagementColumns, demoReportData } from '@/components/columns/ReportsManagement'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
+import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import CustomTable from '@/components/reusable/table/CustomTable'
@@ -8,7 +9,9 @@ export default function page() {
   return (
     <div className="w-full">
       <SectionCard className="space-y-4.5">
-        <SharedPropertyCardListActions title="Reports Updates" titleClassName="text-forground" />
+        <SharedPropertyCardListContextProvider>
+          <SharedPropertyCardListActions title="Reports Updates" titleClassName="text-forground" />
+        </SharedPropertyCardListContextProvider>
         <div>
           <CustomTable
             columns={ReportManagementColumns}

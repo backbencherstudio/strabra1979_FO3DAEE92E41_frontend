@@ -9,6 +9,7 @@ import { Property } from '../PropertyCard/PropertyCard'
 import CustomTable from '../table/CustomTable'
 import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
 import PaginationControls from '../Pagination/Pagination'
+import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 
 interface PropertyDetailsReportsProps {
   id: string
@@ -84,7 +85,9 @@ export default function PropertyDetailsReports({
       </div>
 
       <SectionCard className="space-y-4.5">
-        <SharedPropertyCardListActions titleClassName="text-forground" title="Report Updates" />
+        <SharedPropertyCardListContextProvider>
+          <SharedPropertyCardListActions titleClassName="text-forground" title="Report Updates" />
+        </SharedPropertyCardListContextProvider>
 
         <div>
           <CustomTable

@@ -13,6 +13,7 @@ interface SharedPropertyCardListActionsProps {
   title: string
   titleClassName?: string
   showActionButton?: boolean
+  showSearch?: boolean
   actionButtonText?: string | ReactNode
   onActionButtonClick?: () => void
   actionButtonClassName?: string
@@ -22,6 +23,7 @@ export default function SharedPropertyCardListActions({
   title,
   titleClassName,
   showActionButton = false,
+  showSearch = false,
   actionButtonText = 'Action',
   onActionButtonClick,
   actionButtonClassName,
@@ -48,13 +50,14 @@ export default function SharedPropertyCardListActions({
 
       <section className="flex justify-end">
         <div className="flex items-center gap-3">
-          <InputGroup className="h-10.5 bg-transparent">
-            <InputGroupInput placeholder="Search..." />
-            <InputGroupAddon>
-              <Search className="h-4 w-4" />
-            </InputGroupAddon>
-          </InputGroup>
-
+          {showSearch ? (
+            <InputGroup className="h-10.5 bg-transparent">
+              <InputGroupInput placeholder="Search..." />
+              <InputGroupAddon>
+                <Search className="h-4 w-4" />
+              </InputGroupAddon>
+            </InputGroup>
+          ) : null}
           <DatePickerPopover
             placeholder="Filter by Date"
             date={dateFrom?.raw ?? undefined}

@@ -3,12 +3,15 @@ import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/Proper
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { properties } from '../../(autorized_viewer)/mock'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
+import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 
 export default function page() {
   return (
     <div className="grid grid-cols-1 gap-6">
       <SectionCard className="">
-        <SharedPropertyCardListActions title="My Properties" />
+        <SharedPropertyCardListContextProvider>
+          <SharedPropertyCardListActions title="My Properties" />
+        </SharedPropertyCardListContextProvider>
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {properties.map((p) => (

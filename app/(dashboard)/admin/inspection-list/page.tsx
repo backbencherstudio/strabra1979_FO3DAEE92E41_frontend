@@ -7,6 +7,7 @@ import {
 import { CalenderIcon03 } from '@/components/icons/CalenderIcon'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
+import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import CustomTable from '@/components/reusable/table/CustomTable'
@@ -30,18 +31,20 @@ export default function AdminInspectionList() {
       />
 
       <SectionCard className="space-y-4.5">
-        <SharedPropertyCardListActions
-          onActionButtonClick={() => setScheduleDialogOpen((v) => !v)}
-          showActionButton
-          actionButtonText={
-            <>
-              <CalenderIcon03 />
-              Schedule New Inspection
-            </>
-          }
-          titleClassName="text-forground"
-          title="Inspection List"
-        />
+        <SharedPropertyCardListContextProvider>
+          <SharedPropertyCardListActions
+            onActionButtonClick={() => setScheduleDialogOpen((v) => !v)}
+            showActionButton
+            actionButtonText={
+              <>
+                <CalenderIcon03 />
+                Schedule New Inspection
+              </>
+            }
+            titleClassName="text-forground"
+            title="Inspection List"
+          />
+        </SharedPropertyCardListContextProvider>
 
         <div>
           <CustomTable
