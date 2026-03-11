@@ -6,9 +6,11 @@ export type IUserListItem = {
   last_name?: string
   avatar?: string
   role: string
-  status: string
+  status?: IUserStatus
   approved_at?: string
   access_expires_at?: string
   created_at: string
   updated_at: string
 }
+
+export type IUserStatus = 'ACTIVE' | 'DEACTIVATED' | 'DELETED'

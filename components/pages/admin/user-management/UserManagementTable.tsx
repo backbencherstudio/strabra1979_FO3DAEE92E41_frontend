@@ -17,6 +17,7 @@ import {
 } from '@/components/reusable/Pagination/PaginationPageProvider'
 import CustomTable from '@/components/reusable/table/CustomTable'
 import { addDaysBy } from '@/lib/farmatters'
+import { IUserStatus } from '@/types'
 import { FilterIcon } from 'lucide-react'
 
 import React, { useState } from 'react'
@@ -30,7 +31,6 @@ export default function UserManagementTable() {
     </PaginationPageProvider>
   )
 }
-type Status = 'ACTIVE' | 'DEACTIVATED' | 'DELETED' | undefined
 
 function UserManagementTableContent() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
@@ -47,7 +47,7 @@ function UserManagementTableContent() {
     // or add the new user to your table data
   }
 
-  const [status, setStatus] = useState<Status | undefined>(undefined)
+  const [status, setStatus] = useState<IUserStatus | undefined>(undefined)
   const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
   const { page, setPage } = usePaginationPage()
 
@@ -71,7 +71,7 @@ function UserManagementTableContent() {
           onActionButtonClick={() => setIsDialogOpen(true)}
           showSearch
         >
-          <FilterDropdown<Status>
+          <FilterDropdown<IUserStatus | undefined>
             value={status}
             onChange={(v) => {
               setPage(1)

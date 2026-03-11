@@ -16,24 +16,22 @@ const userManagementApi = baseApi.injectEndpoints({
         url: `/user-management`,
         params: args ?? undefined,
       }),
-      providesTags: ['UserList'] as const,
+      providesTags: ['UserManagement'] as const,
     }),
-    // updateGeneralSetting: builder.mutation<
-    //   WithApiStatus<IProfileGeneralSettingResponse>,
-    //   Partial<IProfileGeneralSettingParams>
-    // >({
-    //   query: (body) => {
-    //     return {
-    //       url: '/profile/general',
-    //       method: 'PATCH',
-    //       body: body,
-    //     }
-    //   },
-    //   invalidatesTags: ['Me'],
-    // }),
+    updateUserStatus: builder.mutation<
+      IUserListItem,
+      { id: string; status: 'ACTIVE' | 'DEACTIVATED' | 'DELETED' }
+    >({
+      query: ({ id, status }) => ({
+        url: `/user-management/${id}/status`,
+        method: 'PATCH',
+        body: { status },
+      }),
+      invalidatesTags: ['UserManagement'],
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetUserListQuery } = userManagementApi
+export const { useGetUserListQuery, useUpdateUserStatusMutation } = userManagementApi
 export default userManagementApi

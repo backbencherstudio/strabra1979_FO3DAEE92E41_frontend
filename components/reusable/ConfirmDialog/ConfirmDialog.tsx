@@ -10,11 +10,11 @@ import {
 import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
 
-interface ConfirmDialog extends React.PropsWithChildren {
+interface ConfirmDialog extends React.ComponentProps<typeof AlertDialog> {
   title: string
   desc: string
   iconContainerClass?: string
-  trigger: ReactNode
+  trigger?: ReactNode
   icon?: ReactNode
 }
 
@@ -25,10 +25,11 @@ export default function ConfirmDialog({
   trigger,
   iconContainerClass,
   children,
+  ...props
 }: ConfirmDialog) {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog {...props}>
+      {trigger ? <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> : null}
       <AlertDialogContent>
         <AlertDialogHeader>
           {icon ? (
