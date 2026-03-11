@@ -1,49 +1,47 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import React from "react";
-import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
+import Image from 'next/image'
+import React from 'react'
+import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react'
 
-interface ColumnConfig {
-  label: React.ReactNode;
-  width: any;
-  accessor: string;
-  sortable?: boolean;
-  formatter?: (value: any, row: any) => React.ReactNode;
+export interface ColumnConfig<T, K extends keyof T = keyof T> {
+  label: React.ReactNode
+  accessor: K
+  width?: string
+  sortable?: boolean
+  formatter?: (value: T[K], row: T, index: number) => React.ReactNode
 }
-
-
 
 interface SortConfig {
-  key: string;
-  direction: "ascending" | "descending";
+  key: string
+  direction: 'ascending' | 'descending'
 }
 
-interface DynamicTableProps {
-  columns: ColumnConfig[];
-  data: any[];
-  currentPage?: number;
-  itemsPerPage?: number;
-  onPageChange?: (page: number) => void;
-  onView?: (row: any) => void;
-  onDelete?: (id: any) => void;
-  noDataMessage?: string;
-  sortConfig?: SortConfig | null;
-  onSort?: (key: string) => void;
-  minWidth?: number;
+interface DynamicTableProps<T> {
+  columns: ColumnConfig<T>[]
+  data: T[]
+  currentPage?: number
+  itemsPerPage?: number
+  onPageChange?: (page: number) => void
+  onView?: (row: T) => void
+  onDelete?: (id: string) => void
+  noDataMessage?: string
+  sortConfig?: SortConfig | null
+  onSort?: (key: string) => void
+  minWidth?: number
 
   headerStyles?: {
-    backgroundColor?: string;
-    textColor?: string;
-    fontSize?: string;
-    padding?: string;
-    fontWeight?: string;
-  };
-  borderColor?: string;
-  cellBorderColor?: string;
-  hasWrapperBorder?: boolean;
-  wrapperBorderColor?: string;
-  roundedClass?: string;
+    backgroundColor?: string
+    textColor?: string
+    fontSize?: string
+    padding?: string
+    fontWeight?: string
+  }
+  borderColor?: string
+  cellBorderColor?: string
+  hasWrapperBorder?: boolean
+  wrapperBorderColor?: string
+  roundedClass?: string
 }
 
 export default function CustomTable({
@@ -54,86 +52,75 @@ export default function CustomTable({
   onPageChange,
   onView,
   onDelete,
-  noDataMessage = "No data found.",
+  noDataMessage = 'No data found.',
   sortConfig,
   onSort,
   minWidth,
 
   headerStyles = {
-    backgroundColor: "#F3F4F6",
-    textColor: "#4a4c56",
-    fontSize: "14px",
-    fontWeight: "500",
+    backgroundColor: '#F3F4F6',
+    textColor: '#4a4c56',
+    fontSize: '14px',
+    fontWeight: '500',
   },
 
-  cellBorderColor = "#EDEDED",
+  cellBorderColor = '#EDEDED',
   hasWrapperBorder = true,
-  wrapperBorderColor = "#EDEDED",
-  roundedClass = "",
+  wrapperBorderColor = '#EDEDED',
+  roundedClass = '',
 }: DynamicTableProps) {
-  const totalPages = itemsPerPage ? Math.ceil(data.length / itemsPerPage) : 0;
+  const totalPages = itemsPerPage ? Math.ceil(data.length / itemsPerPage) : 0
   const paginatedData = itemsPerPage
-    ? data.slice(
-        ((currentPage ?? 1) - 1) * itemsPerPage,
-        (currentPage ?? 1) * itemsPerPage
-      )
-    : data;
+    ? data.slice(((currentPage ?? 1) - 1) * itemsPerPage, (currentPage ?? 1) * itemsPerPage)
+    : data
 
   const renderSortIcon = (columnKey: string) => {
     if (!sortConfig || sortConfig.key !== columnKey) {
-      return <ChevronsUpDown className="w-5 h-5 text-headerColor" />;
+      return <ChevronsUpDown className="text-headerColor h-5 w-5" />
     }
-    if (sortConfig.direction === "ascending") {
-      return <ChevronUp className="w-4 h-4" />;
+    if (sortConfig.direction === 'ascending') {
+      return <ChevronUp className="h-4 w-4" />
     }
-    return <ChevronDown className="w-4 h-4" />;
-  };
+    return <ChevronDown className="h-4 w-4" />
+  }
 
   // Check if there's an actions column in the columns array
   const hasActionsColumn = columns.some(
-    (col) => col.accessor === "action" || col.accessor === "actions"
-  );
+    (col) => col.accessor === 'action' || col.accessor === 'actions',
+  )
 
   return (
-    <div>
+    <div className="text-gray-black-400 text-xs">
       {/* Table Wrapper with Border & Radius */}
       <div
-        className={`overflow-hidden    ${roundedClass}`}
+        className={`overflow-hidden ${roundedClass}`}
         style={{
-          border: hasWrapperBorder ? `1px solid ${wrapperBorderColor}` : "none",
+          border: hasWrapperBorder ? `1px solid ${wrapperBorderColor}` : 'none',
         }}
       >
         <div className="overflow-x-auto">
-          <table
-            className={` w-full text-left`}
-            style={{minWidth: `${minWidth || 1000}px`}}
-          >
+          <table className={`w-full text-left`} style={{ minWidth: `${minWidth || 1000}px` }}>
             <thead>
-              <tr className="rounded-t-2xl overflow-hidden">
+              <tr className="overflow-hidden rounded-t-2xl">
                 {columns.map((col, index) => (
                   <th
                     key={index}
                     style={{
-                      width: col.width || "auto",
+                      width: col.width || 'auto',
                       backgroundColor: headerStyles.backgroundColor,
                       color: headerStyles.textColor,
                       fontSize: headerStyles.fontSize,
                       padding: headerStyles.padding,
                       fontWeight: headerStyles.fontWeight,
                     }}
-                    className={`text-[#fff] px-4 py-3 whitespace-nowrap text-base font-light capitalize text-descriptionColor border-b  
-                   
-                      ${
-                        index === columns.length - 1 &&
-                        !(onView || onDelete || hasActionsColumn)
-                          ? "rounded-r-2xl"
-                          : ""
-                      }`}
+                    className={`text-descriptionColor border-b px-4 py-3 text-base font-light whitespace-nowrap text-[#fff] capitalize ${
+                      index === columns.length - 1 && !(onView || onDelete || hasActionsColumn)
+                        ? 'rounded-r-2xl'
+                        : ''
+                    }`}
                   >
                     <div
-                      className={`flex items-center gap-1 ${
-                        col.sortable ? "cursor-pointer" : ""
-                      }`}
+                      className={`flex items-center gap-1 ${col.sortable ? 'cursor-pointer' : ''}`}
                     >
                       {col.label}
                     </div>
@@ -141,7 +128,7 @@ export default function CustomTable({
                 ))}
                 {/* Only show Action header if there are action buttons but no actions column */}
                 {(onView || onDelete) && !hasActionsColumn && (
-                  <th className="px-4 py-3 text-base font-medium text-[#4a4c56] border-none">
+                  <th className="border-none px-4 py-3 text-base font-medium text-[#4a4c56]">
                     Action
                   </th>
                 )}
@@ -150,30 +137,29 @@ export default function CustomTable({
 
             <tbody>
               {paginatedData?.length > 0 ? (
-                paginatedData.map((row, i) => {
-                  const isLastRow = i === paginatedData.length - 1;
+                paginatedData.map((row, rowIndex) => {
+                  const isLastRow = rowIndex === paginatedData.length - 1
 
                   return (
-                    <tr key={i} className="border-none bg-white">
-                      {columns.map((col, idx) => (
+                    <tr key={rowIndex} className="border-none bg-white">
+                      {columns.map((col, colIndex) => (
                         <td
-                          key={idx}
+                          key={colIndex}
                           style={{
-                            minWidth: col.width || "auto",
-                            borderBottom:  
-                               `1px solid ${cellBorderColor}`,
+                            minWidth: col.width || 'auto',
+                            borderBottom: `1px solid ${cellBorderColor}`,
                           }}
                           className="px-4 py-3 text-[#4a4c56]"
                           onClick={(e) => {
                             // If this is the actions column and onView is provided, call onView
-                            if (col.accessor === "action" && onView) {
-                              e.stopPropagation();
-                              onView(row);
+                            if (col.accessor === 'action' && onView) {
+                              e.stopPropagation()
+                              onView(row)
                             }
                           }}
                         >
-                          {col.formatter
-                            ? col.formatter(row[col.accessor], row)
+                          {typeof col.formatter === 'function'
+                            ? col.formatter(row[col.accessor], row, rowIndex)
                             : row[col.accessor]}
                         </td>
                       ))}
@@ -181,16 +167,14 @@ export default function CustomTable({
                       {/* Show action buttons if onView/onDelete provided but no actions column exists */}
                       {(onView || onDelete) && !hasActionsColumn && (
                         <td
-                          className="px-4 py-3 flex gap-4 items-center"
+                          className="flex items-center gap-4 px-4 py-3"
                           style={{
-                            borderBottom: isLastRow
-                              ? "none"
-                              : `1px solid ${cellBorderColor}`,
+                            borderBottom: isLastRow ? 'none' : `1px solid ${cellBorderColor}`,
                           }}
                         >
                           {onView && (
                             <span
-                              className="text-sm underline text-[#4a4c56] cursor-pointer"
+                              className="cursor-pointer text-sm text-[#4a4c56] underline"
                               onClick={() => onView(row)}
                             >
                               View details
@@ -209,16 +193,13 @@ export default function CustomTable({
                         </td>
                       )}
                     </tr>
-                  );
+                  )
                 })
               ) : (
                 <tr>
                   <td
-                    colSpan={
-                      columns.length +
-                      ((onView || onDelete) && !hasActionsColumn ? 1 : 0)
-                    }
-                    className="px-4 py-10 text-center text-[#4a4c56] text-sm"
+                    colSpan={columns.length + ((onView || onDelete) && !hasActionsColumn ? 1 : 0)}
+                    className="px-4 py-10 text-center text-sm text-[#4a4c56]"
                   >
                     {noDataMessage}
                   </td>
@@ -231,14 +212,13 @@ export default function CustomTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-between items-center mt-6">
+        <div className="mt-6 flex items-center justify-between">
           <button
             onClick={() => onPageChange && onPageChange((currentPage ?? 1) - 1)}
             disabled={(currentPage ?? 1) === 1}
-            className="px-4 py-2 text-sm cursor-pointer rounded-sm text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="cursor-pointer rounded-sm bg-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           >
             Previous
-            
           </button>
           <span className="text-sm text-gray-500">
             Page {currentPage} of {totalPages}
@@ -246,12 +226,12 @@ export default function CustomTable({
           <button
             onClick={() => onPageChange && onPageChange((currentPage ?? 1) + 1)}
             disabled={(currentPage ?? 1) === totalPages}
-            className="px-4 py-2 text-sm cursor-pointer rounded-sm text-gray-700 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="cursor-pointer rounded-sm bg-gray-200 px-4 py-2 text-sm text-gray-700 hover:bg-gray-300 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400"
           >
             Next
           </button>
         </div>
       )}
     </div>
-  );
+  )
 }

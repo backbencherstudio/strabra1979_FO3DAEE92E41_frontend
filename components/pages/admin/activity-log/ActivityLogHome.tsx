@@ -60,12 +60,12 @@ function ActivityLogHomeContent() {
 
   return (
     <div className="bg-disabled-0 space-y-4 rounded-3xl border border-[#ebeeef] p-4.5">
-      <SharedPropertyCardListContextProvider>
-        <SharedPropertyCardListActions
-          title="Activity Log"
-          titleClassName="md:text-base font-medium text-[#4a4c56]"
-        />
-      </SharedPropertyCardListContextProvider>
+      <SharedPropertyCardListActions
+        title="Activity Log"
+        titleClassName="md:text-base font-medium text-[#4a4c56]"
+        showSortOrder
+        showDateFilter
+      />
 
       <Tabs
         defaultValue="all"

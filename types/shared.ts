@@ -1,3 +1,5 @@
+import { IAuthUserRole } from '.'
+
 export interface WithApiStatus<T> {
   data: T
   success: boolean
@@ -25,9 +27,12 @@ export type IPaginationPayload = {
   limit?: number
 }
 
-export type IFilterPayload<TCategory extends string = string> = {
+export type IFilterPayload<TCategory extends string | undefined = string> = {
   category?: TCategory
   dateFrom?: string
   dateTo?: string
   sortOrder?: 'asc' | 'desc'
+  search?: string
+  role?: IAuthUserRole
+  status?: 'ACTIVE' | 'DEACTIVATED' | 'DELETED'
 }

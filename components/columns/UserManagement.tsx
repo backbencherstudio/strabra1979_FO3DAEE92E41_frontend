@@ -1,228 +1,224 @@
-"use client";
+'use client'
 
-import React, { useEffect, useRef, useState } from "react";
-import { Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
-import { Dot } from "../icons/Dot";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { TrashIcon } from "../icons/TrashIcon";
-import SelectPropertyDialog from "../pages/admin/user-management/SelectPropertyDialog";
- 
-
-// Define ColumnConfig interface
-interface ColumnConfig {
-  label: React.ReactNode;
-  width: string;
-  accessor: string;
-  sortable?: boolean;
-  formatter?: (value: any, row: any) => React.ReactNode;
-}
+} from '@/components/ui/dropdown-menu'
+import { formatDate } from '@/lib/farmatters'
+import { IUserListItem } from '@/types'
+import React, { useState } from 'react'
+import { Dot } from '../icons/Dot'
+import { TrashIcon } from '../icons/TrashIcon'
+import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyDialog'
+import { ColumnConfig } from '../reusable/table/CustomTable'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
-  let textColor = "";
-  let borderColor = "";
-  let backgroundColor = "";
+  let textColor = ''
+  let borderColor = ''
+  let backgroundColor = ''
 
   switch (status.toLowerCase()) {
-    case "active":
-      borderColor = "border-[#D9E5FF]";
-      textColor = "text-[#3366CF]";
-      backgroundColor = "bg-[#e5f3fe]";
-      break;
-    case "deactivated":
-      borderColor = "border-[#f6e7dc]";
-      textColor = "text-[#9a6036]";
-      backgroundColor = "bg-[#fbf5db]";
-      break;
-    case "deleted":
-      borderColor = "border-[#ffd5d5]";
-      textColor = "text-[#a12a24]";
-      backgroundColor = "bg-[#ffdede]";
-      break;
+    case 'active':
+      borderColor = 'border-[#D9E5FF]'
+      textColor = 'text-[#3366CF]'
+      backgroundColor = 'bg-[#e5f3fe]'
+      break
+    case 'deactivated':
+      borderColor = 'border-[#f6e7dc]'
+      textColor = 'text-[#9a6036]'
+      backgroundColor = 'bg-[#fbf5db]'
+      break
+    case 'deleted':
+      borderColor = 'border-[#ffd5d5]'
+      textColor = 'text-[#a12a24]'
+      backgroundColor = 'bg-[#ffdede]'
+      break
     default:
-      borderColor = "border-gray-400";
-      textColor = "text-gray-400";
+      borderColor = 'border-gray-400'
+      textColor = 'text-gray-400'
   }
 
   return (
     <p
-      className={`${borderColor} ${textColor} ${backgroundColor} border px-3 py-1.5 rounded-[4px] text-xs font-medium inline-block`}
+      className={`${borderColor} ${textColor} ${backgroundColor} inline-block rounded-[4px] border px-3 py-1.5 text-xs font-medium`}
     >
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </p>
-  );
-};
+  )
+}
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = date.getDate();
-  const month = date.toLocaleString("default", { month: "short" });
-  const year = date.getFullYear();
+  const date = new Date(dateString)
+  const day = date.getDate()
+  const month = date.toLocaleString('default', { month: 'short' })
+  const year = date.getFullYear()
 
-  return `${day} ${month}, ${year}`;
-};
+  return `${day} ${month}, ${year}`
+}
 
 // ==================== DEACTIVATE USER DIALOG ====================
-const DeactivateUserDialog = ({ 
-  children, 
-  rowData 
-}: { 
-  children: React.ReactNode;
-  rowData: any;
+const DeactivateUserDialog = ({
+  children,
+  rowData,
+}: {
+  children: React.ReactNode
+  rowData: any
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="rounded-4xl border border-[#ede9df] bg-[#ffffff] p-12 sm:max-w-[522px] [&>button]:hidden">
         <div className="">
-          <h2 className="text-2xl font-semibold text-center text-[#1d1f2c]">Deactivate User</h2>
-          <p className="text-base text-[#777980] mt-2 text-center">
+          <h2 className="text-center text-2xl font-semibold text-[#1d1f2c]">Deactivate User</h2>
+          <p className="mt-2 text-center text-base text-[#777980]">
             Are you sure you want to deactivate this user?
           </p>
-          <div className="flex justify-center items-center gap-4 mt-6">
-            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={() => setOpen(false)}>Cancel</button>
-            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={() => setOpen(false)}>Deactivate</button>
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button
+              className="flex-1 rounded-lg border border-[#e7eaeb] py-3.5 text-sm font-medium text-[#0b2a3b]"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="flex-1 rounded-lg border border-[#e7eaeb] bg-[#eb3d4d] py-3.5 text-sm font-medium text-white"
+              onClick={() => setOpen(false)}
+            >
+              Deactivate
+            </button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
 // ==================== DELETE USER DIALOG ====================
-const DeleteUserDialog = ({ 
-  children, 
+const DeleteUserDialog = ({
+  children,
   rowData,
-  onConfirm 
-}: { 
-  children: React.ReactNode;
-  rowData: any;
-  onConfirm?: () => void;
+  onConfirm,
+}: {
+  children: React.ReactNode
+  rowData: any
+  onConfirm?: () => void
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const handleConfirm = () => {
     if (onConfirm) {
-      onConfirm();
+      onConfirm()
     }
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[522px] bg-[#ffffff] [&>button]:hidden rounded-4xl border border-[#ede9df] p-12">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="rounded-4xl border border-[#ede9df] bg-[#ffffff] p-12 sm:max-w-[522px] [&>button]:hidden">
         <div className="">
           <div className="flex justify-center">
-            <div className="bg-[#eb3d4d] inline-block rounded-[12px] px-4 py-3.5">
+            <div className="inline-block rounded-[12px] bg-[#eb3d4d] px-4 py-3.5">
               <TrashIcon />
             </div>
           </div>
-          <h2 className="text-2xl font-semibold text-center text-[#1d1f2c] mt-3">Delete User Account</h2>
-          <p className="text-base text-[#777980] mt-2 text-center">
+          <h2 className="mt-3 text-center text-2xl font-semibold text-[#1d1f2c]">
+            Delete User Account
+          </h2>
+          <p className="mt-2 text-center text-base text-[#777980]">
             Are you sure you want to delete this user account?
           </p>
-          <div className="flex justify-center items-center gap-4 mt-6">
-            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-[#0b2a3b] font-medium text-sm" onClick={() => setOpen(false)}>Cancel</button>
-            <button className="border border-[#e7eaeb] rounded-lg py-3.5 flex-1 text-white bg-[#eb3d4d] font-medium text-sm" onClick={handleConfirm}>Delete Account</button>
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button
+              className="flex-1 rounded-lg border border-[#e7eaeb] py-3.5 text-sm font-medium text-[#0b2a3b]"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="flex-1 rounded-lg border border-[#e7eaeb] bg-[#eb3d4d] py-3.5 text-sm font-medium text-white"
+              onClick={handleConfirm}
+            >
+              Delete Account
+            </button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
 // ==================== USER ACTION BUTTON COMPONENT ====================
-const UserActionButton = ({ 
-  rowData, 
-  onDeactivate, 
-  onPropertySelect, 
-  onDelete 
-}: { 
-  rowData: any;
-  onDeactivate?: (row: any) => void;
-  onPropertySelect?: (row: any) => void;
-  onEdit?: (row: any) => void;
-  onDelete?: (row: any) => void;
+const UserActionButton = ({
+  rowData,
+  onDeactivate,
+  onPropertySelect,
+  onDelete,
+}: {
+  rowData: any
+  onDeactivate?: (row: any) => void
+  onPropertySelect?: (row: any) => void
+  onEdit?: (row: any) => void
+  onDelete?: (row: any) => void
 }) => {
   // Check if user is deleted - disable actions for deleted users
-  const isUserDeleted = rowData.status?.toLowerCase() === "deleted";
+  const isUserDeleted = rowData.status?.toLowerCase() === 'deleted'
 
   const handleConfirmDelete = () => {
     if (onDelete) {
-      onDelete(rowData);
+      onDelete(rowData)
     }
-  };
+  }
 
   const handlePropertySelect = (propertyId: string) => {
-    console.log('Assigning property:', propertyId, 'to user:', rowData);
-    
-  };
+    console.log('Assigning property:', propertyId, 'to user:', rowData)
+  }
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className="h-8 w-8 p-0 hover:bg-[#f6f8fa]"
             disabled={isUserDeleted}
           >
-            <Dot className={`h-4 w-4 ${isUserDeleted ? "text-gray-600" : "text-gray-500"}`} />
+            <Dot className={`h-4 w-4 ${isUserDeleted ? 'text-gray-600' : 'text-gray-500'}`} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent 
-          align="end" 
-          className="bg-[#f6f8fa] min-w-[167px] shadow-xl p-3"
-        >
+        <DropdownMenuContent align="end" className="min-w-[167px] bg-[#f6f8fa] p-3 shadow-xl">
           <DropdownMenuGroup>
             {onDeactivate && (
               <DeactivateUserDialog rowData={rowData}>
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
                   disabled={isUserDeleted}
-                  className={`cursor-pointer focus:bg-[#1D1D1D] focus:text-white text-[#5c707c] text-sm ${
-                    isUserDeleted ? "opacity-50 cursor-not-allowed" : ""
+                  className={`cursor-pointer text-sm text-[#5c707c] focus:bg-[#1D1D1D] focus:text-white ${
+                    isUserDeleted ? 'cursor-not-allowed opacity-50' : ''
                   }`}
                 >
                   Deactivate User
                 </DropdownMenuItem>
               </DeactivateUserDialog>
             )}
-            
+
             {onPropertySelect && (
-              <SelectPropertyDialog
-                onPropertySelect={handlePropertySelect}
-              >
-                <DropdownMenuItem 
+              <SelectPropertyDialog onPropertySelect={handlePropertySelect}>
+                <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
                   disabled={isUserDeleted}
-                  className={`cursor-pointer focus:bg-[#1D1D1D] focus:text-white text-[#5c707c] text-sm ${
-                    isUserDeleted ? "opacity-50 cursor-not-allowed" : ""
+                  className={`cursor-pointer text-sm text-[#5c707c] focus:bg-[#1D1D1D] focus:text-white ${
+                    isUserDeleted ? 'cursor-not-allowed opacity-50' : ''
                   }`}
                 >
                   Assign to a property
@@ -230,16 +226,13 @@ const UserActionButton = ({
               </SelectPropertyDialog>
             )}
           </DropdownMenuGroup>
-          
+
           {onDelete && !isUserDeleted && (
             <DropdownMenuGroup>
-              <DeleteUserDialog 
-                rowData={rowData} 
-                onConfirm={handleConfirmDelete}
-              >
-                <DropdownMenuItem 
+              <DeleteUserDialog rowData={rowData} onConfirm={handleConfirmDelete}>
+                <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
-                  className="cursor-pointer focus:bg-[#1D1D1D] focus:text-white text-[#5c707c] text-sm"
+                  className="cursor-pointer text-sm text-[#5c707c] focus:bg-[#1D1D1D] focus:text-white"
                 >
                   Delete User
                 </DropdownMenuItem>
@@ -249,191 +242,73 @@ const UserActionButton = ({
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  );
-};
+  )
+}
 
 // ==================== USER COLUMNS CONFIGURATION ====================
-export const UserManagementColumns: ColumnConfig[] = [
+export const UserManagementColumns: ColumnConfig<IUserListItem>[] = [
   {
-    label: "No.",
-    width: "8%",
-    accessor: "no",
+    label: 'No.',
+    width: '8%',
+    accessor: 'email',
+    formatter: (_, __, index) => {
+      const num = index + 1
+      return num < 10 ? `0${num}` : num
+    },
+  },
+  {
+    label: 'Name',
+    width: '20%',
+    accessor: 'first_name',
+    formatter: (value) => {
+      if (!value) return 'N/A'
+      return value
+    },
+  },
+  {
+    label: 'User Type',
+    width: '18%',
+    accessor: 'role',
+  },
+  {
+    label: 'Email',
+    width: '22%',
+    accessor: 'email',
+  },
+  {
+    label: 'Approved Date',
+    width: '15%',
+    accessor: 'approved_at',
     sortable: true,
-    formatter: (item: number | string, row: any) => {
-      const num = typeof item === "string" ? parseInt(item) : item;
+    formatter: (value) => {
+      if (!value) return 'N/A'
+      return formatDate(value)
+    },
+  },
+  {
+    label: 'Status',
+    width: '12%',
+    accessor: 'status',
+    sortable: true,
+    formatter: (value) => {
+      if (!value) return 'N/A'
+      return <UserStatusBadge status={value} />
+    },
+  },
+  {
+    label: '',
+    accessor: 'email',
+    width: '5%',
+    formatter: (_, row) => {
       return (
-        <div className="flex items-center">
-          <p className="text-xs text-[#4a4c56]">
-            {num < 10 ? `0${num}` : num}
-          </p>
-        </div>
-      );
-    },
-  },
-  {
-    label: "Name",
-    width: "20%",
-    accessor: "name",
-    sortable: true,
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-xs text-[#4a4c56] ">{value}</p>
-        </div>
-      );
-    },
-  },
-  {
-    label: "User Type",
-    width: "18%",
-    accessor: "userType",
-    sortable: true,
-    formatter: (value: string, row: any) => {
-      return <p className="text-xs text-[#4a4c56] ">{value}</p>;
-    },
-  },
-  {
-    label: "Email",
-    width: "22%",
-    accessor: "email",
-    sortable: true,
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-xs text-[#4a4c56]">{value}</p>
-        </div>
-      );
-    },
-  },
-  {
-    label: "Date",
-    width: "15%",
-    accessor: "date",
-    sortable: true,
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-xs text-[#4a4c56]">{formatUserDate(value)}</p>
-        </div>
-      );
-    },
-  },
-  {
-    label: "Status",
-    width: "12%",
-    accessor: "status",
-    sortable: true,
-    formatter: (value: string, row: any) => {
-      return <UserStatusBadge status={value} />;
-    },
-  },
-  {
-    label: "",
-    accessor: "action",
-    width: "5%",
-    formatter: (value: any, row: any) => {
-      return (
-        <UserActionButton 
-          rowData={row} 
-          onDeactivate={(row) => console.log("Deactivate", row)}
-          onDelete={(row) => console.log("Delete", row)}
-          onPropertySelect={(row) => console.log("Assign Property", row)}
+        <UserActionButton
+          rowData={row}
+          onDeactivate={(row) => console.log('Deactivate', row)}
+          onDelete={(row) => console.log('Delete', row)}
+          onPropertySelect={(row) => console.log('Assign Property', row)}
         />
-      );
+      )
     },
   },
-];
+]
 
-// ==================== DEMO DATA ====================
-export const demoUserData = [
-  {
-    id: "usr_001",
-    no: 1,
-    name: "John Smith",
-    userType: "Property Manager",
-    email: "john.smith@example.com",
-    date: "2026-01-15T10:30:00Z",
-    status: "active"
-  },
-  {
-    id: "usr_002",
-    no: 2,
-    name: "Sarah Johnson",
-    userType: "Authorized Viewer",
-    email: "sarah.johnson@example.com",
-    date: "2026-01-12T14:20:00Z",
-    status: "active"
-  },
-  {
-    id: "usr_003",
-    no: 3,
-    name: "Michael Chen",
-    userType: "Operation",
-    email: "michael.chen@example.com",
-    date: "2026-01-10T09:15:00Z",
-    status: "deactivated"
-  },
-  {
-    id: "usr_004",
-    no: 4,
-    name: "Emily Rodriguez",
-    userType: "Property Manager",
-    email: "emily.rodriguez@example.com",
-    date: "2026-01-08T16:45:00Z",
-    status: "active"
-  },
-  {
-    id: "usr_005",
-    no: 5,
-    name: "David Kim",
-    userType: "Authorized Viewer",
-    email: "david.kim@example.com",
-    date: "2026-01-05T11:00:00Z",
-    status: "deleted"
-  },
-  {
-    id: "usr_006",
-    no: 6,
-    name: "Lisa Thompson",
-    userType: "Operation",
-    email: "lisa.thompson@example.com",
-    date: "2026-01-03T13:30:00Z",
-    status: "active"
-  },
-  {
-    id: "usr_007",
-    no: 7,
-    name: "James Wilson",
-    userType: "Property Manager",
-    email: "james.wilson@example.com",
-    date: "2025-12-28T10:00:00Z",
-    status: "active"
-  },
-  {
-    id: "usr_008",
-    no: 8,
-    name: "Maria Garcia",
-    userType: "Authorized Viewer",
-    email: "maria.garcia@example.com",
-    date: "2025-12-25T15:20:00Z",
-    status: "active"
-  },
-  {
-    id: "usr_009",
-    no: 9,
-    name: "Robert Brown",
-    userType: "Property Manager",
-    email: "robert.brown@example.com",
-    date: "2025-12-20T12:00:00Z",
-    status: "deactivated"
-  },
-  {
-    id: "usr_010",
-    no: 10,
-    name: "Jennifer Lee",
-    userType: "Operation",
-    email: "jennifer.lee@example.com",
-    date: "2025-12-18T09:45:00Z",
-    status: "active"
-  }
-];

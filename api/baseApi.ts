@@ -51,6 +51,8 @@ export const baseApi = createApi({
     'UserLevelNotificationSettings',
     'AdminBrandingSetting',
 
+    'UserList',
+
     'Property',
     'ActivityLog',
   ] as const,

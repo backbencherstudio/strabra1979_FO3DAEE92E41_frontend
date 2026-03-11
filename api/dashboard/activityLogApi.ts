@@ -1,19 +1,23 @@
 import { baseApi } from '@/api/baseApi'
-import type { ActivityCategory, IActivityLogListItem, IFilterPayload, IPaginationPayload, WithPaginationAndStatus } from '@/types'
-
+import type {
+  ActivityCategory,
+  IActivityLogListItem,
+  IFilterPayload,
+  IPaginationPayload,
+  WithPaginationAndStatus,
+} from '@/types'
 
 const activityLogApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getActivityLog: builder.query<
       WithPaginationAndStatus<IActivityLogListItem[]>,
-      IPaginationPayload & IFilterPayload<ActivityCategory> | void
+      (IPaginationPayload & IFilterPayload<ActivityCategory>) | void
     >({
       query: (arg) => ({
         url: `/activity-logs`,
         params: arg ?? undefined,
       }),
       providesTags: ['ActivityLog'] as const,
-      // transformResponse: (res: WithApiStatus<IActivityLogListItem[]>) => res.data,
     }),
   }),
   overrideExisting: false,

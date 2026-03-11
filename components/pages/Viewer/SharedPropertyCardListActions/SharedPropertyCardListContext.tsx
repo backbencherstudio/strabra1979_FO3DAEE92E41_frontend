@@ -22,10 +22,14 @@ type SharedPropertyCardListContextState = {
   setDate: (arg: DateOptions) => void
   sortOrder: 'asc' | 'desc'
   setSortOrder: Dispatch<SetStateAction<'asc' | 'desc'>>
+  search: string | undefined
+  setSearch: Dispatch<SetStateAction<string>>
 }
 
 const SharedPropertyCardListContext = createContext<SharedPropertyCardListContextState | null>(null)
 export const SharedPropertyCardListContextProvider = (props: PropsWithChildren) => {
+  const [search, setSearch] = useState<string>('')
+
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   const [dateFrom, setDateFrom] = useState<DateState | null>(null)
@@ -47,6 +51,8 @@ export const SharedPropertyCardListContextProvider = (props: PropsWithChildren) 
         setDate,
         sortOrder,
         setSortOrder,
+        search,
+        setSearch,
       }}
     >
       {props.children}
