@@ -24,3 +24,10 @@ export type IPaginationPayload = {
   page?: number
   limit?: number
 }
+
+export type IFilterPayload<TCategory extends string = string> = {
+  category?: TCategory
+  dateFrom?: string
+  dateTo?: string
+  sortOrder?: 'asc' | 'desc'
+}

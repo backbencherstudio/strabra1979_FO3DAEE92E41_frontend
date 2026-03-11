@@ -4,13 +4,18 @@ import { useGetActivityLogQuery } from '@/api/dashboard/activityLogApi'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ActivityLogListItem from './ActivityLogListItem'
-import { SharedPropertyCardListContextProvider } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import {
+  SharedPropertyCardListContextProvider,
+  useSharedPropertyCardListContext,
+} from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import {
   PaginationPageProvider,
   usePaginatedQuery,
   usePaginationPage,
 } from '@/components/reusable/Pagination/PaginationPageProvider'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
+import { addDays, formatDate } from 'date-fns'
+import { addDaysBy } from '@/lib/farmatters'
 
 export default function ActivityLogHome() {
   return (
@@ -25,8 +30,13 @@ export default function ActivityLogHome() {
 function ActivityLogHomeContent() {
   // Filter logs by type
   const { page } = usePaginationPage()
+  const { sortOrder, dateFrom } = useSharedPropertyCardListContext()
+
   const { data: { data: allLogs = [], meta } = {}, isLoading } = useGetActivityLogQuery({
     page,
+    sortOrder,
+    dateFrom: dateFrom?.formatted,
+    dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
   })
   usePaginatedQuery({ meta_data: meta })
 

@@ -1,5 +1,6 @@
 import { FileEditBlue } from '@/components/icons/FileEditBlue'
 import { User } from '@/components/icons/User'
+import { formatTimeAndDate } from '@/lib/farmatters'
 import { IActivityLogListItem } from '@/types'
 import { PropsWithChildren } from 'react'
 
@@ -24,7 +25,7 @@ const ActivityLogListItem = ({ log }: ActivityLogItemProps) => {
       {/* Text Content */}
       <div className="flex-1">
         <h3 className="text-gray-black-400 text-sm leading-snug">{message}</h3>
-        <p className="mt-1 text-xs text-gray-400">{created_at}</p>
+        <p className="mt-1 text-xs text-gray-400">{formatTimeAndDate(created_at)}</p>
       </div>
 
       {/* Role Badge */}

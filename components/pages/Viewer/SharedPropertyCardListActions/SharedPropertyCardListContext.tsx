@@ -1,23 +1,52 @@
 'use client'
-import { PropsWithChildren, createContext, useContext, useState } from 'react'
+import { formatDate } from 'date-fns'
+import {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from 'react'
+
+type DateOptions = {
+  dateFrom?: Date | null
+}
+type DateState = {
+  formatted: string | undefined
+  raw: Date | undefined
+}
 
 type SharedPropertyCardListContextState = {
-  date: Date | undefined
-  setDate: (date: Date | undefined) => void
+  dateFrom: DateState | null
+  setDate: (arg: DateOptions) => void
+  sortOrder: 'asc' | 'desc'
+  setSortOrder: Dispatch<SetStateAction<'asc' | 'desc'>>
 }
 
 const SharedPropertyCardListContext = createContext<SharedPropertyCardListContextState | null>(null)
 export const SharedPropertyCardListContextProvider = (props: PropsWithChildren) => {
-  const [date, _setDate] = useState<Date | undefined>(undefined)
-  function setDate(date: Date | undefined) {
-    _setDate(date)
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+
+  const [dateFrom, setDateFrom] = useState<DateState | null>(null)
+  function setDate({ dateFrom }: DateOptions) {
+    if (dateFrom) {
+      setDateFrom({
+        formatted: formatDate(dateFrom, 'yyyy-MM-dd'),
+        raw: dateFrom,
+      })
+    } else if (dateFrom === null) {
+      setDateFrom(null)
+    }
   }
 
   return (
     <SharedPropertyCardListContext.Provider
       value={{
-        date,
+        dateFrom,
         setDate,
+        sortOrder,
+        setSortOrder,
       }}
     >
       {props.children}

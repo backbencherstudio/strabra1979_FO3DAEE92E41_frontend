@@ -1,11 +1,12 @@
 import { baseApi } from '@/api/baseApi'
-import type { IActivityLogListItem, IPaginationPayload, WithPaginationAndStatus } from '@/types'
+import type { ActivityCategory, IActivityLogListItem, IFilterPayload, IPaginationPayload, WithPaginationAndStatus } from '@/types'
+
 
 const activityLogApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getActivityLog: builder.query<
       WithPaginationAndStatus<IActivityLogListItem[]>,
-      IPaginationPayload | void
+      IPaginationPayload & IFilterPayload<ActivityCategory> | void
     >({
       query: (arg) => ({
         url: `/activity-logs`,
