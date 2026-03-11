@@ -8,7 +8,7 @@ import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import { Property } from '../PropertyCard/PropertyCard'
 import CustomTable from '../table/CustomTable'
 import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
-import Pagination from '../Pagination/Pagination'
+import PaginationControls from '../Pagination/Pagination'
 
 interface PropertyDetailsReportsProps {
   id: string
@@ -108,7 +108,7 @@ export default function PropertyDetailsReports({
             roundedClass="rounded-lg"
           />
         </div>
-        <Pagination showHomeAndEnd={false} className="justify-start" size="icon-xs" />
+        <PaginationControls showHomeAndEnd={false} className="justify-start" size="icon-xs" />
       </SectionCard>
     </SectionCard>
   )

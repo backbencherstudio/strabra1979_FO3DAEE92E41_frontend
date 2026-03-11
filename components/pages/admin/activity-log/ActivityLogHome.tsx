@@ -5,18 +5,30 @@ import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPrope
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import ActivityLogListItem from './ActivityLogListItem'
 import { SharedPropertyCardListContextProvider } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import {
+  PaginationPageProvider,
+  usePaginatedQuery,
+  usePaginationPage,
+} from '@/components/reusable/Pagination/PaginationPageProvider'
+import PaginationControls from '@/components/reusable/Pagination/Pagination'
 
 export default function ActivityLogHome() {
   return (
-    <SharedPropertyCardListContextProvider>
-      <ActivityLogHomeContent />
-    </SharedPropertyCardListContextProvider>
+    <PaginationPageProvider>
+      <SharedPropertyCardListContextProvider>
+        <ActivityLogHomeContent />
+      </SharedPropertyCardListContextProvider>
+    </PaginationPageProvider>
   )
 }
 
 function ActivityLogHomeContent() {
   // Filter logs by type
-  const { data: { data: allLogs = [] } = {}, isLoading } = useGetActivityLogQuery()
+  const { page } = usePaginationPage()
+  const { data: { data: allLogs = [], meta } = {}, isLoading } = useGetActivityLogQuery({
+    page,
+  })
+  usePaginatedQuery({ meta_data: meta })
 
   const propertyUpdateLogs = allLogs.filter((log) => log.category === 'PROPERTY_DASHBOARD_UPDATE')
   const userAccessLogs = allLogs.filter((log) => log.category === 'USER_ACCESS')
@@ -40,7 +52,7 @@ function ActivityLogHomeContent() {
   ]
 
   return (
-    <div className="bg-disabled-0 rounded-3xl border border-[#ebeeef] p-4.5">
+    <div className="bg-disabled-0 space-y-4 rounded-3xl border border-[#ebeeef] p-4.5">
       <SharedPropertyCardListActions
         title="Activity Log"
         titleClassName="md:text-base font-medium text-[#4a4c56]"
@@ -73,6 +85,8 @@ function ActivityLogHomeContent() {
           </TabsContent>
         ))}
       </Tabs>
+
+      <PaginationControls />
     </div>
   )
 }

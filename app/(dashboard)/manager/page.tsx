@@ -7,7 +7,7 @@ import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPrope
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { properties } from '../(autorized_viewer)/mock'
-import Pagination from '@/components/reusable/Pagination/Pagination'
+import PaginationControls from '@/components/reusable/Pagination/Pagination'
 import { ChevronRight, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group'

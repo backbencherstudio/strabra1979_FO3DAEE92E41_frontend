@@ -2,7 +2,7 @@ import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPrope
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { properties } from '../../(autorized_viewer)/mock'
-import Pagination from '@/components/reusable/Pagination/Pagination'
+import PaginationControls from '@/components/reusable/Pagination/Pagination'
 
 export default function page() {
   return (
@@ -23,7 +23,7 @@ export default function page() {
           ))}
         </div>
       </SectionCard>
-      <Pagination />
+      <PaginationControls />
     </div>
   )
 }

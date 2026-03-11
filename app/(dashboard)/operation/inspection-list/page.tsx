@@ -3,7 +3,7 @@ import {
   InspectionListManagementColums,
 } from '@/components/columns/InspectionListManagement'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
-import Pagination from '@/components/reusable/Pagination/Pagination'
+import PaginationControls from '@/components/reusable/Pagination/Pagination'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import CustomTable from '@/components/reusable/table/CustomTable'
 
@@ -35,7 +35,7 @@ export default function InspectionList() {
             roundedClass="rounded-lg"
           />
         </div>
-        <Pagination showHomeAndEnd={false} className="justify-start" size="icon-xs" />
+        <PaginationControls showHomeAndEnd={false} className="justify-start" size="icon-xs" />
       </SectionCard>
     </div>
   )
