@@ -35,8 +35,7 @@ interface SignUpFormProps {
   role: IAuthUserRole
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ role }) => {
-  const [showPassword, setShowPassword] = useState(false)
+export function useRegerterUserForm({ role }: { role: IAuthUserRole }) {
   const [registerUser, { isLoading: registerUserIsLoading }] = useRegisterUserMutation()
 
   const form = useForm({
@@ -67,6 +66,13 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role }) => {
       }
     },
   })
+
+  return { form, registerUserIsLoading }
+}
+
+const SignUpForm: React.FC<SignUpFormProps> = ({ role }) => {
+  const [showPassword, setShowPassword] = useState(false)
+  const { form, registerUserIsLoading } = useRegerterUserForm({ role })
 
   return (
     <form

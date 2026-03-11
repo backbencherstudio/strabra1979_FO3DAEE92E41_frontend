@@ -17,6 +17,7 @@ import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { ColumnConfig } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
 import { toast } from 'sonner'
+import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyDialog'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
@@ -137,13 +138,11 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
               {isUserDeleted ? 'Active User' : 'Delete User'}
             </DropdownMenuItem>
 
-            {/* {onPropertySelect && ( */}
-            {/*   <SelectPropertyDialog onPropertySelect={handlePropertySelect}> */}
-            {/*     <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={isUserDeleted}> */}
-            {/*       Assign to a property */}
-            {/*     </DropdownMenuItem> */}
-            {/*   </SelectPropertyDialog> */}
-            {/* )} */}
+            <SelectPropertyDialog onPropertySelect={handlePropertySelect}>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={isUserDeleted}>
+                Assign to a property
+              </DropdownMenuItem>
+            </SelectPropertyDialog>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -163,9 +162,9 @@ export const UserManagementColumns: ColumnConfig<IUserListItem>[] = [
     },
   },
   {
-    label: 'Name',
+    label: 'User Name',
     width: '20%',
-    accessor: 'first_name',
+    accessor: 'username',
     formatter: (value) => {
       if (!value) return 'N/A'
       return value
