@@ -50,9 +50,8 @@ export default function PropertyHome() {
             </p>
 
             <AddNewDialog
-              onAdd={handleAddNew}
               trigger={
-                <Button variant="outline" size="xl" className="px-12! mt-4">
+                <Button variant="outline" size="xl" className="mt-4 px-12!">
                   <PlusIcon /> Create New
                 </Button>
               }
@@ -71,6 +70,7 @@ export default function PropertyHome() {
             title={p.name}
             property={p.name}
             id={p.id}
+            dashboardId={p?.dashboard?.id}
             address={naIfEmpty(p.address)}
             score={p?.dashboard?.latestInspection?.overallScore}
             // previewImageUrl={'/images/property-card/property-01.png'}
@@ -79,8 +79,8 @@ export default function PropertyHome() {
             <PropertyCardInfoList
               items={[
                 { label: 'Type', value: naIfEmpty(p.propertyType) },
-                { label: 'Next Inspection', value: naIfEmpty(formatDate(p.nextInspectionDate)) },
-                { label: 'Property Manager', value: naIfEmpty(p.propertyManager.username) },
+                { label: 'Next Inspection', value: naIfEmpty(formatDate(p?.nextInspectionDate)) },
+                { label: 'Property Manager', value: naIfEmpty(p?.propertyManager?.username) },
               ]}
             />
           </PropertyCard>

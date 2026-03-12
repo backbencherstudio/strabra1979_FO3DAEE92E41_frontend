@@ -31,6 +31,7 @@ export interface Property {
   score: number
   scoreTitle?: string
   previewImageUrl?: string
+  dashboardId?: string
   // type: string
   // date: string
 }
@@ -61,6 +62,7 @@ export default function PropertyCard({
   onSelect,
   defaultSelected = false,
   id,
+  dashboardId,
   isAdmin = false,
   onSchedule,
   onAssign,
@@ -89,20 +91,18 @@ export default function PropertyCard({
   }
 
   const handleScheduleClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    // e.preventDefault()
+    // e.stopPropagation()
     setScheduleDialogOpen(true)
   }
 
   const handleAssignClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+    // e.preventDefault()
+    // e.stopPropagation()
     setAssignDialogOpen(true)
   }
 
   const handleViewAccessClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
     setViewAccessDialogOpen(true)
   }
 
@@ -152,7 +152,7 @@ export default function PropertyCard({
                   <MoreVertical className="h-4 w-4 text-white hover:text-black" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-[#f6f8fa] p-2">
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={handleScheduleClick} className="cursor-pointer">
                   Schedule Inspection
                 </DropdownMenuItem>
@@ -188,8 +188,8 @@ export default function PropertyCard({
           <ViewAccessDialog
             open={viewAccessDialogOpen}
             onOpenChange={setViewAccessDialogOpen}
-            propertyName={property}
-            propertyAddress={address}
+            dashboardId={dashboardId}
+            propertyId={id}
           />
         </>
       )}

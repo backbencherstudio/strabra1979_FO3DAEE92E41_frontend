@@ -85,7 +85,7 @@ export default function SelectPropertyDialog({
                           label: 'Next Inspection',
                           value: naIfEmpty(formatDate(p.nextInspectionDate)),
                         },
-                        { label: 'Property Manager', value: naIfEmpty(p.propertyManager.username) },
+                        { label: 'Property Manager', value: naIfEmpty(p?.propertyManager?.username) },
                       ]}
                     />
                   </PropertyCard>

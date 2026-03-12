@@ -1,3 +1,5 @@
+import { IAuthUserRole } from './auth'
+
 export const PropertyTypeObj = {
   COMMERCIAL: 'Commercial',
   RESIDENTIAL: 'Residential',
@@ -42,4 +44,40 @@ export interface ICreatePropertyPayload {
   nextInspectionDate?: string
   assignedTo?: string
   propertyManagerId?: string
+}
+
+export interface IAccessUser {
+  id: string
+  username: string
+  email: string
+  avatar: string | null
+  role: IAuthUserRole
+}
+
+export interface IPropertyManager {
+  id: string
+  username: string
+  email: string
+  avatar: string | null
+  role: 'PROPERTY_MANAGER'
+}
+
+export interface IDashboardAccessItem {
+  accessId: string
+  grantedAt: string
+  expiresAt: string | null
+  user: IAccessUser
+}
+
+export interface IPropertyDashboardAccessResponse {
+  propertyId: string
+  address: string
+  propertyType: string
+  dashboardId: string
+  propertyManager: IPropertyManager
+  accessList: IDashboardAccessItem[]
+}
+export interface IRevokeDashboardAccessPayload {
+  dashboardId: string
+  targetUserId: string
 }

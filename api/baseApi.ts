@@ -52,7 +52,7 @@ export const baseApi = createApi({
     'AdminBrandingSetting',
 
     'UserManagement',
-
+    'PropertyDashboard',
     'Property',
     'ActivityLog',
   ] as const,

@@ -2,6 +2,7 @@ import { addDays, formatDate as formatDateFns } from 'date-fns'
 import dayjs from 'dayjs'
 
 export function formatDate(date: string | Date | dayjs.Dayjs, formatter = 'MMMM D, YYYY'): string {
+  if (!date) return ''
   return dayjs(date).format(formatter)
 }
 
