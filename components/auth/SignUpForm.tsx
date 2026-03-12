@@ -3,7 +3,7 @@
 import { useRegisterUserMutation } from '@/api/auth/authApi'
 import { appRoutes } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
-import { IAuthUserRole } from '@/types'
+import { IAuthRegisterResponse, IAuthUserRole, RoleObj, WithApiStatus } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -23,6 +23,10 @@ export const signupSchema = z
     // .regex(/[a-z]/, 'Must contain a lowercase letter')
     // .regex(/[0-9]/, 'Must contain a number'),
     confirmPassword: z.string(),
+    role: z.enum(
+      Object.keys(RoleObj) as [IAuthUserRole, ...IAuthUserRole[]],
+      'Please select a user role',
+    ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
@@ -35,7 +39,12 @@ interface SignUpFormProps {
   role: IAuthUserRole
 }
 
-export function useRegerterUserForm({ role }: { role: IAuthUserRole }) {
+interface RegerterUserFormOptions {
+  role?: IAuthUserRole
+  onSubmit?: (data: WithApiStatus<IAuthRegisterResponse>) => void
+}
+
+export function useRegerterUserForm({ role, onSubmit }: RegerterUserFormOptions) {
   const [registerUser, { isLoading: registerUserIsLoading }] = useRegisterUserMutation()
 
   const form = useForm({
@@ -44,6 +53,7 @@ export function useRegerterUserForm({ role }: { role: IAuthUserRole }) {
       email: '',
       password: '',
       confirmPassword: '',
+      role: role ?? '',
     },
     validators: {
       onSubmit: signupSchema,
@@ -51,14 +61,18 @@ export function useRegerterUserForm({ role }: { role: IAuthUserRole }) {
     onSubmit: async ({ value }) => {
       try {
         const data = await registerUser({
-          role: role,
+          role: role ?? (value.role as IAuthUserRole),
           username: value.username,
           email: value.email,
           password: value.password,
         }).unwrap()
-        console.log(data)
+
+        if (typeof onSubmit === 'function') {
+          onSubmit(data)
+        }
 
         toast.message(data.message ?? 'Sugnn up succefuull')
+        form.reset()
       } catch (error) {
         toast.error('Signup Failed — please try again.', {
           description: getErrorMessage(error),
@@ -129,14 +143,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role }) => {
 
         {/* Submit */}
         <Button size="xl" className="w-full">
-          {registerUserIsLoading ? (
-            <>
-              <Spinner />
-              Signing Up
-            </>
-          ) : (
-            <>Sign Up</>
-          )}
+          {registerUserIsLoading && <Spinner />}
+          {registerUserIsLoading ? 'Signing Up...' : 'Sign Up'}
         </Button>
 
         <p className="text-center">

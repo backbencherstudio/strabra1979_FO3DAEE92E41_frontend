@@ -1,10 +1,10 @@
-export const Role = {
+export const RoleObj = {
   ADMIN: 'ADMIN',
   PROPERTY_MANAGER: 'PROPERTY_MANAGER',
   AUTHORIZED_VIEWER: 'AUTHORIZED_VIEWER',
   OPERATIONAL: 'OPERATIONAL',
 } as const
-export type IAuthUserRole = keyof typeof Role
+export type IAuthUserRole = keyof typeof RoleObj
 
 export interface AuthCredential {
   token?: string | null

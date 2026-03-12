@@ -12,6 +12,7 @@ interface FormInputFieldProps<T> {
   type?: string
   icon?: ReactNode
   rightElement?: ReactNode
+  containerClass?: string
 }
 
 export default function FormInputField<T>({
@@ -22,14 +23,16 @@ export default function FormInputField<T>({
   type = 'text',
   icon,
   rightElement,
+  containerClass,
 }: FormInputFieldProps<T>) {
   return (
     <form.Field name={name as string}>
       {(field: any) => (
-        <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
-          <FieldLabel className="text-base font-normal" htmlFor={field.name}>
-            {label}
-          </FieldLabel>
+        <Field
+          className={containerClass}
+          data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+        >
+          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
 
           <InputGroup>
             {icon && <InputGroupAddon>{icon}</InputGroupAddon>}
