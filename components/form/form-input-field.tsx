@@ -4,9 +4,9 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { ReactNode } from 'react'
 
-interface FormInputFieldProps<T> {
+interface FormInputFieldProps<T> extends React.ComponentProps<'input'> {
   form: any
-  name: keyof T
+  name: Extract<keyof T, string>
   label: string
   placeholder?: string
   type?: string
@@ -24,6 +24,8 @@ export default function FormInputField<T>({
   icon,
   rightElement,
   containerClass,
+  required,
+  ...props
 }: FormInputFieldProps<T>) {
   return (
     <form.Field name={name as string}>
@@ -32,12 +34,17 @@ export default function FormInputField<T>({
           className={containerClass}
           data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
         >
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          <FieldLabel htmlFor={field.name}>
+            {label}
+            {required ? <span className="text-error-red-500">*</span> : null}
+          </FieldLabel>
 
           <InputGroup>
             {icon && <InputGroupAddon>{icon}</InputGroupAddon>}
 
             <InputGroupInput
+              {...props}
+              required={required}
               id={field.name}
               name={field.name}
               type={type}

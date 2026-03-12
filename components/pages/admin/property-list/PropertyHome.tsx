@@ -9,6 +9,7 @@ import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
 import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
 import { formatDate, naIfEmpty } from '@/lib/farmatters'
 import { notAvailableLabel } from '@/constant'
+import { Button } from '@/components/ui/button'
 
 export default function PropertyHome() {
   const handleSchedule = (propertyId: string) => {
@@ -33,7 +34,7 @@ export default function PropertyHome() {
     // Or make an API call
   }
 
-  const { data = [], isLoading } = useGetPropertiesQuery()
+  const { data: { data = [] } = {}, isLoading } = useGetPropertiesQuery()
 
   return (
     <div className="rounded-3xl bg-[#f6f8fa] p-4">
@@ -51,9 +52,9 @@ export default function PropertyHome() {
             <AddNewDialog
               onAdd={handleAddNew}
               trigger={
-                <button className="mt-6 flex w-full items-center justify-center gap-1.5 rounded-[8px] border border-[#eceff3] py-3.5 text-sm font-medium text-[#0b2a3b]">
+                <Button variant="outline" size="xl" className="px-12! mt-4">
                   <PlusIcon /> Create New
-                </button>
+                </Button>
               }
             />
           </div>
@@ -69,7 +70,7 @@ export default function PropertyHome() {
             onViewAccess={() => handleViewAccess(p.id)}
             title={p.name}
             property={p.name}
-            id={p.name}
+            id={p.id}
             address={naIfEmpty(p.address)}
             score={p?.dashboard?.latestInspection?.overallScore}
             // previewImageUrl={'/images/property-card/property-01.png'}
@@ -79,7 +80,7 @@ export default function PropertyHome() {
               items={[
                 { label: 'Type', value: naIfEmpty(p.propertyType) },
                 { label: 'Next Inspection', value: naIfEmpty(formatDate(p.nextInspectionDate)) },
-                { label: 'Property Manager', value: naIfEmpty(p.propertyManager.name) },
+                { label: 'Property Manager', value: naIfEmpty(p.propertyManager.username) },
               ]}
             />
           </PropertyCard>

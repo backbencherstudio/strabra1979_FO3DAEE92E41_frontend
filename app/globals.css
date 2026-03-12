@@ -54,7 +54,7 @@
   --color-gray-black-50: #e9e9ea;
   --color-gray-black-100: #d2d2d5;
   --color-gray-black-200: #a5a5ab;
-  --color-gray-black-300: #777980;
+  --color-gray-black-300: var(--gray-black-300);
   --color-gray-black-400: #4a4c56;
   --color-gray-black-500: #1d1f2c;
   --color-gray-black-600: #161721;
@@ -129,7 +129,7 @@
   --secondary: #f6f8fa;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: var(--gray-black-300);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: #eb3d4d;
@@ -156,6 +156,8 @@
 
   --navy-500: #0b2a3b;
   --navy-300: #5c707c;
+
+  --gray-black-300: #777980;
 }
 
 .dark {

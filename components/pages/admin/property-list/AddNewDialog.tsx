@@ -1,72 +1,56 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { format } from 'date-fns'
+import { useCreatePropertyMutation } from '@/api/dashboard/properties/propertiesApi'
+import FormInputField from '@/components/form/form-input-field'
+import FormSelectField from '@/components/form/form-select-field'
 import CalenderIcon from '@/components/icons/CalenderIcon'
 import { AssignManagerDropdown } from '@/components/reusable/AssignManagerDropdown'
+import { Calendar } from '@/components/ui/calendar'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Spinner } from '@/components/ui/spinner'
+import { getErrorMessage } from '@/lib/farmatters'
+import { IPropertyType } from '@/types'
+import { useForm } from '@tanstack/react-form'
+import { format } from 'date-fns'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
-// Define the User type
-interface User {
-  id: string
-  name: string
-  email: string
-  role: string
-  avatar: string
-  properties: number
-}
+const createPropertySchema = z.object({
+  propertyName: z.string().min(1, 'Property name is required'),
+  address: z.string().min(1, 'Address is required'),
+  nextInspection: z.date().optional(),
+  propertyManagerId: z.string().optional(),
+  propertyType: z.string().optional(),
+})
+
+type CreatePropertyForm = z.infer<typeof createPropertySchema>
 
 interface AddNewDialogProps {
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  onAdd?: (data: any) => void
   trigger?: React.ReactNode
   children?: React.ReactNode
 }
 
-interface FormData {
-  propertyName: string
-  address: string
-  propertyType: string
-  userRole: string
-}
-
-export function AddNewDialog({ open, onOpenChange, onAdd, trigger, children }: AddNewDialogProps) {
+export function AddNewDialog({ open, onOpenChange, trigger, children }: AddNewDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false)
-  const [formData, setFormData] = useState<FormData>({
-    propertyName: '',
-    address: '',
-    propertyType: '',
-    userRole: '',
-  })
-  const [date, setDate] = useState<Date>()
-  const [selectedManager, setSelectedManager] = useState<User | null>(null)
 
   const isControlled = open !== undefined
   const isOpen = isControlled ? open : internalOpen
-
-  const handleSelectManager = (user: User) => {
-    setSelectedManager(user)
-    console.log('Selected manager:', user)
-  }
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!isControlled) {
@@ -75,147 +59,158 @@ export function AddNewDialog({ open, onOpenChange, onAdd, trigger, children }: A
     onOpenChange?.(newOpen)
   }
 
-  const handleAdd = () => {
-    // Include selectedManager and date in the data
-    onAdd?.({
-      ...formData,
-      selectedManager,
-      inspectionDate: date,
-    })
-    handleOpenChange(false)
-    // Reset form
-    setFormData({
+  const [createProperty, { isLoading }] = useCreatePropertyMutation()
+
+  const form = useForm({
+    defaultValues: {
       propertyName: '',
       address: '',
-      propertyType: '',
-      userRole: '',
-    })
-    setDate(undefined)
-    setSelectedManager(null)
-  }
+      nextInspection: undefined,
+      propertyManagerId: undefined,
+      propertyType: undefined,
+    } as CreatePropertyForm,
+    validators: {
+      onChange: createPropertySchema,
+    },
+    onSubmit: async ({ value }) => {
+      console.table(value)
+      try {
+        const res = await createProperty({
+          name: value.propertyName,
+          address: value.address,
+          propertyType: value.propertyType,
+          nextInspectionDate: value.nextInspection ? value.nextInspection.toISOString() : undefined,
+          propertyManagerId: value.propertyManagerId,
+        }).unwrap()
+        onOpenChange?.call(null, false)
+
+        toast.message(res.message ?? 'Property created succefuull')
+      } catch (error) {
+        toast.error('Failed to crate property!', {
+          description: getErrorMessage(error),
+        })
+      }
+    },
+  })
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       {children && !trigger && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[940px]" showCloseButton={false}>
+      <DialogContent className="sm:max-w-235" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle className="text-center text-xl font-medium text-[#4a4c56]">
-            Create New Property Dashboard
-          </DialogTitle>
-          <DialogDescription className="mt-2 text-center text-sm text-[#5f6166]">
+          <DialogTitle className="text-center">Create New Property</DialogTitle>
+          <DialogDescription className="mt-2 text-center">
             Set up a dashboard to manage inspections, and all property reports.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Form fields */}
-        <div className="space-y-4">
-          {/* First row - Property Name and Address */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <h2 className="text-base font-medium text-[#4a4c56]">
-                Property Name <span className="text-[#eb3d4d]">*</span>
-              </h2>
-              <input
-                type="text"
-                placeholder="Enter property name"
-                value={formData.propertyName}
-                onChange={(e) => setFormData({ ...formData, propertyName: e.target.value })}
-                className="mt-2 w-full rounded-[8px] border border-[#e7eaeb] px-4 py-3.5 focus:ring-2 focus:ring-[#0b2a3b] focus:outline-none"
-              />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-base font-medium text-[#4a4c56]">
-                Address <span className="text-[#eb3d4d]">*</span>
-              </h2>
-              <input
-                type="text"
-                placeholder="Enter Address"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="mt-2 w-full rounded-[8px] border border-[#e7eaeb] px-4 py-3.5 focus:ring-2 focus:ring-[#0b2a3b] focus:outline-none"
-              />
-            </div>
-          </div>
-
-          {/* Second row - Property Type and Next Inspection */}
-          <div className="flex items-center gap-4">
-            <div className="flex-1">
-              <h2 className="text-base font-medium text-[#4a4c56]">Property Type</h2>
-              <Select
-                value={formData.propertyType}
-                onValueChange={(value) => setFormData({ ...formData, propertyType: value })}
-              >
-                <SelectTrigger className="mt-2 h-auto w-full rounded-[8px] border border-[#e7eaeb] px-4 py-3.5 focus:ring-2 focus:ring-[#0b2a3b] focus:outline-none">
-                  <SelectValue placeholder="Select property type" />
-                </SelectTrigger>
-                <SelectContent className="rounded-[8px] border border-[#e9e9ea]">
-                  <SelectItem value="residential" className="px-4 py-3.5 focus:bg-[#f6f8fa]">
-                    Residential
-                  </SelectItem>
-                  <SelectItem value="commercial" className="px-4 py-3.5 focus:bg-[#f6f8fa]">
-                    Commercial
-                  </SelectItem>
-                  <SelectItem value="industrial" className="px-4 py-3.5 focus:bg-[#f6f8fa]">
-                    Industrial
-                  </SelectItem>
-                  <SelectItem value="mixed-use" className="px-4 py-3.5 focus:bg-[#f6f8fa]">
-                    Mixed Use
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex-1">
-              <h2 className="mb-2 text-base font-medium text-[#4a4c56]">Next Inspection</h2>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <div className="w-full">
-                    <Button
-                      variant="outline"
-                      data-empty={!date}
-                      className="data-[empty=true]:text-muted-foreground h-auto w-full justify-between rounded-[12px] py-4 text-left font-normal"
-                    >
-                      {date ? format(date, 'PPP') : <span>Set a date for next Inspection</span>}
-                      <CalenderIcon />
-                    </Button>
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={date} onSelect={setDate} defaultMonth={date} />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-
-          {/* Assign Property Manager */}
-          <div className="mt-4">
-            <AssignManagerDropdown
-              onSelect={handleSelectManager}
-              selectedUserId={selectedManager?.id}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <FieldGroup className="grid grid-cols-2 gap-4">
+            <FormInputField<CreatePropertyForm>
+              form={form}
+              required
+              name="propertyName"
+              label="Property Name"
+              placeholder="Enter platform name"
             />
-          </div>
-        </div>
 
-        {/* Action buttons */}
-        <div className="mt-6 flex items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={() => handleOpenChange(false)}
-            className="w-full rounded-[8px] border border-[#e7eaeb] py-3.5 text-[#0b2a3b] transition-colors hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={handleAdd}
-            className="w-full rounded-[8px] bg-[#0b2a3b] py-3.5 text-white transition-colors hover:bg-[#1a3d4f]"
-          >
-            Create
-          </button>
-        </div>
+            <FormInputField<CreatePropertyForm>
+              form={form}
+              required
+              name="address"
+              label="Address"
+              placeholder="Enter Address"
+            />
+
+            <FormSelectField<CreatePropertyForm, IPropertyType>
+              form={form}
+              name="propertyType"
+              label="Property Type"
+              placeholder="Select property type"
+              options={[
+                { label: 'Commercial', value: 'Commercial' },
+                { label: 'Residential', value: 'Residential' },
+                { label: 'Industrial', value: 'Industrial' },
+                { label: 'Mixed Use', value: 'Mixed Use' },
+              ]}
+            />
+
+            <form.Field name="nextInspection">
+              {(field) => (
+                <Field data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}>
+                  <FieldLabel htmlFor={field.name}>Next Inspection</FieldLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <div className="w-full">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          data-empty={!field.state.value}
+                          className="data-[empty=true]:text-muted-foreground h-auto w-full justify-between rounded-[12px] py-4 text-left font-normal"
+                        >
+                          {field.state.value ? (
+                            format(field.state.value, 'PPP')
+                          ) : (
+                            <span>Set a date for next Inspection</span>
+                          )}
+                          <CalenderIcon />
+                        </Button>
+                      </div>
+                    </PopoverTrigger>
+
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.state.value}
+                        onSelect={(date) => field.handleChange(date)}
+                        defaultMonth={field.state.value}
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="propertyManagerId">
+              {(field) => (
+                <Field
+                  className="col-span-full"
+                  data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
+                >
+                  <FieldLabel htmlFor={field.name}>Assign Property manager</FieldLabel>
+                  <AssignManagerDropdown
+                    label={<FieldLabel htmlFor={field.name}>Assign Property manager</FieldLabel>}
+                    onSelect={(user) => field.handleChange(user.id)}
+                    selectedUserId={field.state.value}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
+          </FieldGroup>
+
+          <DialogFooter className="mt-6">
+            <DialogClose asChild>
+              <Button type="button" size="lg" className="flex-1" variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+
+            <Button type="submit" size="lg" className="flex-1">
+              {isLoading && <Spinner />}
+              {isLoading ? 'Creating...' : 'Create'}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )
 }
-

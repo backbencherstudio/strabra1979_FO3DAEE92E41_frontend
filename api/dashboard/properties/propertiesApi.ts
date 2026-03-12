@@ -1,16 +1,28 @@
 import { baseApi } from '@/api/baseApi'
-import type { IPropertyListItem, WithApiStatus } from '@/types'
+import type {
+  ICreatePropertyPayload,
+  IPropertyListItem,
+  WithApiStatus,
+  WithPaginationAndStatus,
+} from '@/types'
 
 const propertiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProperties: builder.query<IPropertyListItem[], void>({
+    getProperties: builder.query<WithPaginationAndStatus<IPropertyListItem[]>, void>({
       query: () => `/properties`,
       providesTags: ['Property'] as const,
-      transformResponse: (res: WithApiStatus<IPropertyListItem[]>) => res.data,
+    }),
+    createProperty: builder.mutation<WithApiStatus<void>, ICreatePropertyPayload>({
+      query: (body) => ({
+        url: '/properties',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Property'],
     }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetPropertiesQuery } = propertiesApi
+export const { useGetPropertiesQuery, useCreatePropertyMutation } = propertiesApi
 export default propertiesApi

@@ -9,7 +9,7 @@ import type {
 const userManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserList: builder.query<
-      WithPaginationAndStatus<IUserListItem>,
+      WithPaginationAndStatus<IUserListItem[]>,
       (IPaginationPayload & IFilterPayload) | void
     >({
       query: (args) => ({

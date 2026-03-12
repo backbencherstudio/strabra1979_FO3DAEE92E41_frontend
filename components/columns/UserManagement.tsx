@@ -18,6 +18,7 @@ import { ColumnConfig } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
 import { toast } from 'sonner'
 import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyDialog'
+import { Trush } from '../icons/Trush'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
@@ -59,7 +60,7 @@ const UserStatusBadge = ({ status }: { status: string }) => {
 const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
   // Check if user is deleted - disable actions for deleted users
   const isUserDeleted = rowData.status?.toUpperCase() === 'DELETED'
-  const isUserActive = rowData.status?.toUpperCase() === 'ACTIVE'
+  const isUserDeactivated = rowData.status?.toUpperCase() === 'DEACTIVATED'
 
   const [updateUserStatus, { isLoading }] = useUpdateUserStatusMutation()
 
@@ -67,12 +68,15 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
     console.log('Assigning property:', propertyId, 'to user:', rowData)
   }
 
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-  async function onConfirmTogleStatus() {
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
+  const [dialogType, setDialogType] = useState<'DELETE' | 'DEACTIVATE'>('DELETE')
+  const isDeleteDialog = dialogType == 'DELETE'
+
+  async function onConfirmTogleDeactivateStatus() {
     try {
       await updateUserStatus({
         id: rowData.id,
-        status: isUserActive ? 'DEACTIVATED' : 'ACTIVE',
+        status: isUserDeactivated ? 'ACTIVE' : 'DEACTIVATED',
       }).unwrap()
     } catch (error) {
       toast.error('Failed to update user status', {
@@ -85,7 +89,7 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
     try {
       await updateUserStatus({
         id: rowData.id,
-        status: isUserActive ? 'DELETED' : 'ACTIVE',
+        status: isUserDeleted ? 'ACTIVE' : 'DELETED',
       }).unwrap()
     } catch (error) {
       toast.error('Failed to update user status', {
@@ -94,19 +98,45 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
     }
   }
 
+  // Assign Dialog
+  const [openAssignDialog, setOpenAssignDialog] = useState(false)
+
   return (
     <>
       <ConfirmDialog
-        open={openDeleteDialog}
-        onOpenChange={setOpenDeleteDialog}
-        title="Delete User"
-        desc="Are you sure you want to Delete this user?"
+        open={openConfirmDialog}
+        iconContainerClass="bg-destructive"
+        icon={isDeleteDialog ? <Trush /> : null}
+        onOpenChange={(v) => {
+          setOpenConfirmDialog(v)
+        }}
+        title={isDeleteDialog ? 'Delete User' : 'Deactivate User'}
+        desc={
+          isDeleteDialog
+            ? 'Are you sure you want to Delete this user?'
+            : 'Are you sure you want to deactivate this user?'
+        }
       >
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction onClick={onConfirmToggleDeleteUser} variant="destructive">
-          Delete
+        <AlertDialogAction
+          onClick={() => {
+            if (isDeleteDialog) {
+              onConfirmToggleDeleteUser()
+            } else {
+              onConfirmTogleDeactivateStatus()
+            }
+          }}
+          variant="destructive"
+        >
+          {isDeleteDialog ? 'Delete' : 'Deactivate'}
         </AlertDialogAction>
       </ConfirmDialog>
+
+      <SelectPropertyDialog
+        open={openAssignDialog}
+        onOpenChange={setOpenAssignDialog}
+        onPropertySelect={handlePropertySelect}
+      ></SelectPropertyDialog>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -118,10 +148,17 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
           <DropdownMenuGroup>
             {isUserDeleted ? null : (
               <DropdownMenuItem
-                onSelect={() => onConfirmTogleStatus()}
+                onSelect={() => {
+                  if (isUserDeactivated) {
+                    onConfirmTogleDeactivateStatus()
+                  } else {
+                    setDialogType('DEACTIVATE')
+                    setOpenConfirmDialog(true)
+                  }
+                }}
                 disabled={isUserDeleted || isLoading}
               >
-                {isUserActive ? 'Deactivate User' : 'Active User'}
+                {isUserDeactivated ? 'Active User' : 'Deactivate User'}
               </DropdownMenuItem>
             )}
 
@@ -130,7 +167,8 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
                 if (isUserDeleted) {
                   onConfirmToggleDeleteUser()
                 } else {
-                  setOpenDeleteDialog(true)
+                  setDialogType('DELETE')
+                  setOpenConfirmDialog(true)
                 }
               }}
               disabled={isLoading}
@@ -138,11 +176,9 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
               {isUserDeleted ? 'Active User' : 'Delete User'}
             </DropdownMenuItem>
 
-            <SelectPropertyDialog onPropertySelect={handlePropertySelect}>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()} disabled={isUserDeleted}>
-                Assign to a property
-              </DropdownMenuItem>
-            </SelectPropertyDialog>
+            <DropdownMenuItem onSelect={() => setOpenAssignDialog(true)} disabled={isUserDeleted}>
+              Assign to a property
+            </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

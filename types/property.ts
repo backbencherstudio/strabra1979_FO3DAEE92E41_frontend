@@ -1,8 +1,17 @@
+export const PropertyTypeObj = {
+  COMMERCIAL: 'Commercial',
+  RESIDENTIAL: 'Residential',
+  INDUSTRIAL: 'Industrial',
+  MIXED_USE: 'Mixed Use',
+} as const
+
+export type IPropertyType = (typeof PropertyTypeObj)[keyof typeof PropertyTypeObj]
+
 export type IPropertyListItem = {
   id: string
   name: string
   address: string
-  propertyType: string
+  propertyType: IPropertyType
   nextInspectionDate: string
   propertyManagerId: string
   activeTemplateId: string
@@ -11,10 +20,9 @@ export type IPropertyListItem = {
   updatedAt: string
   propertyManager: {
     id: string
-    name?: string
-    email?: string
+    username: string
+    email: string
     avatar?: string
-    inspections: Array<string>
   }
   dashboard: {
     id: string
@@ -25,4 +33,13 @@ export type IPropertyListItem = {
       healthLabel: string
     }
   }
+}
+
+export interface ICreatePropertyPayload {
+  name: string
+  address: string
+  propertyType?: string
+  nextInspectionDate?: string
+  assignedTo?: string
+  propertyManagerId?: string
 }
