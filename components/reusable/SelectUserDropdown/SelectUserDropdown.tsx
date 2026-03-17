@@ -1,22 +1,28 @@
 'use client'
 
 import { useGetUserListQuery } from '@/api/userManagement/userManagementApi'
-import { IUserListItem } from '@/types'
+import { IAuthUserRole, IUserListItem } from '@/types'
 import { Search } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import ArrowDownIcon from '../icons/ArrowDownIcon'
-import { Checkbox } from '../ui/checkbox'
-import UserAvatar from './UserAvatar'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
-import { isArrayEmpty } from '@/lib/utils'
+import ArrowDownIcon from '../../icons/ArrowDownIcon'
+import { Checkbox } from '../../ui/checkbox'
+import UserAvatar from '../UserAvatar'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../../ui/input-group'
+import { cn, isArrayEmpty } from '@/lib/utils'
 
 interface AssignManagerDropdownProps {
   onSelect?: (user: IUserListItem) => void
   selectedUserId?: string
-  label: React.ReactNode
+  placeholder: React.ReactNode
+  userType?: IAuthUserRole
 }
 
-export function AssignManagerDropdown({ onSelect, selectedUserId }: AssignManagerDropdownProps) {
+export function SelectUserDropdown({
+  onSelect,
+  selectedUserId,
+  placeholder = 'Select user',
+  userType,
+}: AssignManagerDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -46,7 +52,7 @@ export function AssignManagerDropdown({ onSelect, selectedUserId }: AssignManage
     page: 1,
     limit: 100,
     status: 'ACTIVE',
-    role: 'PROPERTY_MANAGER',
+    role: userType,
     // search: search,
   })
   const selectedUser = Array.isArray(userList)
@@ -64,15 +70,9 @@ export function AssignManagerDropdown({ onSelect, selectedUserId }: AssignManage
           className="squircle text-muted-foreground flex h-14 w-full items-center justify-between border border-[#e7eaeb] bg-white px-4 text-left transition-colors hover:border-[#bfcbce] focus:ring-2 focus:ring-[#0b2a3b] focus:outline-none"
         >
           {selectedUser ? (
-            <div className="flex items-center gap-3">
-              <UserAvatar className="" name={selectedUser.username} src={selectedUser.avatar} />
-              <div className="flex flex-col items-start">
-                <span className="text-sm font-medium text-[#0b2a3b]">{selectedUser.username}</span>
-                <span className="text-xs">{selectedUser.email}</span>
-              </div>
-            </div>
+            <UserItem user={selectedUser} />
           ) : (
-            <span className="text-sm"> Assign a Property Manager</span>
+            <span className="text-sm">{placeholder}</span>
           )}
           <ArrowDownIcon />
         </button>
@@ -108,17 +108,7 @@ export function AssignManagerDropdown({ onSelect, selectedUserId }: AssignManage
                       onClick={() => handleSelectUser(user)}
                       checked={selectedUserId === user.id}
                     />
-
-                    <div
-                      onClick={() => handleSelectUser(user)}
-                      className="flex flex-1 cursor-pointer items-center gap-3"
-                    >
-                      <UserAvatar className="" name={user.username} src={user.avatar} />
-                      <div className="flex flex-col items-start">
-                        <span className="text-sm font-medium text-[#0b2a3b]">{user.username}</span>
-                        <span className="text-xs">{user.email}</span>
-                      </div>
-                    </div>
+                    <UserItem onClick={() => handleSelectUser(user)} user={user} />
                   </div>
                 ))
               ) : (
@@ -127,6 +117,22 @@ export function AssignManagerDropdown({ onSelect, selectedUserId }: AssignManage
             </div>
           </div>
         )}
+      </div>
+    </div>
+  )
+}
+
+interface UserItemProps extends React.ComponentProps<'div'> {
+  user: IUserListItem
+}
+
+function UserItem({ user, className, ...props }: UserItemProps) {
+  return (
+    <div {...props} className={cn('flex items-center gap-3', className)}>
+      <UserAvatar className="" name={user.username} src={user.avatar} />
+      <div className="flex flex-col items-start">
+        <span className="text-sm font-medium text-[#0b2a3b]">{user.username}</span>
+        <span className="text-xs">{user.email}</span>
       </div>
     </div>
   )

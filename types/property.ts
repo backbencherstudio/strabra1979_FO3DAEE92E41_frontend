@@ -9,6 +9,25 @@ export const PropertyTypeObj = {
 
 export type IPropertyType = (typeof PropertyTypeObj)[keyof typeof PropertyTypeObj]
 
+export interface IAssignUserParams {
+  dashboardId: string
+  userId: string
+  expiresAt?: string
+}
+export interface IProperty {
+  id: string
+  name: string
+  address: string
+  propertyType: string
+  nextInspectionDate: string
+  propertyManagerId: string
+  activeTemplateId: string
+  status: string
+  createdAt: string
+  updatedAt: string
+}
+export interface AssignUserResponse extends IProperty {}
+
 export type IPropertyListItem = {
   id: string
   name: string

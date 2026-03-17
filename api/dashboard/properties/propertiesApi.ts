@@ -1,5 +1,7 @@
 import { baseApi } from '@/api/baseApi'
 import type {
+  AssignUserResponse,
+  IAssignUserParams,
   ICreatePropertyPayload,
   IPropertyDashboardAccessResponse,
   IPropertyListItem,
@@ -39,6 +41,16 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['PropertyDashboard'],
     }),
+    assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
+      query: ({ dashboardId, userId, expiresAt }) => ({
+        url: `/properties/dashboard/${dashboardId}/assign-user`,
+        method: 'POST',
+        body: {
+          userId,
+          expiresAt,
+        },
+      }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -48,5 +60,6 @@ export const {
   useCreatePropertyMutation,
   useGetPropertyDashboardAccessListQuery,
   useRevokeDashboardAccessMutation,
+  useAssignUserToPropertyMutation
 } = propertiesApi
 export default propertiesApi

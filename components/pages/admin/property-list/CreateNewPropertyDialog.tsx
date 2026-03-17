@@ -17,7 +17,7 @@ import { useCreatePropertyMutation } from '@/api/dashboard/properties/properties
 import FormInputField from '@/components/form/form-input-field'
 import FormSelectField from '@/components/form/form-select-field'
 import CalenderIcon from '@/components/icons/CalenderIcon'
-import { AssignManagerDropdown } from '@/components/reusable/AssignManagerDropdown'
+import { SelectUserDropdown } from '@/components/reusable/SelectUserDropdown/SelectUserDropdown'
 import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -87,6 +87,7 @@ export function CreateNewPropertyDialog({
           propertyManagerId: value.propertyManagerId,
         }).unwrap()
         handleOpenChange(false)
+        form.reset()
 
         toast.message(res.message ?? 'Property created succefuull')
       } catch (error) {
@@ -190,10 +191,11 @@ export function CreateNewPropertyDialog({
                   data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
                 >
                   <FieldLabel htmlFor={field.name}>Assign Property manager</FieldLabel>
-                  <AssignManagerDropdown
-                    label={<FieldLabel htmlFor={field.name}>Assign Property manager</FieldLabel>}
+                  <SelectUserDropdown
+                    placeholder="Assign Property manager"
                     onSelect={(user) => field.handleChange(user.id)}
                     selectedUserId={field.state.value}
+                    userType="PROPERTY_MANAGER"
                   />
                   <FieldError errors={field.state.meta.errors} />
                 </Field>

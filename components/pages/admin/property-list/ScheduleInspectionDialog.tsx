@@ -2,150 +2,141 @@
 'use client'
 
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { Calendar } from '@/components/ui/calendar'
 import { useState } from 'react'
 import ClockIcon from '@/components/icons/ClockIcon'
 import { format } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { TimeSelector } from './TimeSelector'
+import { TimeSelector, TimeSelectorValue } from './TimeSelector'
+import { Button } from '@/components/ui/button'
 
 interface ScheduleInspectionDialogProps {
-    open?: boolean
-    onOpenChange?: (open: boolean) => void
-    onSchedule?: (data: any) => void
-    propertyName?: string
-    propertyAddress?: string
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  onSchedule?: (data: any) => void
+  propertyName?: string
+  propertyAddress?: string
 }
 
 export function ScheduleInspectionDialog({
-    open,
-    onOpenChange,
-    onSchedule,
-    propertyName = "Sunset Office Complex",
-    propertyAddress = "123 Business Ave, Suite 100"
+  open,
+  onOpenChange,
+  onSchedule,
+  propertyName = 'Sunset Office Complex',
+  propertyAddress = '123 Business Ave, Suite 100',
 }: ScheduleInspectionDialogProps) {
-    const [internalOpen, setInternalOpen] = useState(false)
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
-    
-    const isControlled = open !== undefined
-    const isOpen = isControlled ? open : internalOpen
-    
-    const handleOpenChange = (newOpen: boolean) => {
-        if (!isControlled) {
-            setInternalOpen(newOpen)
-        }
-        onOpenChange?.(newOpen)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [selectedTime, setSelectedTime] = useState<TimeSelectorValue | undefined>({
+    hour: '12',
+    minute: '00',
+    period: 'AM',
+  })
+
+  const isControlled = open !== undefined
+  const isOpen = isControlled ? open : internalOpen
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!isControlled) {
+      setInternalOpen(newOpen)
     }
+    onOpenChange?.(newOpen)
+  }
 
-    const handleSchedule = () => {
-        onSchedule?.({ 
-            propertyName, 
-            propertyAddress,
-            inspectionDate: selectedDate 
-        })
-        handleOpenChange(false)
-    }
+  const handleSchedule = () => {
+    onSchedule?.({
+      propertyName,
+      propertyAddress,
+      inspectionDate: selectedDate,
+    })
+    handleOpenChange(false)
+  }
 
-    // Format the selected date for display
-    const formattedDate = selectedDate 
-        ? format(selectedDate, "EEEE, MMMM d, yyyy")
-        : "No date selected"
+  // Format the selected date for display
+  const formattedDate = selectedDate
+    ? format(selectedDate, 'EEEE, MMMM d, yyyy')
+    : 'No date selected'
 
-    return (
-        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[796px]" showCloseButton={false}>
-                <DialogHeader>
-                    <DialogTitle className="text-2xl text-center text-[#4a4c56] font-medium">
-                        Schedule an Inspection
-                    </DialogTitle>
-                    <DialogDescription className="text-center text-[#5f6166] text-sm mt-2">
-                        Select a date for the property inspection
-                    </DialogDescription>
-                </DialogHeader>
-                
-                <div className='space-y-4 mt-4'>
-                    {/* Property Info */}
-                    <div>
-                        <h2 className='text-[#4a4c56] text-base font-medium'>Property</h2>
-                        <p className='text-base font-medium bg-[#eceff3] text-[#4a4c56] py-3.5 px-5 rounded-[12px] mt-2 border border-[#e9e9ea]'>
-                            {propertyName}
-                        </p>
-                    </div>
+  const infoList = [
+    { label: 'Property', value: propertyName },
+    { label: 'Address', value: propertyAddress },
+  ]
 
-                    {/* Address */}
-                    <div>
-                        <h2 className='text-[#4a4c56] text-base font-medium'>Address</h2>
-                        <p className='text-base font-medium bg-[#eceff3] text-[#4a4c56] py-3.5 px-5 rounded-[12px] mt-2 border border-[#e9e9ea]'>
-                            {propertyAddress}
-                        </p>
-                    </div>
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="sm:max-w-[796px]" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle className="text-center text-2xl font-medium text-[#4a4c56]">
+            Schedule an Inspection
+          </DialogTitle>
+          <DialogDescription className="sr-only mt-2 text-center">
+            Select a date for the property inspection
+          </DialogDescription>
+        </DialogHeader>
 
-                {/* calender and date */}
-                <div className=' flex items-start'>
-                    <div className=' flex-1'>
-<Calendar
-    mode="single"
-    selected={selectedDate}
-    onSelect={setSelectedDate}
-    defaultMonth={selectedDate}
-    // className="w-[300px] "
-    
-   
-/>
+        <div className="mt-4 space-y-4">
+          {/* Property Info */}
+          {infoList.map((item) => (
+            <div key={item.label}>
+              <h2 className="text-gray-black-400 text-base font-medium">{item.label}</h2>
+              <p className="border-gray-black-50 bg-hover-50 text-gray-black-400 squircle mt-2 border px-5 py-3.5 text-base font-medium">
+                {item.value}
+              </p>
+            </div>
+          ))}
 
-                    </div>
-                    <div className=' flex-1'>
-<TimeSelector/>
+          {/* calender and time picker */}
+          <div className="flex items-start gap-4">
+            <section className="bg-normal-25 border-hover-50 squircle flex-1 overflow-hidden border">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                defaultMonth={selectedDate}
+                className="w-full bg-transparent"
+              />
+            </section>
+            <section className="bg-normal-25 border-hover-50 squircle flex-1 overflow-hidden border">
+              <p className="border-b py-3 text-center text-base font-medium">Set time</p>
+              <TimeSelector defaultValue={selectedTime} onTimeChange={setSelectedTime} />
+            </section>
+          </div>
 
-                    </div>
+          {/* Selected Date Display */}
+          {selectedDate && (
+            <div className="flex items-center justify-between rounded-xl bg-[#c7daed] px-4 py-5">
+              <div className="flex items-center gap-1.5">
+                <ClockIcon />
+                <p className="text-xl font-medium text-[#284b6c]">Scheduled for</p>
+              </div>
+              <p className="text-xl font-medium text-[#284b6c]">{formattedDate}</p>
+            </div>
+          )}
 
-                </div>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-4 pt-4 *:flex-1">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => handleOpenChange(false)}
+              disabled={!selectedDate}
+              size="xl"
+            >
+              Cancel
+            </Button>
 
-                
-
-                    {/* Selected Date Display */}
-                    {selectedDate && (
-                        <div className='flex justify-between items-center bg-[#c7daed] py-5 px-4 rounded-3xl'>
-                            <div className='flex items-center gap-1.5'>
-                                <ClockIcon />
-                                <p className='text-xl font-medium text-[#284b6c]'>Scheduled for</p>
-                            </div>
-                            <p className='text-xl font-medium text-[#284b6c]'>
-                                {formattedDate}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex justify-center items-center gap-4 pt-4">
-                        <button 
-                            type="button" 
-                            onClick={() => handleOpenChange(false)} 
-                            className='w-full py-3.5 border border-[#e7eaeb] rounded-[8px] text-[#0b2a3b] hover:bg-gray-50 transition-colors'
-                        >
-                            Cancel
-                        </button>
-                        <button 
-                            type="button" 
-                            onClick={handleSchedule}
-                            disabled={!selectedDate}
-                            className={`w-full py-3.5 rounded-[8px] text-white transition-colors ${
-                                selectedDate 
-                                    ? 'bg-[#0b2a3b] hover:bg-[#1a3d4f] cursor-pointer' 
-                                    : 'bg-[#bfcbce] cursor-not-allowed'
-                            }`}
-                        >
-                            Schedule Inspection
-                        </button>
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    )
+            <Button type="button" onClick={handleSchedule} disabled={!selectedDate} size="xl">
+              Schedule Inspection
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
 }

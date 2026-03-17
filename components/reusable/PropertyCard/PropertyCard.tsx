@@ -1,7 +1,7 @@
 'use client'
 import { LocationPin } from '@/components/icons/LocationPin'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
-import { AssignInspectorDialog } from '@/components/pages/admin/property-list/AssignInspectiorDialog'
+import { AssignUserDialog } from '@/components/pages/admin/property-list/AssignUserDialog'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
 import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccessDialog'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
@@ -20,6 +20,9 @@ import { useEffect, useState } from 'react'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { InfoItem } from '../InfoGrid/InfoGrid'
+import { useAssignUserToPropertyMutation } from '@/api/dashboard/properties/propertiesApi'
+import { toast } from 'sonner'
+import { getErrorMessage } from '@/lib/farmatters'
 
 export interface Property {
   id: string
@@ -90,15 +93,11 @@ export default function PropertyCard({
     e.stopPropagation()
   }
 
-  const handleScheduleClick = (e: React.MouseEvent) => {
-    // e.preventDefault()
-    // e.stopPropagation()
+  const handleScheduleClick = () => {
     setScheduleDialogOpen(true)
   }
 
-  const handleAssignClick = (e: React.MouseEvent) => {
-    // e.preventDefault()
-    // e.stopPropagation()
+  const handleAssignClick = () => {
     setAssignDialogOpen(true)
   }
 
@@ -114,12 +113,25 @@ export default function PropertyCard({
     setScheduleDialogOpen(false)
   }
 
-  const handleAssignConfirm = (data: any) => {
-    console.log('Assign confirmed:', data)
-    if (onAssign) {
-      onAssign()
-    }
+  // Assign a propery manager
+  const [assignUser, { isLoading: assignUserIsLoading }] = useAssignUserToPropertyMutation()
+  const handleAssignPropertyManagerConfirm = async (userId?: string, dashboardId?: string) => {
     setAssignDialogOpen(false)
+    if (!userId || !dashboardId) {
+      return
+    }
+
+    try {
+      const res = await assignUser({
+        dashboardId: dashboardId,
+        userId: userId,
+      }).unwrap()
+      toast.message(res.message ?? 'Successfully assigned a user')
+    } catch (error) {
+      toast.error('Failed to assing a user', {
+        description: getErrorMessage(error),
+      })
+    }
   }
 
   return (
@@ -141,13 +153,13 @@ export default function PropertyCard({
 
       {isAdmin && (
         <>
-          <div className="absolute top-3 right-3 z-40" onClick={handleDropdownClick}>
+          <div className="absolute top-3 right-3 z-40">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 border border-[#eceff3] bg-[#bfcbce] shadow-lg hover:bg-[#bfcbce]/50"
+                  className="border-hover-50 h-8 w-8 border bg-[#bfcbce] shadow-lg hover:bg-[#bfcbce]/50"
                 >
                   <MoreVertical className="h-4 w-4 text-white hover:text-black" />
                 </Button>
@@ -157,7 +169,7 @@ export default function PropertyCard({
                   Schedule Inspection
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleAssignClick} className="cursor-pointer">
-                  Assign Inspector
+                  Assign a Property Manager
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleViewAccessClick} className="cursor-pointer">
                   View Access Details
@@ -175,13 +187,19 @@ export default function PropertyCard({
             propertyAddress={address}
           />
 
-          {/* Assign Inspector Dialog */}
-          <AssignInspectorDialog
+          {/* Assign propery manager Dialog */}
+          <AssignUserDialog
+            // TODO: show previous selected user with selectedUserId
+            // selectedUserId=''
+            dialogTitle="Assign a Property Manager"
+            label="Propery Manager"
+            userType="PROPERTY_MANAGER"
+            placeholder="Select a propery manager"
             open={assignDialogOpen}
             onOpenChange={setAssignDialogOpen}
-            onAssign={handleAssignConfirm}
-            propertyName={property}
-            propertyAddress={address}
+            onSelect={(userId) => {
+              handleAssignPropertyManagerConfirm(userId, dashboardId)
+            }}
           />
 
           {/* View Access Dialog */}
