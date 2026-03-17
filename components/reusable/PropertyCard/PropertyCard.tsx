@@ -3,7 +3,7 @@ import { LocationPin } from '@/components/icons/LocationPin'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
 import { AssignInspectorDialog } from '@/components/pages/admin/property-list/AssignInspectiorDialog'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
-import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccess'
+import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccessDialog'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {

@@ -8,4 +8,4 @@ export const cookieAge = {
 }
 
 export const baseApiURL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://require-flickr-listprice-favorites.trycloudflare.com/api'
+  process.env.NEXT_PUBLIC_API_URL || 'https://monkey-starsmerchant-downtown-syndrome.trycloudflare.com/api'

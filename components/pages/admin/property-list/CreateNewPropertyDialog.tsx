@@ -46,17 +46,22 @@ interface AddNewDialogProps {
   children?: React.ReactNode
 }
 
-export function AddNewDialog({ open, onOpenChange, trigger, children }: AddNewDialogProps) {
+export function CreateNewPropertyDialog({
+  open,
+  onOpenChange,
+  trigger,
+  children,
+}: AddNewDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false)
 
   const isControlled = open !== undefined
   const isOpen = isControlled ? open : internalOpen
 
-  const handleOpenChange = (newOpen: boolean) => {
+  const handleOpenChange = (open: boolean) => {
     if (!isControlled) {
-      setInternalOpen(newOpen)
+      setInternalOpen(open)
     }
-    onOpenChange?.(newOpen)
+    onOpenChange?.(open)
   }
 
   const [createProperty, { isLoading }] = useCreatePropertyMutation()
@@ -73,7 +78,6 @@ export function AddNewDialog({ open, onOpenChange, trigger, children }: AddNewDi
       onChange: createPropertySchema,
     },
     onSubmit: async ({ value }) => {
-      console.table(value)
       try {
         const res = await createProperty({
           name: value.propertyName,
@@ -82,7 +86,7 @@ export function AddNewDialog({ open, onOpenChange, trigger, children }: AddNewDi
           nextInspectionDate: value.nextInspection ? value.nextInspection.toISOString() : undefined,
           propertyManagerId: value.propertyManagerId,
         }).unwrap()
-        onOpenChange?.call(null, false)
+        handleOpenChange(false)
 
         toast.message(res.message ?? 'Property created succefuull')
       } catch (error) {

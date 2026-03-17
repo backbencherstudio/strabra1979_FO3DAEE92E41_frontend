@@ -4,7 +4,7 @@ import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/Proper
 import Building3Icon from '@/components/icons/Building3Icon'
 import PlusIcon from '@/components/icons/PlusIcon'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
-import { AddNewDialog } from '@/components/pages/admin/property-list/AddNewDialog'
+import { CreateNewPropertyDialog } from '@/components/pages/admin/property-list/CreateNewPropertyDialog'
 import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
 import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
 import { formatDate, naIfEmpty } from '@/lib/farmatters'
@@ -37,19 +37,19 @@ export default function PropertyHome() {
   const { data: { data = [] } = {}, isLoading } = useGetPropertiesQuery()
 
   return (
-    <div className="rounded-3xl bg-[#f6f8fa] p-4">
+    <div className="bg-normal-25 rounded-3xl p-4">
       <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3">
-        <div className="flex items-center justify-center rounded-[12px] border border-[#e9e9ea] bg-[#ffffff]">
+        <div className="border-gray-black-50 flex items-center justify-center rounded-[12px] border bg-[#ffffff]">
           <div className="flex flex-col items-center justify-center py-24">
             <Building3Icon />
-            <h2 className="mt-3 text-center text-base font-medium text-[#4a4c56]">
+            <h2 className="text-gray-black-400 mt-3 text-center text-base font-medium">
               Create New Property Dashboard
             </h2>
             <p className="mt-1.5 text-center text-sm text-[#5f6166]">
               Set up a dashboard to manage <br /> inspections, and all property reports.
             </p>
 
-            <AddNewDialog
+            <CreateNewPropertyDialog
               trigger={
                 <Button variant="outline" size="xl" className="mt-4 px-12!">
                   <PlusIcon /> Create New

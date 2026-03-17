@@ -6,3 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export function isArrayEmpty<T>(value: T[] | null | undefined): value is null | undefined | [] {
+  return !Array.isArray(value) || value.length === 0
+}
