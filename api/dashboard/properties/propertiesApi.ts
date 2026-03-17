@@ -43,6 +43,7 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['PropertyDashboard'],
     }),
+    // TODO: use invalidatesTags in assignUserToProperty
     assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
       query: ({ dashboardId, userId, expiresAt }) => ({
         url: `/properties/dashboard/${dashboardId}/assign-user`,
@@ -53,6 +54,7 @@ const propertiesApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    // TODO: use invalidatesTags in scheduleInspection
     scheduleInspection: builder.mutation<
       WithApiStatus<IScheduleInspectionResponse>,
       IScheduleInspectionParams
