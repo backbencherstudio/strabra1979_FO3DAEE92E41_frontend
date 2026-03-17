@@ -143,3 +143,26 @@ export function TimeSelector({ onTimeChange, defaultValue }: TimeSelectorProps) 
     </div>
   )
 }
+
+export function convertTimeSelectorToISOString(date: Date, time: TimeSelectorValue): string {
+  const hours = parseInt(time.hour, 10)
+  const minutes = parseInt(time.minute, 10)
+
+  let finalHour = hours
+
+  // Convert to 24-hour format
+  if (time.period === 'PM' && hours !== 12) {
+    finalHour += 12
+  } else if (time.period === 'AM' && hours === 12) {
+    finalHour = 0
+  }
+
+  const result = new Date(date)
+
+  result.setHours(finalHour)
+  result.setMinutes(minutes)
+  result.setSeconds(0)
+  result.setMilliseconds(0)
+
+  return result.toISOString()
+}

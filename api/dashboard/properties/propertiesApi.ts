@@ -6,6 +6,8 @@ import type {
   IPropertyDashboardAccessResponse,
   IPropertyListItem,
   IRevokeDashboardAccessPayload,
+  IScheduleInspectionParams,
+  IScheduleInspectionResponse,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
@@ -51,6 +53,19 @@ const propertiesApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    scheduleInspection: builder.mutation<
+      WithApiStatus<IScheduleInspectionResponse>,
+      IScheduleInspectionParams
+    >({
+      query: ({ dashboardId, scheduledAt, assignedTo }) => ({
+        url: `/properties/dashboard/${dashboardId}/schedule-inspection`,
+        method: 'POST',
+        body: {
+          scheduledAt,
+          assignedTo,
+        },
+      }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -60,6 +75,7 @@ export const {
   useCreatePropertyMutation,
   useGetPropertyDashboardAccessListQuery,
   useRevokeDashboardAccessMutation,
-  useAssignUserToPropertyMutation
+  useAssignUserToPropertyMutation,
+  useScheduleInspectionMutation,
 } = propertiesApi
 export default propertiesApi

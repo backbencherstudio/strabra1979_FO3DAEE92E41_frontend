@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Spinner } from '@/components/ui/spinner'
 import { IAuthUserRole } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { useState } from 'react'
@@ -23,6 +24,7 @@ interface AssignUserDialogDialogProps extends React.ComponentProps<typeof Dialog
   userType?: IAuthUserRole
   placeholder?: string
   dialogTitle: string
+  isLoading?: boolean
 }
 
 const assignUserSchema = z.object({
@@ -30,6 +32,7 @@ const assignUserSchema = z.object({
 })
 
 export function AssignUserDialog({
+  isLoading,
   open,
   onOpenChange,
   onSelect,
@@ -111,6 +114,7 @@ export function AssignUserDialog({
           {/* Action Buttons */}
           <div className="flex items-center gap-4 pt-4 *:flex-1">
             <Button
+              disabled={isLoading}
               variant="outline"
               type="button"
               onClick={() => {
@@ -123,8 +127,9 @@ export function AssignUserDialog({
               Cancel
             </Button>
 
-            <Button type="submit" size="xl">
-              Assign Inspector
+            <Button disabled={isLoading} type="submit" size="xl">
+              {isLoading ? <Spinner /> : null}
+              {isLoading ? 'Assigning...' : 'Assign'}
             </Button>
           </div>
         </form>

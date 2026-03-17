@@ -128,7 +128,7 @@ interface UserItemProps extends React.ComponentProps<'div'> {
 
 function UserItem({ user, className, ...props }: UserItemProps) {
   return (
-    <div {...props} className={cn('flex items-center gap-3', className)}>
+    <div {...props} className={cn('flex flex-1 cursor-pointer items-center gap-3', className)}>
       <UserAvatar className="" name={user.username} src={user.avatar} />
       <div className="flex flex-col items-start">
         <span className="text-sm font-medium text-[#0b2a3b]">{user.username}</span>

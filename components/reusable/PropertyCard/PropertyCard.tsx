@@ -180,6 +180,7 @@ export default function PropertyCard({
 
           {/* Schedule Inspection Dialog */}
           <ScheduleInspectionDialog
+            dashboardId={dashboardId}
             open={scheduleDialogOpen}
             onOpenChange={setScheduleDialogOpen}
             onSchedule={handleScheduleConfirm}

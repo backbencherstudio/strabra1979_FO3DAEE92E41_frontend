@@ -100,3 +100,21 @@ export interface IRevokeDashboardAccessPayload {
   dashboardId: string
   targetUserId: string
 }
+
+export interface IScheduleInspectionParams {
+  dashboardId: string
+  scheduledAt: string
+  assignedTo: string
+}
+
+export interface IScheduleInspectionResponse {
+  id: string
+  dashboardId: string
+  assignedTo: string
+  scheduledAt: string
+  status: string
+  inspectionId: string | null
+  createdBy: string
+  createdAt: string
+  updatedAt: string
+}
