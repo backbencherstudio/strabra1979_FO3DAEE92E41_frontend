@@ -60,6 +60,7 @@ export default function PaginationControls({
   className,
   size = 'icon-lg',
   showHomeAndEnd = true,
+  ...props
 }: PaginationProps) {
   const isMobile = useIsMobile()
   const iconSize = isMobile ? 'icon-xs' : size
@@ -75,7 +76,7 @@ export default function PaginationControls({
   if (lastPage <= 1) return null
 
   return (
-    <div className={cn('flex justify-center gap-3', className)}>
+    <div className={cn('flex justify-center gap-3', className)} {...props}>
       {showHomeAndEnd && (
         <Button
           size={iconSize}

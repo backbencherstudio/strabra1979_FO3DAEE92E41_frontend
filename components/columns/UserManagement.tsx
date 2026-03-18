@@ -136,7 +136,7 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
         open={openAssignDialog}
         onOpenChange={setOpenAssignDialog}
         onPropertySelect={handlePropertySelect}
-      ></SelectPropertyDialog>
+      />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -238,7 +238,7 @@ export const UserManagementColumns: ColumnConfig<IUserListItem>[] = [
   },
   {
     label: '',
-    accessor: 'email',
+    accessor: 'id',
     width: '5%',
     formatter: (_, row) => {
       return <UserActionButton rowData={row} />

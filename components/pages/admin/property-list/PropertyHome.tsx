@@ -10,20 +10,18 @@ import {
   usePaginatedQuery,
   usePaginationPage,
 } from '@/components/reusable/Pagination/PaginationPageProvider'
-import PropertyCard, {
-  PropertyCardInfoList,
-  PropertyCardSkeleton,
-} from '@/components/reusable/PropertyCard/PropertyCard'
+import PropertyCard, { PropertyCardSkeleton } from '@/components/reusable/PropertyCard/PropertyCard'
+import { PropertyCardAdminInfoList } from '@/components/reusable/PropertyCard/PropertyCardAdminInfoList'
 import { Button } from '@/components/ui/button'
 import { appRoutes } from '@/constant'
-import { addDaysBy, formatDate, naIfEmpty } from '@/lib/farmatters'
+import { addDaysBy, naIfEmpty } from '@/lib/farmatters'
 import { useAuth } from '@/redux/features/auth/useAuth'
 import { RoleUtils } from '@/types'
+import SharedPropertyCardListActions from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import {
   SharedPropertyCardListContextProvider,
   useSharedPropertyCardListContext,
 } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
-import SharedPropertyCardListActions from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 
 export default function PropertyHome() {
   return (
@@ -77,19 +75,7 @@ function PropertyHomeContend() {
                   address={naIfEmpty(p.address)}
                   score={p?.dashboard?.latestInspection?.overallScore}
                 >
-                  <PropertyCardInfoList
-                    items={[
-                      { label: 'Type', value: naIfEmpty(p.propertyType) },
-                      {
-                        label: 'Next Inspection',
-                        value: naIfEmpty(formatDate(p?.nextInspectionDate)),
-                      },
-                      {
-                        label: 'Property Manager',
-                        value: naIfEmpty(p?.propertyManager?.username),
-                      },
-                    ]}
-                  />
+                  <PropertyCardAdminInfoList property={p} />
                 </PropertyCard>
               ))}
         </div>

@@ -78,17 +78,17 @@ export default function PropertyCard({
       className={cn(
         'border-input relative overflow-hidden rounded-md border bg-white transition-all duration-200',
         isSelectable && 'cursor-pointer',
-        isSelected && 'border-[3px] border-blue-500',
+        isSelected && 'outline-3 outline-blue-500',
       )}
       onClick={handleCardClick}
     >
-      {isSelectable && isSelected && (
+      {isSelectable && isSelected ? (
         <div className="absolute top-3 right-3 z-50">
           <div className="rounded-full bg-blue-500 p-1 shadow-lg">
             <Check className="h-4 w-4 text-white" />
           </div>
         </div>
-      )}
+      ) : null}
 
       {isAdmin && (
         <PropertyCardAdminActions
@@ -181,7 +181,7 @@ export function PropertyCardSkeleton() {
   return (
     <div className="border-input overflow-hidden rounded-md border bg-white">
       {/* Image */}
-      <Skeleton className="rounded-b-none aspect-video w-full bg-gray-200" />
+      <Skeleton className="aspect-video w-full rounded-b-none bg-gray-200" />
 
       <div className="space-y-4 p-4">
         {/* Title */}
