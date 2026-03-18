@@ -5,9 +5,11 @@ import SortDropdown from '@/components/reusable/SortDropdown/SortDropdown'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { cn } from '@/lib/utils'
-import { Search, X } from 'lucide-react'
-import { ReactNode } from 'react'
+import { CalendarIcon, Search, X } from 'lucide-react'
+import { ReactNode, useState } from 'react'
 import { useSharedPropertyCardListContext } from './SharedPropertyCardListContext'
+import { format } from 'date-fns'
+import { PopoverTrigger } from '@/components/ui/popover'
 
 interface SharedPropertyCardListActionsProps extends React.PropsWithChildren {
   title: string
@@ -37,6 +39,10 @@ export default function SharedPropertyCardListActions({
 }: SharedPropertyCardListActionsProps) {
   const { sortOrder, search, setSearch, setSortOrder, setDate, dateFrom } =
     useSharedPropertyCardListContext()
+
+  const [openDatePicker, setOpenDatePicker] = useState(false)
+  const date = dateFrom?.raw ?? undefined
+  const hasDate = date != undefined
 
   return (
     <div
@@ -89,10 +95,39 @@ export default function SharedPropertyCardListActions({
 
           {showDateFilter ? (
             <DatePickerPopover
-              placeholder="Filter by Date"
               date={dateFrom?.raw ?? undefined}
-              onChange={(v) => setDate({ dateFrom: v })}
-            />
+              onSelect={(v) => setDate({ dateFrom: v })}
+              open={openDatePicker}
+              onOpenChange={setOpenDatePicker}
+            >
+              <div className="relative">
+                <PopoverTrigger asChild>
+                  <Button variant="muted" className="gap-2">
+                    <CalendarIcon className="size-5" />
+                    <span className={cn('max-xl:hidden', { 'pr-5': hasDate })}>
+                      {hasDate ? format(date, 'PPP') : 'Filter by Date'}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+
+                {hasDate ? (
+                  <div className="absolute top-1/2 right-1 -translate-y-1/2">
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setOpenDatePicker(false)
+                        setDate({ dateFrom: null })
+                      }}
+                      variant="ghost"
+                      className="rounded-full"
+                      size="icon-xs"
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+            </DatePickerPopover>
           ) : null}
 
           {children}

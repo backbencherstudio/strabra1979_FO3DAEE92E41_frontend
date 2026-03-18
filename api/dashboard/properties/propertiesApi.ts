@@ -12,6 +12,20 @@ import type {
   WithPaginationAndStatus,
 } from '@/types'
 
+export interface SetAccessExpirationPayload {
+  dashboardId: string
+  userId: string
+  accessExpiresAt: string
+}
+
+export interface SetAccessExpirationResponse {
+  id: string
+  dashboardId: string
+  userId: string
+  accessExpiresAt: string
+  updatedAt: string
+}
+
 const propertiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProperties: builder.query<WithPaginationAndStatus<IPropertyListItem[]>, void>({
@@ -25,23 +39,6 @@ const propertiesApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: ['Property'],
-    }),
-    getPropertyDashboardAccessList: builder.query<
-      WithApiStatus<IPropertyDashboardAccessResponse>,
-      string
-    >({
-      query: (dashboardId) => ({
-        url: `/properties/dashboard/${dashboardId}/access-list`,
-        method: 'GET',
-      }),
-      providesTags: ['PropertyDashboard'] as const,
-    }),
-    revokeDashboardAccess: builder.mutation<WithApiStatus<void>, IRevokeDashboardAccessPayload>({
-      query: ({ dashboardId, targetUserId }) => ({
-        url: `/properties/dashboard/${dashboardId}/access/users/${targetUserId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['PropertyDashboard'],
     }),
     // TODO: use invalidatesTags in assignUserToProperty
     assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
@@ -68,6 +65,37 @@ const propertiesApi = baseApi.injectEndpoints({
         },
       }),
     }),
+
+    // AccessList
+    //==================================================================
+    getPropertyDashboardAccessList: builder.query<
+      WithApiStatus<IPropertyDashboardAccessResponse>,
+      string
+    >({
+      query: (dashboardId) => ({
+        url: `/properties/dashboard/${dashboardId}/access-list`,
+        method: 'GET',
+      }),
+      providesTags: ['AccessList'] as const,
+    }),
+    revokeDashboardAccess: builder.mutation<WithApiStatus<void>, IRevokeDashboardAccessPayload>({
+      query: ({ dashboardId, targetUserId }) => ({
+        url: `/properties/dashboard/${dashboardId}/access/users/${targetUserId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['AccessList'],
+    }),
+    setAccessExpiration: builder.mutation<SetAccessExpirationResponse, SetAccessExpirationPayload>({
+      query: ({ dashboardId, userId, accessExpiresAt }) => ({
+        url: `/properties/dashboard/${dashboardId}/access/expiration`,
+        method: 'PATCH',
+        body: {
+          userId,
+          accessExpiresAt,
+        },
+      }),
+      invalidatesTags: ['AccessList'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -79,5 +107,6 @@ export const {
   useRevokeDashboardAccessMutation,
   useAssignUserToPropertyMutation,
   useScheduleInspectionMutation,
+  useSetAccessExpirationMutation,
 } = propertiesApi
 export default propertiesApi

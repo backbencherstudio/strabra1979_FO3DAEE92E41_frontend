@@ -55,6 +55,8 @@ export const baseApi = createApi({
     'PropertyDashboard',
     'Property',
     'ActivityLog',
+
+    'AccessList',
   ] as const,
   endpoints: () => ({}),
 })
