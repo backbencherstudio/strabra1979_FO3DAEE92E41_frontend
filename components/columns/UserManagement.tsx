@@ -1,5 +1,6 @@
 'use client'
 
+import { useAssignUserToPropertyMutation } from '@/api/dashboard/properties/propertiesApi'
 import { useUpdateUserStatusMutation } from '@/api/userManagement/userManagementApi'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,13 +13,13 @@ import {
 import { formatDate, getErrorMessage } from '@/lib/farmatters'
 import { IUserListItem } from '@/types'
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Dot } from '../icons/Dot'
+import { Trush } from '../icons/Trush'
+import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyDialog'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { ColumnConfig } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
-import { toast } from 'sonner'
-import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyDialog'
-import { Trush } from '../icons/Trush'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
@@ -64,8 +65,27 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
 
   const [updateUserStatus, { isLoading }] = useUpdateUserStatusMutation()
 
-  const handlePropertySelect = (propertyId: string) => {
-    console.log('Assigning property:', propertyId, 'to user:', rowData)
+  const [assignUserProperty] = useAssignUserToPropertyMutation()
+  const handlePropertyAssign = async (dashboardId: string) => {
+    const userId = rowData.id
+
+    if (!userId || !dashboardId) {
+      toast.error('Missing required information')
+      return
+    }
+
+    try {
+      const res = await assignUserProperty({
+        dashboardId,
+        userId,
+      }).unwrap()
+
+      toast.success(res.message ?? 'User assigned successfully')
+    } catch (error) {
+      toast.error('Failed to assign user', {
+        description: getErrorMessage(error),
+      })
+    }
   }
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
@@ -135,7 +155,7 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
       <SelectPropertyDialog
         open={openAssignDialog}
         onOpenChange={setOpenAssignDialog}
-        onPropertySelect={handlePropertySelect}
+        onAssignConfirm={handlePropertyAssign}
       />
 
       <DropdownMenu>

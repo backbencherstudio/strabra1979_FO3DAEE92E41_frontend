@@ -35,23 +35,11 @@ export default function UserManagementTable() {
 function UserManagementTableContent() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
-  const handleCreateUser = (userData: {
-    username: string
-    email: string
-    password: string
-    userRole: string
-  }) => {
-    // Here you would typically make an API call to create the user
-    console.log('Creating user:', userData)
-    // After successful creation, you might want to refresh your user list
-    // or add the new user to your table data
-  }
-
   const [status, setStatus] = useState<IUserStatus | undefined>(undefined)
   const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
   const { page, setPage } = usePaginationPage()
 
-  const { data: { data: users, meta } = {} } = useGetUserListQuery({
+  const { data: { data: users, meta } = {}, isLoading } = useGetUserListQuery({
     page,
     sortOrder,
     dateFrom: dateFrom?.formatted,
@@ -90,6 +78,7 @@ function UserManagementTableContent() {
 
         <div className="mt-3 bg-white">
           <CustomTable
+            isLoading={isLoading}
             columns={UserManagementColumns}
             data={users}
             minWidth={1000}
@@ -109,11 +98,7 @@ function UserManagementTableContent() {
         <PaginationControls />
       </div>
 
-      <CreateUserDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        onCreateUser={handleCreateUser}
-      />
+      <CreateUserDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </div>
   )
 }

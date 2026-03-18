@@ -12,52 +12,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
-import { UserIcon, MailIcon, EyeOffIcon, EyeIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import { EyeIcon, EyeOffIcon, MailIcon, UserIcon } from 'lucide-react'
+import { useState } from 'react'
 
 interface CreateUserDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onCreateUser: (userData: {
-    username: string
-    email: string
-    password: string
-    userRole: string
-  }) => void
 }
 
-export default function CreateUserDialog({
-  open,
-  onOpenChange,
-  onCreateUser,
-}: CreateUserDialogProps) {
-  const [formData, setFormData] = React.useState({
-    username: '',
-    email: '',
-    password: '',
-    userRole: '',
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onCreateUser(formData)
-    setFormData({ username: '', email: '', password: '', userRole: '' })
-    onOpenChange(false)
-  }
-
-  const handleCancel = () => {
-    setFormData({ username: '', email: '', password: '', userRole: '' })
-    onOpenChange(false)
-  }
-
+export default function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) {
   const { form, registerUserIsLoading } = useRegerterUserForm({
     onSubmit: () => {
       onOpenChange(false)

@@ -17,6 +17,7 @@ import {
 import ActivityLogListItem from './ActivityLogListItem'
 import { ActivityCategory } from '@/types'
 import { useState } from 'react'
+import { isArrayEmpty } from '@/lib/utils'
 
 export default function ActivityLogHome() {
   return (
@@ -101,7 +102,7 @@ function ActivityLogHomeContent() {
                 <li className="w-full py-6 text-center text-sm text-gray-500">
                   Loading activity logs...
                 </li>
-              ) : allLogs.length === 0 ? (
+              ) : isArrayEmpty(allLogs) ? (
                 <li className="w-full py-6 text-center text-sm text-gray-500">
                   No activity logs found.
                 </li>

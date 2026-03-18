@@ -1,6 +1,6 @@
 import { baseApi } from '@/api/baseApi'
 import type {
-    ActivityCategory,
+  ActivityCategory,
   AssignUserResponse,
   IAssignUserParams,
   ICreatePropertyPayload,
@@ -54,6 +54,7 @@ const propertiesApi = baseApi.injectEndpoints({
       query: ({ dashboardId, userId, expiresAt }) => ({
         url: `/properties/dashboard/${dashboardId}/assign-user`,
         method: 'POST',
+        invalidatesTags: ['AccessList', 'Property'],
         body: {
           userId,
           expiresAt,
@@ -68,6 +69,7 @@ const propertiesApi = baseApi.injectEndpoints({
       query: ({ dashboardId, scheduledAt, assignedTo }) => ({
         url: `/properties/dashboard/${dashboardId}/schedule-inspection`,
         method: 'POST',
+        invalidatesTags: ['AccessList', 'Property'],
         body: {
           scheduledAt,
           assignedTo,
