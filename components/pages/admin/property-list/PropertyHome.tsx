@@ -1,90 +1,123 @@
 'use client'
 
-import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
+import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
 import Building3Icon from '@/components/icons/Building3Icon'
 import PlusIcon from '@/components/icons/PlusIcon'
-import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
 import { CreateNewPropertyDialog } from '@/components/pages/admin/property-list/CreateNewPropertyDialog'
-import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
-import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
-import { formatDate, naIfEmpty } from '@/lib/farmatters'
-import { notAvailableLabel } from '@/constant'
+import PaginationControls from '@/components/reusable/Pagination/Pagination'
+import {
+  PaginationPageProvider,
+  usePaginatedQuery,
+  usePaginationPage,
+} from '@/components/reusable/Pagination/PaginationPageProvider'
+import PropertyCard, {
+  PropertyCardInfoList,
+  PropertyCardSkeleton,
+} from '@/components/reusable/PropertyCard/PropertyCard'
 import { Button } from '@/components/ui/button'
+import { appRoutes } from '@/constant'
+import { addDaysBy, formatDate, naIfEmpty } from '@/lib/farmatters'
+import { useAuth } from '@/redux/features/auth/useAuth'
+import { RoleUtils } from '@/types'
+import {
+  SharedPropertyCardListContextProvider,
+  useSharedPropertyCardListContext,
+} from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import SharedPropertyCardListActions from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 
 export default function PropertyHome() {
-  const handleSchedule = (propertyId: string) => {
-    // Handle schedule action
-    console.log('Schedule inspection for property:', propertyId)
-  }
+  return (
+    <PaginationPageProvider>
+      <SharedPropertyCardListContextProvider>
+        <PropertyHomeContend />
+      </SharedPropertyCardListContextProvider>
+    </PaginationPageProvider>
+  )
+}
 
-  const handleAssign = (propertyId: string) => {
-    // Handle assign action
-    console.log('Assign inspector to property:', propertyId)
-  }
-
-  const handleViewAccess = (propertyId: string) => {
-    // Handle view access action
-    console.log('View access details for property:', propertyId)
-  }
-
-  const handleAddNew = (data: any) => {
-    console.log('Create new property:', data)
-    // Add your logic here to create a new property
-    // For example: router.push('/manager/property-list/new')
-    // Or make an API call
-  }
-
-  const { data: { data = [] } = {}, isLoading } = useGetPropertiesQuery()
+function PropertyHomeContend() {
+  const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
+  const { page } = usePaginationPage()
+  const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
+    page,
+    sortOrder,
+    search,
+    dateFrom: dateFrom?.formatted,
+    dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
+  })
+  usePaginatedQuery({ meta_data: meta })
+  const { role } = useAuth()
+  const isAdmin = RoleUtils.isAdmin(role)
 
   return (
     <div className="bg-normal-25 rounded-3xl p-4">
-      <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3">
-        <div className="border-gray-black-50 flex items-center justify-center rounded-[12px] border bg-[#ffffff]">
-          <div className="flex flex-col items-center justify-center py-24">
-            <Building3Icon />
-            <h2 className="text-gray-black-400 mt-3 text-center text-base font-medium">
-              Create New Property Dashboard
-            </h2>
-            <p className="mt-1.5 text-center text-sm text-[#5f6166]">
-              Set up a dashboard to manage <br /> inspections, and all property reports.
-            </p>
+      <section className="space-y-4">
+        <SharedPropertyCardListActions
+          title="Property List"
+          titleClassName=""
+          showSortOrder
+          showSearch
+          showDateFilter
+        />
 
-            <CreateNewPropertyDialog
-              trigger={
-                <Button variant="outline" size="xl" className="mt-4 px-12!">
-                  <PlusIcon /> Create New
-                </Button>
-              }
-            />
-          </div>
+        <div className="grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3">
+          <CreateNewPropertyActionCard />
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
+            : properties.map((p) => (
+                <PropertyCard
+                  hasAccess
+                  key={p.id}
+                  slug={`${appRoutes.admin.propertyList}/${p.id}`}
+                  isAdmin={isAdmin}
+                  title={p.name}
+                  property={p.name}
+                  id={p.id}
+                  dashboardId={p?.dashboard?.id}
+                  address={naIfEmpty(p.address)}
+                  score={p?.dashboard?.latestInspection?.overallScore}
+                >
+                  <PropertyCardInfoList
+                    items={[
+                      { label: 'Type', value: naIfEmpty(p.propertyType) },
+                      {
+                        label: 'Next Inspection',
+                        value: naIfEmpty(formatDate(p?.nextInspectionDate)),
+                      },
+                      {
+                        label: 'Property Manager',
+                        value: naIfEmpty(p?.propertyManager?.username),
+                      },
+                    ]}
+                  />
+                </PropertyCard>
+              ))}
         </div>
-        {data.map((p) => (
-          <PropertyCard
-            hasAccess
-            key={p.id}
-            slug={`/admin/properties-list/${p.id}`}
-            isAdmin={true}
-            onSchedule={() => handleSchedule(p.id)}
-            onAssign={() => handleAssign(p.id)}
-            onViewAccess={() => handleViewAccess(p.id)}
-            title={p.name}
-            property={p.name}
-            id={p.id}
-            dashboardId={p?.dashboard?.id}
-            address={naIfEmpty(p.address)}
-            score={p?.dashboard?.latestInspection?.overallScore}
-            // previewImageUrl={'/images/property-card/property-01.png'}
-            // p?.dashboard?.latestInspection?.healthLabel
-          >
-            <PropertyCardInfoList
-              items={[
-                { label: 'Type', value: naIfEmpty(p.propertyType) },
-                { label: 'Next Inspection', value: naIfEmpty(formatDate(p?.nextInspectionDate)) },
-                { label: 'Property Manager', value: naIfEmpty(p?.propertyManager?.username) },
-              ]}
-            />
-          </PropertyCard>
-        ))}
+
+        <PaginationControls />
+      </section>
+    </div>
+  )
+}
+
+function CreateNewPropertyActionCard() {
+  return (
+    <div className="border-gray-black-50 flex items-center justify-center rounded-[12px] border bg-[#ffffff]">
+      <div className="flex flex-col items-center justify-center py-24">
+        <Building3Icon />
+        <h2 className="text-gray-black-400 mt-3 text-center text-base font-medium">
+          Create New Property Dashboard
+        </h2>
+        <p className="mt-1.5 text-center text-sm text-[#5f6166]">
+          Set up a dashboard to manage <br /> inspections, and all property reports.
+        </p>
+        <CreateNewPropertyDialog
+          trigger={
+            <Button variant="outline" size="xl" className="mt-4 px-12!">
+              <PlusIcon /> Create New
+            </Button>
+          }
+        />
       </div>
     </div>
   )

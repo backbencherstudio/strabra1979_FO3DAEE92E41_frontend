@@ -1,8 +1,11 @@
 import { baseApi } from '@/api/baseApi'
 import type {
+    ActivityCategory,
   AssignUserResponse,
   IAssignUserParams,
   ICreatePropertyPayload,
+  IFilterPayload,
+  IPaginationPayload,
   IPropertyDashboardAccessResponse,
   IPropertyListItem,
   IRevokeDashboardAccessPayload,
@@ -28,8 +31,14 @@ export interface SetAccessExpirationResponse {
 
 const propertiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProperties: builder.query<WithPaginationAndStatus<IPropertyListItem[]>, void>({
-      query: () => `/properties`,
+    getProperties: builder.query<
+      WithPaginationAndStatus<IPropertyListItem[]>,
+      (IPaginationPayload & IFilterPayload) | void
+    >({
+      query: (arg) => ({
+        url: `/properties`,
+        params: arg ?? undefined,
+      }),
       providesTags: ['Property'] as const,
     }),
     createProperty: builder.mutation<WithApiStatus<void>, ICreatePropertyPayload>({
@@ -78,6 +87,7 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       providesTags: ['AccessList'] as const,
     }),
+    // TODO: use with Revoke User Access dialog
     revokeDashboardAccess: builder.mutation<WithApiStatus<void>, IRevokeDashboardAccessPayload>({
       query: ({ dashboardId, targetUserId }) => ({
         url: `/properties/dashboard/${dashboardId}/access/users/${targetUserId}`,

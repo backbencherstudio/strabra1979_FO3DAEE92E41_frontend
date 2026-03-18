@@ -1,4 +1,5 @@
 export * from './role'
+export * from './routes'
 
 const day1 = 60 * 60 * 24
 export const cookieAge = {
@@ -8,4 +9,5 @@ export const cookieAge = {
 }
 
 export const baseApiURL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://monkey-starsmerchant-downtown-syndrome.trycloudflare.com/api'
+  process.env.NEXT_PUBLIC_API_URL ||
+  'https://monkey-starsmerchant-downtown-syndrome.trycloudflare.com/api'

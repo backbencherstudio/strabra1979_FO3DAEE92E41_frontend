@@ -1,28 +1,18 @@
 'use client'
 import { LocationPin } from '@/components/icons/LocationPin'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
-import { AssignUserDialog } from '@/components/pages/admin/property-list/AssignUserDialog'
-import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
-import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccessDialog'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
-import { Check, MoreVertical } from 'lucide-react'
+import { Check } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { InfoItem } from '../InfoGrid/InfoGrid'
-import { useAssignUserToPropertyMutation } from '@/api/dashboard/properties/propertiesApi'
-import { toast } from 'sonner'
-import { getErrorMessage } from '@/lib/farmatters'
+import PropertyCardAdminActions from './PropertyCardAdminActions'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export interface Property {
   id: string
@@ -67,14 +57,8 @@ export default function PropertyCard({
   id,
   dashboardId,
   isAdmin = false,
-  onSchedule,
-  onAssign,
-  onViewAccess,
 }: PropertyCardProps) {
   const [isSelected, setIsSelected] = useState(defaultSelected)
-  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
-  const [assignDialogOpen, setAssignDialogOpen] = useState(false)
-  const [viewAccessDialogOpen, setViewAccessDialogOpen] = useState(false)
 
   useEffect(() => {
     setIsSelected(defaultSelected)
@@ -86,51 +70,6 @@ export default function PropertyCard({
       const newSelectedState = !isSelected
       setIsSelected(newSelectedState)
       onSelect?.(newSelectedState)
-    }
-  }
-
-  const handleDropdownClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
-
-  const handleScheduleClick = () => {
-    setScheduleDialogOpen(true)
-  }
-
-  const handleAssignClick = () => {
-    setAssignDialogOpen(true)
-  }
-
-  const handleViewAccessClick = (e: React.MouseEvent) => {
-    setViewAccessDialogOpen(true)
-  }
-
-  const handleScheduleConfirm = (data: any) => {
-    console.log('Schedule confirmed:', data)
-    if (onSchedule) {
-      onSchedule()
-    }
-    setScheduleDialogOpen(false)
-  }
-
-  // Assign a propery manager
-  const [assignUser, { isLoading: assignUserIsLoading }] = useAssignUserToPropertyMutation()
-  const handleAssignPropertyManagerConfirm = async (userId?: string, dashboardId?: string) => {
-    setAssignDialogOpen(false)
-    if (!userId || !dashboardId) {
-      return
-    }
-
-    try {
-      const res = await assignUser({
-        dashboardId: dashboardId,
-        userId: userId,
-      }).unwrap()
-      toast.message(res.message ?? 'Successfully assigned a user')
-    } catch (error) {
-      toast.error('Failed to assing a user', {
-        description: getErrorMessage(error),
-      })
     }
   }
 
@@ -152,68 +91,15 @@ export default function PropertyCard({
       )}
 
       {isAdmin && (
-        <>
-          <div className="absolute top-3 right-3 z-40">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="border-hover-50 h-8 w-8 border bg-[#bfcbce] shadow-lg hover:bg-[#bfcbce]/50"
-                >
-                  <MoreVertical className="h-4 w-4 text-white hover:text-black" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleScheduleClick} className="cursor-pointer">
-                  Schedule Inspection
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAssignClick} className="cursor-pointer">
-                  Assign a Property Manager
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleViewAccessClick} className="cursor-pointer">
-                  View Access Details
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Schedule Inspection Dialog */}
-          <ScheduleInspectionDialog
-            dashboardId={dashboardId}
-            open={scheduleDialogOpen}
-            onOpenChange={setScheduleDialogOpen}
-            onSchedule={handleScheduleConfirm}
-            propertyName={property}
-            propertyAddress={address}
-          />
-
-          {/* Assign propery manager Dialog */}
-          <AssignUserDialog
-            // TODO: show previous selected user with selectedUserId
-            // selectedUserId=''
-            dialogTitle="Assign a Property Manager"
-            label="Propery Manager"
-            userType="PROPERTY_MANAGER"
-            placeholder="Select a propery manager"
-            open={assignDialogOpen}
-            onOpenChange={setAssignDialogOpen}
-            onSelect={(userId) => {
-              handleAssignPropertyManagerConfirm(userId, dashboardId)
-            }}
-          />
-
-          {/* View Access Dialog */}
-          <ViewAccessDialog
-            open={viewAccessDialogOpen}
-            onOpenChange={setViewAccessDialogOpen}
-            dashboardId={dashboardId}
-            propertyId={id}
-          />
-        </>
+        <PropertyCardAdminActions
+          dashboardId={dashboardId}
+          propertyId={id}
+          propertyName={property}
+          propertyAddress={address}
+        />
       )}
 
-      <div className="relative aspect-video bg-gray-400 max-sm:h-50">
+      <div className="relative aspect-video bg-gray-200 max-sm:h-50">
         {previewImageUrl && (
           <Image
             className="h-full w-full object-cover"
@@ -287,6 +173,47 @@ export function PropertyCardInfoList({ items }: PropertyCardInfoListProps) {
           <span className="text-sm font-medium">{info.value}</span>
         </div>
       ))}
+    </div>
+  )
+}
+
+export function PropertyCardSkeleton() {
+  return (
+    <div className="border-input overflow-hidden rounded-md border bg-white">
+      {/* Image */}
+      <Skeleton className="rounded-b-none aspect-video w-full bg-gray-200" />
+
+      <div className="space-y-4 p-4">
+        {/* Title */}
+        <Skeleton className="h-4 w-2/3" />
+
+        {/* Address */}
+        <Skeleton className="h-3 w-1/2" />
+
+        {/* Info grid */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Skeleton className="h-3 w-1/3" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-3 w-1/3" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Skeleton className="h-3 w-1/3" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-3 w-1/3" />
+          </div>
+        </div>
+
+        {/* Button */}
+        <Skeleton className="h-10 w-full rounded-md" />
+      </div>
     </div>
   )
 }

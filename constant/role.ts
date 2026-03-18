@@ -6,10 +6,6 @@ export const TOKENS = {
   refreshToken: 'refresh-token',
 } as const
 
-export const appRoutes = {
-  signin: '/signin',
-  signup: '/signup',
-} as const
 
 export const publicRoutes = ['/signin', '/signup']
 
