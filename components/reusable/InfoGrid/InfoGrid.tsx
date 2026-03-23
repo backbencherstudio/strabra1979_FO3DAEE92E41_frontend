@@ -3,7 +3,7 @@ import SectionCard from '../SectionCard/SectionCard'
 
 export interface InfoItem {
   label: string
-  value: string
+  value: string | React.ReactNode
 }
 
 interface InfoGridProps {
@@ -24,4 +24,3 @@ export function InfoGrid({ items, className, labelClassName }: InfoGridProps) {
     </SectionCard>
   )
 }
-

@@ -1,7 +1,6 @@
-import { addDays, formatDate as formatDateFns } from 'date-fns'
 import dayjs from 'dayjs'
 
-export function formatDate(date: string | Date | dayjs.Dayjs, formatter = 'MMMM D, YYYY'): string {
+export function formatDate(date?: string | Date | dayjs.Dayjs, formatter = 'MMMM D, YYYY'): string {
   if (!date) return ''
   return dayjs(date).format(formatter)
 }
@@ -13,6 +12,6 @@ export function formatTimeAndDate(
   return dayjs(date).format(formatter)
 }
 
-export function addDaysBy(d: Date, by: number, formatter = 'yyyy-MM-dd') {
-  return formatDateFns(addDays(d, by), formatter)
+export function addDaysBy(d: Date, by: number, formatter = 'YYYY-MM-DD') {
+  return dayjs(d).add(by, 'day').format(formatter)
 }

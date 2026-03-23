@@ -11,6 +11,7 @@ import {
   Settings02,
   Users,
 } from '@/components/icons/SideBarIcons'
+import { appRoutes } from '@/constant'
 
 import { ComponentType } from 'react'
 type MatchType = 'exectMatch' | 'startsWith'
@@ -36,7 +37,7 @@ export const adminMenu: MenuItem[] = [
   {
     id: 'properties-list',
     label: 'Properties List',
-    href: '/admin/properties-list',
+    href: appRoutes.admin.propertyList,
     icon: PropertyNew,
   },
   {

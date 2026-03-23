@@ -66,11 +66,10 @@ function PropertyHomeContend() {
                 <PropertyCard
                   hasAccess
                   key={p.id}
+                  id={p.id}
                   slug={`${appRoutes.admin.propertyList}/${p.id}`}
                   isAdmin={isAdmin}
-                  title={p.name}
-                  property={p.name}
-                  id={p.id}
+                  propertyName={p.name}
                   dashboardId={p?.dashboard?.id}
                   address={naIfEmpty(p.address)}
                   score={p?.dashboard?.latestInspection?.overallScore}

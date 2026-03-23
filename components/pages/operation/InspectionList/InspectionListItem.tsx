@@ -17,7 +17,6 @@ type InspectionListItemProps = {
 }
 
 export default function InspectionListItem({
-  slug,
   title,
   time,
   status,
@@ -43,7 +42,7 @@ export default function InspectionListItem({
 
           <div className="mt-2 flex flex-col gap-x-4.5 gap-y-2 @lg/inspection-item:flex-row">
             <div className="text-foreground flex items-center gap-1">
-              <Property className="size-5" />
+              <Property className="-mt-1 size-5" />
               <span className="text-sm leading-none">{propertyName}</span>
             </div>
 

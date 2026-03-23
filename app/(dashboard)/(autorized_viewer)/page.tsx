@@ -16,7 +16,7 @@ export default function AutorizedViewerLandingPage() {
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {properties.map((p, index) => (
-            <PropertyCard slug="/property/123" hasAccess={index == 1} key={p.title} {...p}>
+            <PropertyCard slug="/property/123" hasAccess={index == 1} key={index} {...p}>
               <PropertyCardInfoList
                 items={[
                   { label: 'Type', value: p.type },

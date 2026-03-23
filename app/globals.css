@@ -120,7 +120,7 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: #4a4c56;
-  --card: oklch(1 0 0);
+  --card: var(--color-normal-25);
   --card-foreground: oklch(0.145 0 0);
   --popover: #f6f8fa;
   --popover-foreground: var(--navy-300);
@@ -205,6 +205,10 @@
   button:not(:disabled),
   [role='button']:not(:disabled) {
     cursor: pointer;
+  }
+
+  .loading-text {
+    @apply w-full py-6 text-center text-sm text-gray-500;
   }
 }
 

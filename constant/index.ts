@@ -10,4 +10,4 @@ export const cookieAge = {
 
 export const baseApiURL =
   process.env.NEXT_PUBLIC_API_URL ||
-  'https://walking-move-hunter-grocery.trycloudflare.com/api'
+  'https://collectibles-clip-notifications-obj.trycloudflare.com/api'

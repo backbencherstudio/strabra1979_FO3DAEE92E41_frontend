@@ -98,13 +98,9 @@ function ActivityLogHomeContent() {
             className="border-gray-black-50 rounded-xl border bg-white p-3"
           >
             <ul className="flex flex-col items-start gap-6">
-              {isLoading ? (
+              {isLoading || isArrayEmpty(allLogs) ? (
                 <li className="w-full py-6 text-center text-sm text-gray-500">
-                  Loading activity logs...
-                </li>
-              ) : isArrayEmpty(allLogs) ? (
-                <li className="w-full py-6 text-center text-sm text-gray-500">
-                  No activity logs found.
+                  {isLoading ? 'Loading activity logs...' : 'No activity logs found.'}
                 </li>
               ) : (
                 allLogs.map((log) => <ActivityLogListItem key={log.id} log={log} />)

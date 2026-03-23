@@ -16,12 +16,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export interface Property {
   id: string
-  title: string
-  property: string
+  // title: string
+  propertyName: string
   address: string
   nextInspection?: string
   updated_at?: string
-  score: number
+  score?: number
   scoreTitle?: string
   previewImageUrl?: string
   dashboardId?: string
@@ -43,7 +43,7 @@ export interface PropertyCardProps extends Property, React.PropsWithChildren {
 }
 
 export default function PropertyCard({
-  property,
+  propertyName,
   address,
   score,
   scoreTitle = 'Overall Health',
@@ -94,12 +94,12 @@ export default function PropertyCard({
         <PropertyCardAdminActions
           dashboardId={dashboardId}
           propertyId={id}
-          propertyName={property}
+          propertyName={propertyName}
           propertyAddress={address}
         />
       )}
 
-      <div className="relative aspect-video bg-gray-200 max-sm:h-50">
+      <div className="relative aspect-video bg-gray-400 max-sm:h-50">
         {previewImageUrl && (
           <Image
             className="h-full w-full object-cover"
@@ -110,7 +110,7 @@ export default function PropertyCard({
           />
         )}
         <div className="absolute bottom-0 left-0 px-4.5 pb-3">
-          <h3 className="text-lg font-medium text-white">{property}</h3>
+          <h3 className="text-lg font-medium text-white">{propertyName}</h3>
           <div className="text-gray-black-50 space-x-1 text-balance">
             <LocationPin className="inline" />
             <p className="inline text-sm">{address}</p>

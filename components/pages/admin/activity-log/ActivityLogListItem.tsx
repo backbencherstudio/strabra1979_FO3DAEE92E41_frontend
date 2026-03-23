@@ -1,14 +1,15 @@
 import { FileEditBlue } from '@/components/icons/FileEditBlue'
 import { User } from '@/components/icons/User'
 import { formatTimeAndDate } from '@/lib/farmatters'
-import { IActivityLogListItem } from '@/types'
-import { PropsWithChildren } from 'react'
+import { cn } from '@/lib/utils'
+import { IActivityLogListItem, IAuthUserRole } from '@/types'
 
 interface ActivityLogItemProps {
   log: IActivityLogListItem
+  hideRole?: boolean
 }
 
-const ActivityLogListItem = ({ log }: ActivityLogItemProps) => {
+const ActivityLogListItem = ({ log, hideRole = false }: ActivityLogItemProps) => {
   const { category, message, created_at, actor_role } = log
 
   // Configuration based on category
@@ -29,36 +30,30 @@ const ActivityLogListItem = ({ log }: ActivityLogItemProps) => {
       </div>
 
       {/* Role Badge */}
-      <div className="shrink-0">
-        <Badge>{actor_role}</Badge>
-      </div>
+      {!hideRole ? (
+        <div className="shrink-0">
+          <RoleBadge role={actor_role} />
+        </div>
+      ) : null}
     </li>
   )
 }
 
 export default ActivityLogListItem
 
-function Badge({ children }: PropsWithChildren) {
-  if (typeof children !== 'string') {
-    return null
+function RoleBadge({ role }: { role: IAuthUserRole }) {
+  const colors: Record<IAuthUserRole, string> = {
+    ADMIN: 'bg-gray-black-100/50',
+    PROPERTY_MANAGER: 'bg-mid-orange/50',
+    AUTHORIZED_VIEWER: 'bg-[#4ba7ff]/50',
+    OPERATIONAL: 'bg-[#05d945]/50',
   }
-  const badge = children.toUpperCase()
+
+  const color = colors[role] ?? colors.ADMIN
 
   return (
-    <p
-      className={`inline-block rounded-full px-2 py-1 text-xs text-black ${
-        badge === 'OPERATION'
-          ? 'bg-mid-orange'
-          : badge === 'ADMIN'
-            ? 'bg-gray-black-100'
-            : badge === 'AUTHORIZED VIEWER'
-              ? 'bg-[#4ba7ff]'
-              : badge === 'PROPERTY MANAGER'
-                ? 'bg-[#05d945]'
-                : 'bg-gray-black-100'
-      }`}
-    >
-      {badge}
+    <p className={cn('inline-block rounded-full px-2 py-1 text-[10px] text-black', color)}>
+      {role}
     </p>
   )
 }

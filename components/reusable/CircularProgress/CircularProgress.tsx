@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 interface CircularProgressProps {
-  value: number // 0 - 100
+  value?: number // 0 - 100
   size?: number // px
   strokeWidth?: number
   className?: string

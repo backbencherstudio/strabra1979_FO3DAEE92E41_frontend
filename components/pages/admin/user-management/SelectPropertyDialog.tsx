@@ -118,8 +118,7 @@ function SelectPropertyDialogContent({
                     isSelectable={true}
                     onSelect={(selected) => handleSelect(p?.dashboard?.id, selected)}
                     defaultSelected={selectedDashboardId === p?.dashboard?.id}
-                    title={p.name}
-                    property={p.name}
+                    propertyName={p.name}
                     address={naIfEmpty(p.address)}
                     score={p?.dashboard?.latestInspection?.overallScore}
                   >

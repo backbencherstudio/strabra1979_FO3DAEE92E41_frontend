@@ -1,3 +1,5 @@
+import React from 'react'
+
 export function getErrorMessage(
   error: unknown,
   defaultMessage = 'Something went wrong. Please try again.',
@@ -50,4 +52,15 @@ export function naIfEmpty(value: string | null | undefined): string {
     return notAvailableLabel
   }
   return value ?? notAvailableLabel
+}
+
+export function withNA<T>(
+  value: T,
+  formatter?: (val: T) => React.ReactNode,
+): string | React.ReactNode {
+  if (value === null || value === undefined || value === '') {
+    return 'N/A'
+  }
+
+  return formatter ? formatter(value) : (value as React.ReactNode)
 }

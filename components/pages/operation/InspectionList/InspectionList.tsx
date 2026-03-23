@@ -1,67 +1,89 @@
 'use client'
-import { InspectionProgressStatus } from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
-import { CalendarIcon } from '@/components/icons/Calender'
+import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { format } from 'date-fns'
-import { ReactNode, useState } from 'react'
+import { isArrayEmpty } from '@/lib/utils'
+import { IScheduledInspectionItem } from '@/types/overview'
+import { ChevronRight } from 'lucide-react'
+import Link from 'next/link'
+import { ReactNode } from 'react'
 import InspectionListItem from './InspectionListItem'
 
 interface InspectionListProps {
   title: string
   subTitle?: ReactNode
   actionButton: ReactNode
+  isLoading: boolean
+  data?: IScheduledInspectionItem[]
 }
 
-export default function InspectionList({ title, subTitle, actionButton }: InspectionListProps) {
-  const [date, setDate] = useState<Date | undefined>(undefined)
-  const [open, setOpen] = useState(false)
+export default function InspectionList({
+  title,
+  subTitle,
+  actionButton,
+  isLoading,
+  data,
+}: InspectionListProps) {
+  // const [date, setDate] = useState<Date | undefined>(undefined)
+  // const [open, setOpen] = useState(false)
 
   return (
-    <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4 py-5">
+    <SectionCard className="">
       <section className="flex items-center justify-between">
-        <h3 className="text-foreground text-xl font-medium">{title}</h3>
+        <SectionTitle>{title}</SectionTitle>
 
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <CalendarIcon className="size-5" />
-              <hr className="border-gray-black-50 h-4 border max-xl:hidden" />
-              <span className="max-xl:hidden">{date ? format(date, 'PPP') : 'Pick a date'}</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={(newDate) => {
-                setDate(newDate)
-                setOpen(false)
-              }}
-              autoFocus
-            />
-          </PopoverContent>
-        </Popover>
+        <Button asChild variant="link" size="link" theme="text">
+          <Link href="/admin/inspection-list">
+            View All <ChevronRight />
+          </Link>
+        </Button>
+
+        {/* <Popover open={open} onOpenChange={setOpen}> */}
+        {/*   <PopoverTrigger asChild> */}
+        {/*     <Button variant="outline" className="gap-2"> */}
+        {/*       <CalendarIcon className="size-5" /> */}
+        {/*       <hr className="border-gray-black-50 h-4 border max-xl:hidden" /> */}
+        {/*       <span className="max-xl:hidden">{date ? format(date, 'PPP') : 'Pick a date'}</span> */}
+        {/*     </Button> */}
+        {/*   </PopoverTrigger> */}
+        {/*   <PopoverContent className="w-auto p-0" align="end"> */}
+        {/*     <Calendar */}
+        {/*       mode="single" */}
+        {/*       selected={date} */}
+        {/*       onSelect={(newDate) => { */}
+        {/*         setDate(newDate) */}
+        {/*         setOpen(false) */}
+        {/*       }} */}
+        {/*       autoFocus */}
+        {/*     /> */}
+        {/*   </PopoverContent> */}
+        {/* </Popover> */}
       </section>
 
       {subTitle}
 
-      <section className="mt-4 space-y-3">
-        {mockInspections.map((inspection) => (
-          <InspectionListItem
-            slug="123"
-            status={inspection.status as InspectionProgressStatus}
-            key={inspection.id}
-            title={inspection.title}
-            time={inspection.time}
-            propertyName={inspection.propertyName}
-            address={inspection.address}
-            actionButton={actionButton}
-          />
-        ))}
-      </section>
-    </div>
+      {isLoading || isArrayEmpty(data) ? (
+        <section className="grid size-full place-items-center">
+          <p className="loading-text">
+            {isLoading ? 'Loading data...' : 'No Recent Inspections found'}
+          </p>
+        </section>
+      ) : (
+        <section className="mt-4 space-y-3">
+          {data?.map((inspection) => (
+            <InspectionListItem
+              key={inspection.id}
+              slug={inspection.dashboardId}
+              status={inspection.status}
+              title={inspection.property}
+              time={inspection.time}
+              propertyName={inspection.property}
+              address={inspection.address}
+              actionButton={actionButton}
+            />
+          ))}
+        </section>
+      )}
+    </SectionCard>
   )
 }
 
