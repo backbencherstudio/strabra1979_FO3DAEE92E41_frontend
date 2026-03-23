@@ -13,7 +13,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
   const { propertyId } = await params
   return (
     <PropertyDetails
-      id={propertyId}
+      dashboardId={propertyId}
       headerRightContent={<PropertySharePopover />}
       property={propertyDetails}
     />

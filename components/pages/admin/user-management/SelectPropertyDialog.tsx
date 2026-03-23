@@ -113,7 +113,7 @@ function SelectPropertyDialogContent({
                   <PropertyCard
                     {...p}
                     key={p.id}
-                    slug={`${appRoutes.admin.propertyList}/${p.id}`}
+                    slug={`${appRoutes.admin.propertyList}/${p?.dashboard?.id}`}
                     hasAccess
                     isSelectable={true}
                     onSelect={(selected) => handleSelect(p?.dashboard?.id, selected)}

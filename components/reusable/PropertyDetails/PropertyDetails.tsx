@@ -16,7 +16,7 @@ import CustomTable from '../table/CustomTable'
 import PropertyScoreListPreview from './PropertyScoreList'
 
 interface PropertyDetailsProps {
-  id: string
+  dashboardId: string
   property: Property
   accessExpiration?: string
   headerRightContent?: React.ReactNode
@@ -38,6 +38,7 @@ export const propertyDetails: Property = {
 }
 
 export default function PropertyDetails({
+  dashboardId,
   property,
   accessExpiration,
   headerRightContent = null,
@@ -47,6 +48,8 @@ export default function PropertyDetails({
     { label: 'Address', value: property.address },
     { label: 'Next Inspection', value: property.nextInspection ?? '' },
   ]
+
+  console.log('', { dashboardId })
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">

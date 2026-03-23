@@ -7,7 +7,7 @@ import PropertyDetails, {
 export default function InspectionListItemDetailsPage() {
   return (
     <div>
-      <PropertyDetails id="123" property={propertyDetails} />
+      <PropertyDetails dashboardId="123" property={propertyDetails} />
     </div>
   )
 }

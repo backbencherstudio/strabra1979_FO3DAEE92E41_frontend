@@ -134,7 +134,7 @@ export default function AdminHome() {
             ? null
             : latestProperties?.map((p) => (
                 <PropertyCard
-                  slug={`/manager/property-list/${p.id}`}
+                  slug={`${appRoutes.admin.propertyList}/${p.dashboardId}`}
                   hasAccess
                   key={p.id}
                   id={p.id}

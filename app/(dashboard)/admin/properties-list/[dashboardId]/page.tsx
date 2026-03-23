@@ -5,15 +5,15 @@ import PropertySharePopover from '@/components/reusable/PropertyDetails/Property
 
 interface PropertyDetailPageProps {
   params: Promise<{
-    propertyId: string
+    dashboardId: string
   }>
 }
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
-  const { propertyId } = await params
+  const { dashboardId } = await params
   return (
     <PropertyDetails
-      id={propertyId}
+      dashboardId={dashboardId}
       headerRightContent={<PropertySharePopover />}
       property={propertyDetails}
     />

@@ -67,7 +67,7 @@ function PropertyHomeContend() {
                   hasAccess
                   key={p.id}
                   id={p.id}
-                  slug={`${appRoutes.admin.propertyList}/${p.id}`}
+                  slug={`${appRoutes.admin.propertyList}/${p?.dashboard?.id}`}
                   isAdmin={isAdmin}
                   propertyName={p.name}
                   dashboardId={p?.dashboard?.id}

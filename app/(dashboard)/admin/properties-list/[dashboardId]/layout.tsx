@@ -5,24 +5,24 @@ import { MenuItem } from '@/lib/menuConfig'
 
 interface PropertyDetailPageProps extends React.PropsWithChildren {
   params: Promise<{
-    propertyId: string
+    dashboardId: string
   }>
 }
 
 export default async function PropertyDetailPage({ params, children }: PropertyDetailPageProps) {
-  const { propertyId } = await params
+  const { dashboardId: dashboardId } = await params
 
   const menu: MenuItem[] = [
     {
       id: 'dashboard',
       label: 'Property Dashboard',
       checks: 'exectMatch',
-      href: `${appRoutes.admin.propertyList}/${propertyId}`,
+      href: `${appRoutes.admin.propertyList}/${dashboardId}`,
     },
     {
       id: 'browse',
       label: 'All reports',
-      href: `${appRoutes.admin.propertyList}/${propertyId}/reports`,
+      href: `${appRoutes.admin.propertyList}/${dashboardId}/reports`,
     },
   ]
 

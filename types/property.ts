@@ -118,3 +118,84 @@ export interface IScheduleInspectionResponse {
   createdAt: string
   updatedAt: string
 }
+
+export type IPropertyDashboardDetails = {
+  id: string
+  propertyId: string
+  templateId: string
+  templateSnapshot: Array<{
+    type: string
+    label: string
+    order: number
+    config: {
+      fields?: Array<string>
+      showHealthLabel?: boolean
+      showAverageScore?: boolean
+      showOverallScore?: boolean
+      showRemainingLife?: boolean
+      layout?: string
+      maxVisible?: number
+      allowedTypes?: Array<string>
+      embedType?: string
+      placeholder?: string
+      showNotes?: boolean
+      showMaxPoints?: boolean
+      nteCurrency?: string
+      pageSize?: number
+      showVersion?: boolean
+      showFileSize?: boolean
+      showUploadDate?: boolean
+      allowInBrowserView?: boolean
+    }
+  }>
+  createdAt: string
+  updatedAt: string
+  property: {
+    id: string
+    name: string
+    address: string
+    propertyType: any
+    nextInspectionDate: any
+    propertyManagerId: any
+    activeTemplateId: string
+    status: string
+    createdAt: string
+    updatedAt: string
+    propertyManager: any
+    activeTemplate: {
+      id: string
+      name: string
+      status: string
+      criteriaId: string
+      createdAt: string
+      updatedAt: string
+      sections: Array<{
+        type: string
+        label: string
+        order: number
+        config: {
+          fields?: Array<string>
+          showHealthLabel?: boolean
+          showAverageScore?: boolean
+          showOverallScore?: boolean
+          showRemainingLife?: boolean
+          layout?: string
+          maxVisible?: number
+          allowedTypes?: Array<string>
+          embedType?: string
+          placeholder?: string
+          showNotes?: boolean
+          showMaxPoints?: boolean
+          nteCurrency?: string
+          pageSize?: number
+          showVersion?: boolean
+          showFileSize?: boolean
+          showUploadDate?: boolean
+          allowInBrowserView?: boolean
+        }
+      }>
+    }
+  }
+  inspections: Array<any>
+  folders: Array<any>
+}

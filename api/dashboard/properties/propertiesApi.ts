@@ -7,6 +7,7 @@ import type {
   IFilterPayload,
   IPaginationPayload,
   IPropertyDashboardAccessResponse,
+  IPropertyDashboardDetails,
   IPropertyListItem,
   IRevokeDashboardAccessPayload,
   IScheduleInspectionParams,
@@ -49,6 +50,14 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Property'],
     }),
+    getPropertyDashboardDetails: builder.mutation<WithApiStatus<IPropertyDashboardDetails>, string>(
+      {
+        query: (dashboardId) => ({
+          url: `/properties/dashboard/${dashboardId}`,
+          providesTags: ['PropertyDashboard'] as const,
+        }),
+      },
+    ),
     // TODO: use invalidatesTags in assignUserToProperty
     assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
       query: ({ dashboardId, userId, expiresAt }) => ({
