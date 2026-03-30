@@ -1,3 +1,5 @@
+import { IUserBasicInfo } from './user'
+
 export type IRepairProgressStatus = 'Urgent' | 'Maintenance' | 'Replacement Planning'
 
 export type IPiorityRepairPlanItem = {
@@ -42,3 +44,22 @@ export type IDashboardInspectionListItem = {
     uploadedAt: string
   }>
 }
+
+export type IScheduledInspectinListItem = {
+  id: string
+  status: string
+  scheduledAt: string
+  dashboardId: string
+  inspectionId?: string
+  propertyName: string
+  propertyType: string
+  address: string
+  assignee: IUserBasicInfo
+  createdBy: {
+    id: string
+    name: string
+    username: string
+  }
+  createdAt: string
+}
+

@@ -1,25 +1,22 @@
 'use client'
 
+import { useDeleteSingleInspectionWithIdMutation } from '@/api/inspectionManagement/inspectionManagementApi'
 import { Button } from '@/components/ui/button'
+import { formatDate, getErrorMessage } from '@/lib/farmatters'
+import { IScheduledInspectinListItem } from '@/types'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import { toast } from 'sonner'
 import ProgressStatusBadge, {
   InspectionProgressStatus,
 } from '../dashboard/ProgressStatusBadge/ProgressStatusBadge'
 import { Edit } from '../icons/Edit'
 import { Trush } from '../icons/Trush'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
-import { AlertDialogCancel, AlertDialogAction } from '../ui/alert-dialog'
+import { ColumnConfig, defineColumns } from '../reusable/table/CustomTable'
+import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
 
 // Define ColumnConfig interface
-interface ColumnConfig {
-  label: React.ReactNode
-  width: string
-  accessor: string
-  sortable?: boolean
-  formatter?: (value: any, row: any) => React.ReactNode
-}
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
@@ -88,7 +85,7 @@ export const InspectionListManagementColums: ColumnConfig[] = [
     formatter: (value: string, row: any) => {
       return (
         <div>
-          <p className="text-forground text-xs">{formatUserDate(value)}</p>
+          <p className="text-forground text-xs">{formatDate(value)}</p>
         </div>
       )
     },
@@ -118,111 +115,96 @@ export const InspectionListManagementColums: ColumnConfig[] = [
 ]
 
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const AdminInspectionListManagementColums: ColumnConfig[] = [
+export const AdminInspectionListManagementColums = defineColumns<IScheduledInspectinListItem>([
   {
     label: 'Inspection ID',
-    width: '8%',
-    accessor: 'inspectin_id',
-    formatter: (value: string, row: any) => {
-      return (
-        <div className="flex items-center">
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
-    },
+    accessor: 'id',
   },
   {
     label: 'Property',
-    width: '44%',
-    accessor: 'property',
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
-    },
+    accessor: 'propertyName',
   },
   {
     label: 'Property Type',
-    width: '10%',
-    accessor: 'property_type',
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
-    },
+    accessor: 'propertyType',
   },
   {
     label: 'Address',
-    width: '15%',
     accessor: 'address',
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
-    },
   },
   {
     label: 'Date',
     width: '10%',
-    accessor: 'date',
-    formatter: (value: string, row: any) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{formatUserDate(value)}</p>
-        </div>
-      )
-    },
+    accessor: 'createdAt',
+    formatter: (value) => formatDate(value),
   },
   {
     label: 'Status',
     width: '12%',
     accessor: 'status',
-    formatter: (value: string, row: any) => {
+    formatter: (value) => {
       return <ProgressStatusBadge status={value as InspectionProgressStatus} />
     },
   },
   {
     label: '',
-    accessor: 'action',
-    width: '5%',
-    formatter: (value: any, row: any) => {
-      return (
-        <div className="flex gap-2">
-          <Button asChild variant="muted" size="icon" className="rounded-full">
-            <Link href={`/admin/inspection-list/${row.id}`}>
-              <EyeIcon />
-            </Link>
-          </Button>
-
-          <Button asChild variant="muted" size="icon" className="rounded-full">
-            <Link href={`/admin/inspection-list/${row.id}`}>
-              <Edit />
-            </Link>
-          </Button>
-
-          <ConfirmDialog
-            title="Delete Inspection Report"
-            desc="Are you sure you want to delete this Inspection Report?"
-            trigger={
-              <Button variant="muted" size="icon" className="text-destructive rounded-full">
-                <Trush />
-              </Button>
-            }
-          >
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
-          </ConfirmDialog>
-        </div>
-      )
-    },
+    accessor: 'id',
+    formatter: (_, row) => <InspectinListItemAction {...row} />,
   },
-]
+])
+
+function InspectinListItemAction({ id }: IScheduledInspectinListItem) {
+  const [deleteSingleInspectinWithId, { isLoading }] = useDeleteSingleInspectionWithIdMutation()
+
+  const handleDelete = async (deleteId?: string) => {
+    if (!deleteId) {
+      toast.error('Found invalid InspectionID')
+      return
+    }
+
+    try {
+      await deleteSingleInspectinWithId(deleteId).unwrap()
+      toast.success('Inspection deleted successfully')
+    } catch (error) {
+      toast.error('Failed to delete inspection', { description: getErrorMessage(error) })
+    }
+  }
+
+  return (
+    <div className="flex gap-2">
+      <Button asChild variant="muted" size="icon" className="rounded-full">
+        <Link href={`/admin/inspection-list/${id}`}>
+          <EyeIcon />
+        </Link>
+      </Button>
+
+      <Button asChild variant="muted" size="icon" className="rounded-full">
+        <Link href={`/admin/inspection-list/${id}`}>
+          <Edit />
+        </Link>
+      </Button>
+
+      <ConfirmDialog
+        title="Delete Inspection Report"
+        desc="Are you sure you want to delete this Inspection Report?"
+        trigger={
+          <Button variant="muted" size="icon" className="text-destructive rounded-full">
+            <Trush />
+          </Button>
+        }
+      >
+        <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+        <AlertDialogAction
+          disabled={isLoading}
+          onClick={() => handleDelete(id)}
+          variant="destructive"
+        >
+          {isLoading ? 'Deleting...' : 'Delete'}
+        </AlertDialogAction>
+      </ConfirmDialog>
+    </div>
+  )
+}
 
 // ==================== DEMO DATA ====================
 export const demoInspectionData: {

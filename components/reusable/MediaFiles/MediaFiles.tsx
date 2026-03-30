@@ -11,8 +11,13 @@ import { MediaFilesProvider, useMediaFiles } from './MediaFilesContext'
 import { cn } from '@/lib/utils'
 
 export const demoSlides: Slide[] = [
-  { type: 'image', src: 'https://fda-outlined-tries-circus.trycloudflare.com/public/storage/inspections/cmncrl5c7000p44u81e3ltio0/1774849534280_Screenshot%20(1).png' },
-  { type: 'image', src: 'https://fda-outlined-tries-circus.trycloudflare.com/public/storage/inspections/cmncrl5c7000p44u81e3ltio0/1774849534280_Screenshot%20(1).png' },
+  {
+    type: 'video',
+    poster: '/images/carousel-files/full-shot-roofers-working-together-with-helmets.png',
+    sources: [{ src: '/video/hand-water.mp4', type: 'video/mp4' }],
+  },
+  { type: 'image', src: '/images/carousel-files/low-angle-modern-house-roof.png' },
+  { type: 'image', src: '/images/carousel-files/man-on-roof.png' },
 ]
 
 interface MediaFilesProps extends React.ComponentProps<'div'> {

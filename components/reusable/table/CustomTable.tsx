@@ -14,6 +14,12 @@ export interface ColumnConfig<T, K extends keyof T = keyof T> {
   formatter?: (value: T[K], row: T, index: number) => React.ReactNode
 }
 
+export function defineColumns<T>(
+  columns: { [K in keyof T]: ColumnConfig<T, K> }[keyof T][],
+): { [K in keyof T]: ColumnConfig<T, K> }[keyof T][] {
+  return columns
+}
+
 interface SortConfig {
   key: string
   direction: 'ascending' | 'descending'

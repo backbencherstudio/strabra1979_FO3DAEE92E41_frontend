@@ -1,5 +1,6 @@
 'use client'
 
+import { useGetAllSheduledInspectionsQuery } from '@/api/inspectionManagement/inspectionManagementApi'
 import {
   AdminInspectionListManagementColums,
   demoInspectionData,
@@ -21,6 +22,8 @@ export default function AdminInspectionList() {
   }
 
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
+  const { data: { data = [] } = {} } = useGetAllSheduledInspectionsQuery()
+
   return (
     <div>
       <ScheduleInspectionDialog
@@ -34,6 +37,8 @@ export default function AdminInspectionList() {
       <SectionCard className="space-y-4.5">
         <SharedPropertyCardListContextProvider>
           <SharedPropertyCardListActions
+            title="Inspection List"
+            titleClassName="text-forground"
             onActionButtonClick={() => setScheduleDialogOpen((v) => !v)}
             showActionButton
             actionButtonText={
@@ -42,8 +47,6 @@ export default function AdminInspectionList() {
                 Schedule New Inspection
               </>
             }
-            titleClassName="text-forground"
-            title="Inspection List"
           />
         </SharedPropertyCardListContextProvider>
 
@@ -51,7 +54,7 @@ export default function AdminInspectionList() {
           <div>
             <CustomTable
               columns={AdminInspectionListManagementColums}
-              data={demoInspectionData}
+              data={data}
               //   currentPage={currentPage}
               //   itemsPerPage={itemsPerPage}
               //   onPageChange={setCurrentPage}
