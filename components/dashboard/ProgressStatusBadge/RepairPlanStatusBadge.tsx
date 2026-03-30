@@ -1,19 +1,18 @@
 import { MyBadgeVariant } from '@/components/ui/badge'
+import { IRepairProgressStatus } from '@/types'
 import { createStatusSystem, StatusBadge } from './StatusBadge'
 
-export type RepairProgressStatus = 'URGENT' | 'MAINTENANCE' | 'REPLACEMENT_PLANNING'
-
-export const repairPlanStatusSystem = createStatusSystem<RepairProgressStatus, MyBadgeVariant>({
+export const repairPlanStatusSystem = createStatusSystem<IRepairProgressStatus, MyBadgeVariant>({
   config: {
-    URGENT: {
+    Urgent: {
       label: 'Urgent',
       variant: 'danger',
     },
-    MAINTENANCE: {
+    Maintenance: {
       label: 'Maintenance',
       variant: 'warning',
     },
-    REPLACEMENT_PLANNING: {
+    'Replacement Planning': {
       label: 'Replacement Planning',
       variant: 'info',
     },
@@ -24,7 +23,7 @@ export const repairPlanStatusSystem = createStatusSystem<RepairProgressStatus, M
 })
 
 interface RepairPlanBadgeProps {
-  status: RepairProgressStatus
+  status: IRepairProgressStatus
 }
 
 export default function RepairPlanStatusBadge({ status }: RepairPlanBadgeProps) {

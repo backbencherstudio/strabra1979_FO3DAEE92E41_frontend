@@ -68,13 +68,28 @@ export const scoreScale = [
 
 const getScoreMeta = (score: number) => scoreScale.find((s) => score >= s.min && score <= s.max)
 
-// TODO: get meta from the parent
+const healthSnapshotDefaultConfig = {
+  showHealthLabel: true,
+  showAverageScore: true,
+  showOverallScore: true,
+  showRemainingLife: true,
+}
 
+type Conf = {
+  showHealthLabel: boolean
+  showAverageScore: boolean
+  showOverallScore: boolean
+  showRemainingLife: boolean
+}
+
+// TODO: get meta from the parent
 export function CircularProgressWithMeta({
   placeholder,
   containerClassName,
+  healthLabel,
+  conf,
   ...props
-}: { placeholder?: string } & CircularProgressProps) {
+}: { placeholder?: string; healthLabel?: string; conf: Partial<Conf> } & CircularProgressProps) {
   const meta =
     typeof props.value === 'number'
       ? getScoreMeta(props.value)
@@ -89,7 +104,7 @@ export function CircularProgressWithMeta({
       )}
     >
       <CircularProgress {...props} />
-      <p className="mt-2 text-center text-base font-medium">{meta?.label}</p>
+      <p className="mt-2 text-center text-base font-medium">{healthLabel ?? meta?.label}</p>
       {placeholder && <p className="text-foreground text-center text-sm">{placeholder}</p>}
     </section>
   )

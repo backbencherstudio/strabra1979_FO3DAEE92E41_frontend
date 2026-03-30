@@ -15,7 +15,7 @@ export default async function PropertyDetailPage({ params }: PropertyDetailPageP
     <PropertyDetails
       dashboardId={propertyId}
       headerRightContent={<PropertySharePopover />}
-      property={propertyDetails}
+      data={propertyDetails}
     />
   )
 }

@@ -1,7 +1,4 @@
-import PropertyDetails, {
-  propertyDetails,
-} from '@/components/reusable/PropertyDetails/PropertyDetails'
-import PropertySharePopover from '@/components/reusable/PropertyDetails/PropertySharePopover'
+import AdminPropertyDashboard from '@/components/pages/admin/property-list/AdminPropertyDashboard'
 
 interface PropertyDetailPageProps {
   params: Promise<{
@@ -11,11 +8,5 @@ interface PropertyDetailPageProps {
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { dashboardId } = await params
-  return (
-    <PropertyDetails
-      dashboardId={dashboardId}
-      headerRightContent={<PropertySharePopover />}
-      property={propertyDetails}
-    />
-  )
+  return <AdminPropertyDashboard dashboardId={dashboardId} />
 }

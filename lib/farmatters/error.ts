@@ -54,7 +54,7 @@ export function naIfEmpty(value: string | null | undefined): string {
   return value ?? notAvailableLabel
 }
 
-export function withNA<T>(
+export function withNAf<T>(
   value: T,
   formatter?: (val: T) => React.ReactNode,
 ): string | React.ReactNode {
@@ -63,4 +63,12 @@ export function withNA<T>(
   }
 
   return formatter ? formatter(value) : (value as React.ReactNode)
+}
+
+export function withNA<T>(value: T, formatter?: (val: T) => string): string {
+  if (value === null || value === undefined || value === '') {
+    return 'N/A'
+  }
+
+  return formatter ? formatter(value) : (value as string)
 }

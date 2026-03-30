@@ -1,12 +1,11 @@
-import RepairPlanStatusBadge, {
-  RepairProgressStatus,
-} from '@/components/dashboard/ProgressStatusBadge/RepairPlanStatusBadge'
+import RepairPlanStatusBadge from '@/components/dashboard/ProgressStatusBadge/RepairPlanStatusBadge'
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
+import { IRepairProgressStatus } from '@/types'
 
-interface PiorityRepairPlanItemProps {
+export interface PiorityRepairPlanItemProps {
   title: string
   description: string
-  status: RepairProgressStatus
+  status: IRepairProgressStatus
 }
 
 export function PiorityRepairPlanItem({ title, description, status }: PiorityRepairPlanItemProps) {

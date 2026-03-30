@@ -23,17 +23,17 @@ import {
   useSharedPropertyCardListContext,
 } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 
-export default function PropertyHome() {
+export default function AdminPropertyList() {
   return (
     <PaginationPageProvider>
       <SharedPropertyCardListContextProvider>
-        <PropertyHomeContend />
+        <AdminPropertyListContend />
       </SharedPropertyCardListContextProvider>
     </PaginationPageProvider>
   )
 }
 
-function PropertyHomeContend() {
+function AdminPropertyListContend() {
   const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
   const { page } = usePaginationPage()
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({

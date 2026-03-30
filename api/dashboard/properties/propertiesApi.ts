@@ -50,14 +50,12 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Property'],
     }),
-    getPropertyDashboardDetails: builder.mutation<WithApiStatus<IPropertyDashboardDetails>, string>(
-      {
-        query: (dashboardId) => ({
-          url: `/properties/dashboard/${dashboardId}`,
-          providesTags: ['PropertyDashboard'] as const,
-        }),
-      },
-    ),
+    getPropertyDashboardDetails: builder.query<WithApiStatus<IPropertyDashboardDetails>, string>({
+      query: (dashboardId) => ({
+        url: `/properties/dashboard/${dashboardId}`,
+        providesTags: ['PropertyDashboard'] as const,
+      }),
+    }),
     // TODO: use invalidatesTags in assignUserToProperty
     assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
       query: ({ dashboardId, userId, expiresAt }) => ({
@@ -129,5 +127,7 @@ export const {
   useAssignUserToPropertyMutation,
   useScheduleInspectionMutation,
   useSetAccessExpirationMutation,
+
+  useGetPropertyDashboardDetailsQuery,
 } = propertiesApi
 export default propertiesApi

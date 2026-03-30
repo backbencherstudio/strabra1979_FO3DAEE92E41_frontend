@@ -10,7 +10,7 @@ import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
+import { formatDate, naIfEmpty, withNAf } from '@/lib/farmatters'
 import { cn, isArrayEmpty } from '@/lib/utils'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -33,19 +33,19 @@ export default function AdminHome() {
   const statsData: StatCardProps[] = [
     {
       title: 'Total Properties',
-      value: withNA(stats?.totalProperties),
-      change: withNA(stats?.propertiesChangePercent, (v) => `${v}% from last month`),
+      value: withNAf(stats?.totalProperties),
+      change: withNAf(stats?.propertiesChangePercent, (v) => `${v}% from last month`),
       icon: <BuildingIcon />,
     },
     {
       title: 'Active Inspectors',
-      value: withNA(stats?.totalUsers),
-      change: withNA(stats?.usersChangePercent, (v) => `${v}% from last month`),
+      value: withNAf(stats?.totalUsers),
+      change: withNAf(stats?.usersChangePercent, (v) => `${v}% from last month`),
       icon: <User2 />,
     },
     {
       title: 'Scheduled Inspections',
-      value: withNA(stats?.pendingInspectionsThisMonth),
+      value: withNAf(stats?.pendingInspectionsThisMonth),
       change: 'Scheduled for this month',
       icon: <Calender2Icon />,
     },
@@ -144,10 +144,10 @@ export default function AdminHome() {
                 >
                   <PropertyCardInfoList
                     items={[
-                      { label: 'Type', value: withNA(p.propertyType) },
+                      { label: 'Type', value: withNAf(p.propertyType) },
                       {
                         label: 'Next Inspection',
-                        value: withNA(p?.nextInspectionDate, formatDate),
+                        value: withNAf(p?.nextInspectionDate, formatDate),
                       },
                     ]}
                   />

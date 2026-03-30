@@ -1,4 +1,6 @@
 import { IAuthUserRole } from './auth'
+import { IDashboardInspectionListItem } from './inspection'
+import { IPropertyManager } from './user'
 
 export const PropertyTypeObj = {
   COMMERCIAL: 'Commercial',
@@ -39,12 +41,7 @@ export type IPropertyListItem = {
   status: string
   createdAt: string
   updatedAt: string
-  propertyManager: {
-    id: string
-    username: string
-    email: string
-    avatar?: string
-  }
+  propertyManager: IPropertyManager
   dashboard: {
     id: string
     updatedAt: string
@@ -71,14 +68,6 @@ export interface IAccessUser {
   email: string
   avatar: string | null
   role: IAuthUserRole
-}
-
-export interface IPropertyManager {
-  id: string
-  username: string
-  email: string
-  avatar: string | null
-  role: 'PROPERTY_MANAGER'
 }
 
 export interface IDashboardAccessItem {
@@ -118,13 +107,23 @@ export interface IScheduleInspectionResponse {
   createdAt: string
   updatedAt: string
 }
+type ITemplateSnapshotType =
+  | 'header_info'
+  | 'health_snapshot'
+  | 'media_grid'
+  | 'aerial_map'
+  | 'tour_3d'
+  | 'repair_planning'
+  | 'roof_health_rating'
+  | 'additional_info'
+  | 'documents'
 
 export type IPropertyDashboardDetails = {
   id: string
   propertyId: string
   templateId: string
   templateSnapshot: Array<{
-    type: string
+    type: ITemplateSnapshotType
     label: string
     order: number
     config: {
@@ -154,14 +153,14 @@ export type IPropertyDashboardDetails = {
     id: string
     name: string
     address: string
-    propertyType: any
-    nextInspectionDate: any
-    propertyManagerId: any
+    propertyType?: string
+    nextInspectionDate?: string
+    propertyManagerId?: string
     activeTemplateId: string
     status: string
     createdAt: string
     updatedAt: string
-    propertyManager: any
+    propertyManager?: IPropertyManager
     activeTemplate: {
       id: string
       name: string
@@ -196,6 +195,6 @@ export type IPropertyDashboardDetails = {
       }>
     }
   }
-  inspections: Array<any>
+  inspections: Array<IDashboardInspectionListItem>
   folders: Array<any>
 }

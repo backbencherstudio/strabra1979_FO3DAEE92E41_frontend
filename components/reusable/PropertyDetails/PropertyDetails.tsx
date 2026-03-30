@@ -6,18 +6,21 @@ import { CircularProgressWithMeta } from '@/components/reusable/CircularProgress
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
+import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
+import { IPropertyDashboardDetails } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
+import { Slide } from 'yet-another-react-lightbox'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
-import { MediaFiles, MediaFilesGridPreview, demoSlides } from '../MediaFiles/MediaFiles'
+import { MediaFiles, MediaFilesGridPreview } from '../MediaFiles/MediaFiles'
 import { Property } from '../PropertyCard/PropertyCard'
 import CustomTable from '../table/CustomTable'
 import PropertyScoreListPreview from './PropertyScoreList'
 
 interface PropertyDetailsProps {
   dashboardId: string
-  property: Property
+  data: IPropertyDashboardDetails
   accessExpiration?: string
   headerRightContent?: React.ReactNode
 }
@@ -39,22 +42,23 @@ export const propertyDetails: Property = {
 
 export default function PropertyDetails({
   dashboardId,
-  property,
+  data,
   accessExpiration,
   headerRightContent = null,
 }: PropertyDetailsProps) {
+  const { property } = data
   const rowInfos = [
-    { label: 'Type', value: property.type },
-    { label: 'Address', value: property.address },
-    { label: 'Next Inspection', value: property.nextInspection ?? '' },
+    { label: 'Type', value: naIfEmpty(property?.propertyType) },
+    { label: 'Address', value: naIfEmpty(property?.address) },
+    { label: 'Next Inspection', value: naIfEmpty(formatDate(property?.nextInspectionDate)) },
   ]
 
-  console.log('', { dashboardId })
+  const inspectin = data?.inspections[0] || {}
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
       <PropertyHeaderWrapper
-        title={property.property}
+        title={withNA(property?.name)}
         rightContent={
           accessExpiration ? (
             <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
@@ -65,103 +69,175 @@ export default function PropertyDetails({
       >
         <InfoList
           items={[
-            { label: 'Inspection ID', value: property.id },
-            { value: property.title },
-            { label: 'Date', value: property.date },
-            { label: 'Inspector', value: property.inspector.name },
+            // { label: 'Inspection ID', value: data.id },
+            { label: 'Property Manager', value: withNA(property?.propertyManager?.username) },
+            { label: 'Date', value: withNA(formatDate(data.createdAt)) },
+            { label: 'Status', value: withNA(property?.status) },
           ]}
         />
       </PropertyHeaderWrapper>
+      {/* outline *:outline *:outline-red-500 */}
+      <section className="grid grid-cols-8 gap-6">
+        {data.templateSnapshot.map((item) => {
+          if (item.type === 'header_info') {
+            return <InfoGrid className="col-span-full" key={item.type} items={rowInfos} />
+          }
 
-      <InfoGrid items={rowInfos} />
-      <div className="flex flex-col gap-4.5 lg:flex-row">
-        <SectionCard className="bg-white">
-          <SectionTitle className="text-center">Roof Health Snapshot</SectionTitle>
-          <p className="text-center text-sm">Average Health Score</p>
-          <CircularProgressWithMeta
-            placeholder="Remaining Life: 5-7 Years"
-            value={property.score}
-          />
-        </SectionCard>
+          if (item.type === 'health_snapshot') {
+            return (
+              <SectionCard key={item.type} className="col-span-2 bg-white">
+                <SectionTitle className="text-center">{item.label}</SectionTitle>
+                <p className="text-center text-sm">Average Health Score</p>
+                <CircularProgressWithMeta
+                  conf={item.config}
+                  healthLabel={inspectin?.healthLabel}
+                  placeholder={`Remaining Life: ${inspectin?.remainingLife}`}
+                  value={inspectin?.overallScore}
+                />
+              </SectionCard>
+            )
+          }
 
-        <MediaFiles slides={demoSlides}>
-          <MediaFilesGridPreview slides={demoSlides} />
-        </MediaFiles>
-      </div>
-      <div className="grid gap-4.5 lg:grid-cols-2">
-        <SectionCard className="space-y-2 bg-white">
-          <SectionTitle className="text-center">Aerial Map</SectionTitle>
-          <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
-            <Image
-              className="h-full w-full object-cover"
-              width={800}
-              height={450}
-              alt=""
-              src={'/images/inspectin-list/aerial-map.png'}
-            />
-          </div>
-        </SectionCard>
-        <SectionCard className="space-y-2 bg-white">
-          <SectionTitle className="text-center">3D Roof Tour</SectionTitle>
-          <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
-            <Image
-              className="h-full w-full object-cover"
-              width={800}
-              height={450}
-              alt=""
-              src={'/images/inspectin-list/3d-roof-tour.png'}
-            />
-          </div>
-        </SectionCard>
-      </div>
-      <SectionCard>
-        <SectionTitle>Priority Repair Planning</SectionTitle>
-        <PiorityRepairPlanList />
-      </SectionCard>
-      <SectionCard>
-        <PropertyScoreListPreview />
-      </SectionCard>
-      <SectionCard>
-        <SectionTitle>Additional Information</SectionTitle>
-        <div className="mt-4 space-y-3">
-          <InfoCard title="NTE (Not-To-Exceed)" description="$7,500" />
-          <InfoCard
-            title="Additional Comments"
-            description="The roofing surface shows signs of normal wear consistent with age. Minor cracks, surface aging, and localized deterioration were observed in selected areas. No active leaks were observed at the time of inspection. However, moisture stains / vulnerable joints were noted, indicating potential leak risks if left unaddressed."
-          />
-        </div>
-      </SectionCard>
-      <SectionCard className="space-y-4.5">
-        <div className="flex items-center justify-between">
-          <SectionTitle>Documents</SectionTitle>
+          if (item.type === 'media_grid') {
+            const slides: Slide[] = inspectin?.mediaFiles.map((item) => {
+              const isVideo = item.fileType === 'VIDEO'
 
-          <Button variant="link" theme="text">
-            View All <ChevronRight />
-          </Button>
-        </div>
-        <div>
-          <CustomTable
-            columns={DocumentsTableColumns}
-            data={demoDocumentsData}
-            //   currentPage={currentPage}
-            //   itemsPerPage={itemsPerPage}
-            //   onPageChange={setCurrentPage}
-            //   sortConfig={sortConfig}
-            //   onSort={handleSort}
-            minWidth={1000}
-            headerStyles={{
-              backgroundColor: '#eceff3',
-              textColor: '#4a4c56',
-              fontSize: '14px',
-              fontWeight: '400',
-              padding: '12px 16px',
-            }}
-            cellBorderColor="#eceff3"
-            hasWrapperBorder={false}
-            roundedClass="rounded-lg"
-          />
-        </div>
-      </SectionCard>
+              if (isVideo) {
+                return {
+                  type: 'video',
+                  poster: item?.url,
+                  sources: [{ src: item.url, type: 'video/mp4' }],
+                }
+              }
+
+              return {
+                type: 'image',
+                src: item?.url,
+              }
+            })
+
+            return (
+              <div key={item.type} className="col-span-6">
+                <MediaFiles className="bg-red-300" slides={slides}>
+                  <MediaFilesGridPreview slides={slides} />
+                </MediaFiles>
+              </div>
+            )
+          }
+
+          if (item.type === 'aerial_map') {
+            return (
+              <SectionCard key={item.type} className="col-span-4 space-y-2 bg-white">
+                <SectionTitle className="text-center">{item.label}</SectionTitle>
+                <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
+                  <Image
+                    className="h-full w-full object-cover"
+                    width={800}
+                    height={450}
+                    alt=""
+                    src={'/images/inspectin-list/aerial-map.png'}
+                  />
+                </div>
+              </SectionCard>
+            )
+          }
+
+          if (item.type === 'tour_3d') {
+            return (
+              <SectionCard key={item.type} className="col-span-4 space-y-2 bg-white">
+                <SectionTitle className="text-center">{item.label}</SectionTitle>
+                <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
+                  <Image
+                    className="h-full w-full object-cover"
+                    width={800}
+                    height={450}
+                    alt=""
+                    src={'/images/inspectin-list/3d-roof-tour.png'}
+                  />
+                </div>
+              </SectionCard>
+            )
+          }
+
+          if (item.type === 'repair_planning') {
+            return (
+              <SectionCard className="col-span-full" key={item.type}>
+                <SectionTitle>Priority Repair Planning</SectionTitle>
+                <PiorityRepairPlanList items={inspectin?.repairItems ?? []} />
+              </SectionCard>
+            )
+          }
+
+          if (item.type === 'roof_health_rating') {
+            return (
+              <SectionCard className="col-span-full" key={item.type}>
+                {/* <SectionTitle>Priority Repair Planning</SectionTitle> */}
+                <PropertyScoreListPreview />
+              </SectionCard>
+            )
+          }
+
+          if (item.type === 'additional_info') {
+            return (
+              <SectionCard className="col-span-full" key={item.type}>
+                <SectionTitle>Additional Information</SectionTitle>
+                <div className="mt-4 space-y-3">
+                  <InfoCard
+                    title="NTE (Not-To-Exceed)"
+                    description={withNA(inspectin?.nteValue, (f) => `$${f.toLocaleString()}`)}
+                  />
+                  <InfoCard
+                    title="Additional Comments"
+                    description={naIfEmpty(inspectin?.additionalComments)}
+                  />
+                </div>
+              </SectionCard>
+            )
+          }
+
+          if (item.type === 'documents') {
+            return (
+              <SectionCard className="col-span-full space-y-4.5" key={item.type}>
+                <div className="flex items-center justify-between">
+                  <SectionTitle>Documents</SectionTitle>
+
+                  <Button variant="link" theme="text">
+                    View All <ChevronRight />
+                  </Button>
+                </div>
+                <div>
+                  <CustomTable
+                    columns={DocumentsTableColumns}
+                    data={demoDocumentsData}
+                    //   currentPage={currentPage}
+                    //   itemsPerPage={itemsPerPage}
+                    //   onPageChange={setCurrentPage}
+                    //   sortConfig={sortConfig}
+                    //   onSort={handleSort}
+                    minWidth={1000}
+                    headerStyles={{
+                      backgroundColor: '#eceff3',
+                      textColor: '#4a4c56',
+                      fontSize: '14px',
+                      fontWeight: '400',
+                      padding: '12px 16px',
+                    }}
+                    cellBorderColor="#eceff3"
+                    hasWrapperBorder={false}
+                    roundedClass="rounded-lg"
+                  />
+                </div>
+              </SectionCard>
+            )
+          }
+
+          return (
+            <div key={item.type} className="bg-blue-300">
+              {item.type}
+            </div>
+          )
+        })}
+      </section>
     </SectionCard>
   )
 }
