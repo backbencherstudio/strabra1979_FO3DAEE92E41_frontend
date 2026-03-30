@@ -79,6 +79,7 @@ function SelectPropertyDialogContent({
   })
   usePaginatedQuery({ meta_data: meta })
 
+  // unselect the selected items on data change
   const updateOnLoading = useEffectEvent(() => {
     setSelectedDashboardId(null)
   })

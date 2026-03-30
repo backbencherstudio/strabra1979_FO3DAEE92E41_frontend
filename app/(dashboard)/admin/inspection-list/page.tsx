@@ -7,6 +7,7 @@ import {
 } from '@/components/columns/InspectionListManagement'
 import { CalenderIcon03 } from '@/components/icons/CalenderIcon'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
+import SelectPropertyDialog from '@/components/pages/admin/user-management/SelectPropertyDialog'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
@@ -24,14 +25,46 @@ export default function AdminInspectionList() {
   const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
   const { data: { data = [] } = {} } = useGetAllSheduledInspectionsQuery()
 
+  const [openAssignDialog, setOpenAssignDialog] = useState(false)
+  const [newInspectinId, setNewInspectinId] = useState<string | undefined>()
+  
+  const handlePropertyAssign = async (dashboardId: string) => {
+    console.log({ dashboardId })
+    // const userId = rowData.id
+    //
+    // if (!userId || !dashboardId) {
+    //   toast.error('Missing required information')
+    //   return
+    // }
+    //
+    // try {
+    //   const res = await assignUserProperty({
+    //     dashboardId,
+    //     userId,
+    //   }).unwrap()
+    //
+    //   toast.success(res.message ?? 'User assigned successfully')
+    // } catch (error) {
+    //   toast.error('Failed to assign user', {
+    //     description: getErrorMessage(error),
+    //   })
+    // }
+  }
+
   return (
     <div>
+      <SelectPropertyDialog
+        open={openAssignDialog}
+        onOpenChange={setOpenAssignDialog}
+        onAssignConfirm={handlePropertyAssign}
+      />
       <ScheduleInspectionDialog
-        open={scheduleDialogOpen}
-        onOpenChange={setScheduleDialogOpen}
-        onSchedule={handleScheduleConfirm}
-        propertyName={'Sunset Office Complex'}
-        propertyAddress={'1234 Sunset Blvd, CA 90028'}
+      //        dashboardId={dashboardId}
+      //        open={scheduleDialogOpen}
+      //        onOpenChange={setScheduleDialogOpen}
+      //        propertyName={propertyName}
+      //        propertyAddress={propertyAddress}
+      //        onSchedule={() => setScheduleDialogOpen(false)}
       />
 
       <SectionCard className="space-y-4.5">
@@ -39,7 +72,7 @@ export default function AdminInspectionList() {
           <SharedPropertyCardListActions
             title="Inspection List"
             titleClassName="text-forground"
-            onActionButtonClick={() => setScheduleDialogOpen((v) => !v)}
+            onActionButtonClick={() => setOpenAssignDialog((v) => !v)}
             showActionButton
             actionButtonText={
               <>
