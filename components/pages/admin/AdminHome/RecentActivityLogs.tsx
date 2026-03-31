@@ -1,13 +1,13 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { routes } from '@/constant'
 import { isArrayEmpty } from '@/lib/utils'
 import { IActivityLogListItem } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import ActivityLogListItem from '../activity-log/ActivityLogListItem'
-import { Button } from '@/components/ui/button'
-import { appRoutes } from '@/constant'
 
 interface RecentActivityLogsProps {
   isLoading: boolean
@@ -23,7 +23,7 @@ export default function RecentActivityLogs({ isLoading, data }: RecentActivityLo
         </div>
 
         <Button asChild variant="link" size="link" theme="text">
-          <Link href={appRoutes.admin.propertyList}>
+          <Link href={routes.admin.propertyList}>
             View All <ChevronRight />
           </Link>
         </Button>

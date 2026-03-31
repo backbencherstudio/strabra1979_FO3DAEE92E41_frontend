@@ -9,6 +9,11 @@ export type IPiorityRepairPlanItem = {
   description: string
 }
 
+export interface IScoreCheckBoxItem {
+  notes: string
+  score: number
+}
+
 export type IDashboardInspectionListItem = {
   id: string
   dashboardId: string
@@ -17,12 +22,7 @@ export type IDashboardInspectionListItem = {
     propertyType: string
     inspectionTitle: string
   }
-  scores: {
-    surfaceCondition: {
-      notes: string
-      score: number
-    }
-  }
+  scores: Record<string, IScoreCheckBoxItem>
   overallScore: number
   healthLabel: string
   remainingLife: string
@@ -61,5 +61,5 @@ export type IScheduledInspectinListItem = {
     username: string
   }
   createdAt: string
+  nextInspectionDate: string
 }
-

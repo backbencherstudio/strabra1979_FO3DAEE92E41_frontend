@@ -1,6 +1,5 @@
 'use client'
 
-import { useScheduleInspectionMutation } from '@/api/dashboard/properties/propertiesApi'
 import ClockIcon from '@/components/icons/ClockIcon'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -17,12 +16,13 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { AssignUserDialog } from './AssignUserDialog'
 import { convertTimeSelectorToISOString, TimeSelector, TimeSelectorValue } from './TimeSelector'
+import { useScheduleInspectionMutation } from '@/api/inspectionManagement/inspectionManagementApi'
 
 interface ScheduleInspectionDialogProps {
   open?: boolean
   dashboardId?: string
   onOpenChange?: (open: boolean) => void
-  onSchedule?: (data: any) => void
+  onScheduleComplete?: (data: unknown) => void
   propertyName?: string
   propertyAddress?: string
 }
@@ -30,7 +30,7 @@ interface ScheduleInspectionDialogProps {
 export function ScheduleInspectionDialog({
   open,
   onOpenChange,
-  onSchedule,
+  onScheduleComplete,
   dashboardId,
   propertyName = '',
   propertyAddress = '',

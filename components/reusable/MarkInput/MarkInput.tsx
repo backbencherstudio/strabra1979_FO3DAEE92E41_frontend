@@ -10,9 +10,10 @@ interface MarkInputProps {
   value: number
   maxValue: number
   onChange: (value: number) => void
+  disabled?: boolean
 }
 
-export default function MarkInput({ value, maxValue, onChange }: MarkInputProps) {
+export default function MarkInput({ value, maxValue, onChange, disabled }: MarkInputProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const handlePrev = () => {
@@ -68,7 +69,7 @@ export default function MarkInput({ value, maxValue, onChange }: MarkInputProps)
         tabIndex={0}
         onKeyDown={handleKeyDown}
         className={cn(
-          'bg flex h-14 min-w-0 flex-1 items-center gap-1 rounded-md bg-white px-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.11)]',
+          'flex h-14 min-w-0 flex-1 items-center gap-1 rounded-md bg-white px-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.11)]',
           'focus-visible:border-ring focus-visible:ring-ring/50 border border-white outline-none focus-visible:ring-[3px]',
         )}
       >
@@ -79,8 +80,8 @@ export default function MarkInput({ value, maxValue, onChange }: MarkInputProps)
           size="icon-md"
           variant="ghost"
           onClick={handlePrev}
-          disabled={value === 1}
-          className="shrink-0 rounded-full"
+          disabled={disabled || value === 1}
+          className="shrink-0 rounded-full disabled:cursor-not-allowed"
         >
           <ChevronLeft className="size-5" />
         </Button>
@@ -111,13 +112,14 @@ export default function MarkInput({ value, maxValue, onChange }: MarkInputProps)
 
               return (
                 <button
+                  disabled={disabled}
                   tabIndex={-1}
                   key={number}
                   data-number={number}
                   type="button"
                   onClick={() => onChange(number)}
                   className={cn(
-                    'flex h-10.5 min-w-10.5 shrink-0 items-center justify-center rounded-full px-1.5 text-sm font-medium',
+                    'flex h-10.5 min-w-10.5 shrink-0 items-center justify-center rounded-full px-1.5 text-sm font-medium disabled:cursor-not-allowed',
                     isActive ? 'bg-primary relative text-white' : 'text-primary hover:bg-muted',
                   )}
                 >
@@ -135,8 +137,8 @@ export default function MarkInput({ value, maxValue, onChange }: MarkInputProps)
           size="icon-md"
           variant="ghost"
           onClick={handleNext}
-          disabled={value === maxValue}
-          className="shrink-0 rounded-full"
+          disabled={disabled || value === maxValue}
+          className="shrink-0 rounded-full disabled:cursor-not-allowed"
         >
           <ChevronRight className="size-5" />
         </Button>

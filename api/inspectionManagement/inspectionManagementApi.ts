@@ -1,14 +1,33 @@
 import { baseApi } from '@/api/baseApi'
 import type {
+  IDashboardInspectionListItem,
   IFilterPayload,
   IPaginationPayload,
+  IPropertyInspectionFormData,
   IScheduledInspectinListItem,
+  IScheduleInspectionParams,
+  IScheduleInspectionResponse,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
 
 const userManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // TODO: use invalidatesTags in scheduleInspection
+    scheduleInspection: builder.mutation<
+      WithApiStatus<IScheduleInspectionResponse>,
+      IScheduleInspectionParams
+    >({
+      query: ({ dashboardId, scheduledAt, assignedTo }) => ({
+        url: `/properties/dashboard/${dashboardId}/schedule-inspection`,
+        method: 'POST',
+        invalidatesTags: ['AccessList', 'Property', 'InspectionManagement'],
+        body: {
+          scheduledAt,
+          assignedTo,
+        },
+      }),
+    }),
     getAllSheduledInspections: builder.query<
       WithPaginationAndStatus<IScheduledInspectinListItem[]>,
       (IPaginationPayload & IFilterPayload) | void
@@ -26,6 +45,12 @@ const userManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['InspectionManagement'],
     }),
+    getSingleInspectionWithId: builder.query<WithApiStatus<IDashboardInspectionListItem>, string>({
+      query: (id) => ({
+        url: `/inspections/${id}`,
+      }),
+      providesTags: ['InspectionManagement'] as const,
+    }),
     // updateUserStatus: builder.mutation<
     //   IUserListItem,
     //   { id: string; status: 'ACTIVE' | 'DEACTIVATED' | 'DELETED' }
@@ -41,5 +66,10 @@ const userManagementApi = baseApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const { useGetAllSheduledInspectionsQuery, useDeleteSingleInspectionWithIdMutation } = userManagementApi
+export const {
+  useScheduleInspectionMutation,
+  useGetAllSheduledInspectionsQuery,
+  useDeleteSingleInspectionWithIdMutation,
+  useGetSingleInspectionWithIdQuery,
+} = userManagementApi
 export default userManagementApi

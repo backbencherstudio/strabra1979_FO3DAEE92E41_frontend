@@ -13,7 +13,7 @@ import {
 import PropertyCard, { PropertyCardSkeleton } from '@/components/reusable/PropertyCard/PropertyCard'
 import { PropertyCardAdminInfoList } from '@/components/reusable/PropertyCard/PropertyCardAdminInfoList'
 import { Button } from '@/components/ui/button'
-import { appRoutes } from '@/constant'
+import { routes } from '@/constant'
 import { addDaysBy, naIfEmpty } from '@/lib/farmatters'
 import { useAuth } from '@/redux/features/auth/useAuth'
 import { RoleUtils } from '@/types'
@@ -67,7 +67,9 @@ function AdminPropertyListContend() {
                   hasAccess
                   key={p.id}
                   id={p.id}
-                  slug={`${appRoutes.admin.propertyList}/${p?.dashboard?.id}`}
+                  slug={routes.admin.propertyDashboarDetail.build({
+                    dashboardId: p?.dashboard?.id,
+                  })}
                   isAdmin={isAdmin}
                   propertyName={p.name}
                   dashboardId={p?.dashboard?.id}

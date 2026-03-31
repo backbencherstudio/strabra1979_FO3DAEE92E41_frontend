@@ -16,6 +16,10 @@ export default function CircularProgress({
   className,
   labelClassName,
 }: CircularProgressProps) {
+  if (typeof value !== 'number') {
+    value = 0
+  }
+
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (value / 100) * circumference

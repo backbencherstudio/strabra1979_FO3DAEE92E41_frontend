@@ -2,7 +2,7 @@
 
 import { useDeleteSingleInspectionWithIdMutation } from '@/api/inspectionManagement/inspectionManagementApi'
 import { Button } from '@/components/ui/button'
-import { formatDate, getErrorMessage } from '@/lib/farmatters'
+import { formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
 import { IScheduledInspectinListItem } from '@/types'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -15,6 +15,8 @@ import { Trush } from '../icons/Trush'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { ColumnConfig, defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
+import { useRouter } from 'next/navigation'
+import { routes } from '@/constant'
 
 // Define ColumnConfig interface
 
@@ -118,7 +120,8 @@ export const InspectionListManagementColums: ColumnConfig[] = [
 export const AdminInspectionListManagementColums = defineColumns<IScheduledInspectinListItem>([
   {
     label: 'Inspection ID',
-    accessor: 'id',
+    accessor: 'inspectionId',
+    formatter: (value) => naIfEmpty(value),
   },
   {
     label: 'Property',
@@ -127,20 +130,24 @@ export const AdminInspectionListManagementColums = defineColumns<IScheduledInspe
   {
     label: 'Property Type',
     accessor: 'propertyType',
+    formatter: (value) => naIfEmpty(value),
   },
   {
     label: 'Address',
     accessor: 'address',
   },
   {
-    label: 'Date',
-    width: '10%',
+    label: 'Created At',
     accessor: 'createdAt',
     formatter: (value) => formatDate(value),
   },
   {
+    label: 'Next Inspection',
+    accessor: 'nextInspectionDate',
+    formatter: (value) => naIfEmpty(formatDate(value)),
+  },
+  {
     label: 'Status',
-    width: '12%',
     accessor: 'status',
     formatter: (value) => {
       return <ProgressStatusBadge status={value as InspectionProgressStatus} />
@@ -153,7 +160,7 @@ export const AdminInspectionListManagementColums = defineColumns<IScheduledInspe
   },
 ])
 
-function InspectinListItemAction({ id }: IScheduledInspectinListItem) {
+function InspectinListItemAction({ id, inspectionId }: IScheduledInspectinListItem) {
   const [deleteSingleInspectinWithId, { isLoading }] = useDeleteSingleInspectionWithIdMutation()
 
   const handleDelete = async (deleteId?: string) => {
@@ -169,17 +176,29 @@ function InspectinListItemAction({ id }: IScheduledInspectinListItem) {
       toast.error('Failed to delete inspection', { description: getErrorMessage(error) })
     }
   }
+  const router = useRouter()
 
   return (
     <div className="flex gap-2">
-      <Button asChild variant="muted" size="icon" className="rounded-full">
-        <Link href={`/admin/inspection-list/${id}`}>
-          <EyeIcon />
-        </Link>
+      {/* // TODO: add view & edit option */}
+      <Button
+        onClick={() => {
+          if (!inspectionId) {
+            return
+          }
+
+          router.push(routes.admin.inspectionListItemDetail.build({ inspectionId }))
+        }}
+        disabled={!inspectionId}
+        variant="muted"
+        size="icon"
+        className="rounded-full"
+      >
+        <EyeIcon />
       </Button>
 
-      <Button asChild variant="muted" size="icon" className="rounded-full">
-        <Link href={`/admin/inspection-list/${id}`}>
+      <Button disabled={!inspectionId} asChild variant="muted" size="icon" className="rounded-full">
+        <Link href={`/admin/inspection-list/${inspectionId}`}>
           <Edit />
         </Link>
       </Button>

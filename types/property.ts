@@ -118,35 +118,37 @@ type ITemplateSnapshotType =
   | 'additional_info'
   | 'documents'
 
+export type ITemplateSnapshotItem = {
+  type: ITemplateSnapshotType
+  label: string
+  order: number
+  config: {
+    fields?: Array<string>
+    showHealthLabel?: boolean
+    showAverageScore?: boolean
+    showOverallScore?: boolean
+    showRemainingLife?: boolean
+    layout?: string
+    maxVisible?: number
+    allowedTypes?: Array<string>
+    embedType?: string
+    placeholder?: string
+    showNotes?: boolean
+    showMaxPoints?: boolean
+    nteCurrency?: string
+    pageSize?: number
+    showVersion?: boolean
+    showFileSize?: boolean
+    showUploadDate?: boolean
+    allowInBrowserView?: boolean
+  }
+}
+
 export type IPropertyDashboardDetails = {
   id: string
   propertyId: string
   templateId: string
-  templateSnapshot: Array<{
-    type: ITemplateSnapshotType
-    label: string
-    order: number
-    config: {
-      fields?: Array<string>
-      showHealthLabel?: boolean
-      showAverageScore?: boolean
-      showOverallScore?: boolean
-      showRemainingLife?: boolean
-      layout?: string
-      maxVisible?: number
-      allowedTypes?: Array<string>
-      embedType?: string
-      placeholder?: string
-      showNotes?: boolean
-      showMaxPoints?: boolean
-      nteCurrency?: string
-      pageSize?: number
-      showVersion?: boolean
-      showFileSize?: boolean
-      showUploadDate?: boolean
-      allowInBrowserView?: boolean
-    }
-  }>
+  templateSnapshot: Array<ITemplateSnapshotItem>
   createdAt: string
   updatedAt: string
   property: {
@@ -196,5 +198,5 @@ export type IPropertyDashboardDetails = {
     }
   }
   inspections: Array<IDashboardInspectionListItem>
-  folders: Array<any>
+  folders: Array<unknown>
 }

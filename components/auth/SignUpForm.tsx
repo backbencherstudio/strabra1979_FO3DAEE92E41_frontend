@@ -1,7 +1,7 @@
 'use client'
 
 import { useRegisterUserMutation } from '@/api/auth/authApi'
-import { appRoutes } from '@/constant'
+import { routes } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
 import { IAuthRegisterResponse, IAuthUserRole, RoleObj, WithApiStatus } from '@/types'
 import { useForm } from '@tanstack/react-form'
@@ -149,7 +149,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ role }) => {
 
         <p className="text-center">
           Already have an account?{' '}
-          <Link href={appRoutes.signin} className="font-medium text-[#0b2a3b] hover:underline">
+          <Link href={routes.signin} className="font-medium text-[#0b2a3b] hover:underline">
             Log In
           </Link>
         </p>

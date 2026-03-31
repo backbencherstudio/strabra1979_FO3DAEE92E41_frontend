@@ -68,21 +68,6 @@ const propertiesApi = baseApi.injectEndpoints({
         },
       }),
     }),
-    // TODO: use invalidatesTags in scheduleInspection
-    scheduleInspection: builder.mutation<
-      WithApiStatus<IScheduleInspectionResponse>,
-      IScheduleInspectionParams
-    >({
-      query: ({ dashboardId, scheduledAt, assignedTo }) => ({
-        url: `/properties/dashboard/${dashboardId}/schedule-inspection`,
-        method: 'POST',
-        invalidatesTags: ['AccessList', 'Property'],
-        body: {
-          scheduledAt,
-          assignedTo,
-        },
-      }),
-    }),
 
     // AccessList
     //==================================================================
@@ -125,7 +110,6 @@ export const {
   useGetPropertyDashboardAccessListQuery,
   useRevokeDashboardAccessMutation,
   useAssignUserToPropertyMutation,
-  useScheduleInspectionMutation,
   useSetAccessExpirationMutation,
 
   useGetPropertyDashboardDetailsQuery,

@@ -1,10 +1,9 @@
 'use client'
 
 import { DatePickerWrapper } from '@/components/reusable/DatePicker/DatePicker'
-import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
+import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
 import {
   Select,
   SelectContent,
@@ -14,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import React, { useState } from 'react'
+import InspectionCheckBoxes from './InspectionCheckBoxes'
 
 export default function InspectionReportForm() {
   const [mark, setMark] = useState(1)
@@ -128,75 +128,7 @@ export default function InspectionReportForm() {
           </Select>
         </Field>
 
-        <Field>
-          <FieldLabel htmlFor="name">Surface Condition (25 pts)</FieldLabel>
-          <MarkInput value={mark} maxValue={25} onChange={setMark} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Seams & Flashings (20 pts)</FieldLabel>
-          <MarkInput value={12} maxValue={20} onChange={() => {}} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Drainage & Ponding (15 pts)</FieldLabel>
-          <MarkInput value={3} maxValue={15} onChange={() => {}} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Penetrations & Accessories (10 pts)</FieldLabel>
-          <MarkInput value={6} maxValue={10} onChange={() => {}} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Repairs & Patch History (10 pts)</FieldLabel>
-          <MarkInput value={7} maxValue={10} onChange={() => {}} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Age vs. Expected Life (10 pts)</FieldLabel>
-          <MarkInput value={9} maxValue={10} onChange={() => {}} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Structural & Safety (10 pts)</FieldLabel>
-          <MarkInput value={8} maxValue={10} onChange={() => {}} />
-          <InputGroup>
-            <InputGroupTextarea placeholder="Add Observations Notes" />
-          </InputGroup>
-        </Field>
-
-        <Field className="col-span-full">
-          <FieldLabel htmlFor="name">NTE (Not-To-Exceed):</FieldLabel>
-          <InputGroup>
-            <InputGroupInput placeholder="Enter NTE" />
-          </InputGroup>
-        </Field>
-
-        <Field className="col-span-full">
-          <FieldLabel htmlFor="">Additional Notes/Comments</FieldLabel>
-          <InputGroup>
-            <InputGroupTextarea placeholder="Type Any Additional Notes/Comments" />
-          </InputGroup>
-        </Field>
+        <InspectionCheckBoxes isEditable={false} />
       </FieldGroup>
     </form>
   )

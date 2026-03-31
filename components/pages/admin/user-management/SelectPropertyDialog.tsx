@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { appRoutes } from '@/constant'
+import { routes } from '@/constant'
 import { addDaysBy, naIfEmpty } from '@/lib/farmatters'
 import { useEffect, useEffectEvent, useState } from 'react'
 import SharedPropertyCardListActions from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
@@ -28,9 +28,11 @@ import {
   SharedPropertyCardListContextProvider,
   useSharedPropertyCardListContext,
 } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import { IPropertyListItem } from '@/types'
 
 interface SelectPropertyDialogProps extends React.ComponentProps<typeof Dialog> {
-  onAssignConfirm?: (dashboardId: string) => void
+  onAssignConfirm?: (dashboardId: string, property: IPropertyListItem) => void
+  title: string
 }
 
 export default function SelectPropertyDialog(props: SelectPropertyDialogProps) {
@@ -44,30 +46,13 @@ export default function SelectPropertyDialog(props: SelectPropertyDialogProps) {
 }
 
 function SelectPropertyDialogContent({
+  title,
   children,
   onAssignConfirm,
   open,
   onOpenChange,
   ...props
 }: SelectPropertyDialogProps) {
-  const [selectedDashboardId, setSelectedDashboardId] = useState<string | null>(null)
-
-  const handleSelect = (dashboardId: string, selected: boolean) => {
-    if (selected) {
-      setSelectedDashboardId(dashboardId)
-    } else {
-      setSelectedDashboardId(null)
-    }
-  }
-
-  const handleConfirm = () => {
-    if (selectedDashboardId && onAssignConfirm) {
-      onAssignConfirm(selectedDashboardId)
-      onOpenChange?.(false)
-      setSelectedDashboardId(null)
-    }
-  }
-
   const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
   const { page } = usePaginationPage()
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
@@ -79,31 +64,50 @@ function SelectPropertyDialogContent({
   })
   usePaginatedQuery({ meta_data: meta })
 
-  // unselect the selected items on data change
-  const updateOnLoading = useEffectEvent(() => {
-    setSelectedDashboardId(null)
+  const [selectedProperty, setSelectedProperty] = useState<IPropertyListItem | null>(null)
+  const handleSelect = (property: IPropertyListItem, selected: boolean) => {
+    if (selected) {
+      setSelectedProperty(property)
+    } else {
+      setSelectedProperty(null)
+    }
+  }
+
+  const handleConfirm = () => {
+    if (selectedProperty && onAssignConfirm) {
+      onAssignConfirm(selectedProperty?.dashboard?.id, selectedProperty)
+      onOpenChange?.(false)
+      setSelectedProperty(null)
+    }
+  }
+
+  // Unselect the selected item on data change
+  const unselectCardOnDataChange = useEffectEvent(() => {
+    setSelectedProperty(null)
   })
 
   useEffect(() => {
-    updateOnLoading()
+    unselectCardOnDataChange()
   }, [search, sortOrder, dateFrom?.raw])
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} {...props}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        onOpenChange?.(v)
+        setSelectedProperty(null)
+      }}
+      {...props}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         showCloseButton={false}
         className="flex h-[90vh] flex-col overflow-hidden bg-white p-0 sm:max-w-300"
       >
         <DialogTitle className="sr-only">Property-list</DialogTitle>
-        <DialogDescription className="sr-only">Assign User to a Property</DialogDescription>
+        <DialogDescription className="sr-only">{title}</DialogDescription>
         <section className="mt-2 px-6">
-          <SharedPropertyCardListActions
-            title="Assign User to a Property"
-            showSortOrder
-            showSearch
-            showDateFilter
-          />
+          <SharedPropertyCardListActions title={title} showSortOrder showSearch showDateFilter />
         </section>
 
         <section className="max-h-[calc(90vh-150px)] flex-1 overflow-y-auto px-6">
@@ -114,11 +118,13 @@ function SelectPropertyDialogContent({
                   <PropertyCard
                     {...p}
                     key={p.id}
-                    slug={`${appRoutes.admin.propertyList}/${p?.dashboard?.id}`}
+                    slug={routes.admin.propertyDashboarDetail.build({
+                      dashboardId: p?.dashboard?.id,
+                    })}
                     hasAccess
                     isSelectable={true}
-                    onSelect={(selected) => handleSelect(p?.dashboard?.id, selected)}
-                    defaultSelected={selectedDashboardId === p?.dashboard?.id}
+                    onSelect={(selected) => handleSelect(p, selected)}
+                    defaultSelected={selectedProperty?.dashboard.id === p?.dashboard?.id}
                     propertyName={p.name}
                     address={naIfEmpty(p.address)}
                     score={p?.dashboard?.latestInspection?.overallScore}
@@ -139,7 +145,7 @@ function SelectPropertyDialogContent({
           </DialogClose>
 
           <DialogClose onClick={handleConfirm} asChild>
-            <Button disabled={!selectedDashboardId} size="lg" className="flex-1">
+            <Button disabled={!selectedProperty} size="lg" className="flex-1">
               Assign
             </Button>
           </DialogClose>

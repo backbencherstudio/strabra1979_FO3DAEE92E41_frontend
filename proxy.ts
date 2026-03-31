@@ -1,4 +1,4 @@
-import { appRoutes, getHomePageByRole, publicRoutes, roleRoutes, TOKENS } from '@/constant'
+import { routes, getHomePageByRole, publicRoutes, roleRoutes, TOKENS } from '@/constant'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { IAuthUserRole } from './types'
@@ -22,7 +22,7 @@ export function proxy(request: NextRequest) {
 
   // 2. No token → redirect to signin
   if (!token) {
-    const signinUrl = new URL(appRoutes.signin, request.url)
+    const signinUrl = new URL(routes.signin, request.url)
     // signinUrl.searchParams.set('callbackUrl', pathname)
     return NextResponse.redirect(signinUrl)
   }

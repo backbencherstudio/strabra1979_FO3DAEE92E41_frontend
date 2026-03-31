@@ -57,6 +57,10 @@ export type IOverviewAdmin = {
       name?: string
       avatar?: string
     }
-    roofHealth?: number
+    roofHealth?: {
+      overallScore: number
+      healthLabel: string
+      remainingLife: string
+    }
   }>
 }

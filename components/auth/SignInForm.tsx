@@ -1,6 +1,6 @@
 'use client'
 
-import { appRoutes } from '@/constant'
+import { routes } from '@/constant'
 import { useAuth } from '@/redux/features/auth/useAuth'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from 'lucide-react'
@@ -96,7 +96,7 @@ const SignInForm: React.FC<DynamicFormProps> = ({}) => {
 
         <p className="text-center">
           Don’t have an account?{' '}
-          <Link href={appRoutes.signup} className="font-medium text-[#0b2a3b] hover:underline">
+          <Link href={routes.signup} className="font-medium text-[#0b2a3b] hover:underline">
             Sign up
           </Link>
         </p>

@@ -124,6 +124,7 @@ export default function PropertyCard({
             <div>
               <p className="text-gray-black-300 text-center text-sm">{scoreTitle}</p>
               <CircularProgressWithMeta
+                conf={{}}
                 containerClassName="pb-0 pt-1"
                 labelClassName="text-xs text-gray-black-300 font-medium"
                 strokeWidth={4}

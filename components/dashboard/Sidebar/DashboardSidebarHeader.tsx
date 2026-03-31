@@ -5,6 +5,7 @@ import NotificationPanel from '@/components/reusable/NotificationPanel/Notificat
 import UserAvatar from '@/components/reusable/UserAvatar'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { withNA } from '@/lib/farmatters'
 
 export default function DashboardSidebarHeader() {
   // const { logOut } = useAuth();
@@ -42,9 +43,9 @@ const UserInfo = () => {
           </>
         ) : (
           <>
-            <span className="block text-sm leading-3 font-medium">{data?.name ?? 'N/A'}</span>
+            <span className="block text-sm leading-3 font-medium">{withNA(data?.name)}</span>
             <span className="bg-mid-orange text-foreground block rounded-full px-1.5 pb-px text-center text-[10px] font-medium">
-              {data?.role ?? 'Role N/A'}
+              {withNA(data?.role)}
             </span>
           </>
         )}

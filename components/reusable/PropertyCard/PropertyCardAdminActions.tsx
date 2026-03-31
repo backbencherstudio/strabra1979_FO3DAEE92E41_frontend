@@ -97,7 +97,7 @@ export default function PropertyCardAdminActions({
         onOpenChange={setScheduleDialogOpen}
         propertyName={propertyName}
         propertyAddress={propertyAddress}
-        onSchedule={() => setScheduleDialogOpen(false)}
+        onScheduleComplete={() => setScheduleDialogOpen(false)}
       />
 
       <AssignUserDialog

@@ -1,5 +1,4 @@
-import { DocumentIcon } from '@/components/icons/DocumentIcon'
-import { FilePdf, FileText } from '@/components/icons/File'
+import { FileText } from '@/components/icons/File'
 import {
   Activity,
   Archive02,
@@ -11,7 +10,7 @@ import {
   Settings02,
   Users,
 } from '@/components/icons/SideBarIcons'
-import { appRoutes } from '@/constant'
+import { routes } from '@/constant'
 
 import { ComponentType } from 'react'
 type MatchType = 'exectMatch' | 'startsWith'
@@ -37,7 +36,7 @@ export const adminMenu: MenuItem[] = [
   {
     id: 'properties-list',
     label: 'Properties List',
-    href: appRoutes.admin.propertyList,
+    href: routes.admin.propertyList,
     icon: PropertyNew,
   },
   {

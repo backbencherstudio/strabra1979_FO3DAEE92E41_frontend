@@ -6,19 +6,18 @@ import InspectionList from '@/components/pages/operation/InspectionList/Inspecti
 import { ChevronRight, User2 } from 'lucide-react'
 
 import { useGetAdminOverviewQuery } from '@/api/dashboard/overviewApi'
-import { properties } from '@/app/(dashboard)/(autorized_viewer)/mock'
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
+import { routes } from '@/constant'
 import { formatDate, naIfEmpty, withNAf } from '@/lib/farmatters'
 import { cn, isArrayEmpty } from '@/lib/utils'
 import Link from 'next/link'
 import { useState } from 'react'
-import { RepairTab, tabs } from '../../InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
-import RecentActivityLogs from './RecentActivityLogs'
+import { RepairTab } from '../../InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import Chart from './Chart'
+import RecentActivityLogs from './RecentActivityLogs'
 import { StatCard, StatCardProps } from './StatCard'
-import { appRoutes } from '@/constant'
 
 export default function AdminHome() {
   const [currentTab, setTab] = useState<RepairTab>('All')
@@ -123,7 +122,7 @@ export default function AdminHome() {
           <SectionTitle>Properties</SectionTitle>
 
           <Button asChild variant="link" size="link" theme="text">
-            <Link href={appRoutes.admin.propertyList}>
+            <Link href={routes.admin.propertyList}>
               View All <ChevronRight />
             </Link>
           </Button>
@@ -134,13 +133,13 @@ export default function AdminHome() {
             ? null
             : latestProperties?.map((p) => (
                 <PropertyCard
-                  slug={`${appRoutes.admin.propertyList}/${p.dashboardId}`}
+                  slug={routes.admin.propertyDashboarDetail.build({ dashboardId: p?.dashboardId })}
                   hasAccess
                   key={p.id}
                   id={p.id}
                   propertyName={p.name}
                   address={naIfEmpty(p.address)}
-                  score={p.roofHealth}
+                  score={p?.roofHealth?.overallScore ?? 0}
                 >
                   <PropertyCardInfoList
                     items={[

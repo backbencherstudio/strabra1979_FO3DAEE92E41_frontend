@@ -153,6 +153,7 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
       </ConfirmDialog>
 
       <SelectPropertyDialog
+        title="Assign User to a Property"
         open={openAssignDialog}
         onOpenChange={setOpenAssignDialog}
         onAssignConfirm={handlePropertyAssign}

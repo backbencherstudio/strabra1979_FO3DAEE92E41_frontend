@@ -1,5 +1,6 @@
 'use client'
 
+import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/inspectionManagementApi'
 import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
 import InspectionReportForm from '@/components/pages/InspectionReport/InspectionReportForm/InspectionReportForm'
@@ -7,10 +8,17 @@ import PriorityRepairPlanningForm from '@/components/pages/InspectionReport/Prio
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { createQueryParams } from '@/lib/farmatters'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 export default function InspectionReportTab() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
+  const params = useParams()
+  const inspectionId = params.inspectionId as string
+  const { data: { data: inspectinData } = {} } = useGetSingleInspectionWithIdQuery(inspectionId, {
+    skip: !inspectionId,
+  })
+  // console.table(inspectinData?.scores)
+  // console.log(inspectinData?.scores)
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
@@ -36,8 +44,8 @@ export default function InspectionReportTab() {
       >
         <InspectionReportForm />
         <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
-          <PriorityRepairPlanningForm />
-          <InspectionReportFinalScoreCard score={60} />
+          {/* <PriorityRepairPlanningForm /> */}
+          {/* <InspectionReportFinalScoreCard score={60} /> */}
         </div>
       </section>
 
