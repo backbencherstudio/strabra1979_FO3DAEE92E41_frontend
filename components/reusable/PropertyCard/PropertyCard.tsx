@@ -16,8 +16,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export interface Property {
   id: string
-  // title: string
-  propertyName: string
+  title?: string
+  property?: string
+  propertyName?: string
   address: string
   nextInspection?: string
   updated_at?: string
@@ -25,8 +26,8 @@ export interface Property {
   scoreTitle?: string
   previewImageUrl?: string
   dashboardId?: string
-  // type: string
-  // date: string
+  type?: string
+  date?: string
 }
 
 export interface PropertyCardProps extends Property, React.PropsWithChildren {
@@ -94,7 +95,7 @@ export default function PropertyCard({
         <PropertyCardAdminActions
           dashboardId={dashboardId}
           propertyId={id}
-          propertyName={propertyName}
+          propertyName={propertyName!}
           propertyAddress={address}
         />
       )}

@@ -40,13 +40,13 @@ export default function PriorityRepairPlanningSetupForm() {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="Urgent">
-                  <RepairPlanStatusBadge status="URGENT" />
+                  <RepairPlanStatusBadge status="Urgent" />
                 </SelectItem>
                 <SelectItem value="Maintenance">
-                  <RepairPlanStatusBadge status="MAINTENANCE" />
+                  <RepairPlanStatusBadge status="Maintenance" />
                 </SelectItem>
                 <SelectItem value="Replacement Planning">
-                  <RepairPlanStatusBadge status="REPLACEMENT_PLANNING" />
+                  <RepairPlanStatusBadge status="Replacement Planning" />
                 </SelectItem>
               </SelectGroup>
             </SelectContent>

@@ -11,11 +11,13 @@ interface PropertyDetailPageProps {
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { propertyId } = await params
-  return (
-    <PropertyDetails
-      dashboardId={propertyId}
-      headerRightContent={<PropertySharePopover />}
-      data={propertyDetails}
-    />
-  )
+  // TODO: fix this
+  return null
+  // return (
+  //   <PropertyDetails
+  //     dashboardId={propertyId}
+  //     headerRightContent={<PropertySharePopover />}
+  //     data={propertyDetails}
+  //   />
+  // )
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/inspectionFormApi'
 import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/inspectionManagementApi'
 import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
@@ -14,9 +15,14 @@ export default function InspectionReportTab() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
   const params = useParams()
   const inspectionId = params.inspectionId as string
+  const { data: { data: formConfig } = {}, isLoading: isFormLoading } =
+    useGetPropertyInspectionFormQuery('cmne1xe9p0001s4u8ua22cmm9')
   const { data: { data: inspectinData } = {} } = useGetSingleInspectionWithIdQuery(inspectionId, {
     skip: !inspectionId,
   })
+
+  // const { data: { data: inspectionData } = {}, isLoading: isInspectionLoading } =
+  //   useGetSingleInspectionWithIdQuery('cmne225eb000gs4u8ctiglq5k')
   // console.table(inspectinData?.scores)
   // console.log(inspectinData?.scores)
 
@@ -42,7 +48,7 @@ export default function InspectionReportTab() {
         style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
         className="@container/form mt-5"
       >
-        <InspectionReportForm />
+        <InspectionReportForm formConfig={formConfig} inspectionData={inspectinData} />
         <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           {/* <PriorityRepairPlanningForm /> */}
           {/* <InspectionReportFinalScoreCard score={60} /> */}

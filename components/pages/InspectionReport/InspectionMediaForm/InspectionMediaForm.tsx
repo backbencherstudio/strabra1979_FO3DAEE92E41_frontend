@@ -34,7 +34,6 @@ export default function InspectionMediaForm() {
           <div className="flex flex-col gap-2 md:flex-row">
             <FileInputProvider>
               <FileInput
-                replaceInputWithChldren={true}
                 showPreview={false}
                 onChange={(files) => onSelectNewImage(files[0], 0)}
                 multiple={false}
@@ -50,7 +49,6 @@ export default function InspectionMediaForm() {
 
             <FileInputProvider>
               <FileInput
-                replaceInputWithChldren={true}
                 showPreview={false}
                 onChange={(files) => onSelectNewImage(files[0], 0)}
                 multiple={false}
@@ -80,7 +78,6 @@ export default function InspectionMediaForm() {
             <FieldLabel>Aerial Map</FieldLabel>
             <FileInputProvider>
               <FileInput
-                replaceInputWithChldren={true}
                 showPreview={false}
                 onChange={(files) => onSelectNewImage(files[0], 0)}
                 multiple={false}

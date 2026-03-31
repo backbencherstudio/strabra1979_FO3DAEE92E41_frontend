@@ -7,11 +7,9 @@ import PropertyTemplagePage from './PropertyTemplagePage'
 const mockpropertyDetails: Property = {
   title: 'Roof Inspection',
   property: 'Property name',
+  propertyName: 'Property name',
   id: '#000',
   type: 'Poperty type',
-  inspector: {
-    name: 'John Doe',
-  },
   updated_at: '12 Jan, 2025',
   address: 'Street, City, Country',
   nextInspection: 'Date',

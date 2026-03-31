@@ -28,11 +28,9 @@ interface PropertyDetailsProps {
 export const propertyDetails: Property = {
   title: '2024 Annual Roof Inspection',
   property: 'Sunset Office Complex',
+  propertyName: 'Sunset Office Complex',
   id: 'INS2323',
   type: 'Commercial',
-  inspector: {
-    name: 'John Doe',
-  },
   updated_at: '12 Jan, 2025',
   address: '1234 Sunset Blvd, Los Angeles, USA',
   nextInspection: 'Jan 12, 2025',

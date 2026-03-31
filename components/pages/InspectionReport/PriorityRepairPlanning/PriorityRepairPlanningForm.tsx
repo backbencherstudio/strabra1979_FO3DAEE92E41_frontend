@@ -26,7 +26,8 @@ export default function PriorityRepairPlanningForm() {
         </Button>
       </div>
 
-      <PiorityRepairPlanList />
+      {/* // TODO: fix */}
+      {/* <PiorityRepairPlanList /> */}
 
       <form className="mt-4 space-y-1.5">
         <Field>
@@ -43,13 +44,13 @@ export default function PriorityRepairPlanningForm() {
             <SelectContent>
               <SelectGroup>
                 <SelectItem value="Urgent">
-                  <RepairPlanStatusBadge status="URGENT" />
+                  <RepairPlanStatusBadge status="Urgent" />
                 </SelectItem>
                 <SelectItem value="Maintenance">
-                  <RepairPlanStatusBadge status="MAINTENANCE" />
+                  <RepairPlanStatusBadge status="Maintenance" />
                 </SelectItem>
                 <SelectItem value="Replacement Planning">
-                  <RepairPlanStatusBadge status="REPLACEMENT_PLANNING" />
+                  <RepairPlanStatusBadge status="Replacement Planning" />
                 </SelectItem>
               </SelectGroup>
             </SelectContent>

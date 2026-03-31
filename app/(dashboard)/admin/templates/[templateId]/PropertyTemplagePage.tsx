@@ -39,11 +39,9 @@ interface PropertyDetailsProps {
 export const propertyDetails: Property = {
   title: '2024 Annual Roof Inspection',
   property: 'Sunset Office Complex',
+  propertyName: 'Sunset Office Complex',
   id: 'INS2323',
   type: 'Commercial',
-  inspector: {
-    name: 'John Doe',
-  },
   updated_at: '12 Jan, 2025',
   address: '1234 Sunset Blvd, Los Angeles, USA',
   nextInspection: 'Jan 12, 2025',
@@ -96,7 +94,7 @@ export default function PropertyTemplagePage({
 
       <SectionCard className="grid grid-cols-1 gap-5">
         <PropertyHeaderWrapper
-          title={property.property}
+          title={property?.property ?? ''}
           rightContent={
             accessExpiration ? (
               <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
@@ -108,9 +106,9 @@ export default function PropertyTemplagePage({
           <InfoList
             items={[
               { label: 'Inspection ID', value: property.id },
-              { value: property.title },
-              { label: 'Date', value: property.date },
-              { label: 'Inspector', value: property.inspector.name },
+              // { value: property?.title ?? '' },
+              // { label: 'Date', value: property?.date },
+              // { label: 'Inspector', value: property.inspector.name },
             ]}
           />
         </PropertyHeaderWrapper>
@@ -120,10 +118,11 @@ export default function PropertyTemplagePage({
           <SectionCard className="bg-white">
             <SectionTitle className="text-center">Roof Health Snapshot</SectionTitle>
             <p className="text-center text-sm">Average Health Score</p>
-            <CircularProgressWithMeta
-              placeholder="Remaining Life: 5-7 Years"
-              value={property.score}
-            />
+            {/* // TODO: fix this */}
+            {/* <CircularProgressWithMeta */}
+            {/*   placeholder="Remaining Life: 5-7 Years" */}
+            {/*   value={property.score} */}
+            {/* /> */}
           </SectionCard>
 
           <SectionCard className={cn('grid flex-1 gap-2 bg-white sm:grid-cols-2')}>
@@ -184,7 +183,8 @@ export default function PropertyTemplagePage({
 
         <SectionCard>
           <SectionTitle>Priority Repair Planning</SectionTitle>
-          <PiorityRepairPlanList />
+          {/* // TODO: fix this */}
+          {/* <PiorityRepairPlanList /> */}
         </SectionCard>
 
         <SectionCard className="space-y-4.5">

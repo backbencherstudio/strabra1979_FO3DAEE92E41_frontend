@@ -31,7 +31,15 @@ const formatUserDate = (dateString: string) => {
 }
 
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const InspectionListManagementColums: ColumnConfig[] = [
+export const InspectionListManagementColums = defineColumns<{
+  inspectin_id: string
+  report: string
+  property: string
+  property_type: string
+  date: string
+  address: string
+  status: InspectionProgressStatus
+}>([
   {
     label: 'Inspection ID',
     width: '8%',
@@ -102,7 +110,7 @@ export const InspectionListManagementColums: ColumnConfig[] = [
   },
   {
     label: '',
-    accessor: 'action',
+    accessor: 'inspectin_id',
     width: '5%',
     formatter: (value: any, row: any) => {
       return (
@@ -114,7 +122,7 @@ export const InspectionListManagementColums: ColumnConfig[] = [
       )
     },
   },
-]
+])
 
 // ==================== Report COLUMNS CONFIGURATION ====================
 export const AdminInspectionListManagementColums = defineColumns<IScheduledInspectinListItem>([

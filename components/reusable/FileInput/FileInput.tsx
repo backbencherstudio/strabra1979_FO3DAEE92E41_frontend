@@ -48,6 +48,7 @@ export const FileInput = (props: FileInputProps) => {
     placeholder = 'Drag and drop your files here',
     placeholderExtra,
     children,
+    replaceInputWithChldren = true,
     ...otherProps
   } = props
 
@@ -116,7 +117,7 @@ export const FileInput = (props: FileInputProps) => {
           // !disabled && !isDragActive && "hover:border-primary/50 hover:bg-secondary/30",
         )}
       >
-        {props?.replaceInputWithChldren && files.length ? (
+        {replaceInputWithChldren && files.length ? (
           children
         ) : (
           <>

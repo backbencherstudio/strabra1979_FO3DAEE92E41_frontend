@@ -37,6 +37,7 @@ export default function page() {
     <div className="grid grid-cols-1 gap-6">
       <StatsList stats={stats} isLoading={false} />
       <TodaysInspectionList
+        isLoading={false}
         title="Today's Inspections"
         actionButton={
           <Button variant="outline" asChild>

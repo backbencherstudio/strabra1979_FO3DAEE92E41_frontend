@@ -3,7 +3,7 @@
 import { DatePickerWrapper } from '@/components/reusable/DatePicker/DatePicker'
 import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
+import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import {
   Select,
   SelectContent,
@@ -12,14 +12,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  IDashboardInspectionListItem,
+  IPropertyInspectionFormData,
+  IScoreCheckBoxItem,
+} from '@/types'
 import React, { useState } from 'react'
 import InspectionCheckBoxes from './InspectionCheckBoxes'
 
-export default function InspectionReportForm() {
+interface InspectionReportFormProps {
+  formConfig: IPropertyInspectionFormData | undefined
+  inspectionData: IDashboardInspectionListItem | undefined
+}
+
+export default function InspectionReportForm({
+  formConfig,
+  inspectionData,
+}: InspectionReportFormProps) {
   const [mark, setMark] = useState(1)
 
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [open, setOpen] = React.useState(false)
+
+  const [scores, setScores] = useState<Record<string, IScoreCheckBoxItem>>(
+    inspectionData?.scores ?? {},
+  )
+
+  console.table(inspectionData)
+
+  // initialize once
+  // useEffect(() => {
+  //   if (inspectionData?.scores) {
+  //     setScores(inspectionData.scores)
+  //   }
+  // }, [inspectionData])
+
+  const handleScoreChange = (key: string, value: number) => {
+    setScores((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        score: value,
+      },
+    }))
+  }
+
+  const handleNotesChange = (key: string, value: string) => {
+    setScores((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        notes: value,
+      },
+    }))
+  }
+
+  if (!formConfig || !inspectionData) return <div>No data</div>
 
   return (
     <form>
@@ -128,7 +176,30 @@ export default function InspectionReportForm() {
           </Select>
         </Field>
 
-        <InspectionCheckBoxes isEditable={false} />
+        <InspectionCheckBoxes
+          isEditable={true}
+          scoringCategories={formConfig?.form?.scoringCategories}
+          inspectionScores={scores}
+          onScoreChange={handleScoreChange}
+          onNotesChange={handleNotesChange}
+        />
+
+        <Field className="col-span-full">
+          <FieldLabel htmlFor="name">NTE (Not-To-Exceed):</FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              value={inspectionData?.nteValue?.toLocaleString()}
+              placeholder="Enter NTE"
+            />
+          </InputGroup>
+        </Field>
+
+        <Field className="col-span-full">
+          <FieldLabel htmlFor="">Additional Notes/Comments</FieldLabel>
+          <InputGroup>
+            <InputGroupTextarea placeholder="Type Any Additional Notes/Comments" />
+          </InputGroup>
+        </Field>
       </FieldGroup>
     </form>
   )
