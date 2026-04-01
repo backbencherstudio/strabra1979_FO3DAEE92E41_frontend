@@ -6,7 +6,7 @@ import HealthStatusThresholdsSetup from '@/components/pages/InspectionCriteria/I
 import PriorityRepairPlanningSetupForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/PriorityRepairPlanningSetupForm'
 import SetupInputAndChecklistForm from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/SetupInputAndChecklistForm'
 import SetupMediaAndDocumentFrom from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/SetupMediaAndDocumentFrom'
-import { useChecklistAndMediaTabName } from '@/components/pages/InspectionReport/InspectionReportTab/InspectionReportTab'
+import { useChecklistAndMediaTabName } from '@/components/pages/InspectionReport/InspectionReportDetail/InspectionReportDetail'
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'

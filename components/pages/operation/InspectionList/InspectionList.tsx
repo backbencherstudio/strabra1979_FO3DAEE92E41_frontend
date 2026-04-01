@@ -7,6 +7,7 @@ import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 import InspectionListItem from './InspectionListItem'
+import { routes } from '@/constant'
 
 interface InspectionListProps {
   title: string
@@ -32,7 +33,7 @@ export default function InspectionList({
         <SectionTitle>{title}</SectionTitle>
 
         <Button asChild variant="link" size="link" theme="text">
-          <Link href="/admin/inspection-list">
+          <Link href={routes.admin.inspectionList}>
             View All <ChevronRight />
           </Link>
         </Button>

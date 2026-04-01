@@ -13,14 +13,16 @@ const STATUS_MAP: Record<RepairTab, IRepairProgressStatus | null> = {
   'Replacement Planning': 'Replacement Planning',
 }
 
-export default function PiorityRepairPlanList({ items }: { items: IPiorityRepairPlanItem[] }) {
+export default function PiorityRepairPlanList({ items = [] }: { items: IPiorityRepairPlanItem[] }) {
   const [currentTab, setCurrentTab] = useState<RepairTab>('All')
 
   const filteredItems =
-    currentTab === 'All' ? items : items.filter((item) => item.status === STATUS_MAP[currentTab])
+    currentTab === 'All' ? items : items?.filter((item) => item?.status === STATUS_MAP[currentTab])
 
   const getCount = (tab: RepairTab) =>
-    tab === 'All' ? items.length : items.filter((item) => item.status === STATUS_MAP[tab]).length
+    tab === 'All'
+      ? items?.length
+      : items?.filter((item) => item?.status === STATUS_MAP[tab])?.length
 
   return (
     <div>
@@ -47,8 +49,8 @@ export default function PiorityRepairPlanList({ items }: { items: IPiorityRepair
         })}
       </div>
 
-      <div className="mt-3 space-y-4">
-        {filteredItems.map((item) => (
+      <div className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
+        {filteredItems?.map((item) => (
           <PiorityRepairPlanItem
             key={item.id}
             title={item.title}

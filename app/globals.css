@@ -274,3 +274,8 @@
     }
   }
 }
+
+label[data-required="true"]::after {
+  content: ' *';
+  color: var(--destructive);
+}

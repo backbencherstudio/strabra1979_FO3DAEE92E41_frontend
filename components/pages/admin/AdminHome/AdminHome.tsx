@@ -109,6 +109,7 @@ export default function AdminHome() {
                   })}
             </div>
           }
+          // TODO: add View
           actionButton={
             <Button variant="outline" asChild>
               <Link href={`#`}>View</Link>

@@ -1,10 +1,9 @@
 'use client'
 
+import { isArrayEmpty } from '@/lib/utils'
+import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-import { ChevronDown, ChevronUp, ChevronsUpDown } from 'lucide-react'
-import { isArrayEmpty } from '@/lib/utils'
-import { Spinner } from '@/components/ui/spinner'
 
 export interface ColumnConfig<T, K extends keyof T = keyof T> {
   label: React.ReactNode
@@ -153,7 +152,7 @@ export default function CustomTable<T>({
                     colSpan={columns.length + ((onView || onDelete) && !hasActionsColumn ? 1 : 0)}
                     className="text-gray-black-400 px-4 py-10 text-center text-sm"
                   >
-                    {isLoading ? <Spinner className="inline-block" /> : noDataMessage}
+                    {isLoading ? 'Loading data...' : noDataMessage}
                   </td>
                 </tr>
               ) : (

@@ -8,20 +8,33 @@ import SelectPropertyDialog from '@/components/pages/admin/user-management/Selec
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
-import { PaginationPageProvider } from '@/components/reusable/Pagination/PaginationPageProvider'
+import {
+  PaginationPageProvider,
+  usePaginatedQuery,
+  usePaginationPage,
+} from '@/components/reusable/Pagination/PaginationPageProvider'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import CustomTable from '@/components/reusable/table/CustomTable'
 import { IPropertyListItem } from '@/types'
 import { useState } from 'react'
 
 export default function AdminInspectionTable() {
-  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
-  // TODO: add pagination
-  const { data: { data: sheduledInspections = [] } = {}, isLoading } =
-    useGetAllSheduledInspectionsQuery({
-      limit: 300,
-    })
+  return (
+    <PaginationPageProvider>
+      <AdminInspectionTableContent />
+    </PaginationPageProvider>
+  )
+}
 
+function AdminInspectionTableContent() {
+  const { page } = usePaginationPage()
+  const { data: { data: sheduledInspections = [], meta } = {}, isLoading } =
+    useGetAllSheduledInspectionsQuery({
+      page,
+    })
+  usePaginatedQuery({ meta_data: meta })
+
+  const [scheduleDialogOpen, setScheduleDialogOpen] = useState(false)
   const [openAssignDialog, setOpenAssignDialog] = useState(false)
 
   const [selectedProperty, setSelectedProperty] = useState<IPropertyListItem | null>(null)
@@ -29,8 +42,6 @@ export default function AdminInspectionTable() {
     setSelectedProperty(property)
     setScheduleDialogOpen(true)
   }
-
-  console.table(sheduledInspections)
 
   return (
     <div>
@@ -65,32 +76,25 @@ export default function AdminInspectionTable() {
           />
         </SharedPropertyCardListContextProvider>
 
-        <PaginationPageProvider>
-          <div>
-            <CustomTable
-              isLoading={isLoading}
-              columns={AdminInspectionListManagementColums}
-              data={sheduledInspections}
-              //   currentPage={currentPage}
-              //   itemsPerPage={itemsPerPage}
-              //   onPageChange={setCurrentPage}
-              //   sortConfig={sortConfig}
-              //   onSort={handleSort}
-              minWidth={1000}
-              headerStyles={{
-                backgroundColor: '#eceff3',
-                textColor: '#4a4c56',
-                fontSize: '14px',
-                fontWeight: '400',
-                padding: '12px 16px',
-              }}
-              cellBorderColor="#eceff3"
-              hasWrapperBorder={false}
-              roundedClass="rounded-lg"
-            />
-          </div>
-          <PaginationControls showHomeAndEnd={false} className="justify-start" size="icon-xs" />
-        </PaginationPageProvider>
+        <div>
+          <CustomTable
+            isLoading={isLoading}
+            columns={AdminInspectionListManagementColums}
+            data={sheduledInspections}
+            minWidth={1000}
+            headerStyles={{
+              backgroundColor: '#eceff3',
+              textColor: '#4a4c56',
+              fontSize: '14px',
+              fontWeight: '400',
+              padding: '12px 16px',
+            }}
+            cellBorderColor="#eceff3"
+            hasWrapperBorder={false}
+            roundedClass="rounded-lg"
+          />
+        </div>
+        <PaginationControls showHomeAndEnd={false} className="justify-start" size="icon-xs" />
       </SectionCard>
     </div>
   )

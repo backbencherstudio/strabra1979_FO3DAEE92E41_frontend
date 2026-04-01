@@ -1,12 +1,12 @@
 import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupTextarea } from '@/components/ui/input-group'
-import { IScoreCheckBoxItem, ScoringCategory } from '@/types'
+import { IInspectionScoreCheckboxValue, ScoringCategory } from '@/types'
 
 interface InspectionCheckBoxesProps {
   isEditable: boolean
   scoringCategories: ScoringCategory[]
-  inspectionScores: Record<string, IScoreCheckBoxItem>
+  inspectionScores: Record<string, IInspectionScoreCheckboxValue>
   onScoreChange?: (key: string, value: number) => void
   onNotesChange?: (key: string, value: string) => void
 }

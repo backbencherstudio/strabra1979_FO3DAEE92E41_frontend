@@ -1,3 +1,5 @@
+import { IRepairProgressStatus } from './inspection'
+
 // -------------------- Reusable Base Interfaces --------------------
 interface BaseField {
   key: string
@@ -6,14 +8,24 @@ interface BaseField {
   isSystem: boolean
 }
 
-interface InputField extends BaseField {
-  type: string
+// shared input props
+interface BaseInputProps {
   required?: boolean
   placeholder?: string
-  options?: string[]
+}
+// Text field
+interface TextField extends BaseField, BaseInputProps {
+  type: 'text'
+}
+// Dropdown field
+interface DropdownField extends BaseField, BaseInputProps {
+  type: 'dropdown'
+  options: string[]
 }
 
-interface MediaField extends BaseField {
+export type IInspectionInputField = TextField | DropdownField
+
+export interface IInspectionMediaField extends BaseField {
   type: string
   accept?: string[]
   placeholder?: string
@@ -24,22 +36,22 @@ export interface ScoringCategory extends BaseField {
   maxPoints: number
 }
 
-export interface ScoreRange {
+export interface InspectionHealthScoreRange {
   maxScore: number
   minScore: number
   remainingLifeMaxYears: number
   remainingLifeMinYears: number
 }
 
-export interface HealthThresholdConfig {
-  fair: ScoreRange
-  good: ScoreRange
-  poor: ScoreRange
+export interface IInspectionHealthThresholdConfig {
+  fair: InspectionHealthScoreRange
+  good: InspectionHealthScoreRange
+  poor: InspectionHealthScoreRange
 }
 
 // -------------------- Configs --------------------
 export interface RepairPlanningConfig {
-  statuses: string[]
+  statuses: IRepairProgressStatus[]
 }
 
 export interface NteConfig {
@@ -54,13 +66,13 @@ export interface AdditionalNotesConfig {
 
 // -------------------- Form & Main Interface --------------------
 export interface IInspectionFormData {
-  headerFields: InputField[]
+  headerFields: IInspectionInputField[]
   scoringCategories: ScoringCategory[]
-  mediaFields: MediaField[]
+  mediaFields: IInspectionMediaField[]
   repairPlanningConfig: RepairPlanningConfig
   nteConfig: NteConfig
   additionalNotesConfig: AdditionalNotesConfig
-  healthThresholdConfig: HealthThresholdConfig
+  healthThresholdConfig: IInspectionHealthThresholdConfig
 }
 
 export interface IPropertyInspectionFormData {

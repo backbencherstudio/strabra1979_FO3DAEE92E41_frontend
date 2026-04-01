@@ -166,7 +166,7 @@ export const AdminInspectionListManagementColums = defineColumns<IScheduledInspe
   },
 ])
 
-function InspectinListItemAction({ id, inspectionId }: IScheduledInspectinListItem) {
+function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledInspectinListItem) {
   const [deleteSingleInspectinWithId, { isLoading }] = useDeleteSingleInspectionWithIdMutation()
 
   const handleDelete = async (deleteId?: string) => {
@@ -203,10 +203,22 @@ function InspectinListItemAction({ id, inspectionId }: IScheduledInspectinListIt
         <EyeIcon />
       </Button>
 
-      <Button disabled={!inspectionId} asChild variant="muted" size="icon" className="rounded-full">
-        <Link href={`/admin/inspection-list/${inspectionId}`}>
-          <Edit />
-        </Link>
+      <Button
+        onClick={() => {
+          if (!inspectionId) {
+            return
+          }
+
+          router.push(
+            routes.admin.inspectionListItemDetail.build({ inspectionId }, { edit: 'true' }),
+          )
+        }}
+        disabled={!inspectionId}
+        variant="muted"
+        size="icon"
+        className="rounded-full"
+      >
+        <Edit />
       </Button>
 
       <ConfirmDialog

@@ -9,7 +9,12 @@ export type IPiorityRepairPlanItem = {
   description: string
 }
 
-export interface IScoreCheckBoxItem {
+// export interface IInspectionFieldValue {
+//   propertyType: string
+//   inspectionTitle: string
+// }
+export type IInspectionFieldValues = Record<string, string>
+export interface IInspectionScoreCheckboxValue {
   notes: string
   score: number
 }
@@ -18,14 +23,13 @@ export type IDashboardInspectionListItem = {
   id: string
   dashboardId: string
   inspectorId: string
-  headerData: {
-    propertyType: string
-    inspectionTitle: string
-  }
-  scores: Record<string, IScoreCheckBoxItem>
-  overallScore: number
+
   healthLabel: string
+  overallScore: number
   remainingLife: string
+
+  headerData: IInspectionFieldValues
+  scores: Record<string, IInspectionScoreCheckboxValue>
   repairItems?: Array<IPiorityRepairPlanItem>
   nteValue: number
   additionalComments: string

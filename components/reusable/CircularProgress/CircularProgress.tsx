@@ -93,7 +93,11 @@ export function CircularProgressWithMeta({
   healthLabel,
   conf,
   ...props
-}: { placeholder?: string; healthLabel?: string; conf: Partial<Conf> } & CircularProgressProps) {
+}: {
+  placeholder?: string;
+  healthLabel?: string;
+  conf: Partial<Conf>;
+} & CircularProgressProps) {
   const meta =
     typeof props.value === 'number'
       ? getScoreMeta(props.value)

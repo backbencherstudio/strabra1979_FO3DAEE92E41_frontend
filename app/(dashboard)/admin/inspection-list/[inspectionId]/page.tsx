@@ -1,5 +1,5 @@
-import InspectionReportTab from '@/components/pages/InspectionReport/InspectionReportTab/InspectionReportTab'
+import InspectionReportDetail from '@/components/pages/InspectionReport/InspectionReportDetail/InspectionReportDetail'
 
 export default function InspectionReportPage() {
-  return <InspectionReportTab />
+  return <InspectionReportDetail />
 }

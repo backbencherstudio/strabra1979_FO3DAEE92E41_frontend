@@ -71,6 +71,7 @@ export default function MarkInput({ value, maxValue, onChange, disabled }: MarkI
         className={cn(
           'flex h-14 min-w-0 flex-1 items-center gap-1 rounded-md bg-white px-2 shadow-[0_2px_10px_0_rgba(0,0,0,0.11)]',
           'focus-visible:border-ring focus-visible:ring-ring/50 border border-white outline-none focus-visible:ring-[3px]',
+          { 'cursor-not-allowed': disabled },
         )}
       >
         {/* Prev */}
@@ -120,7 +121,9 @@ export default function MarkInput({ value, maxValue, onChange, disabled }: MarkI
                   onClick={() => onChange(number)}
                   className={cn(
                     'flex h-10.5 min-w-10.5 shrink-0 items-center justify-center rounded-full px-1.5 text-sm font-medium disabled:cursor-not-allowed',
-                    isActive ? 'bg-primary relative text-white' : 'text-primary hover:bg-muted',
+                    isActive
+                      ? 'bg-primary relative text-white'
+                      : 'text-primary not-disabled:hover:bg-muted',
                   )}
                 >
                   {formatZeroPrefix(number)}

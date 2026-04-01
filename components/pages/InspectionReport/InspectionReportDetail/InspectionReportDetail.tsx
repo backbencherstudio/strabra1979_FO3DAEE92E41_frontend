@@ -6,25 +6,30 @@ import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionM
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
 import InspectionReportForm from '@/components/pages/InspectionReport/InspectionReportForm/InspectionReportForm'
 import PriorityRepairPlanningForm from '@/components/pages/InspectionReport/PriorityRepairPlanning/PriorityRepairPlanningForm'
+import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinner'
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { createQueryParams } from '@/lib/farmatters'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 
-export default function InspectionReportTab() {
+export default function InspectionReportDetail() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
-  const params = useParams()
-  const inspectionId = params.inspectionId as string
-  const { data: { data: formConfig } = {}, isLoading: isFormLoading } =
-    useGetPropertyInspectionFormQuery('cmne1xe9p0001s4u8ua22cmm9')
-  const { data: { data: inspectinData } = {} } = useGetSingleInspectionWithIdQuery(inspectionId, {
-    skip: !inspectionId,
-  })
 
-  // const { data: { data: inspectionData } = {}, isLoading: isInspectionLoading } =
-  //   useGetSingleInspectionWithIdQuery('cmne225eb000gs4u8ctiglq5k')
-  // console.table(inspectinData?.scores)
-  // console.log(inspectinData?.scores)
+  const params = useParams()
+  const searchParams = useSearchParams()
+  const isEditable = searchParams.get('edit') === 'true'
+  const inspectionId = params.inspectionId as string
+
+  const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
+    useGetPropertyInspectionFormQuery('cmne1xe9p0001s4u8ua22cmm9')
+  const { data: { data: inspectinData } = {}, isLoading: isInspectinLoading } =
+    useGetSingleInspectionWithIdQuery(inspectionId, {
+      skip: !inspectionId,
+    })
+
+  if (isFormConfigLoading || isInspectinLoading) {
+    return <FullPageSpinner />
+  }
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
@@ -48,11 +53,24 @@ export default function InspectionReportTab() {
         style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
         className="@container/form mt-5"
       >
-        <InspectionReportForm formConfig={formConfig} inspectionData={inspectinData} />
-        <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
-          {/* <PriorityRepairPlanningForm /> */}
-          {/* <InspectionReportFinalScoreCard score={60} /> */}
-        </div>
+        <InspectionReportForm
+          isEditable={isEditable}
+          key={inspectinData?.id}
+          formConfig={formConfig}
+          inspectionData={inspectinData}
+        />
+        <section className="mt-5 grid items-start gap-4 @3xl:grid-cols-2 @3xl:gap-6">
+          <PriorityRepairPlanningForm
+            isEditable={isEditable}
+            initialItems={inspectinData?.repairItems}
+          />
+          <InspectionReportFinalScoreCard
+            score={inspectinData?.overallScore}
+            healthLabel={inspectinData?.healthLabel}
+            remainingLife={inspectinData?.remainingLife}
+            config={formConfig?.form.healthThresholdConfig}
+          />
+        </section>
       </section>
 
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">

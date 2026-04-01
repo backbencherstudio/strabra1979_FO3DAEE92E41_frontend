@@ -1,7 +1,5 @@
 'use client'
 
-import { DatePickerWrapper } from '@/components/reusable/DatePicker/DatePicker'
-import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import {
@@ -14,39 +12,48 @@ import {
 } from '@/components/ui/select'
 import {
   IDashboardInspectionListItem,
+  IInspectionFieldValues,
+  IInspectionScoreCheckboxValue,
   IPropertyInspectionFormData,
-  IScoreCheckBoxItem,
 } from '@/types'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import InspectionCheckBoxes from './InspectionCheckBoxes'
 
 interface InspectionReportFormProps {
+  isEditable: boolean
   formConfig: IPropertyInspectionFormData | undefined
   inspectionData: IDashboardInspectionListItem | undefined
 }
 
 export default function InspectionReportForm({
+  isEditable,
   formConfig,
   inspectionData,
 }: InspectionReportFormProps) {
-  const [mark, setMark] = useState(1)
+  // const [date, setDate] = useState<Date | undefined>(undefined)
+  // const [open, setOpen] = useState(false)
 
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
-  const [open, setOpen] = React.useState(false)
-
-  const [scores, setScores] = useState<Record<string, IScoreCheckBoxItem>>(
-    inspectionData?.scores ?? {},
+  const [headerFieldsValues, setHeaderFieldsValues] = useState<IInspectionFieldValues>(
+    () => inspectionData?.headerData ?? {},
   )
+  const handleInputChange = (key: string, value: string) => {
+    setHeaderFieldsValues((prev) => ({
+      ...prev,
+      [key]: value,
+    }))
+  }
+  const headerFields = formConfig?.form.headerFields.map((category) => {
+    const value = headerFieldsValues?.[category.key]
 
-  console.table(inspectionData)
+    return {
+      ...category,
+      value: value ?? '',
+    }
+  })
 
-  // initialize once
-  // useEffect(() => {
-  //   if (inspectionData?.scores) {
-  //     setScores(inspectionData.scores)
-  //   }
-  // }, [inspectionData])
-
+  const [scores, setScores] = useState<Record<string, IInspectionScoreCheckboxValue>>(
+    () => inspectionData?.scores ?? {},
+  )
   const handleScoreChange = (key: string, value: number) => {
     setScores((prev) => ({
       ...prev,
@@ -56,7 +63,6 @@ export default function InspectionReportForm({
       },
     }))
   }
-
   const handleNotesChange = (key: string, value: string) => {
     setScores((prev) => ({
       ...prev,
@@ -67,117 +73,101 @@ export default function InspectionReportForm({
     }))
   }
 
-  if (!formConfig || !inspectionData) return <div>No data</div>
+  // // initialize once
+  // useEffect(() => {
+  //   if (inspectionData?.scores) {
+  //     setScores(inspectionData.scores)
+  //   }
+  //   if (inspectionData?.headerData) {
+  //     setHeaderFieldsValues(inspectionData.headerData)
+  //   }
+  // }, [inspectionData])
+
+  const [nteValue, setNteValue] = useState(inspectionData?.nteValue ?? '')
+  const [additionalComments, setAdditionalComments] = useState(
+    inspectionData?.additionalComments ?? '',
+  )
+
+  if (!formConfig || !inspectionData) return null
 
   return (
     <form>
       <FieldGroup className="grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
-        <Field>
-          <FieldLabel htmlFor="name">Property</FieldLabel>
-          <InputGroup>
-            <InputGroupInput placeholder="Enter property name" />
-          </InputGroup>
-        </Field>
+        {headerFields?.map((item) => {
+          const isDropdown = item.type === 'dropdown'
+          return (
+            <Field key={item.key}>
+              <FieldLabel data-required={item.required} htmlFor={item.key}>
+                {item.label}
+              </FieldLabel>
 
-        <Field>
-          <FieldLabel htmlFor="date">Date</FieldLabel>
-          <DatePickerWrapper
-            placeholder="Select date"
-            value={date?.toLocaleDateString()}
-            open={open}
-            setOpen={setOpen}
-          >
-            <Calendar
-              mode="single"
-              selected={date}
-              defaultMonth={date}
-              captionLayout="dropdown"
-              onSelect={(date) => {
-                setDate(date)
-                setOpen(false)
-              }}
-            />
-          </DatePickerWrapper>
-        </Field>
+              {isDropdown ? (
+                <Select
+                  value={item.value}
+                  required={item.required}
+                  onValueChange={(val) => handleInputChange(item.key, val)}
+                  disabled={!isEditable}
+                >
+                  <SelectTrigger id={item.key}>
+                    <SelectValue placeholder={item.placeholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {item.options.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              ) : (
+                <InputGroup disabled={!isEditable}>
+                  <InputGroupInput
+                    className=""
+                    value={item.value}
+                    required={item.required}
+                    id={item.key}
+                    placeholder={item.placeholder}
+                    onChange={(e) => handleInputChange(item.key, e.target.value)}
+                    disabled={!isEditable}
+                  />
+                </InputGroup>
+              )}
+            </Field>
+          )
+        })}
 
-        <Field>
-          <FieldLabel htmlFor="property-type">Property Type</FieldLabel>
-          <Select>
-            <SelectTrigger id="property-type">
-              <SelectValue placeholder="Select Property Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="residential">Residential</SelectItem>
-                <SelectItem value="commercial">Commercial</SelectItem>
-                <SelectItem value="industrial">Industrial</SelectItem>
-                <SelectItem value="mixed-use">Mixed Use</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
+        {/* <Field> */}
+        {/*   <FieldLabel htmlFor="date">Date</FieldLabel> */}
+        {/*   <DatePickerWrapper */}
+        {/*     placeholder="Select date" */}
+        {/*     value={date?.toLocaleDateString()} */}
+        {/*     open={open} */}
+        {/*     setOpen={setOpen} */}
+        {/*   > */}
+        {/*     <Calendar */}
+        {/*       mode="single" */}
+        {/*       selected={date} */}
+        {/*       defaultMonth={date} */}
+        {/*       captionLayout="dropdown" */}
+        {/*       onSelect={(date) => { */}
+        {/*         setDate(date) */}
+        {/*         setOpen(false) */}
+        {/*       }} */}
+        {/*     /> */}
+        {/*   </DatePickerWrapper> */}
+        {/* </Field> */}
 
-        <Field>
-          <FieldLabel htmlFor="name">Address</FieldLabel>
-          <InputGroup>
-            <InputGroupInput placeholder="Enter property address" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">
-            Inspection Title <span className="text-destructive">*</span>
-          </FieldLabel>
-          <InputGroup>
-            <InputGroupInput
-              required
-              placeholder="Enter the name of the inspection (e.g. 2024 Annual Roof Inspection)"
-            />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="name">Inspector</FieldLabel>
-          <InputGroup>
-            <InputGroupInput placeholder="Enter inspector name" />
-          </InputGroup>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="roof-system-type">Roof System Type</FieldLabel>
-          <Select>
-            <SelectTrigger id="roof-system-type">
-              <SelectValue placeholder="Select Roof System Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="modified">Modified</SelectItem>
-                <SelectItem value="BUR">BUR</SelectItem>
-                <SelectItem value="TOP">TPO</SelectItem>
-                <SelectItem value="PVC">PVC</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="drainage-type">Drainage Type</FieldLabel>
-          <Select>
-            <SelectTrigger id="drainage-type">
-              <SelectValue placeholder="Select Drainage Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="internal-drains">Internal Drains</SelectItem>
-                <SelectItem value="scuppers">Scuppers</SelectItem>
-                <SelectItem value="gutters">Gutters</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
+        {/* <Field> */}
+        {/*   <FieldLabel htmlFor="name">Address</FieldLabel> */}
+        {/*   <InputGroup> */}
+        {/*     <InputGroupInput placeholder="Enter property address" /> */}
+        {/*   </InputGroup> */}
+        {/* </Field> */}
 
         <InspectionCheckBoxes
-          isEditable={true}
+          isEditable={isEditable}
           scoringCategories={formConfig?.form?.scoringCategories}
           inspectionScores={scores}
           onScoreChange={handleScoreChange}
@@ -185,19 +175,30 @@ export default function InspectionReportForm({
         />
 
         <Field className="col-span-full">
-          <FieldLabel htmlFor="name">NTE (Not-To-Exceed):</FieldLabel>
+          <FieldLabel htmlFor="nte">{formConfig?.form?.nteConfig?.label}</FieldLabel>
           <InputGroup>
             <InputGroupInput
-              value={inspectionData?.nteValue?.toLocaleString()}
-              placeholder="Enter NTE"
+              disabled={!isEditable}
+              id="nte"
+              value={nteValue}
+              placeholder={formConfig?.form?.nteConfig?.placeholder}
+              onChange={(e) => setNteValue(e.target.value)}
             />
           </InputGroup>
         </Field>
 
         <Field className="col-span-full">
-          <FieldLabel htmlFor="">Additional Notes/Comments</FieldLabel>
+          <FieldLabel htmlFor="additional-notes">
+            {formConfig?.form.additionalNotesConfig.placeholder}
+          </FieldLabel>
           <InputGroup>
-            <InputGroupTextarea placeholder="Type Any Additional Notes/Comments" />
+            <InputGroupTextarea
+              id="additional-notes"
+              disabled={!isEditable}
+              value={additionalComments}
+              placeholder={formConfig?.form.additionalNotesConfig.placeholder}
+              onChange={(e) => setAdditionalComments(e.target.value)}
+            />
           </InputGroup>
         </Field>
       </FieldGroup>

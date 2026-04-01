@@ -1,6 +1,7 @@
 'use client'
 
 import RepairPlanStatusBadge from '@/components/dashboard/ProgressStatusBadge/RepairPlanStatusBadge'
+import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
@@ -12,11 +13,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { IPiorityRepairPlanItem } from '@/types'
 import { PlusIcon } from 'lucide-react'
-import SectionCard from '@/components/reusable/SectionCard/SectionCard'
-import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
+import PiorityRepairPlanList from '../PiorityRepairPlan/PiorityRepairPlanList'
 
-export default function PriorityRepairPlanningForm() {
+interface PriorityRepairPlanningFormProps {
+  initialItems: IPiorityRepairPlanItem[] | undefined
+  isEditable?: boolean
+}
+
+export default function PriorityRepairPlanningForm({
+  initialItems,
+  isEditable,
+}: PriorityRepairPlanningFormProps) {
   return (
     <SectionCard>
       <div className="flex items-center justify-between">
@@ -26,43 +35,44 @@ export default function PriorityRepairPlanningForm() {
         </Button>
       </div>
 
-      {/* // TODO: fix */}
-      {/* <PiorityRepairPlanList /> */}
+      <PiorityRepairPlanList items={initialItems ?? []} />
 
-      <form className="mt-4 space-y-1.5">
-        <Field>
-          <InputGroup>
-            <InputGroupInput placeholder="Add Title" />
-          </InputGroup>
-        </Field>
+      {isEditable ? (
+        <form className="mt-4 space-y-1.5">
+          <Field>
+            <InputGroup>
+              <InputGroupInput placeholder="Add Title" />
+            </InputGroup>
+          </Field>
 
-        <Field>
-          <Select>
-            <SelectTrigger id="select-status">
-              <SelectValue placeholder="Select Urgency Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="Urgent">
-                  <RepairPlanStatusBadge status="Urgent" />
-                </SelectItem>
-                <SelectItem value="Maintenance">
-                  <RepairPlanStatusBadge status="Maintenance" />
-                </SelectItem>
-                <SelectItem value="Replacement Planning">
-                  <RepairPlanStatusBadge status="Replacement Planning" />
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </Field>
+          <Field>
+            <Select>
+              <SelectTrigger id="select-status">
+                <SelectValue placeholder="Select Urgency Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="Urgent">
+                    <RepairPlanStatusBadge status="Urgent" />
+                  </SelectItem>
+                  <SelectItem value="Maintenance">
+                    <RepairPlanStatusBadge status="Maintenance" />
+                  </SelectItem>
+                  <SelectItem value="Replacement Planning">
+                    <RepairPlanStatusBadge status="Replacement Planning" />
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </Field>
 
-        <Field>
-          <InputGroup>
-            <InputGroupTextarea className="min-h-14" placeholder="Add Details" />
-          </InputGroup>
-        </Field>
-      </form>
+          <Field>
+            <InputGroup>
+              <InputGroupTextarea className="min-h-14" placeholder="Add Details" />
+            </InputGroup>
+          </Field>
+        </form>
+      ) : null}
     </SectionCard>
   )
 }
