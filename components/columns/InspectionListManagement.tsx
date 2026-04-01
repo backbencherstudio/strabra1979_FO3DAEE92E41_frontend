@@ -186,14 +186,15 @@ function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledIn
 
   return (
     <div className="flex gap-2">
-      {/* // TODO: add view & edit option */}
       <Button
         onClick={() => {
           if (!inspectionId) {
             return
           }
 
-          router.push(routes.admin.inspectionListItemDetail.build({ inspectionId }))
+          router.push(
+            routes.admin.inspectionListItemDetail.build({ inspectionId }, { dashboardId }),
+          )
         }}
         disabled={!inspectionId}
         variant="muted"
@@ -203,6 +204,7 @@ function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledIn
         <EyeIcon />
       </Button>
 
+      {/* // TODO: add edit option */}
       <Button
         onClick={() => {
           if (!inspectionId) {
@@ -210,7 +212,10 @@ function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledIn
           }
 
           router.push(
-            routes.admin.inspectionListItemDetail.build({ inspectionId }, { edit: 'true' }),
+            routes.admin.inspectionListItemDetail.build(
+              { inspectionId },
+              { edit: 'true', dashboardId },
+            ),
           )
         }}
         disabled={!inspectionId}

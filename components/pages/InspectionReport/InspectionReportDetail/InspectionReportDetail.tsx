@@ -15,17 +15,18 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 export default function InspectionReportDetail() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
 
+  // Get id from params
   const params = useParams()
   const searchParams = useSearchParams()
   const isEditable = searchParams.get('edit') === 'true'
   const inspectionId = params.inspectionId as string
+  const dashboardId = searchParams.get('dashboardId')
 
+  // Fetch data
   const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
-    useGetPropertyInspectionFormQuery('cmne1xe9p0001s4u8ua22cmm9')
+    useGetPropertyInspectionFormQuery(dashboardId!, { skip: !dashboardId })
   const { data: { data: inspectinData } = {}, isLoading: isInspectinLoading } =
-    useGetSingleInspectionWithIdQuery(inspectionId, {
-      skip: !inspectionId,
-    })
+    useGetSingleInspectionWithIdQuery(inspectionId, { skip: !inspectionId })
 
   if (isFormConfigLoading || isInspectinLoading) {
     return <FullPageSpinner />
@@ -38,7 +39,7 @@ export default function InspectionReportDetail() {
       </h1>
       <div className="mt-2 flex justify-center gap-1 text-base font-medium">
         <span className="text-gray-black-300">Inspection ID:</span>
-        <span className="text-gray-black-400">INS2323</span>
+        <span className="text-gray-black-400">{inspectionId}</span>
       </div>
       <div className="mt-4 flex justify-center">
         <TabSwitcher
@@ -49,6 +50,7 @@ export default function InspectionReportDetail() {
         />
       </div>
 
+      {/* checklist view */}
       <section
         style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
         className="@container/form mt-5"
@@ -73,6 +75,7 @@ export default function InspectionReportDetail() {
         </section>
       </section>
 
+      {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <InspectionMediaForm />
       </section>

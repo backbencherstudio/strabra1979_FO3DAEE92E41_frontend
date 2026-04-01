@@ -19,34 +19,41 @@ export interface IInspectionScoreCheckboxValue {
   score: number
 }
 
+export type IInspectionMediaFileItem = {
+  id: string
+  inspectionId: string
+  fileName: string
+  fileType: 'PHOTO' | 'VIDEO'
+  url: string
+  size: number
+  mediaFieldKey: string
+  category?: string
+  uploadedAt: string
+}
+
 export type IDashboardInspectionListItem = {
   id: string
   dashboardId: string
   inspectorId: string
 
+  inspectedAt: string
+  createdAt: string
+  updatedAt: string
+
+  headerData: IInspectionFieldValues
+
   healthLabel: string
   overallScore: number
   remainingLife: string
 
-  headerData: IInspectionFieldValues
   scores: Record<string, IInspectionScoreCheckboxValue>
+
   repairItems?: Array<IPiorityRepairPlanItem>
+
   nteValue: number
   additionalComments: string
-  inspectedAt: string
-  createdAt: string
-  updatedAt: string
-  mediaFiles: Array<{
-    id: string
-    inspectionId: string
-    fileName: string
-    fileType: 'PHOTO' | 'VIDEO'
-    url: string
-    size: number
-    mediaFieldKey: string
-    category?: string
-    uploadedAt: string
-  }>
+
+  mediaFiles: Array<IInspectionMediaFileItem>
 }
 
 export type IScheduledInspectinListItem = {
