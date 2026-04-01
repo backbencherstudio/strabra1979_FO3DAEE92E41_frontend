@@ -7,6 +7,8 @@ import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
+import { PaginationPageProvider } from '@/components/reusable/Pagination/PaginationPageProvider'
+import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 
 const poppinsSans = Poppins({
   variable: '--font-poppins-sans',
@@ -29,12 +31,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppinsSans.variable} antialiased`}>
-        <StoreProvider>
-          <AuthRehydrate credentials={authCookies} />
-          <Toaster position="top-right" richColors />
-          <TooltipProvider>{children}</TooltipProvider>
-          <TwScreenSize />
-        </StoreProvider>
+        <SharedPropertyCardListContextProvider>
+          <PaginationPageProvider>
+            <StoreProvider>
+              <AuthRehydrate credentials={authCookies} />
+              <Toaster position="top-right" richColors />
+              <TooltipProvider>{children}</TooltipProvider>
+              <TwScreenSize />
+            </StoreProvider>
+          </PaginationPageProvider>
+        </SharedPropertyCardListContextProvider>
       </body>
     </html>
   )
