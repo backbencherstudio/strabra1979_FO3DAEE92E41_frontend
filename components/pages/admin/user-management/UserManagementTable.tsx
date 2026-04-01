@@ -39,7 +39,7 @@ function UserManagementTableContent() {
   const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
   const { page, setPage } = usePaginationPage()
 
-  const { data: { data: users, meta } = {}, isLoading } = useGetUserListQuery({
+  const { data: { data: users = [], meta } = {}, isLoading } = useGetUserListQuery({
     page,
     sortOrder,
     dateFrom: dateFrom?.formatted,

@@ -22,7 +22,7 @@ export function InfoList({ items }: InfoListProps) {
 }
 
 interface PropertyHeaderProps extends React.PropsWithChildren {
-  title: string
+  title?: string
   rightContent?: React.ReactNode
 }
 

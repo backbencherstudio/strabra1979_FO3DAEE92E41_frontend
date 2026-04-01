@@ -33,7 +33,7 @@ interface DynamicTableProps<T> {
   itemsPerPage?: number
   onPageChange?: (page: number) => void
   onView?: (row: T) => void
-  onDelete?: (id: string) => void
+  onDelete?: (row: T) => void
   noDataMessage?: string
   sortConfig?: SortConfig | null
   onSort?: (key: string) => void
@@ -53,7 +53,7 @@ interface DynamicTableProps<T> {
   roundedClass?: string
 }
 
-export default function CustomTable({
+export default function CustomTable<T>({
   columns,
   data,
   currentPage,
@@ -63,7 +63,6 @@ export default function CustomTable({
   onDelete,
   noDataMessage = 'No data found.',
   sortConfig,
-  onSort,
   minWidth,
 
   isLoading = false,
@@ -78,7 +77,7 @@ export default function CustomTable({
   hasWrapperBorder = true,
   wrapperBorderColor = '#EDEDED',
   roundedClass = '',
-}: DynamicTableProps) {
+}: DynamicTableProps<T>) {
   const totalPages = itemsPerPage ? Math.ceil(data.length / itemsPerPage) : 0
   const paginatedData = itemsPerPage
     ? data.slice(((currentPage ?? 1) - 1) * itemsPerPage, (currentPage ?? 1) * itemsPerPage)
@@ -179,7 +178,7 @@ export default function CustomTable({
                         >
                           {typeof col.formatter === 'function'
                             ? col.formatter(row[col.accessor], row, rowIndex)
-                            : row[col.accessor]}
+                            : (row[col.accessor] as string)}
                         </td>
                       ))}
 
@@ -201,7 +200,7 @@ export default function CustomTable({
                           )}
                           {onDelete && (
                             <Image
-                              onClick={() => onDelete(row.id)}
+                              onClick={() => onDelete(row)}
                               src="/dashboard/icon/delete.svg"
                               alt="delete"
                               width={16}

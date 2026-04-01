@@ -3,16 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
-
-// Define ColumnConfig interface
-interface ColumnConfig {
-  label: React.ReactNode
-  width: string
-  accessor: string
-  sortable?: boolean
-  formatter?: (value: any, row: any) => React.ReactNode
-}
+import { defineColumns } from '../reusable/table/CustomTable'
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
@@ -24,14 +15,23 @@ const formatUserDate = (dateString: string) => {
   return `${day} ${month}, ${year}`
 }
 
+type DocumentsTableItem = {
+  no: number
+  id: string
+  report: string
+  size: string
+  address: string
+  updated_at: string
+}
+
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const DocumentsTableColumns: ColumnConfig[] = [
+export const DocumentsTableColumns = defineColumns<DocumentsTableItem>([
   {
     label: 'Name',
     width: '65%',
     accessor: 'report',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return <p className="text-forground text-xs">{value}</p>
     },
   },
@@ -40,7 +40,7 @@ export const DocumentsTableColumns: ColumnConfig[] = [
     width: '20%',
     accessor: 'updated_at',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{formatUserDate(value)}</p>
@@ -53,33 +53,33 @@ export const DocumentsTableColumns: ColumnConfig[] = [
     width: '10%',
     accessor: 'size',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
-          <p className="text-forground uppercase text-xs">{value}</p>
+          <p className="text-forground text-xs uppercase">{value}</p>
         </div>
       )
     },
   },
   {
     label: '',
-    accessor: 'action',
+    accessor: 'no',
     width: '5%',
-    formatter: (value: any, row: any) => {
+    formatter: (value, row) => {
       return (
         <Button asChild variant="muted" size="icon" className="rounded-full">
           <Link href={`#`}>
-          {/* <Link href={`/property/${row.id}/reports`}> */}
+            {/* <Link href={`/property/${row.id}/reports`}> */}
             <EyeIcon />
           </Link>
         </Button>
       )
     },
   },
-]
+])
 
 // ==================== DEMO DATA ====================
-export const demoDocumentsData = [
+export const demoDocumentsData: DocumentsTableItem[] = [
   {
     id: 'report_001',
     no: 1,
