@@ -4,15 +4,7 @@ import { Button } from '@/components/ui/button'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
-
-// Define ColumnConfig interface
-interface ColumnConfig {
-  label: React.ReactNode
-  width: string
-  accessor: string
-  sortable?: boolean
-  formatter?: (value: any, row: any) => React.ReactNode
-}
+import { defineColumns } from '../reusable/table/CustomTable'
 
 // ==================== Report STATUS BADGE COMPONENT ====================
 const ReportStatusBadge = ({ status }: { status: string }) => {
@@ -61,13 +53,21 @@ const formatUserDate = (dateString: string) => {
 }
 
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const ReportManagementColumns: ColumnConfig[] = [
+export const ReportManagementColumns = defineColumns<{
+  id: string
+  no: number
+  report: string
+  property: string
+  address: string
+  updated_at: string
+  status: string
+}>([
   {
     label: 'No.',
     width: '8%',
     accessor: 'no',
     sortable: true,
-    formatter: (item: number | string, row: any) => {
+    formatter: (item, row) => {
       const num = typeof item === 'string' ? parseInt(item) : item
       return (
         <div className="flex items-center">
@@ -81,7 +81,7 @@ export const ReportManagementColumns: ColumnConfig[] = [
     width: '20%',
     accessor: 'updated_at',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{formatUserDate(value)}</p>
@@ -94,7 +94,7 @@ export const ReportManagementColumns: ColumnConfig[] = [
     width: '18%',
     accessor: 'report',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return <p className="text-forground text-xs">{value}</p>
     },
   },
@@ -103,7 +103,7 @@ export const ReportManagementColumns: ColumnConfig[] = [
     width: '22%',
     accessor: 'property',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{value}</p>
@@ -116,7 +116,7 @@ export const ReportManagementColumns: ColumnConfig[] = [
     width: '15%',
     accessor: 'address',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{value}</p>
@@ -129,15 +129,15 @@ export const ReportManagementColumns: ColumnConfig[] = [
     width: '12%',
     accessor: 'status',
     sortable: true,
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return <ReportStatusBadge status={value} />
     },
   },
   {
     label: '',
-    accessor: 'action',
+    accessor: 'id',
     width: '5%',
-    formatter: (value: any, row: any) => {
+    formatter: (value, row) => {
       return (
         <Button asChild variant="muted" size="icon" className="rounded-full">
           <Link href={`/manager/property-list/${row.id}`}>
@@ -147,7 +147,7 @@ export const ReportManagementColumns: ColumnConfig[] = [
       )
     },
   },
-]
+])
 
 // ==================== DEMO DATA ====================
 export const demoReportData = [

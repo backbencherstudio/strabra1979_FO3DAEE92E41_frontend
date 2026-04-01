@@ -2,10 +2,12 @@
 
 import { useDeleteSingleInspectionWithIdMutation } from '@/api/inspectionManagement/inspectionManagementApi'
 import { Button } from '@/components/ui/button'
+import { routes } from '@/constant'
 import { formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
 import { IScheduledInspectinListItem } from '@/types'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import ProgressStatusBadge, {
   InspectionProgressStatus,
@@ -13,12 +15,8 @@ import ProgressStatusBadge, {
 import { Edit } from '../icons/Edit'
 import { Trush } from '../icons/Trush'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
-import { ColumnConfig, defineColumns } from '../reusable/table/CustomTable'
+import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
-import { useRouter } from 'next/navigation'
-import { routes } from '@/constant'
-
-// Define ColumnConfig interface
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {

@@ -18,7 +18,7 @@ import { Dot } from '../icons/Dot'
 import { Trush } from '../icons/Trush'
 import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyDialog'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
-import { ColumnConfig } from '../reusable/table/CustomTable'
+import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
@@ -208,7 +208,7 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
 }
 
 // ==================== USER COLUMNS CONFIGURATION ====================
-export const UserManagementColumns: ColumnConfig<IUserListItem>[] = [
+export const UserManagementColumns = defineColumns<IUserListItem>([
   {
     label: 'No.',
     width: '8%',
@@ -265,4 +265,4 @@ export const UserManagementColumns: ColumnConfig<IUserListItem>[] = [
       return <UserActionButton rowData={row} />
     },
   },
-]
+])
