@@ -44,7 +44,7 @@ export const InspectionListManagementColums = defineColumns<{
     label: 'Inspection ID',
     width: '8%',
     accessor: 'inspectin_id',
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div className="flex items-center">
           <p className="text-forground text-xs">{value}</p>
@@ -56,7 +56,7 @@ export const InspectionListManagementColums = defineColumns<{
     label: 'Property',
     width: '44%',
     accessor: 'property',
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{value}</p>
@@ -68,7 +68,7 @@ export const InspectionListManagementColums = defineColumns<{
     label: 'Property Type',
     width: '10%',
     accessor: 'property_type',
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{value}</p>
@@ -80,7 +80,7 @@ export const InspectionListManagementColums = defineColumns<{
     label: 'Address',
     width: '15%',
     accessor: 'address',
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{value}</p>
@@ -92,7 +92,7 @@ export const InspectionListManagementColums = defineColumns<{
     label: 'Date',
     width: '10%',
     accessor: 'date',
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return (
         <div>
           <p className="text-forground text-xs">{formatDate(value)}</p>
@@ -104,7 +104,7 @@ export const InspectionListManagementColums = defineColumns<{
     label: 'Status',
     width: '12%',
     accessor: 'status',
-    formatter: (value: string, row: any) => {
+    formatter: (value, row) => {
       return <ProgressStatusBadge status={value as InspectionProgressStatus} />
     },
   },
@@ -112,10 +112,10 @@ export const InspectionListManagementColums = defineColumns<{
     label: '',
     accessor: 'inspectin_id',
     width: '5%',
-    formatter: (value: any, row: any) => {
+    formatter: (value, row) => {
       return (
         <Button asChild variant="muted" size="icon" className="rounded-full">
-          <Link href={`/operation/inspection-list/${row.id}`}>
+          <Link href={`/operation/inspection-list/${row.inspectin_id}`}>
             <EyeIcon />
           </Link>
         </Button>

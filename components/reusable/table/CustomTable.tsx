@@ -20,13 +20,15 @@ export function defineColumns<T>(
   return columns
 }
 
+type ColumnUnion<T> = { [K in keyof T]: ColumnConfig<T, K> }[keyof T]
+
 interface SortConfig {
   key: string
   direction: 'ascending' | 'descending'
 }
 
 interface DynamicTableProps<T> {
-  columns: ColumnConfig<T>[]
+  columns: ColumnUnion<T>[] // matches defineColumns return type exactly
   data: T[]
   isLoading?: boolean
   currentPage?: number
