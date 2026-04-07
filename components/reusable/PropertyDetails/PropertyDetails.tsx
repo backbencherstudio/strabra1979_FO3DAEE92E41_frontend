@@ -76,7 +76,7 @@ export default function PropertyDetails({
       </PropertyHeaderWrapper>
       {/* outline *:outline *:outline-red-500 */}
       <section className="grid grid-cols-8 gap-6">
-        {data.templateSnapshot.map((item) => {
+        {data.templateSnapshot?.map((item) => {
           if (item.type === 'header_info') {
             return <InfoGrid className="col-span-full" key={item.type} items={rowInfos} />
           }
@@ -97,7 +97,7 @@ export default function PropertyDetails({
           }
 
           if (item.type === 'media_grid') {
-            const slides: Slide[] = inspectin?.mediaFiles.map((item) => {
+            const slides: Slide[] = inspectin?.mediaFiles?.map((item) => {
               const isVideo = item.fileType === 'VIDEO'
 
               if (isVideo) {
