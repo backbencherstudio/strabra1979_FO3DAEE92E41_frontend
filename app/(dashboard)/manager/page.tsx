@@ -1,35 +1,36 @@
-import { Stat } from '@/components/dashboard/StatItem/StatListItem'
+import { ReportManagementColumns, demoReportData } from '@/components/columns/ReportsManagement'
+import { StatListItemProps } from '@/components/dashboard/StatItem/StatListItem'
 import StatsList from '@/components/dashboard/StatItem/StatsList'
 import { CubeIcon } from '@/components/icons/CubeIcon'
 import { HouseIcon } from '@/components/icons/HouseIcon'
 import { InformationSquare } from '@/components/icons/InformationIcon'
-import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
-import { properties } from '../(autorized_viewer)/mock'
-import PaginationControls from '@/components/reusable/Pagination/Pagination'
-import { ChevronRight, Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { InputGroup, InputGroupInput, InputGroupAddon } from '@/components/ui/input-group'
-import Link from 'next/link'
-import { ReportManagementColumns, demoReportData } from '@/components/columns/ReportsManagement'
 import CustomTable from '@/components/reusable/table/CustomTable'
+import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { ChevronRight, Search } from 'lucide-react'
+import Link from 'next/link'
+import { properties } from '../(autorized_viewer)/mock'
 
-const stats: Stat[] = [
+const stats: StatListItemProps[] = [
   {
     title: 'Total Properties',
     value: 20,
-    icon: HouseIcon,
+    icon: <HouseIcon />,
+    subtitle: '',
   },
   {
     title: 'Avg. Roof Health',
     value: '76%',
-    icon: CubeIcon,
+    icon: <CubeIcon />,
+    subtitle: '',
   },
   {
     title: 'Urgent Repairs',
     value: 80,
-    icon: InformationSquare,
+    icon: <InformationSquare />,
+    subtitle: '',
   },
 ]
 

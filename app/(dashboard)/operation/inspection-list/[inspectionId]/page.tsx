@@ -1,13 +1,5 @@
-'use client'
+import InspectionReportDetail from '@/components/pages/InspectionReport/InspectionReportDetail/InspectionReportDetail'
 
-import PropertyDetails, {
-  propertyDetails,
-} from '@/components/reusable/PropertyDetails/PropertyDetails'
-
-export default function InspectionListItemDetailsPage() {
-  return (
-    <div>
-      {/* <PropertyDetails dashboardId="123" data={propertyDetails} /> */}
-    </div>
-  )
+export default function InspectionReportPage() {
+  return <InspectionReportDetail />
 }

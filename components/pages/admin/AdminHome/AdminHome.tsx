@@ -6,6 +6,8 @@ import InspectionList from '@/components/pages/operation/InspectionList/Inspecti
 import { ChevronRight, User2 } from 'lucide-react'
 
 import { useGetAdminOverviewQuery } from '@/api/dashboard/overviewApi'
+import { StatListItemProps } from '@/components/dashboard/StatItem/StatListItem'
+import StatsList from '@/components/dashboard/StatItem/StatsList'
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
@@ -17,7 +19,6 @@ import { useState } from 'react'
 import { RepairTab } from '../../InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import Chart from './Chart'
 import RecentActivityLogs from './RecentActivityLogs'
-import { StatCard, StatCardProps } from './StatCard'
 
 export default function AdminHome() {
   const [currentTab, setTab] = useState<RepairTab>('All')
@@ -29,43 +30,30 @@ export default function AdminHome() {
     isLoading,
   } = useGetAdminOverviewQuery()
 
-  const statsData: StatCardProps[] = [
+  const statsData: StatListItemProps[] = [
     {
       title: 'Total Properties',
       value: withNAf(stats?.totalProperties),
-      change: withNAf(stats?.propertiesChangePercent, (v) => `${v}% from last month`),
+      subtitle: withNAf(stats?.propertiesChangePercent, (v) => `${v}% from last month`),
       icon: <BuildingIcon />,
     },
     {
       title: 'Active Inspectors',
       value: withNAf(stats?.totalUsers),
-      change: withNAf(stats?.usersChangePercent, (v) => `${v}% from last month`),
+      subtitle: withNAf(stats?.usersChangePercent, (v) => `${v}% from last month`),
       icon: <User2 />,
     },
     {
       title: 'Scheduled Inspections',
       value: withNAf(stats?.pendingInspectionsThisMonth),
-      change: 'Scheduled for this month',
+      subtitle: 'Scheduled for this month',
       icon: <Calender2Icon />,
     },
   ]
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-3 gap-4.5">
-        {statsData.map((stat, index) => {
-          return (
-            <StatCard
-              key={index}
-              title={stat.title}
-              value={stat.value}
-              change={stat.change}
-              icon={stat.icon}
-              isLoading={isLoading}
-            />
-          )
-        })}
-      </div>
+      <StatsList isLoading={isLoading} stats={statsData} />
 
       <div className="grid gap-5 lg:grid-cols-12">
         <div className="lg:col-span-7 xl:col-span-8 2xl:col-span-9">
@@ -110,11 +98,11 @@ export default function AdminHome() {
             </div>
           }
           // TODO: add View
-          actionButton={
-            <Button variant="outline" asChild>
-              <Link href={`#`}>View</Link>
-            </Button>
-          }
+//          actionButton={
+//            <Button variant="outline" asChild>
+//              <Link href={`#`}>View</Link>
+//            </Button>
+//          }
         />
       </div>
 

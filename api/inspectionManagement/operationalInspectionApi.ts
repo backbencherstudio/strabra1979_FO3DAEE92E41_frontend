@@ -3,6 +3,7 @@ import type {
   IFilterPayload,
   IOperationalInspectionTableItem,
   IPaginationPayload,
+  WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
 
@@ -15,6 +16,15 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       query: (args) => ({
         url: `/inspections/scheduled/my`,
         params: args ?? undefined,
+      }),
+      providesTags: ['InspectionManagement'] as const,
+    }),
+    startAScheduledInspection: builder.query<
+      WithApiStatus<{ scheduledInspectionId: string; dashboardId: string }>,
+      { scheduledInspectionId: string }
+    >({
+      query: ({ scheduledInspectionId }) => ({
+        url: `/inspections/scheduled/${scheduledInspectionId}/start`,
       }),
       providesTags: ['InspectionManagement'] as const,
     }),

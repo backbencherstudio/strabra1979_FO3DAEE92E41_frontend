@@ -1,27 +1,46 @@
-import { ComponentType, PropsWithChildren } from "react";
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { withNA } from '@/lib/farmatters'
 
-export interface Stat {
-  title: string;
-  value: string | number;
-  icon: ComponentType<{ className?: string }>;
+export interface StatListItemProps {
+  title: string
+  value: string | number | React.ReactNode | null | undefined
+  subtitle: string | React.ReactNode | null | undefined
+  icon: React.ReactNode
+  isLoading?: boolean
+  className?: string
 }
 
-interface StatListItemPorps extends PropsWithChildren {
-  stat: Stat;
-  isLoading: boolean;
-}
-
-export default function StatListItem({ stat }: StatListItemPorps) {
+export default function StatListItem({
+  title,
+  value,
+  subtitle,
+  icon,
+  isLoading,
+  className,
+}: StatListItemProps) {
   return (
-    <div className="bg-disabled-0 border border-opacity-dark-05 rounded-2xl p-4.5">
+    <div
+      className={cn(
+        'bg-disabled-0 w-full space-y-2 rounded-3xl border border-[#ebeeef] p-4.5',
+        className,
+      )}
+    >
       <div className="flex justify-between">
-        <span className="text-base ">{stat.title}</span>
-        <span>
-          <stat.icon className="text-foreground size-6" />
-        </span>
+        <p className="text-base text-[#5f6166]">{title}</p>
+        {icon}
       </div>
 
-      <h3 className="text-2xl font-medium">{stat.value}</h3>
+      {isLoading ? (
+        <Skeleton className="h-8 w-20 bg-gray-200" />
+      ) : (
+        <h2 className="text-gray-black-400 text-2xl font-medium">{withNA(value)}</h2>
+      )}
+      {isLoading ? (
+        <Skeleton className="h-4 w-full bg-gray-200" />
+      ) : (
+        <p className="text-xs text-[#5f6166]">{subtitle}</p>
+      )}
     </div>
-  );
+  )
 }

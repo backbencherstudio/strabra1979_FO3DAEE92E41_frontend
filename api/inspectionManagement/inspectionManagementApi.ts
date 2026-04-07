@@ -3,7 +3,7 @@ import type {
   IDashboardInspectionListItem,
   IFilterPayload,
   IPaginationPayload,
-  IAdminScheduledInspectinListItem,
+  IAdminScheduledInspectinTableItem,
   IScheduleInspectionParams,
   IScheduleInspectionResponse,
   WithApiStatus,
@@ -28,7 +28,7 @@ const inspectionManagementApi = baseApi.injectEndpoints({
       }),
     }),
     getAllSheduledInspections: builder.query<
-      WithPaginationAndStatus<IAdminScheduledInspectinListItem[]>,
+      WithPaginationAndStatus<IAdminScheduledInspectinTableItem[]>,
       (IPaginationPayload & IFilterPayload) | void
     >({
       query: (args) => ({

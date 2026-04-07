@@ -6,10 +6,11 @@ import { routes } from '@/constant'
 import { formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
 import {
   InspectionProgressStatus,
-  IAdminScheduledInspectinListItem,
+  IAdminScheduledInspectinTableItem,
   IAuthUser,
   RoleUtils,
   IAuthUserRole,
+  IScheduledInspectionTableItem,
 } from '@/types'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -35,98 +36,39 @@ const formatUserDate = (dateString: string) => {
 }
 
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const InspectionListManagementColums = defineColumns<{
-  inspectin_id: string
-  report: string
-  property: string
-  property_type: string
-  date: string
-  address: string
-  status: InspectionProgressStatus
-}>([
-  {
-    label: 'Inspection ID',
-    width: '8%',
-    accessor: 'inspectin_id',
-    formatter: (value, row) => {
-      return (
-        <div className="flex items-center">
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
+export const OPERATIONAL_RECENT_INSPECTION_LIST_MANAGEMENT_COLUMS =
+  defineColumns<IScheduledInspectionTableItem>([
+    {
+      label: 'Inspection ID',
+      accessor: 'id',
+      formatter: (value) => naIfEmpty(value),
     },
-  },
-  {
-    label: 'Property',
-    width: '44%',
-    accessor: 'property',
-    formatter: (value, row) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
+    {
+      label: 'Property',
+      accessor: 'property',
+      formatter: (value) => naIfEmpty(value),
     },
-  },
-  {
-    label: 'Property Type',
-    width: '10%',
-    accessor: 'property_type',
-    formatter: (value, row) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
+    {
+      label: 'Address',
+      accessor: 'address',
+      formatter: (value) => naIfEmpty(value),
     },
-  },
-  {
-    label: 'Address',
-    width: '15%',
-    accessor: 'address',
-    formatter: (value, row) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{value}</p>
-        </div>
-      )
+    {
+      label: 'Date',
+      accessor: 'scheduledAt',
+      formatter: (value) => naIfEmpty(formatDate(value)),
     },
-  },
-  {
-    label: 'Date',
-    width: '10%',
-    accessor: 'date',
-    formatter: (value, row) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{formatDate(value)}</p>
-        </div>
-      )
+    {
+      label: 'Status',
+      accessor: 'status',
+      formatter: (value) => <ProgressStatusBadge status={value} />,
     },
-  },
-  {
-    label: 'Status',
-    width: '12%',
-    accessor: 'status',
-    formatter: (value, row) => {
-      return <ProgressStatusBadge status={value as InspectionProgressStatus} />
+    {
+      label: '',
+      accessor: 'id',
+      formatter: (_, row) => <InspectinListItemAction {...row} />,
     },
-  },
-  {
-    label: '',
-    accessor: 'inspectin_id',
-    width: '5%',
-    formatter: (value, row) => {
-      return (
-        <Button asChild variant="muted" size="icon" className="rounded-full">
-          <Link href={`/operation/inspection-list/${row.inspectin_id}`}>
-            <EyeIcon />
-          </Link>
-        </Button>
-      )
-    },
-  },
-])
+  ])
 
 export const OPERATIONAL_INSPECTION_LIST_MANAGEMENT_COLUMS =
   defineColumns<IOperationalInspectionTableItem>([
@@ -171,7 +113,7 @@ export const OPERATIONAL_INSPECTION_LIST_MANAGEMENT_COLUMS =
 
 // ==================== Report COLUMNS CONFIGURATION ====================
 export const ADMIN_INSPECTION_LIST_MANAGEMENT_COLUMS =
-  defineColumns<IAdminScheduledInspectinListItem>([
+  defineColumns<IAdminScheduledInspectinTableItem>([
     {
       label: 'Inspection ID',
       accessor: 'inspectionId',

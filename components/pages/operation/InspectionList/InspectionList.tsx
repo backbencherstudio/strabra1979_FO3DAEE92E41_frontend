@@ -1,20 +1,21 @@
 'use client'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
+import { routes } from '@/constant'
 import { isArrayEmpty } from '@/lib/utils'
-import { IScheduledInspectionItem } from '@/types/overview'
+import { IScheduledInspectionTableItem, RoleUtils } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 import InspectionListItem from './InspectionListItem'
-import { routes } from '@/constant'
+import { useAuth } from '@/redux/features/auth/useAuth'
 
 interface InspectionListProps {
   title: string
   subTitle?: ReactNode
-  actionButton: ReactNode
+  actionButton?: (inspection: IScheduledInspectionTableItem) => React.ReactElement
   isLoading: boolean
-  data?: IScheduledInspectionItem[]
+  data?: IScheduledInspectionTableItem[]
 }
 
 export default function InspectionList({
@@ -26,6 +27,7 @@ export default function InspectionList({
 }: InspectionListProps) {
   // const [date, setDate] = useState<Date | undefined>(undefined)
   // const [open, setOpen] = useState(false)
+  const { role } = useAuth()
 
   return (
     <SectionCard className="">
@@ -33,7 +35,13 @@ export default function InspectionList({
         <SectionTitle>{title}</SectionTitle>
 
         <Button asChild variant="link" size="link" theme="text">
-          <Link href={routes.admin.inspectionList}>
+          <Link
+            href={
+              RoleUtils.isAdmin(role)
+                ? routes.admin.inspectionList
+                : routes.operational.inspectionList
+            }
+          >
             View All <ChevronRight />
           </Link>
         </Button>
@@ -79,46 +87,12 @@ export default function InspectionList({
               time={inspection.time}
               propertyName={inspection.property}
               address={inspection.address}
-              actionButton={actionButton}
-            />
+            >
+              {actionButton?.(inspection)}
+            </InspectionListItem>
           ))}
         </section>
       )}
     </SectionCard>
   )
 }
-
-export const mockInspections = [
-  {
-    id: '1',
-    title: 'Private Residence',
-    time: '8:45 AM',
-    propertyName: 'Riverside Apartments',
-    address: '1234 Sunset Blvd, CA 90028',
-    status: 'DUE',
-  },
-  {
-    id: '2',
-    title: 'Commercial Building',
-    time: '10:30 AM',
-    propertyName: 'Downtown Plaza',
-    address: '5678 Main Street, CA 90012',
-    status: 'IN_PROGRESS',
-  },
-  {
-    id: '3',
-    title: 'Warehouse Inspection',
-    time: '1:15 PM',
-    propertyName: 'West Coast Storage',
-    address: '890 Industrial Rd, CA 90210',
-    status: 'ASSIGNED',
-  },
-  {
-    id: '4',
-    title: 'Summit Heights Apartments',
-    time: '1:15 PM',
-    propertyName: 'West Coast Storage',
-    address: '890 Industrial Rd, CA 90210',
-    status: 'COMPLETED',
-  },
-]

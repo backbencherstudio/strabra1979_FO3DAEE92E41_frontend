@@ -63,7 +63,18 @@ export type IDashboardInspectionListItem = {
   mediaFiles: Array<IInspectionMediaFileItem>
 }
 
-export type IAdminScheduledInspectinListItem = {
+export type IScheduledInspectionTableItem = {
+  id: string
+  status: InspectionProgressStatus
+  scheduledAt: string
+  time: string
+  property: string
+  address: string
+  dashboardId: string
+  inspectionId?: string
+}
+
+export type IAdminScheduledInspectinTableItem = {
   id: string
   status: string
   scheduledAt: string

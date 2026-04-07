@@ -9,4 +9,4 @@ export const cookieAge = {
 }
 
 export const baseApiURL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://analysis-population-deal-permitted.trycloudflare.com/api'
+  process.env.NEXT_PUBLIC_API_URL || 'https://increases-occasions-lucas-man.trycloudflare.com/api'

@@ -1,5 +1,5 @@
 import { WithApiStatus } from '@/types'
-import { IOverviewAdmin } from '@/types/overview'
+import { IOverviewAdmin, IOverviewOperational } from '@/types/overview'
 import { baseApi } from '../baseApi'
 
 const overviewApi = baseApi.injectEndpoints({
@@ -11,9 +11,16 @@ const overviewApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Overview'] as const,
     }),
+    getOperatorOverview: builder.query<WithApiStatus<IOverviewOperational>, void>({
+      query: (arg) => ({
+        url: `/overview/me`,
+        params: arg ?? undefined,
+      }),
+      providesTags: ['Overview'] as const,
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetAdminOverviewQuery } = overviewApi
+export const { useGetAdminOverviewQuery, useGetOperatorOverviewQuery } = overviewApi
 export default overviewApi

@@ -1,20 +1,6 @@
 import { IActivityLogListItem } from './activity'
-import { InspectionProgressStatus } from './inspection'
-
-export type IScheduledInspectionItem = {
-  id: string
-  status: InspectionProgressStatus
-  scheduledAt: string
-  time: string
-  property: string
-  address: string
-  dashboardId: string
-  assignee: {
-    id: string
-    name?: string
-    avatar?: string
-  }
-}
+import { IScheduledInspectionTableItem } from './inspection'
+import { IUserBasicInfo } from './user'
 
 export type IScheduledInspectionTabs = {
   all: number
@@ -42,7 +28,7 @@ export type IOverviewAdmin = {
   }
   scheduledInspections: {
     tabs: IScheduledInspectionTabs
-    recent: Array<IScheduledInspectionItem>
+    recent: Array<IScheduledInspectionTableItem & { assignee?: IUserBasicInfo }>
   }
   activityLogs: IActivityLogListItem[]
   latestProperties: Array<{
@@ -63,4 +49,15 @@ export type IOverviewAdmin = {
       remainingLife: string
     }
   }>
+}
+
+export type IOverviewOperational = {
+  role: string
+  stats: {
+    todayCount: number
+    totalAssignedThisMonth: number
+    completedThisMonth: number
+  }
+  todaysInspections: Array<IScheduledInspectionTableItem>
+  recentInspections: Array<IScheduledInspectionTableItem>
 }
