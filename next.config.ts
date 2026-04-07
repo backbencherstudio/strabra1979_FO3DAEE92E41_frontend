@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'troops-boom-samuel-matches.trycloudflare.com',
+        hostname: 'increases-occasions-lucas-man.trycloudflare.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'backend.roofwellnesshub.com',
       },
     ],
   },
