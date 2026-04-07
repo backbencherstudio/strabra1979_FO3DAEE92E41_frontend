@@ -1,5 +1,5 @@
-import { InspectionProgressStatus } from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
 import { IActivityLogListItem } from './activity'
+import { InspectionProgressStatus } from './inspection'
 
 export type IScheduledInspectionItem = {
   id: string

@@ -27,7 +27,8 @@ export const RoleUtils = {
 
 export type IAuthUser = {
   id: string
-  name: string
+  name?: string
+  username: string
   email: string
   avatar: string
   role: string

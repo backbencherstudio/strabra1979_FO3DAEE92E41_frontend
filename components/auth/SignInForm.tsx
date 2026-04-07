@@ -5,7 +5,6 @@ import { useAuth } from '@/redux/features/auth/useAuth'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import z from 'zod'
 import FormInputField from '../form/form-input-field'
@@ -22,9 +21,7 @@ const signInSchema = z.object({
 export type SigninFormValues = z.infer<typeof signInSchema>
 
 const SignInForm: React.FC<DynamicFormProps> = ({}) => {
-  const router = useRouter()
-
-  const { logIn, isLoading: isLoginLoading, logOut } = useAuth()
+  const { logIn, isLoading: isLoginLoading } = useAuth()
 
   const form = useForm({
     defaultValues: {
@@ -88,10 +85,6 @@ const SignInForm: React.FC<DynamicFormProps> = ({}) => {
           ) : (
             <>Log In</>
           )}
-        </Button>
-
-        <Button type="button" onClick={logOut}>
-          Logout
         </Button>
 
         <p className="text-center">

@@ -1,9 +1,8 @@
-import ProgressStatusBadge, {
-  InspectionProgressStatus,
-} from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
+import ProgressStatusBadge from '@/components/dashboard/ProgressStatusBadge/ProgressStatusBadge'
 import { Clock } from '@/components/icons/Clock'
 import { LocationPin } from '@/components/icons/LocationPin'
 import { Property } from '@/components/icons/SideBarIcons'
+import { InspectionProgressStatus } from '@/types'
 import { ReactNode } from 'react'
 
 type InspectionListItemProps = {

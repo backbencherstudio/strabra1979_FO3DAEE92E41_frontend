@@ -27,12 +27,15 @@ export type IPaginationPayload = {
   limit?: number
 }
 
-export type IFilterPayload<TCategory extends string | undefined = string> = {
+export type IFilterPayload<
+  TStatus extends string | undefined = string,
+  TCategory extends string | undefined = string,
+> = {
   category?: TCategory
+  status?: TStatus
   dateFrom?: string
   dateTo?: string
   sortOrder?: 'asc' | 'desc'
   search?: string
   role?: IAuthUserRole
-  status?: 'ACTIVE' | 'DEACTIVATED' | 'DELETED'
 }

@@ -43,7 +43,9 @@ const UserInfo = () => {
           </>
         ) : (
           <>
-            <span className="block text-sm leading-3 font-medium">{withNA(data?.name)}</span>
+            <span className="block text-sm leading-3 font-medium">
+              {withNA(data?.username)}
+            </span>
             <span className="bg-mid-orange text-foreground block rounded-full px-1.5 pb-px text-center text-[10px] font-medium">
               {withNA(data?.role)}
             </span>

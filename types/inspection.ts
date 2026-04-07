@@ -2,6 +2,13 @@ import { IUserBasicInfo } from './user'
 
 export type IRepairProgressStatus = 'Urgent' | 'Maintenance' | 'Replacement Planning'
 
+export type InspectionProgressStatus =
+  | 'ASSIGNED'
+  | 'IN_PROGRESS'
+  | 'COMPLETED'
+  | 'DUE'
+  | 'PUBLISHED'
+
 export type IPiorityRepairPlanItem = {
   id: string
   title: string
@@ -56,7 +63,7 @@ export type IDashboardInspectionListItem = {
   mediaFiles: Array<IInspectionMediaFileItem>
 }
 
-export type IScheduledInspectinListItem = {
+export type IAdminScheduledInspectinListItem = {
   id: string
   status: string
   scheduledAt: string

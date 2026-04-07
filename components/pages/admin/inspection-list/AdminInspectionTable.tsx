@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetAllSheduledInspectionsQuery } from '@/api/inspectionManagement/inspectionManagementApi'
-import { AdminInspectionListManagementColums } from '@/components/columns/InspectionListManagement'
+import { ADMIN_INSPECTION_LIST_MANAGEMENT_COLUMS } from '@/components/columns/InspectionListManagement'
 import { CalenderIcon03 } from '@/components/icons/CalenderIcon'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
 import SelectPropertyDialog from '@/components/pages/admin/user-management/SelectPropertyDialog'
@@ -79,7 +79,7 @@ function AdminInspectionTableContent() {
         <div>
           <CustomTable
             isLoading={isLoading}
-            columns={AdminInspectionListManagementColums}
+            columns={ADMIN_INSPECTION_LIST_MANAGEMENT_COLUMS}
             data={sheduledInspections}
             minWidth={1000}
             headerStyles={{

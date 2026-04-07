@@ -4,19 +4,25 @@ import { useDeleteSingleInspectionWithIdMutation } from '@/api/inspectionManagem
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
 import { formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
-import { IScheduledInspectinListItem } from '@/types'
+import {
+  InspectionProgressStatus,
+  IAdminScheduledInspectinListItem,
+  IAuthUser,
+  RoleUtils,
+  IAuthUserRole,
+} from '@/types'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import ProgressStatusBadge, {
-  InspectionProgressStatus,
-} from '../dashboard/ProgressStatusBadge/ProgressStatusBadge'
+import ProgressStatusBadge from '../dashboard/ProgressStatusBadge/ProgressStatusBadge'
 import { Edit } from '../icons/Edit'
 import { Trush } from '../icons/Trush'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
+import { IOperationalInspectionTableItem } from '@/types/operationalInspection'
+import { useAuth } from '@/redux/features/auth/useAuth'
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
@@ -122,52 +128,105 @@ export const InspectionListManagementColums = defineColumns<{
   },
 ])
 
-// ==================== Report COLUMNS CONFIGURATION ====================
-export const AdminInspectionListManagementColums = defineColumns<IScheduledInspectinListItem>([
-  {
-    label: 'Inspection ID',
-    accessor: 'inspectionId',
-    formatter: (value) => naIfEmpty(value),
-  },
-  {
-    label: 'Property',
-    accessor: 'propertyName',
-  },
-  {
-    label: 'Property Type',
-    accessor: 'propertyType',
-    formatter: (value) => naIfEmpty(value),
-  },
-  {
-    label: 'Address',
-    accessor: 'address',
-  },
-  {
-    label: 'Created At',
-    accessor: 'createdAt',
-    formatter: (value) => formatDate(value),
-  },
-  {
-    label: 'Next Inspection',
-    accessor: 'nextInspectionDate',
-    formatter: (value) => naIfEmpty(formatDate(value)),
-  },
-  {
-    label: 'Status',
-    accessor: 'status',
-    formatter: (value) => {
-      return <ProgressStatusBadge status={value as InspectionProgressStatus} />
+export const OPERATIONAL_INSPECTION_LIST_MANAGEMENT_COLUMS =
+  defineColumns<IOperationalInspectionTableItem>([
+    {
+      label: 'Inspection ID',
+      accessor: 'inspectionId',
+      formatter: (value) => naIfEmpty(value),
     },
-  },
-  {
-    label: '',
-    accessor: 'id',
-    formatter: (_, row) => <InspectinListItemAction {...row} />,
-  },
-])
+    {
+      label: 'Property',
+      accessor: 'propertyName',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Property Type',
+      accessor: 'propertyType',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Address',
+      accessor: 'address',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Date',
+      accessor: 'scheduledAt',
+      formatter: (value) => naIfEmpty(formatDate(value)),
+    },
+    {
+      label: 'Status',
+      accessor: 'status',
+      formatter: (value) => {
+        return <ProgressStatusBadge status={value as InspectionProgressStatus} />
+      },
+    },
+    {
+      label: '',
+      accessor: 'id',
+      formatter: (_, row) => <InspectinListItemAction {...row} />,
+    },
+  ])
 
-function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledInspectinListItem) {
+// ==================== Report COLUMNS CONFIGURATION ====================
+export const ADMIN_INSPECTION_LIST_MANAGEMENT_COLUMS =
+  defineColumns<IAdminScheduledInspectinListItem>([
+    {
+      label: 'Inspection ID',
+      accessor: 'inspectionId',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Property',
+      accessor: 'propertyName',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Property Type',
+      accessor: 'propertyType',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Address',
+      accessor: 'address',
+      formatter: (value) => naIfEmpty(value),
+    },
+    {
+      label: 'Created At',
+      accessor: 'createdAt',
+      formatter: (value) => formatDate(value),
+    },
+    {
+      label: 'Next Inspection',
+      accessor: 'nextInspectionDate',
+      formatter: (value) => naIfEmpty(formatDate(value)),
+    },
+    {
+      label: 'Status',
+      accessor: 'status',
+      formatter: (value) => {
+        return <ProgressStatusBadge status={value as InspectionProgressStatus} />
+      },
+    },
+    {
+      label: '',
+      accessor: 'id',
+      formatter: (_, row) => <InspectinListItemAction {...row} />,
+    },
+  ])
+
+function InspectinListItemAction({
+  id,
+  inspectionId,
+  dashboardId,
+}: {
+  id?: string
+  inspectionId?: string
+  dashboardId?: string
+}) {
   const [deleteSingleInspectinWithId, { isLoading }] = useDeleteSingleInspectionWithIdMutation()
+  const { role } = useAuth()
 
   const handleDelete = async (deleteId?: string) => {
     if (!deleteId) {
@@ -188,13 +247,21 @@ function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledIn
     <div className="flex gap-2">
       <Button
         onClick={() => {
-          if (!inspectionId) {
+          if (!inspectionId || !role) {
             return
           }
 
-          router.push(
-            routes.admin.inspectionListItemDetail.build({ inspectionId }, { dashboardId }),
-          )
+          const inspectionDetailRouteByRole = {
+            ADMIN: routes.admin.inspectionListItemDetail,
+            OPERATIONAL: routes.operational.inspectionListItemDetail,
+            PROPERTY_MANAGER: null,
+            AUTHORIZED_VIEWER: null,
+          } as const
+
+          const route = inspectionDetailRouteByRole[role]
+          if (!route) return // optional safety
+
+          router.push(route.build({ inspectionId }, { dashboardId }))
         }}
         disabled={!inspectionId}
         variant="muted"
@@ -204,46 +271,51 @@ function InspectinListItemAction({ id, inspectionId, dashboardId }: IScheduledIn
         <EyeIcon />
       </Button>
 
-      {/* // TODO: add edit option */}
-      <Button
-        onClick={() => {
-          if (!inspectionId) {
-            return
-          }
+      {/* Show edit & delete only for admin */}
+      {RoleUtils.isAdmin(role) ? (
+        <>
+          <Button
+            onClick={() => {
+              if (!inspectionId) {
+                return
+              }
 
-          router.push(
-            routes.admin.inspectionListItemDetail.build(
-              { inspectionId },
-              { edit: 'true', dashboardId },
-            ),
-          )
-        }}
-        disabled={!inspectionId}
-        variant="muted"
-        size="icon"
-        className="rounded-full"
-      >
-        <Edit />
-      </Button>
-
-      <ConfirmDialog
-        title="Delete Inspection Report"
-        desc="Are you sure you want to delete this Inspection Report?"
-        trigger={
-          <Button variant="muted" size="icon" className="text-destructive rounded-full">
-            <Trush />
+              // TODO: add edit option
+              router.push(
+                routes.admin.inspectionListItemDetail.build(
+                  { inspectionId },
+                  { edit: 'true', dashboardId },
+                ),
+              )
+            }}
+            disabled={!inspectionId}
+            variant="muted"
+            size="icon"
+            className="rounded-full"
+          >
+            <Edit />
           </Button>
-        }
-      >
-        <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
-        <AlertDialogAction
-          disabled={isLoading}
-          onClick={() => handleDelete(id)}
-          variant="destructive"
-        >
-          {isLoading ? 'Deleting...' : 'Delete'}
-        </AlertDialogAction>
-      </ConfirmDialog>
+
+          <ConfirmDialog
+            title="Delete Inspection Report"
+            desc="Are you sure you want to delete this Inspection Report?"
+            trigger={
+              <Button variant="muted" size="icon" className="text-destructive rounded-full">
+                <Trush />
+              </Button>
+            }
+          >
+            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isLoading}
+              onClick={() => handleDelete(id)}
+              variant="destructive"
+            >
+              {isLoading ? 'Deleting...' : 'Delete'}
+            </AlertDialogAction>
+          </ConfirmDialog>
+        </>
+      ) : null}
     </div>
   )
 }

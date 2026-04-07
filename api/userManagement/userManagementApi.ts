@@ -3,6 +3,7 @@ import type {
   IFilterPayload,
   IPaginationPayload,
   IUserListItem,
+  IUserStatus,
   WithPaginationAndStatus,
 } from '@/types'
 
@@ -18,10 +19,7 @@ const userManagementApi = baseApi.injectEndpoints({
       }),
       providesTags: ['UserManagement'] as const,
     }),
-    updateUserStatus: builder.mutation<
-      IUserListItem,
-      { id: string; status: 'ACTIVE' | 'DEACTIVATED' | 'DELETED' }
-    >({
+    updateUserStatus: builder.mutation<IUserListItem, { id: string; status: IUserStatus }>({
       query: ({ id, status }) => ({
         url: `/user-management/${id}/status`,
         method: 'PATCH',

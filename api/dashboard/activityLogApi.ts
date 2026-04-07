@@ -11,7 +11,7 @@ const activityLogApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getActivityLog: builder.query<
       WithPaginationAndStatus<IActivityLogListItem[]>,
-      (IPaginationPayload & IFilterPayload<ActivityCategory>) | void
+      (IPaginationPayload & IFilterPayload<undefined, ActivityCategory>) | void
     >({
       query: (arg) => ({
         url: `/activity-logs`,

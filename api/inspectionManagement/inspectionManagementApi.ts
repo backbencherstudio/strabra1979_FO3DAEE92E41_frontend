@@ -3,15 +3,14 @@ import type {
   IDashboardInspectionListItem,
   IFilterPayload,
   IPaginationPayload,
-  IPropertyInspectionFormData,
-  IScheduledInspectinListItem,
+  IAdminScheduledInspectinListItem,
   IScheduleInspectionParams,
   IScheduleInspectionResponse,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
 
-const userManagementApi = baseApi.injectEndpoints({
+const inspectionManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // TODO: use invalidatesTags in scheduleInspection
     scheduleInspection: builder.mutation<
@@ -29,7 +28,7 @@ const userManagementApi = baseApi.injectEndpoints({
       }),
     }),
     getAllSheduledInspections: builder.query<
-      WithPaginationAndStatus<IScheduledInspectinListItem[]>,
+      WithPaginationAndStatus<IAdminScheduledInspectinListItem[]>,
       (IPaginationPayload & IFilterPayload) | void
     >({
       query: (args) => ({
@@ -71,5 +70,5 @@ export const {
   useGetAllSheduledInspectionsQuery,
   useDeleteSingleInspectionWithIdMutation,
   useGetSingleInspectionWithIdQuery,
-} = userManagementApi
-export default userManagementApi
+} = inspectionManagementApi
+export default inspectionManagementApi
