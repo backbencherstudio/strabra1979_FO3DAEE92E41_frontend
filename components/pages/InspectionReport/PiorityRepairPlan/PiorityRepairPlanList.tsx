@@ -13,7 +13,7 @@ const STATUS_MAP: Record<RepairTab, IRepairProgressStatus | null> = {
   'Replacement Planning': 'Replacement Planning',
 }
 
-export default function PiorityRepairPlanList({ items = [] }: { items: IPiorityRepairPlanItem[] }) {
+export default function PiorityRepairPlanList({ items }: { items?: IPiorityRepairPlanItem[] }) {
   const [currentTab, setCurrentTab] = useState<RepairTab>('All')
 
   const filteredItems =
@@ -27,7 +27,7 @@ export default function PiorityRepairPlanList({ items = [] }: { items: IPiorityR
   return (
     <div>
       <div className="mt-5 flex flex-wrap gap-2">
-        {tabs.map((t) => {
+        {tabs?.map((t) => {
           const count = getCount(t)
           return (
             <Button

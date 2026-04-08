@@ -16,6 +16,8 @@ import {
 import { IPiorityRepairPlanItem } from '@/types'
 import { PlusIcon } from 'lucide-react'
 import PiorityRepairPlanList from '../PiorityRepairPlan/PiorityRepairPlanList'
+import { useSelector } from 'react-redux'
+import { selectInspectionRepairItems } from '@/redux/features/inspectionForm/inspectionFormSlice'
 
 interface PriorityRepairPlanningFormProps {
   initialItems: IPiorityRepairPlanItem[] | undefined
@@ -26,6 +28,8 @@ export default function PriorityRepairPlanningForm({
   initialItems,
   isEditable,
 }: PriorityRepairPlanningFormProps) {
+  const items = useSelector(selectInspectionRepairItems)
+
   return (
     <SectionCard>
       <div className="flex items-center justify-between">
@@ -35,7 +39,7 @@ export default function PriorityRepairPlanningForm({
         </Button>
       </div>
 
-      <PiorityRepairPlanList items={initialItems ?? []} />
+      <PiorityRepairPlanList items={items} />
 
       {isEditable ? (
         <form className="mt-4 space-y-1.5">

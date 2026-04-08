@@ -9,14 +9,17 @@ import PriorityRepairPlanningForm from '@/components/pages/InspectionReport/Prio
 import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinner'
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
-import { createQueryParams } from '@/lib/farmatters'
+import { setDefaultInspectionFormData } from '@/redux/features/inspectionForm/inspectionFormSlice'
+import { useAppDispatch } from '@/redux/store'
 import { IDashboardInspectionListItem } from '@/types'
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
 
 export default function InspectionReportDetail() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
+  const dispatch = useAppDispatch()
 
   const searchParams = useSearchParams()
   const params = useParams<{ dashboardId: string }>()
@@ -35,6 +38,12 @@ export default function InspectionReportDetail() {
     useGetPropertyInspectionFormQuery(dashboardId, { skip: !dashboardId })
   const { data: { data: inspectinData } = DEFAULT_INSPECTION_DATA, isLoading: isInspectinLoading } =
     useGetSingleInspectionWithIdQuery(inspectionId!, { skip: !inspectionId })
+
+  useEffect(() => {
+    if (inspectinData) {
+      dispatch(setDefaultInspectionFormData(inspectinData))
+    }
+  }, [dispatch, inspectinData])
 
   if (isFormConfigLoading || isInspectinLoading) {
     return <FullPageSpinner />

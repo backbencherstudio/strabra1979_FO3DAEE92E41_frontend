@@ -1,5 +1,6 @@
 import { RootState } from '@/redux/store'
 import {
+  IDashboardInspectionListItem,
   IInspectionFieldValues,
   IInspectionScoreCheckboxValue,
   IPiorityRepairPlanItem,
@@ -142,6 +143,14 @@ const inspectionFormSlice = createSlice({
       state.additionalComments = ''
       state.mediaFiles = []
     },
+    setDefaultInspectionFormData: (state, action: PayloadAction<IDashboardInspectionListItem>) => {
+      state.headerData = action.payload.headerData ?? {}
+      state.scores = action.payload.scores ?? {}
+      state.repairItems = action.payload.repairItems ?? []
+      state.nteValue = action.payload.nteValue ?? ''
+      state.additionalComments = action.payload.additionalComments ?? ''
+      state.mediaFiles = []
+    },
   },
 })
 
@@ -171,7 +180,9 @@ export const {
   addMediaFile,
   removeMediaFile,
   clearMediaFiles,
+
   clearInspectionForm,
+  setDefaultInspectionFormData,
 } = inspectionFormSlice.actions
 
 export default inspectionFormSlice.reducer
