@@ -1,9 +1,20 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { AlertCircleIcon, FileIcon, XIcon, Upload } from 'lucide-react'
-import React, { PropsWithChildren, ReactNode, useCallback, useRef, useState } from 'react'
-import { useFileInput } from './FileInputProvider'
+import { AlertCircleIcon, Upload } from 'lucide-react'
+import React, {
+  forwardRef,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
+
+export interface FileInputRef {
+  triggerInput: () => void
+}
 
 export interface FileInputProps
   extends Omit<React.ComponentProps<'input'>, 'value' | 'onChange' | 'onError'>, PropsWithChildren {
@@ -12,20 +23,19 @@ export interface FileInputProps
   multiple?: boolean
   maxSize?: number
   maxFiles?: number
-  value?: File[]
+  files?: File[]
+  setFiles?: (files: File[]) => void
   onChange?: (files: File[]) => void
   onError?: (error: string) => void
-  showPreview?: boolean
-  previewSize?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'compact' | 'minimal'
   dragActiveClassName?: string
   inputContainerClassName?: string
   placeholderExtra?: ReactNode
   icon?: ReactNode
-  replaceInputWithChldren?: boolean
 }
 
-export const FileInput = (props: FileInputProps) => {
+// Forward ref to allow parent to access triggerInput function
+export const FileInput = forwardRef<FileInputRef, FileInputProps>((props, ref) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const {
     id,
@@ -37,32 +47,32 @@ export const FileInput = (props: FileInputProps) => {
     multiple = true,
     maxSize,
     maxFiles,
-    value: initialFiles = [],
     onChange,
     onError,
-    showPreview = true,
-    previewSize = 'md',
     variant = 'default',
     dragActiveClassName,
     inputContainerClassName,
     placeholder = 'Drag and drop your files here',
     placeholderExtra,
-    children,
-    replaceInputWithChldren = true,
+    files: _files,
+    setFiles: _setFiles,
     ...otherProps
   } = props
 
-  // const [files, setFiles] = useState<File[]>(value)
-  const { files, removeFile, setFiles } = useFileInput()
   const [isDragActive, setDragActive] = useState(false)
   const [errors, setErrors] = useState<string[]>([])
 
   const triggerInput = () => !disabled && inputRef.current?.click()
 
+  // Expose triggerInput function to parent via ref
+  useImperativeHandle(ref, () => ({
+    triggerInput,
+  }))
+
   const handleFiles = useCallback(
     (incoming: File[]) => {
       const { valid, errors } = validateFiles({
-        files,
+        files: _files ?? [],
         newFiles: incoming,
         accept,
         maxSize,
@@ -73,12 +83,12 @@ export const FileInput = (props: FileInputProps) => {
       if (errors.length) onError?.(errors.join('; '))
 
       if (valid.length) {
-        const updated = multiple ? [...files, ...valid] : valid
-        setFiles(updated)
+        const updated = multiple ? [...(_files ?? []), ...valid] : valid
+        _setFiles?.(updated)
         onChange?.(updated)
       }
     },
-    [files, accept, maxFiles, maxSize, multiple, onChange, onError],
+    [_files, accept, maxSize, maxFiles, onError, multiple, _setFiles, onChange],
   )
 
   const handleDrop = (e: React.DragEvent) => {
@@ -86,12 +96,6 @@ export const FileInput = (props: FileInputProps) => {
     setDragActive(false)
     if (!disabled) handleFiles(Array.from(e.dataTransfer.files))
   }
-
-  const previewSizeClass = {
-    sm: 'w-12 h-12',
-    md: 'w-16 h-16',
-    lg: 'w-20 h-20',
-  }[previewSize]
 
   const containerStyles = {
     default: 'border-2 bg-white border-dashed border-border/50 py-4 px-2',
@@ -114,60 +118,50 @@ export const FileInput = (props: FileInputProps) => {
           disabled && 'cursor-not-allowed opacity-50',
           isDragActive && (dragActiveClassName || 'border-primary'),
           inputContainerClassName,
-          // !disabled && !isDragActive && "hover:border-primary/50 hover:bg-secondary/30",
         )}
       >
-        {replaceInputWithChldren && files.length ? (
-          children
-        ) : (
-          <>
-            <input
-              ref={inputRef}
-              id={id}
-              name={name}
-              type="file"
-              multiple={multiple}
-              accept={accept}
-              disabled={disabled}
-              onChange={(e) => {
-                handleFiles(Array.from(e.target.files || []))
-                e.target.value = ''
-              }}
-              className="sr-only"
-              {...otherProps}
-            />
-            <section className="pointer-events-none flex h-full flex-col items-center justify-center gap-2 text-center">
-              {icon ? (
-                icon
-              ) : (
-                <Upload className={cn('size-8 transition', isDragActive && 'text-primary')} />
-              )}
-              {placeholder && (
-                <p
-                  className={cn(
-                    'text-foreground text-sm font-medium',
-                    isDragActive && 'text-primary',
-                  )}
-                >
-                  {placeholder}
-                </p>
-              )}
-              {placeholderExtra && (
-                <div className="text-text-secondary flex flex-col items-center justify-center gap-1 text-center text-xs">
-                  {placeholderExtra}
-                </div>
-              )}
-              <div className="flex items-center space-x-2">
-                {maxSize && (
-                  <p className="text-text-secondary text-xs">
-                    File size up to: {formatFileSize(maxSize)}
-                  </p>
-                )}
-                {maxFiles && <p className="text-text-secondary text-xs">Max files: {maxFiles}</p>}
-              </div>
-            </section>
-          </>
-        )}
+        <input
+          ref={inputRef}
+          id={id}
+          name={name}
+          type="file"
+          multiple={multiple}
+          accept={accept}
+          disabled={disabled}
+          onChange={(e) => {
+            handleFiles(Array.from(e.target.files || []))
+            e.target.value = ''
+          }}
+          className="sr-only"
+          {...otherProps}
+        />
+        <section className="pointer-events-none flex h-full flex-col items-center justify-center gap-2 text-center">
+          {icon ? (
+            icon
+          ) : (
+            <Upload className={cn('size-8 transition', isDragActive && 'text-primary')} />
+          )}
+          {placeholder && (
+            <p
+              className={cn('text-foreground text-sm font-medium', isDragActive && 'text-primary')}
+            >
+              {placeholder}
+            </p>
+          )}
+          {placeholderExtra && (
+            <div className="text-text-secondary flex flex-col items-center justify-center gap-1 text-center text-xs">
+              {placeholderExtra}
+            </div>
+          )}
+          <div className="flex items-center space-x-2">
+            {maxSize && (
+              <p className="text-text-secondary text-xs">
+                File size up to: {formatFileSize(maxSize)}
+              </p>
+            )}
+            {maxFiles && <p className="text-text-secondary text-xs">Max files: {maxFiles}</p>}
+          </div>
+        </section>
       </div>
       {errors.length > 0 && (
         <div className="mt-4 space-y-2">
@@ -182,73 +176,9 @@ export const FileInput = (props: FileInputProps) => {
           ))}
         </div>
       )}
-      {showPreview && files.length > 0 && (
-        <div className="mt-6">
-          <h3 className="font-body mb-3 text-sm">
-            {files.length} file{files.length > 1 ? 's' : ''} selected
-          </h3>
-
-          <div
-            className={cn(
-              'grid grid-cols-1',
-              previewSize === 'lg' &&
-                'grid grid-cols-2 gap-4 space-y-0 sm:grid-cols-3 lg:grid-cols-4',
-            )}
-          >
-            {files.map((file, index) => {
-              const isImage = file.type.startsWith('image/')
-
-              return (
-                <div
-                  key={index}
-                  className={cn(
-                    'bg-accent-light-gray border-border flex items-center justify-between space-x-4 rounded-lg border p-3',
-                    previewSize === 'lg' && 'flex-col items-start gap-2',
-                  )}
-                >
-                  {isImage ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
-                      className={cn('rounded object-cover', previewSizeClass)}
-                    />
-                  ) : (
-                    <div
-                      className={cn(
-                        'bg-primary/10 flex items-center justify-center rounded',
-                        previewSizeClass,
-                      )}
-                    >
-                      <FileIcon className="text-primary h-6 w-6" />
-                    </div>
-                  )}
-
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{file.name}</p>
-                    <p className="text-muted-foreground text-xs">{formatFileSize(file.size)}</p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeFile(index)
-                    }}
-                    disabled={disabled}
-                    className="hover:bg-destructive/10 ml-2 rounded p-1 transition disabled:opacity-50"
-                  >
-                    <XIcon className="text-destructive h-4 w-4" />
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
     </div>
   )
-}
+})
 
 FileInput.displayName = 'FileInput'
 

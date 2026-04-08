@@ -18,14 +18,16 @@ const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | und
 export default function InspectionReportDetail() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
 
-  // Get ids from params
-  const params = useParams<{ dashboardId: string }>()
   const searchParams = useSearchParams()
-  const isEditable = searchParams.get('edit') === 'true'
-  const dashboardId = params.dashboardId
-  const inspectionId = searchParams.get('inspectionId')
+  const params = useParams<{ dashboardId: string }>()
 
-  console.table({ dashboardId, inspectionId })
+  // Get ids from params
+  const dashboardId = params.dashboardId
+  const isEditable = searchParams.get('edit') === 'true'
+  const inspectionId = searchParams.get('inspectionId')
+  const scheduledInspectionId = searchParams.get('scheduledInspectionId')
+
+  console.table({ dashboardId, inspectionId, scheduledInspectionId })
   console.log('page info ===========================')
 
   // Fetch data
@@ -87,10 +89,11 @@ export default function InspectionReportDetail() {
       </section>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        <Button size="xl" variant="outline">
+        <Button type="button" size="xl" variant="outline">
           Save
         </Button>
         <Button
+          type="button"
           onClick={() => {
             if (!isMediaFilesTab) switchTab(currentTab)
           }}
@@ -106,15 +109,19 @@ export default function InspectionReportDetail() {
 
 export function useChecklistAndMediaTabName() {
   const searchParams = useSearchParams()
-  const pathname = usePathname()
   const router = useRouter()
 
   const currentTab = searchParams.get('tab')
   const isMediaFilesTab = currentTab === 'media-files'
 
   const switchTab = (tab: string | null) => {
+    // Get all existing query params
+    const updatedParams = new URLSearchParams(searchParams.toString())
     const nextTab = tab == 'media-files' ? 'checklist' : 'media-files'
-    router.replace(`${pathname}/${createQueryParams({ tab: nextTab })}`)
+    updatedParams.set('tab', nextTab)
+
+    // Replace the URL, preserving all existing query parameters
+    router.replace(`?${updatedParams.toString()}`)
   }
 
   return { isMediaFilesTab, switchTab, currentTab }

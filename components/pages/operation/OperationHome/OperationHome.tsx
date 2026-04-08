@@ -1,6 +1,7 @@
 'use client'
 
 import { useGetOperatorOverviewQuery } from '@/api/dashboard/overviewApi'
+import { useStartAScheduledInspectionToChangeStatusMutation } from '@/api/inspectionManagement/operationalInspectionApi'
 import { OPERATIONAL_RECENT_INSPECTION_LIST_MANAGEMENT_COLUMS } from '@/components/columns/InspectionListManagement'
 import { StatListItemProps } from '@/components/dashboard/StatItem/StatListItem'
 import StatsList from '@/components/dashboard/StatItem/StatsList'
@@ -12,10 +13,12 @@ import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/Sec
 import CustomTable from '@/components/reusable/table/CustomTable'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
-import { withNAf } from '@/lib/farmatters'
+import { getErrorMessage, withNAf } from '@/lib/farmatters'
+import { IScheduledInspectionTableItem } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export default function OperationHome() {
   const router = useRouter()
@@ -45,6 +48,33 @@ export default function OperationHome() {
     },
   ]
 
+  // Start inspection
+  const [startAScheduledInspectionToChangeStatus] =
+    useStartAScheduledInspectionToChangeStatusMutation()
+  async function handleStartInspection({
+    id,
+    inspectionId,
+    dashboardId,
+    status,
+  }: IScheduledInspectionTableItem) {
+    if (!dashboardId) return
+
+    if (status === 'ASSIGNED') {
+      try {
+        await startAScheduledInspectionToChangeStatus({ scheduledInspectionId: id }).unwrap()
+      } catch (error) {
+        return toast.error(getErrorMessage(error))
+      }
+    }
+
+    const qp = {
+      edit: 'true',
+      ...(inspectionId && { inspectionId }),
+      ...(id && { scheduledInspectionId: id }),
+    }
+    router.push(routes.operational.inspectionListItemDetail.build({ dashboardId }, qp))
+  }
+
   return (
     <div className="grid grid-cols-1 gap-6">
       <StatsList isLoading={isLoading} stats={statsData} />
@@ -52,15 +82,8 @@ export default function OperationHome() {
         isLoading={isLoading}
         title="Today's Inspections"
         data={todaysInspections}
-        actionButton={({ inspectionId, dashboardId }) => (
-          <Button
-            onClick={() => {
-              if (!dashboardId) return
-              const qp = { edit: 'true', ...(inspectionId && { inspectionId }) }
-              router.push(routes.operational.inspectionListItemDetail.build({ dashboardId }, qp))
-            }}
-            variant="outline"
-          >
+        actionButton={(inspection) => (
+          <Button onClick={() => handleStartInspection(inspection)} variant="outline">
             Start Inspection
           </Button>
         )}

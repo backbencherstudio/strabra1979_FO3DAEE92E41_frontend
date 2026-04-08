@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react'
 interface FileInputContextType {
   files: File[]
   setFiles: React.Dispatch<React.SetStateAction<File[]>>
+  addFile: (file: File, index: number) => void
   removeFile: (index: number) => void
 }
 
@@ -11,6 +12,12 @@ const FileInputContext = createContext<FileInputContextType | undefined>(undefin
 
 export const FileInputProvider = ({ children }: { children: ReactNode }) => {
   const [files, setFiles] = useState<File[]>([])
+  function addFile(file: File, index: number) {
+    setFiles((prevFiles) => {
+      prevFiles[index] = file
+      return prevFiles
+    })
+  }
 
   const removeFile = (index: number) => {
     const updated = files.filter((_, i) => i !== index)
@@ -18,7 +25,7 @@ export const FileInputProvider = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <FileInputContext.Provider value={{ files, setFiles, removeFile }}>
+    <FileInputContext.Provider value={{ files, addFile, setFiles, removeFile }}>
       {children}
     </FileInputContext.Provider>
   )
