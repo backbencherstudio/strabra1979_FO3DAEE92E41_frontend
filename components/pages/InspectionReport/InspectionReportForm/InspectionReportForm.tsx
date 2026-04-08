@@ -11,12 +11,19 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  IDashboardInspectionListItem,
-  IInspectionFieldValues,
-  IInspectionScoreCheckboxValue,
-  IPropertyInspectionFormData,
-} from '@/types'
-import { useState } from 'react'
+  selectInspectionAdditionalComments,
+  selectInspectionHeaderData,
+  selectInspectionNteValue,
+  selectInspectionScores,
+  setAdditionalComments,
+  setNteValue,
+  updateHeaderField,
+  updateScoreNote,
+  updateScoreValue,
+} from '@/redux/features/inspectionForm/inspectionFormSlice'
+import { AppDispatch } from '@/redux/store'
+import { IDashboardInspectionListItem, IPropertyInspectionFormData } from '@/types'
+import { useDispatch, useSelector } from 'react-redux'
 import InspectionCheckBoxes from './InspectionCheckBoxes'
 
 interface InspectionReportFormProps {
@@ -30,63 +37,34 @@ export default function InspectionReportForm({
   formConfig,
   inspectionData,
 }: InspectionReportFormProps) {
-  // const [date, setDate] = useState<Date | undefined>(undefined)
-  // const [open, setOpen] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+  const headerFieldsValues = useSelector(selectInspectionHeaderData)
 
-  const [headerFieldsValues, setHeaderFieldsValues] = useState<IInspectionFieldValues>(
-    () => inspectionData?.headerData ?? {},
-  )
-  const handleInputChange = (key: string, value: string) => {
-    setHeaderFieldsValues((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
-  }
   const headerFields = formConfig?.form.headerFields.map((category) => {
     const value = headerFieldsValues?.[category.key]
-
-    return {
-      ...category,
-      value: value ?? '',
-    }
+    return { ...category, value: value ?? '' }
   })
+  const handleInputChange = (key: string, value: string) => {
+    dispatch(updateHeaderField({ key, value }))
+  }
 
-  const [scores, setScores] = useState<Record<string, IInspectionScoreCheckboxValue>>(
-    () => inspectionData?.scores ?? {},
-  )
+  const scores = useSelector(selectInspectionScores)
   const handleScoreChange = (key: string, value: number) => {
-    setScores((prev) => ({
-      ...prev,
-      [key]: {
-        ...prev[key],
-        score: value,
-      },
-    }))
+    dispatch(updateScoreValue({ key, score: value }))
   }
   const handleNotesChange = (key: string, value: string) => {
-    setScores((prev) => ({
-      ...prev,
-      [key]: {
-        ...prev[key],
-        notes: value,
-      },
-    }))
+    dispatch(updateScoreNote({ key, note: value }))
   }
 
-  // // initialize once
-  // useEffect(() => {
-  //   if (inspectionData?.scores) {
-  //     setScores(inspectionData.scores)
-  //   }
-  //   if (inspectionData?.headerData) {
-  //     setHeaderFieldsValues(inspectionData.headerData)
-  //   }
-  // }, [inspectionData])
+  const nteValue = useSelector(selectInspectionNteValue)
+  const handleNteValueChange = (val: number) => {
+    dispatch(setNteValue(val))
+  }
 
-  const [nteValue, setNteValue] = useState(inspectionData?.nteValue ?? '')
-  const [additionalComments, setAdditionalComments] = useState(
-    inspectionData?.additionalComments ?? '',
-  )
+  const additionalComments = useSelector(selectInspectionAdditionalComments)
+  const handleAdditionalComments = (val: string) => {
+    dispatch(setAdditionalComments(val))
+  }
 
   if (!formConfig || !inspectionData) return null
 
@@ -178,11 +156,12 @@ export default function InspectionReportForm({
           <FieldLabel htmlFor="nte">{formConfig?.form?.nteConfig?.label}</FieldLabel>
           <InputGroup>
             <InputGroupInput
+              type="number"
               disabled={!isEditable}
               id="nte"
               value={nteValue}
               placeholder={formConfig?.form?.nteConfig?.placeholder}
-              onChange={(e) => setNteValue(e.target.value)}
+              onChange={(e) => handleNteValueChange(parseInt(e.target.value))}
             />
           </InputGroup>
         </Field>
@@ -197,7 +176,7 @@ export default function InspectionReportForm({
               disabled={!isEditable}
               value={additionalComments}
               placeholder={formConfig?.form.additionalNotesConfig.placeholder}
-              onChange={(e) => setAdditionalComments(e.target.value)}
+              onChange={(e) => handleAdditionalComments(e.target.value)}
             />
           </InputGroup>
         </Field>
