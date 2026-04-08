@@ -4,16 +4,15 @@ import { useDeleteSingleInspectionWithIdMutation } from '@/api/inspectionManagem
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
 import { formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
+import { useAuth } from '@/redux/features/auth/useAuth'
 import {
-  InspectionProgressStatus,
   IAdminScheduledInspectinTableItem,
-  IAuthUser,
-  RoleUtils,
-  IAuthUserRole,
+  InspectionProgressStatus,
   IScheduledInspectionTableItem,
+  RoleUtils,
 } from '@/types'
+import { IOperationalInspectionTableItem } from '@/types/operationalInspection'
 import { EyeIcon } from 'lucide-react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import ProgressStatusBadge from '../dashboard/ProgressStatusBadge/ProgressStatusBadge'
@@ -22,8 +21,6 @@ import { Trush } from '../icons/Trush'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
-import { IOperationalInspectionTableItem } from '@/types/operationalInspection'
-import { useAuth } from '@/redux/features/auth/useAuth'
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
@@ -189,7 +186,7 @@ function InspectinListItemAction({
     <div className="flex gap-2">
       <Button
         onClick={() => {
-          if (!inspectionId || !role) {
+          if (!dashboardId || !role) {
             return
           }
 
@@ -203,7 +200,7 @@ function InspectinListItemAction({
           const route = inspectionDetailRouteByRole[role]
           if (!route) return // optional safety
 
-          router.push(route.build({ inspectionId }, { dashboardId }))
+          router.push(route.build({ dashboardId }, { inspectionId }))
         }}
         disabled={!inspectionId}
         variant="muted"
@@ -218,15 +215,15 @@ function InspectinListItemAction({
         <>
           <Button
             onClick={() => {
-              if (!inspectionId) {
+              if (!dashboardId) {
                 return
               }
 
               // TODO: add edit option
               router.push(
                 routes.admin.inspectionListItemDetail.build(
-                  { inspectionId },
-                  { edit: 'true', dashboardId },
+                  { dashboardId },
+                  { edit: 'true', inspectionId },
                 ),
               )
             }}

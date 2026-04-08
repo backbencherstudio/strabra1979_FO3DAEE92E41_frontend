@@ -52,17 +52,12 @@ export default function OperationHome() {
         isLoading={isLoading}
         title="Today's Inspections"
         data={todaysInspections}
-        actionButton={({ id, inspectionId, dashboardId }) => (
+        actionButton={({ inspectionId, dashboardId }) => (
           <Button
             onClick={() => {
-              // if (!inspectionId) return
-              console.table({ id, inspectionId, dashboardId })
-
-              const path = routes.operational.inspectionListItemDetail.build(
-                { inspectionId: id },
-                { dashboardId, edit: 'true' },
-              )
-              router.push(path)
+              if (!dashboardId) return
+              const qp = { edit: 'true', ...(inspectionId && { inspectionId }) }
+              router.push(routes.operational.inspectionListItemDetail.build({ dashboardId }, qp))
             }}
             variant="outline"
           >

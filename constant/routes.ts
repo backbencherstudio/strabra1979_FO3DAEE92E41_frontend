@@ -10,13 +10,13 @@ export const routes = {
     propertyDashboarDetail: createRoute('/admin/properties-list/[dashboardId]'),
 
     inspectionList: '/admin/inspection-list',
-    inspectionListItemDetail: createRoute('/admin/inspection-list/[inspectionId]'),
+    inspectionListItemDetail: createRoute('/admin/inspection-list/[dashboardId]'),
   },
 
   operational: {
     home: '/operation',
 
     inspectionList: '/operation/inspection-list',
-    inspectionListItemDetail: createRoute('/operation/inspection-list/[inspectionId]'),
+    inspectionListItemDetail: createRoute('/operation/inspection-list/[dashboardId]'),
   },
 } as const

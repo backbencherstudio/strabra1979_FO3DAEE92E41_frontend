@@ -10,23 +10,29 @@ import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinn
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { createQueryParams } from '@/lib/farmatters'
+import { IDashboardInspectionListItem } from '@/types'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
+
+const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
 
 export default function InspectionReportDetail() {
   const { isMediaFilesTab, switchTab, currentTab } = useChecklistAndMediaTabName()
 
-  // Get id from params
-  const params = useParams()
+  // Get ids from params
+  const params = useParams<{ dashboardId: string }>()
   const searchParams = useSearchParams()
   const isEditable = searchParams.get('edit') === 'true'
-  const inspectionId = params.inspectionId as string
-  const dashboardId = searchParams.get('dashboardId')
+  const dashboardId = params.dashboardId
+  const inspectionId = searchParams.get('inspectionId')
+
+  console.table({ dashboardId, inspectionId })
+  console.log('page info ===========================')
 
   // Fetch data
   const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
-    useGetPropertyInspectionFormQuery(dashboardId!, { skip: !dashboardId })
-  const { data: { data: inspectinData } = {}, isLoading: isInspectinLoading } =
-    useGetSingleInspectionWithIdQuery(inspectionId, { skip: !inspectionId })
+    useGetPropertyInspectionFormQuery(dashboardId, { skip: !dashboardId })
+  const { data: { data: inspectinData } = DEFAULT_INSPECTION_DATA, isLoading: isInspectinLoading } =
+    useGetSingleInspectionWithIdQuery(inspectionId!, { skip: !inspectionId })
 
   if (isFormConfigLoading || isInspectinLoading) {
     return <FullPageSpinner />
