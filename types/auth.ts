@@ -1,10 +1,12 @@
-export const RoleObj = {
-  ADMIN: 'ADMIN',
-  PROPERTY_MANAGER: 'PROPERTY_MANAGER',
-  AUTHORIZED_VIEWER: 'AUTHORIZED_VIEWER',
-  OPERATIONAL: 'OPERATIONAL',
-} as const
-export type IAuthUserRole = keyof typeof RoleObj
+export const USER_ROLES = ['ADMIN', 'PROPERTY_MANAGER', 'AUTHORIZED_VIEWER', 'OPERATIONAL'] as const
+export type IAuthUserRole = (typeof USER_ROLES)[number]
+
+export const ROLE_LABELS: Record<IAuthUserRole, string> = {
+  ADMIN: 'Admin',
+  PROPERTY_MANAGER: 'Property Manager',
+  AUTHORIZED_VIEWER: 'Viewer',
+  OPERATIONAL: 'Operational',
+}
 
 export interface AuthCredential {
   token?: string | null
@@ -13,10 +15,10 @@ export interface AuthCredential {
 }
 
 export const RoleUtils = {
-  isAdmin: (role?: IAuthUserRole | null) => role === 'ADMIN',
-  isPropertyManager: (role?: IAuthUserRole | null) => role === 'PROPERTY_MANAGER',
-  isAuthorizedViewer: (role?: IAuthUserRole | null) => role === 'AUTHORIZED_VIEWER',
-  isOperational: (role?: IAuthUserRole | null) => role === 'OPERATIONAL',
+  isAdmin: (role?: IAuthUserRole | null) => role?.toUpperCase() === 'ADMIN',
+  isPropertyManager: (role?: IAuthUserRole | null) => role?.toUpperCase() === 'PROPERTY_MANAGER',
+  isAuthorizedViewer: (role?: IAuthUserRole | null) => role?.toUpperCase() === 'AUTHORIZED_VIEWER',
+  isOperational: (role?: IAuthUserRole | null) => role?.toUpperCase() === 'OPERATIONAL',
   isPublic: (role?: IAuthUserRole | null) => role == null,
 
   hasRole: (role: IAuthUserRole | null | undefined, allowedRoles: IAuthUserRole[]): boolean => {
@@ -31,7 +33,7 @@ export type IAuthUser = {
   username: string
   email: string
   avatar: string
-  role: string
+  role: IAuthUserRole
   created_at: string
 }
 

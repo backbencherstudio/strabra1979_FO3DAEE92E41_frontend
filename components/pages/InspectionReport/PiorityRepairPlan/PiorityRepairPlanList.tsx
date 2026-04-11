@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { IPiorityRepairPlanItem, IRepairProgressStatus } from '@/types'
-import { useState } from 'react'
+import { useState, useRef, forwardRef, useImperativeHandle } from 'react'
 import { PiorityRepairPlanItem } from './PiorityRepairPlanItem'
 
 export const tabs = ['All', 'Urgent', 'Maintenance', 'Replacement Planning'] as const
@@ -13,8 +13,24 @@ const STATUS_MAP: Record<RepairTab, IRepairProgressStatus | null> = {
   'Replacement Planning': 'Replacement Planning',
 }
 
-export default function PiorityRepairPlanList({ items }: { items?: IPiorityRepairPlanItem[] }) {
+export interface PiorityRepairPlanListRef {
+  scrollToBottom: () => void
+}
+
+const PiorityRepairPlanList = forwardRef<
+  PiorityRepairPlanListRef,
+  { items?: IPiorityRepairPlanItem[] }
+>(({ items }, ref) => {
   const [currentTab, setCurrentTab] = useState<RepairTab>('All')
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  useImperativeHandle(ref, () => ({
+    scrollToBottom: () => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
+      }
+    },
+  }))
 
   const filteredItems =
     currentTab === 'All' ? items : items?.filter((item) => item?.status === STATUS_MAP[currentTab])
@@ -31,7 +47,7 @@ export default function PiorityRepairPlanList({ items }: { items?: IPiorityRepai
           const count = getCount(t)
           return (
             <Button
-              disabled={count < 1}
+              disabled={!count || count < 1}
               onClick={() => setCurrentTab(t)}
               variant="ghost"
               className={cn(
@@ -49,7 +65,7 @@ export default function PiorityRepairPlanList({ items }: { items?: IPiorityRepai
         })}
       </div>
 
-      <div className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
+      <div ref={scrollContainerRef} className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
         {filteredItems?.map((item) => (
           <PiorityRepairPlanItem
             key={item.id}
@@ -61,4 +77,8 @@ export default function PiorityRepairPlanList({ items }: { items?: IPiorityRepai
       </div>
     </div>
   )
-}
+})
+
+PiorityRepairPlanList.displayName = 'PiorityRepairPlanList'
+
+export default PiorityRepairPlanList

@@ -34,10 +34,12 @@ export default function FormInputField<T>({
           className={containerClass}
           data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
         >
-          <FieldLabel htmlFor={field.name}>
-            {label}
-            {required ? <span className="text-error-red-500">*</span> : null}
-          </FieldLabel>
+          {label ? (
+            <FieldLabel htmlFor={field.name}>
+              {label}
+              {required ? <span className="text-error-red-500">*</span> : null}
+            </FieldLabel>
+          ) : null}
 
           <InputGroup>
             {icon && <InputGroupAddon>{icon}</InputGroupAddon>}

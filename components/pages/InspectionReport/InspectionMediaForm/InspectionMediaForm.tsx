@@ -24,30 +24,6 @@ export default function InspectionMediaForm() {
       return cImages
     })
   }
-  const defaultData = {
-    headerData: { inspectionTitle: '2024 Annual Roof Inspection', propertyType: 'Commercial' },
-    scores: { surfaceCondition: { score: 22, notes: 'Minor cracks observed' } },
-    repairItems: [
-      { title: 'Emergency Leak Repair', status: 'Urgent', description: 'Moisture stains...' },
-    ],
-    nteValue: 7500,
-    additionalComments: 'No active leaks at time of inspection.',
-    inspectedAt: '2024-06-15T09:00:00.000Z',
-    mediaFieldKeys: ['mediaFiles'],
-  }
-
-  // const [submitInspectionData] = useSubmitInspectionDataMutation()
-  // async function foo() {
-  //   const res = await submitInspectionData({
-  //     dashboardId: 'cmne1xe9p0001s4u8ua22cmm9',
-  //     scheduledInspectionId: 'cmnplqrwl000ffgu8jz3zgxvu',
-  //     files: imageFiles,
-  //     data: defaultData,
-  //   }).unwrap()
-  //
-  //   console.error(res)
-  // }
-  //
 
   const fileInputRef = useRef<FileInputRef>(null)
   const handleTriggerInput = () => {

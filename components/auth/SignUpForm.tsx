@@ -3,7 +3,7 @@
 import { useRegisterUserMutation } from '@/api/auth/authApi'
 import { routes } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
-import { IAuthRegisterResponse, IAuthUserRole, RoleObj, WithApiStatus } from '@/types'
+import { IAuthRegisterResponse, IAuthUserRole, USER_ROLES, WithApiStatus } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -23,10 +23,7 @@ export const signupSchema = z
     // .regex(/[a-z]/, 'Must contain a lowercase letter')
     // .regex(/[0-9]/, 'Must contain a number'),
     confirmPassword: z.string(),
-    role: z.enum(
-      Object.keys(RoleObj) as [IAuthUserRole, ...IAuthUserRole[]],
-      'Please select a user role',
-    ),
+    role: z.enum(USER_ROLES, 'Please select a user role'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],

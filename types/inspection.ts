@@ -1,6 +1,7 @@
 import { IUserBasicInfo } from './user'
 
-export type IRepairProgressStatus = 'Urgent' | 'Maintenance' | 'Replacement Planning'
+export const REPAIR_PROGRESS_STATUSES = ['Urgent', 'Maintenance', 'Replacement Planning'] as const
+export type IRepairProgressStatus = (typeof REPAIR_PROGRESS_STATUSES)[number]
 
 export type InspectionProgressStatus =
   | 'ASSIGNED'

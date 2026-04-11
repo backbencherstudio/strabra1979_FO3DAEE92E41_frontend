@@ -2,6 +2,7 @@
 
 import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/inspectionFormApi'
 import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/inspectionManagementApi'
+import { useSubmitAllInspectionFormDataMutation } from '@/api/inspectionManagement/operationalInspectionApi'
 import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
 import InspectionReportForm from '@/components/pages/InspectionReport/InspectionReportForm/InspectionReportForm'
@@ -9,11 +10,22 @@ import PriorityRepairPlanningForm from '@/components/pages/InspectionReport/Prio
 import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinner'
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
-import { setDefaultInspectionFormData } from '@/redux/features/inspectionForm/inspectionFormSlice'
-import { useAppDispatch } from '@/redux/store'
+import { Spinner } from '@/components/ui/spinner'
+import { getErrorMessage } from '@/lib/farmatters'
+import {
+  selectInspectionAdditionalComments,
+  selectInspectionHeaderData,
+  selectInspectionMediaFiles,
+  selectInspectionNteValue,
+  selectInspectionRepairItems,
+  selectInspectionScores,
+  setDefaultInspectionFormData,
+} from '@/redux/features/inspectionForm/inspectionFormSlice'
+import { store, useAppDispatch } from '@/redux/store'
 import { IDashboardInspectionListItem } from '@/types'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
 
@@ -33,6 +45,8 @@ export default function InspectionReportDetail() {
   console.table({ dashboardId, inspectionId, scheduledInspectionId })
   console.log('page info ===========================')
 
+  const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
+    useSubmitAllInspectionFormDataMutation()
   // Fetch data
   const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
     useGetPropertyInspectionFormQuery(dashboardId, { skip: !dashboardId })
@@ -47,6 +61,53 @@ export default function InspectionReportDetail() {
 
   if (isFormConfigLoading || isInspectinLoading) {
     return <FullPageSpinner />
+  }
+
+  const defaultData = {
+    headerData: { inspectionTitle: '2024 Annual Roof Inspection', propertyType: 'Commercial' },
+    scores: { surfaceCondition: { score: 22, notes: 'Minor cracks observed' } },
+    repairItems: [
+      { title: 'Emergency Leak Repair', status: 'Urgent', description: 'Moisture stains...' },
+    ],
+    nteValue: 7500,
+    additionalComments: 'No active leaks at time of inspection.',
+    inspectedAt: '2024-06-15T09:00:00.000Z',
+    mediaFieldKeys: ['mediaFiles'],
+  }
+
+  async function handleSubmitInspectionData() {
+    const state = store.getState()
+    const headerData = selectInspectionHeaderData(state)
+    const scores = selectInspectionScores(state)
+    const repairItems = selectInspectionRepairItems(state)
+    const nteValue = selectInspectionNteValue(state)
+    const additionalComments = selectInspectionAdditionalComments(state)
+    const mediaFiles = selectInspectionMediaFiles(state)
+
+    const inspectedAt = new Date().toISOString()
+
+    try {
+      const res = await submitAllInspectionFormData({
+        dashboardId: dashboardId!,
+        scheduledInspectionId: scheduledInspectionId!,
+        data: {
+          headerData,
+          scores,
+          repairItems,
+          nteValue,
+          additionalComments,
+          inspectedAt: inspectedAt,
+          mediaFieldKeys: [],
+        },
+        files: mediaFiles,
+      }).unwrap()
+
+      toast.success(res.message || 'Success message')
+    } catch (err) {
+      toast.error('Error title', {
+        description: getErrorMessage(err),
+      })
+    }
   }
 
   return (
@@ -81,7 +142,7 @@ export default function InspectionReportDetail() {
         <section className="mt-5 grid items-start gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           <PriorityRepairPlanningForm
             isEditable={isEditable}
-            initialItems={inspectinData?.repairItems}
+            // initialItems={inspectinData?.repairItems}
           />
           <InspectionReportFinalScoreCard
             score={inspectinData?.overallScore}
@@ -102,14 +163,20 @@ export default function InspectionReportDetail() {
           Save
         </Button>
         <Button
+          disabled={isLoadingInspectionFormData}
           type="button"
           onClick={() => {
-            if (!isMediaFilesTab) switchTab(currentTab)
+            if (!isMediaFilesTab) {
+              switchTab(currentTab)
+            } else {
+              handleSubmitInspectionData()
+            }
           }}
           size="xl"
           variant="default"
         >
-          {isMediaFilesTab ? 'Submit' : 'Next'}
+          {isLoadingInspectionFormData ? <Spinner /> : null}
+          {isLoadingInspectionFormData ? 'Submitting...' : isMediaFilesTab ? 'Submit' : 'Next'}
         </Button>
       </div>
     </div>

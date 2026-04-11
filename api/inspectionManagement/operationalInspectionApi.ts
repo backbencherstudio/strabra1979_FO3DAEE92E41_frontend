@@ -1,24 +1,21 @@
 import { baseApi } from '@/api/baseApi'
 import type {
   IFilterPayload,
+  IInspectionScoreCheckboxValue,
   IOperationalInspectionTableItem,
   IPaginationPayload,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
 
-export type IInspectionFromData = {
+export type IInspectionFormData = {
   headerData: {
-    inspectionTitle: string
-    propertyType: string
+    [key: string]: string
   }
   scores: {
-    surfaceCondition: {
-      score: number
-      notes: string
-    }
+    [key: string]: IInspectionScoreCheckboxValue
   }
-  repairItems: Array<{
+  repairItems?: Array<{
     title: string
     status: string
     description: string
@@ -28,11 +25,10 @@ export type IInspectionFromData = {
   inspectedAt: string
   mediaFieldKeys: Array<string>
 }
-
 interface ISubmitInspectionDataPayload {
   scheduledInspectionId: string
   dashboardId: string
-  data: IInspectionFromData
+  data: IInspectionFormData
   files: File[]
 }
 
@@ -58,7 +54,10 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Overview'],
     }),
-    submitInspectionData: builder.mutation<unknown, ISubmitInspectionDataPayload>({
+    submitAllInspectionFormData: builder.mutation<
+      WithApiStatus<void>,
+      ISubmitInspectionDataPayload
+    >({
       query: ({ dashboardId, scheduledInspectionId, data, files }) => {
         const jsonData = JSON.stringify(data)
 
@@ -87,6 +86,6 @@ const operationalInspectionApi = baseApi.injectEndpoints({
 export const {
   useGetAllSheduledInspectionsAssignedToMeQuery,
   useStartAScheduledInspectionToChangeStatusMutation,
-  useSubmitInspectionDataMutation,
+  useSubmitAllInspectionFormDataMutation,
 } = operationalInspectionApi
 export default operationalInspectionApi

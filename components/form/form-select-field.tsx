@@ -17,7 +17,8 @@ type Option<V extends string> = {
 interface FormSelectFieldProps<T, V extends string> {
   form: any
   name: keyof T
-  label: string
+  label?: string
+  required?: boolean
   placeholder?: string
   options: Option<V>[]
   containerClass?: string
@@ -28,6 +29,7 @@ export default function FormSelectField<T, V extends string>({
   name,
   label,
   placeholder,
+  required,
   options,
   containerClass,
 }: FormSelectFieldProps<T, V>) {
@@ -35,7 +37,12 @@ export default function FormSelectField<T, V extends string>({
     <form.Field name={name as string}>
       {(field: any) => (
         <Field className={containerClass}>
-          <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+          {label ? (
+            <FieldLabel htmlFor={field.name}>
+              {label}
+              {required ? <span className="text-error-red-500">*</span> : null}
+            </FieldLabel>
+          ) : null}
 
           <Select value={field.state.value} onValueChange={(value) => field.handleChange(value)}>
             <SelectTrigger className="h-auto w-full rounded-[12px] border border-[#e9e9ea] px-5 py-3.5">

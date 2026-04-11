@@ -191,6 +191,5 @@ export const selectInspectionHeaderData = (state: RootState) => state.inspection
 export const selectInspectionScores = (state: RootState) => state.inspectionForm.scores
 export const selectInspectionRepairItems = (state: RootState) => state.inspectionForm.repairItems
 export const selectInspectionNteValue = (state: RootState) => state.inspectionForm.nteValue
-export const selectInspectionAdditionalComments = (state: RootState) =>
-  state.inspectionForm.additionalComments
+export const selectInspectionAdditionalComments = (state: RootState) => state.inspectionForm.additionalComments
 export const selectInspectionMediaFiles = (state: RootState) => state.inspectionForm.mediaFiles

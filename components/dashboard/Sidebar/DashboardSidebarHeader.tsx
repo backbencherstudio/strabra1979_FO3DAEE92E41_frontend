@@ -6,6 +6,7 @@ import UserAvatar from '@/components/reusable/UserAvatar'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { withNA } from '@/lib/farmatters'
+import { ROLE_LABELS } from '@/types'
 
 export default function DashboardSidebarHeader() {
   // const { logOut } = useAuth();
@@ -43,11 +44,9 @@ const UserInfo = () => {
           </>
         ) : (
           <>
-            <span className="block text-sm leading-3 font-medium">
-              {withNA(data?.username)}
-            </span>
+            <span className="block text-sm leading-3 font-medium">{withNA(data?.username)}</span>
             <span className="bg-mid-orange text-foreground block rounded-full px-1.5 pb-px text-center text-[10px] font-medium">
-              {withNA(data?.role)}
+              {withNA(data?.role ? ROLE_LABELS[data?.role] : null)}
             </span>
           </>
         )}
