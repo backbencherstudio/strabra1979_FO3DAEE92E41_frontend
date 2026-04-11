@@ -155,7 +155,7 @@ export default function InspectionReportDetail() {
 
       {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
-        <InspectionMediaForm />
+        <InspectionMediaForm formConfig={formConfig} />
       </section>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">

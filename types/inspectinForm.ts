@@ -26,6 +26,7 @@ interface DropdownField extends BaseField, BaseInputProps {
 export type IInspectionInputField = TextField | DropdownField
 
 export interface IInspectionMediaField extends BaseField {
+  key: MediaFieldKeyType
   type: string
   accept?: string[]
   placeholder?: string
@@ -65,6 +66,9 @@ export interface AdditionalNotesConfig {
 }
 
 // -------------------- Form & Main Interface --------------------
+export const MEDIA_FIELD_KEY_TYPES = ['mediaFiles', 'aerialMap', 'tour3d', 'documents'] as const
+export type MediaFieldKeyType = (typeof MEDIA_FIELD_KEY_TYPES)[number]
+
 export interface IInspectionFormData {
   headerFields: IInspectionInputField[]
   scoringCategories: ScoringCategory[]

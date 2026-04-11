@@ -1,15 +1,19 @@
 'use client'
 
-import { FileImage, FileVideo, PlusSignSquare } from '@/components/icons/File'
-import { FileInput, FileInputRef, mbToBytes } from '@/components/reusable/FileInput/FileInput'
-import FileInputPreview from '@/components/reusable/FileInput/FileInputPreview'
+import { FileVideo } from '@/components/icons/File'
+import { FileInput, mbToBytes } from '@/components/reusable/FileInput/FileInput'
 import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
-import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import { useRef, useState } from 'react'
+import { IPropertyInspectionFormData, MediaFieldKeyType } from '@/types'
+import { useState } from 'react'
+import { MediaField } from './MediaField'
 
-export default function InspectionMediaForm() {
+interface InspectionMediaFormProps {
+  formConfig?: IPropertyInspectionFormData
+}
+
+export default function InspectionMediaForm({ formConfig }: InspectionMediaFormProps) {
   const maxImageSize = mbToBytes(100)
   const maxVideoSize = mbToBytes(1024)
   const [imageFiles, setImageFiles] = useState<File[]>([])
@@ -25,93 +29,76 @@ export default function InspectionMediaForm() {
     })
   }
 
-  const fileInputRef = useRef<FileInputRef>(null)
-  const handleTriggerInput = () => {
-    fileInputRef.current?.triggerInput()
-  }
-
-  const [files, setFiles] = useState<File[]>([])
-  const handleRemoveFile = (index: number) => {
-    const updated = files.filter((_, i) => i !== index)
-    setFiles(updated)
-  }
+  const [files, setFiles] = useState<{ key: MediaFieldKeyType; file: File }[]>([])
 
   return (
     <form>
       <FieldGroup>
-        <FileInputProvider>
-          <Field>
-            <FieldLabel>Upload Media Files</FieldLabel>
-            <FileInput
-              className={files.length === 0 ? '' : 'hidden'}
-              files={files}
-              setFiles={setFiles}
-              ref={fileInputRef}
-              multiple={true}
-              icon={<FileImage />}
-              placeholder="Upload Media file"
-              maxSize={maxImageSize}
-              inputContainerClassName="h-35"
-              accept="image/*"
-            />
-            <FileInputPreview removeFile={handleRemoveFile} files={files} className="" />
-
-            {/* Add More btn */}
-            <Button
-              variant="outline"
-              type="button"
-              size="xl"
-              className="border-border/50 border-2 border-dashed"
-              onClick={handleTriggerInput}
-            >
-              <PlusSignSquare />
-              <span className="text-foreground text-sm whitespace-nowrap">Add More</span>
-            </Button>
-          </Field>
-        </FileInputProvider>
-
-        <FieldGroup className="grid md:grid-cols-2">
-          <Field>
-            <FieldLabel>Aerial Map</FieldLabel>
-            <FileInputProvider>
-              <FileInput
-                onChange={(files) => onSelectNewImage(files[0], 0)}
-                multiple={false}
-                icon={<FileVideo />}
-                placeholder="Upload your file"
-                maxSize={maxVideoSize}
-                inputContainerClassName="h-65"
-                accept="video/*"
+        {formConfig?.form.mediaFields.map((conf) => {
+          if (conf.key === 'mediaFiles') {
+            return (
+              <MediaField
+                setFiles={setFiles}
+                files={files}
+                key={conf.key}
+                label={conf.label}
+                keyName={conf.key}
+                accept={conf.accept?.join(',')}
+                placeholder={conf.placeholder}
+                maxSize={maxImageSize}
+                inputContainerClassName="h-35"
               />
-            </FileInputProvider>
-          </Field>
+            )
+          }
 
-          <Field className="">
-            <FieldLabel>3D Tours </FieldLabel>
-            <Textarea
-              className="squircle h-65 resize-none bg-white md:h-full"
-              placeholder="Paste Source URL / iframe Code"
-            />
-          </Field>
-        </FieldGroup>
+          if (conf.key === 'aerialMap') {
+            return (
+              <Field key={conf.key}>
+                <FieldLabel>{conf.label}</FieldLabel>
+                <FileInputProvider>
+                  <FileInput
+                    accept={conf.accept?.join(',')}
+                    placeholder={conf.placeholder}
+                    onChange={(files) => onSelectNewImage(files[0], 0)}
+                    multiple={false}
+                    icon={<FileVideo />}
+                    maxSize={maxVideoSize}
+                    inputContainerClassName="h-65"
+                  />
+                </FileInputProvider>
+              </Field>
+            )
+          }
 
-        <Field>
-          <FieldLabel>Upload Documents</FieldLabel>
+          if (conf.key === 'tour3d') {
+            return (
+              <Field key={conf.key}>
+                <FieldLabel>3D Tours </FieldLabel>
+                <Textarea
+                  placeholder={conf.placeholder}
+                  className="squircle h-65 resize-none bg-white md:h-full"
+                />
+              </Field>
+            )
+          }
 
-          <FileInputProvider>
-            <div className="grid gap-3">
-              <FileInput
-                onChange={(files) => onSelectNewImage(files[0], 0)}
-                multiple={true}
-                icon={<PlusSignSquare />}
-                placeholder="Add More"
-                // maxSize={maxImageSize}
-                inputContainerClassName="h-[92px]"
-                accept="/*"
+          if (conf.key === 'documents') {
+            return (
+              <MediaField
+                setFiles={setFiles}
+                files={files}
+                key={conf.key}
+                label={conf.label}
+                keyName={conf.key}
+                accept={conf.accept?.join(',')}
+                placeholder={conf.placeholder}
+                maxSize={maxImageSize}
+                inputContainerClassName="h-35"
+                alwaysHideInput={true}
               />
-            </div>
-          </FileInputProvider>
-        </Field>
+            )
+          }
+        })}
       </FieldGroup>
     </form>
   )

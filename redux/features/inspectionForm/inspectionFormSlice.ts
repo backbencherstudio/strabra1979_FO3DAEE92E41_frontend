@@ -4,6 +4,7 @@ import {
   IInspectionFieldValues,
   IInspectionScoreCheckboxValue,
   IPiorityRepairPlanItem,
+  MediaFieldKeyType,
 } from '@/types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
@@ -17,7 +18,7 @@ interface InspectionFormState {
   nteValue: number
   additionalComments: string
 
-  mediaFiles: File[]
+  mediaFiles: { key: MediaFieldKeyType; file: File }[]
 }
 
 const initialState: InspectionFormState = {
@@ -122,15 +123,6 @@ const inspectionFormSlice = createSlice({
       state.additionalComments = ''
     },
 
-    setMediaFiles: (state, action: PayloadAction<File[]>) => {
-      state.mediaFiles = action.payload
-    },
-    addMediaFile: (state, action: PayloadAction<File>) => {
-      state.mediaFiles.push(action.payload)
-    },
-    removeMediaFile: (state, action: PayloadAction<number>) => {
-      state.mediaFiles.splice(action.payload, 1)
-    },
     clearMediaFiles: (state) => {
       state.mediaFiles = []
     },
@@ -191,5 +183,6 @@ export const selectInspectionHeaderData = (state: RootState) => state.inspection
 export const selectInspectionScores = (state: RootState) => state.inspectionForm.scores
 export const selectInspectionRepairItems = (state: RootState) => state.inspectionForm.repairItems
 export const selectInspectionNteValue = (state: RootState) => state.inspectionForm.nteValue
-export const selectInspectionAdditionalComments = (state: RootState) => state.inspectionForm.additionalComments
+export const selectInspectionAdditionalComments = (state: RootState) =>
+  state.inspectionForm.additionalComments
 export const selectInspectionMediaFiles = (state: RootState) => state.inspectionForm.mediaFiles
