@@ -10,19 +10,17 @@ import { StatListItemProps } from '@/components/dashboard/StatItem/StatListItem'
 import StatsList from '@/components/dashboard/StatItem/StatsList'
 import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
+import { TabFilterButtons } from '@/components/reusable/TabFilterButtons/TabFilterButtons'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
 import { formatDate, naIfEmpty, withNAf } from '@/lib/farmatters'
-import { cn, isArrayEmpty } from '@/lib/utils'
+import { isArrayEmpty } from '@/lib/utils'
 import Link from 'next/link'
-import { useState } from 'react'
-import { RepairTab } from '../../InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
+import { useRouter } from 'next/navigation'
 import Chart from './Chart'
 import RecentActivityLogs from './RecentActivityLogs'
 
 export default function AdminHome() {
-  const [currentTab, setTab] = useState<RepairTab>('All')
-
   const {
     data: {
       data: { stats, activityLogs, chart, latestProperties, role, scheduledInspections } = {},
@@ -51,6 +49,8 @@ export default function AdminHome() {
     },
   ]
 
+  const router = useRouter()
+
   return (
     <div className="space-y-5">
       <StatsList isLoading={isLoading} stats={statsData} />
@@ -72,37 +72,23 @@ export default function AdminHome() {
           isLoading={isLoading}
           data={scheduledInspections?.recent}
           title="Recent Scheduled Inspections"
-          subTitle={
-            <div className="mt-5 flex flex-wrap gap-2">
-              {scheduledInspections?.tabs == undefined
-                ? null
-                : Object.keys(scheduledInspections?.tabs).map((tabKey) => {
-                    const tabs = scheduledInspections?.tabs as Record<string, number>
-                    return (
-                      <Button
-                        // onClick={() => setTab(t)}
-                        variant="ghost"
-                        className={cn(
-                          'pointer-events-none px-3 capitalize',
-                          tabKey === currentTab
-                            ? `bg-foundation-light-blue hover:bg-foundation-light-blue text-primary hover:text-primary`
-                            : 'text-gray-black-300 hover:text-gray-black-300',
-                        )}
-                        size="sm"
-                        key={tabKey}
-                      >
-                        {tabKey} ({tabs[tabKey]})
-                      </Button>
-                    )
-                  })}
-            </div>
-          }
-          // TODO: add View
-//          actionButton={
-//            <Button variant="outline" asChild>
-//              <Link href={`#`}>View</Link>
-//            </Button>
-//          }
+          subTitle={<TabFilterButtons tabs={scheduledInspections?.tabs ?? {}} />}
+          actionButton={({ dashboardId, inspectionId, status }) => (
+            <Button
+              disabled={['ASSIGNED', 'IN_PROGRESS'].includes(status)}
+              variant="outline"
+              onClick={() => {
+                if (!dashboardId) {
+                  return
+                }
+
+                const route = routes.admin.inspectionListItemDetail
+                router.push(route.build({ dashboardId }, { inspectionId }))
+              }}
+            >
+              View
+            </Button>
+          )}
         />
       </div>
 

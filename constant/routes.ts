@@ -6,11 +6,20 @@ export const routes = {
 
   admin: {
     home: '/admin',
+
     propertyList: '/admin/properties-list',
     propertyDashboarDetail: createRoute('/admin/properties-list/[dashboardId]'),
 
+    userManagement: '/admin/user-management',
+
+    activityLog: '/admin/activity-log',
+    templates: '/admin/templates',
+    inspectionCriteria: '/admin/inspection-criteria',
+
     inspectionList: '/admin/inspection-list',
     inspectionListItemDetail: createRoute('/admin/inspection-list/[dashboardId]'),
+
+    settings: '/admin/settings',
   },
 
   operational: {
@@ -18,5 +27,24 @@ export const routes = {
 
     inspectionList: '/operation/inspection-list',
     inspectionListItemDetail: createRoute('/operation/inspection-list/[dashboardId]'),
+
+    settings: '/operation/settings',
+  },
+
+  manager: {
+    home: '/manager',
+
+    propertyList: '/manager/property-list',
+    propertyDetail: createRoute('/manager/property-list/[propertyId]'),
+
+    report: '/manager/report',
+
+    settings: '/manager/settings',
+  },
+
+  viewer: {
+    home: '/',
+    propertyDetail: createRoute('/property/[propertyId]'),
+    settings: '/settings',
   },
 } as const

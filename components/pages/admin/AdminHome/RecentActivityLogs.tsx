@@ -23,7 +23,7 @@ export default function RecentActivityLogs({ isLoading, data }: RecentActivityLo
         </div>
 
         <Button asChild variant="link" size="link" theme="text">
-          <Link href={routes.admin.propertyList}>
+          <Link href={routes.admin.activityLog}>
             View All <ChevronRight />
           </Link>
         </Button>

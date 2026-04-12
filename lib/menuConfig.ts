@@ -42,37 +42,37 @@ export const adminMenu: MenuItem[] = [
   {
     id: 'templates',
     label: 'Templates',
-    href: '/admin/templates',
+    href: routes.admin.templates,
     icon: Archive02,
   },
   {
     id: 'user-management',
     label: 'User Management',
-    href: '/admin/user-management',
+    href: routes.admin.userManagement,
     icon: Users,
   },
   {
     id: 'activity-log',
     label: 'Activity Log',
-    href: '/admin/activity-log',
+    href: routes.admin.activityLog,
     icon: Activity,
   },
   {
     id: 'inspection-criteria',
     label: 'Inspection Criteria',
-    href: '/admin/inspection-criteria',
+    href: routes.admin.inspectionCriteria,
     icon: FileSearch,
   },
   {
     id: 'inspection-list',
     label: 'Inspection List',
-    href: '/admin/inspection-list',
+    href: routes.admin.inspectionList,
     icon: FileText,
   },
   {
     id: 'settings',
     label: 'Settings',
-    href: '/admin/settings',
+    href: routes.admin.settings,
     icon: Settings02,
   },
 ]
@@ -81,26 +81,26 @@ export const managerMenu: MenuItem[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',
-    href: '/manager',
+    href: routes.manager.home,
     checks: 'exectMatch',
     icon: DashboardSquare03,
   },
   {
     id: 'property-list',
     label: 'Property List',
-    href: '/manager/property-list',
+    href: routes.manager.propertyList,
     icon: Property,
   },
   {
     id: 'report',
     label: 'Reports',
-    href: '/manager/report',
+    href: routes.manager.report,
     icon: ReportFile,
   },
   {
     id: 'settings',
     label: 'Settings',
-    href: '/manager/settings',
+    href: routes.manager.settings,
     icon: Settings02,
   },
 ]
@@ -109,7 +109,7 @@ export const operationMenu: MenuItem[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',
-    href: '/operation',
+    href: routes.operational.home,
     isActive: (item: MenuItem, pathname: string) =>
       item.href === pathname || pathname.startsWith('/operation/inspection-report'),
     icon: DashboardSquare03,
@@ -117,13 +117,13 @@ export const operationMenu: MenuItem[] = [
   {
     id: 'tasks',
     label: 'Inspection List',
-    href: '/operation/inspection-list',
+    href: routes.operational.inspectionList,
     icon: Property,
   },
   {
     id: 'settings',
     label: 'Settings',
-    href: '/operation/settings',
+    href: routes.operational.settings,
     icon: Settings02,
   },
 ]
@@ -132,7 +132,7 @@ export const viewerMenu: MenuItem[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',
-    href: '/',
+    href: routes.viewer.home,
     isActive: (item: MenuItem, pathname: string) =>
       item.href === pathname || pathname.startsWith('/property'),
     icon: DashboardSquare03,
@@ -140,7 +140,7 @@ export const viewerMenu: MenuItem[] = [
   {
     id: 'settings',
     label: 'Settings',
-    href: '/settings',
+    href: routes.viewer.settings,
     icon: Settings02,
   },
 ]

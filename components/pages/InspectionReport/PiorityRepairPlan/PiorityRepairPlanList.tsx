@@ -1,5 +1,4 @@
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { TabFilterButtons } from '@/components/reusable/TabFilterButtons/TabFilterButtons'
 import { IPiorityRepairPlanItem, IRepairProgressStatus } from '@/types'
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react'
 import { PiorityRepairPlanItem } from './PiorityRepairPlanItem'
@@ -21,7 +20,7 @@ const PiorityRepairPlanList = forwardRef<
   PiorityRepairPlanListRef,
   { items?: IPiorityRepairPlanItem[] }
 >(({ items }, ref) => {
-  const [currentTab, setCurrentTab] = useState<RepairTab>('All')
+  const [currentTab, setCurrentTab] = useState('All')
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useImperativeHandle(ref, () => ({
@@ -33,38 +32,20 @@ const PiorityRepairPlanList = forwardRef<
   }))
 
   const filteredItems =
-    currentTab === 'All' ? items : items?.filter((item) => item?.status === STATUS_MAP[currentTab])
+    currentTab === 'All'
+      ? items
+      : items?.filter((item) => item?.status === STATUS_MAP[currentTab as RepairTab])
 
-  const getCount = (tab: RepairTab) =>
-    tab === 'All'
-      ? items?.length
-      : items?.filter((item) => item?.status === STATUS_MAP[tab])?.length
+  const tabCounts: Record<string, number> = {
+    All: items?.length ?? 0,
+    Urgent: items?.filter((i) => i?.status === 'Urgent').length ?? 0,
+    Maintenance: items?.filter((i) => i?.status === 'Maintenance').length ?? 0,
+    'Replacement Planning': items?.filter((i) => i?.status === 'Replacement Planning').length ?? 0,
+  }
 
   return (
     <div>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {tabs?.map((t) => {
-          const count = getCount(t)
-          return (
-            <Button
-              type="button"
-              disabled={!count || count < 1}
-              onClick={() => setCurrentTab(t)}
-              variant="ghost"
-              className={cn(
-                'px-3',
-                t === currentTab
-                  ? 'bg-foundation-light-blue hover:bg-foundation-light-blue text-primary hover:text-primary'
-                  : 'text-gray-black-300 hover:text-gray-black-300',
-              )}
-              size="sm"
-              key={t}
-            >
-              {t} ({count})
-            </Button>
-          )
-        })}
-      </div>
+      <TabFilterButtons tabs={tabCounts} currentTab={currentTab} onTabChange={setCurrentTab} />
 
       <div ref={scrollContainerRef} className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
         {filteredItems?.map((item) => (

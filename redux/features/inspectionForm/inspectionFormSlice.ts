@@ -168,9 +168,6 @@ export const {
   setAdditionalComments,
   clearAdditionalComments,
 
-  setMediaFiles,
-  addMediaFile,
-  removeMediaFile,
   clearMediaFiles,
 
   clearInspectionForm,
