@@ -47,6 +47,7 @@ const PiorityRepairPlanList = forwardRef<
           const count = getCount(t)
           return (
             <Button
+              type="button"
               disabled={!count || count < 1}
               onClick={() => setCurrentTab(t)}
               variant="ghost"

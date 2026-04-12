@@ -83,7 +83,11 @@ export default function OperationHome() {
         title="Today's Inspections"
         data={todaysInspections}
         actionButton={(inspection) => (
-          <Button onClick={() => handleStartInspection(inspection)} variant="outline">
+          <Button
+            disabled={!['ASSIGNED', 'IN_PROGRESS'].includes(inspection.status)}
+            onClick={() => handleStartInspection(inspection)}
+            variant="outline"
+          >
             Start Inspection
           </Button>
         )}

@@ -32,3 +32,15 @@ export interface IOperationalInspectionTableItem {
   propertyType: string
   createdAt: string
 }
+
+export type IInspectionPropertyDetail = {
+  dashboardId: string
+  property: {
+    id: string
+    name: string
+    address: string
+    propertyType: string
+    status: string
+    createdAt: string
+  }
+}

@@ -2,7 +2,10 @@
 
 import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/inspectionFormApi'
 import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/inspectionManagementApi'
-import { useSubmitAllInspectionFormDataMutation } from '@/api/inspectionManagement/operationalInspectionApi'
+import {
+  useGetInspectionPropertyDetailQuery,
+  useSubmitAllInspectionFormDataMutation,
+} from '@/api/inspectionManagement/operationalInspectionApi'
 import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
 import InspectionReportForm from '@/components/pages/InspectionReport/InspectionReportForm/InspectionReportForm'
@@ -11,7 +14,7 @@ import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinn
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { getErrorMessage } from '@/lib/farmatters'
+import { getErrorMessage, withNA } from '@/lib/farmatters'
 import {
   selectInspectionAdditionalComments,
   selectInspectionHeaderData,
@@ -46,53 +49,53 @@ export default function InspectionReportDetail() {
   const inspectionId = searchParams.get('inspectionId')
   const scheduledInspectionId = searchParams.get('scheduledInspectionId')
 
-  // Console.table({ dashboardId, inspectionId, scheduledInspectionId })
-  // Console.log('page info ===========================')
-
-  const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
-    useSubmitAllInspectionFormDataMutation()
   // Fetch data
   const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
     useGetPropertyInspectionFormQuery(dashboardId, { skip: !dashboardId })
   const { data: { data: inspectinData } = DEFAULT_INSPECTION_DATA, isLoading: isInspectinLoading } =
     useGetSingleInspectionWithIdQuery(inspectionId!, { skip: !inspectionId })
+  const { data: { data: propertyInfo } = {}, isLoading: isPropertyInfoLoading } =
+    useGetInspectionPropertyDetailQuery({ dashboardId }, { skip: !dashboardId })
+  console.log({ propertyInfo })
 
+  // Media inputs
   const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
+  const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
 
-  const [embedFields, setEmbedFields] = useState<EmbedFieldsData>(() => {
-    return {}
-  })
+  const handleInspectinDataChangeFromServer = useEffectEvent(
+    (data: IDashboardInspectionListItem) => {
+      dispatch(setDefaultInspectionFormData(data))
 
-  const handleInspectinDataChange = useEffectEvent((data: IDashboardInspectionListItem) => {
-    dispatch(setDefaultInspectionFormData(data))
+      if (data?.mediaFiles) {
+        const mediaFieldData: MediaFieldItem[] = []
+        const embedFieldsData: EmbedFieldsData = {}
 
-    if (data?.mediaFiles) {
-      const mediaFieldData: MediaFieldItem[] = []
-      const embedFieldsData: EmbedFieldsData = {}
+        data.mediaFiles.forEach((file) => {
+          if (file.fileType === 'EMBED') {
+            embedFieldsData[file.mediaFieldKey] = file.url
+          } else {
+            mediaFieldData.push({
+              kind: 'remote' as const,
+              key: file.mediaFieldKey,
+              file,
+            })
+          }
+        })
 
-      data.mediaFiles.forEach((file) => {
-        if (file.fileType === 'EMBED') {
-          embedFieldsData[file.mediaFieldKey] = file.url
-        } else {
-          mediaFieldData.push({
-            kind: 'remote' as const,
-            key: file.mediaFieldKey,
-            file,
-          })
-        }
-      })
-
-      setMediaFields(mediaFieldData)
-      setEmbedFields(embedFieldsData)
-    }
-  })
+        setMediaFields(mediaFieldData)
+        setEmbedFields(embedFieldsData)
+      }
+    },
+  )
 
   useEffect(() => {
-    if (inspectinData) {
-      handleInspectinDataChange(inspectinData)
+    if (inspectinData && formConfig) {
+      handleInspectinDataChangeFromServer(inspectinData)
     }
-  }, [inspectinData])
+  }, [inspectinData, formConfig])
 
+  const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
+    useSubmitAllInspectionFormDataMutation()
   async function handleSubmitInspectionData() {
     const state = store.getState()
     const headerData = selectInspectionHeaderData(state)
@@ -150,11 +153,11 @@ export default function InspectionReportDetail() {
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
       <h1 className="text-heading text-center text-2xl uppercase">
-        Liberty Shield Roof Health Inspection
+        {propertyInfo?.property.name ?? ''}
       </h1>
       <div className="mt-2 flex justify-center gap-1 text-base font-medium">
         <span className="text-gray-black-300">Inspection ID:</span>
-        <span className="text-gray-black-400">{inspectionId}</span>
+        <span className="text-gray-black-400">{withNA(inspectionId)}</span>
       </div>
       <div className="mt-4 flex justify-center">
         <TabSwitcher

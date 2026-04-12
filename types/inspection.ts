@@ -82,3 +82,4 @@ export type IAdminScheduledInspectinTableItem = {
   createdAt: string
   nextInspectionDate: string
 }
+

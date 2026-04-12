@@ -1,12 +1,14 @@
 import { baseApi } from '@/api/baseApi'
 import type {
   IFilterPayload,
+  IInspectionPropertyDetail,
   IInspectionScoreCheckboxValue,
   IOperationalInspectionTableItem,
   IPaginationPayload,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
+
 
 export type IInspectionFormData = {
   headerData: {
@@ -82,11 +84,20 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Overview', 'InspectionManagement'],
     }),
+    getInspectionPropertyDetail: builder.query<
+      WithApiStatus<IInspectionPropertyDetail>,
+      { dashboardId: string }
+    >({
+      query: ({ dashboardId }) => ({
+        url: `/inspections/property/${dashboardId}/info`,
+      }),
+    }),
   }),
   overrideExisting: false,
 })
 
 export const {
+  useGetInspectionPropertyDetailQuery,
   useGetAllSheduledInspectionsAssignedToMeQuery,
   useStartAScheduledInspectionToChangeStatusMutation,
   useSubmitAllInspectionFormDataMutation,

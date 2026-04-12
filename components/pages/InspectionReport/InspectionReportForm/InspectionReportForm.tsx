@@ -23,6 +23,7 @@ import {
 } from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { AppDispatch } from '@/redux/store'
 import { IDashboardInspectionListItem, IPropertyInspectionFormData } from '@/types'
+import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import InspectionCheckBoxes from './InspectionCheckBoxes'
 
@@ -39,6 +40,7 @@ export default function InspectionReportForm({
 }: InspectionReportFormProps) {
   const dispatch = useDispatch<AppDispatch>()
   const headerFieldsValues = useSelector(selectInspectionHeaderData)
+  const touchedFieldsRef = useRef<Set<string>>(new Set())
 
   const headerFields = formConfig?.form.headerFields.map((category) => {
     const value = headerFieldsValues?.[category.key]
@@ -76,14 +78,23 @@ export default function InspectionReportForm({
           return (
             <Field key={item.key}>
               <FieldLabel data-required={item.required} htmlFor={item.key}>
-                {item.label}
+                {item.label} {item.value === '' ? 'yes' : 'no'}
               </FieldLabel>
 
               {isDropdown ? (
                 <Select
+                  onOpenChange={(isOpen) => {
+                    if (isOpen) {
+                      touchedFieldsRef.current.add(item.key)
+                    }
+                  }}
                   value={item.value}
                   required={item.required}
-                  onValueChange={(val) => handleInputChange(item.key, val)}
+                  onValueChange={(val) => {
+                    if (touchedFieldsRef.current.has(item.key)) {
+                      handleInputChange(item.key, val)
+                    }
+                  }}
                   disabled={!isEditable}
                 >
                   <SelectTrigger id={item.key}>
