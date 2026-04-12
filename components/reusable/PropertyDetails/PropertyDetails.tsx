@@ -25,6 +25,7 @@ interface PropertyDetailsProps {
   headerRightContent?: React.ReactNode
 }
 
+// TODO: mock data
 export const propertyDetails: Property = {
   title: '2024 Annual Roof Inspection',
   property: 'Sunset Office Complex',
@@ -97,22 +98,24 @@ export default function PropertyDetails({
           }
 
           if (item.type === 'media_grid') {
-            const slides: Slide[] = inspectin?.mediaFiles?.map((item) => {
-              const isVideo = item.fileType === 'VIDEO'
+            const slides: Slide[] = inspectin?.mediaFiles
+              .filter((item) => ['PHOTO', 'VIDEO'].includes(item.fileType))
+              ?.map((item) => {
+                const isVideo = item.fileType === 'VIDEO'
 
-              if (isVideo) {
-                return {
-                  type: 'video',
-                  poster: item?.url,
-                  sources: [{ src: item.url, type: 'video/mp4' }],
+                if (isVideo) {
+                  return {
+                    type: 'video',
+                    poster: item?.url,
+                    sources: [{ src: item.url, type: 'video/mp4' }],
+                  }
                 }
-              }
 
-              return {
-                type: 'image',
-                src: item?.url,
-              }
-            })
+                return {
+                  type: 'image',
+                  src: item?.url,
+                }
+              })
 
             return (
               <div key={item.type} className="col-span-6">
