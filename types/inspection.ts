@@ -1,3 +1,4 @@
+import { IInspectionMediaFileItem } from './inspectinForm'
 import { IUserBasicInfo } from './user'
 
 export const REPAIR_PROGRESS_STATUSES = ['Urgent', 'Maintenance', 'Replacement Planning'] as const
@@ -25,18 +26,6 @@ export type IInspectionFieldValues = Record<string, string>
 export interface IInspectionScoreCheckboxValue {
   notes: string
   score: number
-}
-
-export type IInspectionMediaFileItem = {
-  id: string
-  inspectionId: string
-  fileName: string
-  fileType: 'PHOTO' | 'VIDEO'
-  url: string
-  size: number
-  mediaFieldKey: string
-  category?: string
-  uploadedAt: string
 }
 
 export type IDashboardInspectionListItem = {

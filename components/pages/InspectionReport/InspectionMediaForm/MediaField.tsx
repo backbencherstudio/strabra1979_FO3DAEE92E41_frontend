@@ -1,22 +1,25 @@
 'use client'
 
-import { FileImage, PlusSignSquare } from '@/components/icons/File'
-import { FileInput, FileInputRef } from '@/components/reusable/FileInput/FileInput'
+import { PlusSignSquare } from '@/components/icons/File'
+import { FileInput, FileInputProps, FileInputRef } from '@/components/reusable/FileInput/FileInput'
 import FileInputPreview from '@/components/reusable/FileInput/FileInputPreview'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { MediaFieldKeyType } from '@/types'
+import {
+  IInspectionMediaFileItem,
+  LocalMediaFile,
+  MediaFieldKeyType,
+  RemoteMediaFile,
+} from '@/types'
 import { Dispatch, SetStateAction, useRef } from 'react'
 
-interface MediaFieldProps {
+interface MediaFieldProps extends Omit<FileInputProps, 'files' | 'setFiles'> {
   label: string
   keyName: MediaFieldKeyType
-  files: { key: MediaFieldKeyType; file: File }[]
-  setFiles: Dispatch<SetStateAction<{ key: MediaFieldKeyType; file: File }[]>>
+  files: (LocalMediaFile | RemoteMediaFile)[]
+  setFiles: Dispatch<SetStateAction<(LocalMediaFile | RemoteMediaFile)[]>>
   accept?: string
-  placeholder?: string
   maxSize: number
-  inputContainerClassName?: string
   alwaysHideInput?: boolean
 }
 
@@ -26,59 +29,80 @@ export function MediaField({
   files: allFiles,
   setFiles,
   accept,
+  multiple = true,
   placeholder,
   maxSize,
   inputContainerClassName = 'h-35',
   alwaysHideInput = false,
+  ...props
 }: MediaFieldProps) {
   const fileInputRef = useRef<FileInputRef>(null)
 
-  const files = allFiles.filter((f) => f.key === keyName).map((f) => f.file)
+  const localFiles = allFiles
+    .filter((f) => f.key === keyName && f.kind === 'local')
+    .map((f) => (f as LocalMediaFile).file)
+
+  const keyFiles = allFiles.filter((f) => f.key === keyName)
+  const remoteFiles = keyFiles
+    .filter((f) => f.kind === 'remote')
+    .map((f) => (f as RemoteMediaFile).file as IInspectionMediaFileItem)
+
+  const combinedPreviewFiles = [...localFiles, ...remoteFiles]
 
   const handleRemoveFile = (index: number) => {
-    const keyFiles = allFiles.filter((f) => f.key === keyName)
-    const fileToRemove = keyFiles[index]
-    setFiles((prev) => prev.filter((f) => f !== fileToRemove))
+    const fileToRemove = combinedPreviewFiles[index]
+    setFiles((prev) =>
+      prev.filter((f) => {
+        if (f.kind === 'local') {
+          return (f as LocalMediaFile).file !== fileToRemove
+        } else {
+          return (f as RemoteMediaFile).file !== fileToRemove
+        }
+      }),
+    )
   }
 
   const handleFilesChange = (newFiles: File[]) => {
-    const newEntries = newFiles.map((file) => ({ key: keyName, file }))
+    const newEntries = newFiles.map((file) => ({ kind: 'local' as const, key: keyName, file }))
     setFiles((prev) => {
       const otherFiles = prev.filter((f) => f.key !== keyName)
-      return [...otherFiles, ...newEntries]
+      const remoteFiles = prev.filter((f) => f.key === keyName && f.kind === 'remote')
+      return [...otherFiles, ...remoteFiles, ...newEntries]
     })
   }
 
   const triggerInput = () => fileInputRef.current?.triggerInput()
 
-  const inputClassName = alwaysHideInput ? 'hidden' : files.length === 0 ? '' : 'hidden'
+  const inputClassName = alwaysHideInput ? 'hidden' : allFiles.length === 0 ? '' : 'hidden'
 
   return (
     <Field>
       <FieldLabel>{label}</FieldLabel>
       <FileInput
+        {...props}
         accept={accept}
         placeholder={placeholder}
         className={inputClassName}
-        files={files}
+        files={localFiles}
         setFiles={handleFilesChange}
         ref={fileInputRef}
-        multiple={true}
-        icon={<FileImage />}
+        multiple={multiple}
         maxSize={maxSize}
         inputContainerClassName={inputContainerClassName}
       />
-      <FileInputPreview removeFile={handleRemoveFile} files={files} className="" />
-      <Button
-        variant="outline"
-        type="button"
-        size="xl"
-        className="border-border/50 border-2 border-dashed"
-        onClick={triggerInput}
-      >
-        <PlusSignSquare />
-        <span className="text-foreground text-sm whitespace-nowrap">Add More</span>
-      </Button>
+      <FileInputPreview removeFile={handleRemoveFile} files={combinedPreviewFiles} className="" />
+      {multiple ? (
+        <Button
+          variant="outline"
+          type="button"
+          size="xl"
+          className="border-border/50 border-2 border-dashed"
+          onClick={triggerInput}
+        >
+          <PlusSignSquare />
+          <span className="text-foreground text-sm whitespace-nowrap">Add More</span>
+        </Button>
+      ) : null}
     </Field>
   )
 }

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'backend.roofwellnesshub.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.trycloudflare.com',
+      },
     ],
   },
 }

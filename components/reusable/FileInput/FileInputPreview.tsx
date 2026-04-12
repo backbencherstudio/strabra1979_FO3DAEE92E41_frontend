@@ -1,6 +1,7 @@
 import { FilePdf, FileVideo } from '@/components/icons/File'
 import { Trush } from '@/components/icons/Trush'
 import { Button } from '@/components/ui/button'
+import { IInspectionMediaFileItem } from '@/types'
 import { cn } from '@/lib/utils'
 import { File } from 'lucide-react'
 import Image from 'next/image'
@@ -8,7 +9,7 @@ import { useMemo } from 'react'
 import { formatFileSize } from './FileInput'
 
 interface FileInputPreviewProps extends React.ComponentProps<'div'> {
-  files: File[]
+  files: (File | IInspectionMediaFileItem)[]
   removeFile: (index: number) => void
 }
 
@@ -18,19 +19,18 @@ export default function FileInputPreview({
   removeFile,
   ...props
 }: FileInputPreviewProps) {
-  // const { files, removeFile } = useFileInput()
-
   const fileMeta = useMemo(() => {
-    return files.map((file) => ({
-      isImage: file.type.startsWith('image/'),
-      isVideo: file.type.startsWith('video/'),
-      isPdf: file.type.startsWith('application/pdf'),
-      isApplicationFile: file.type.startsWith('application/'),
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      url: URL.createObjectURL(file),
-    }))
+    return files.map((file) => {
+      const isRemote = 'url' in file
+      const isImage = isRemote ? file.fileType === 'PHOTO' : file.type.startsWith('image/')
+      const isVideo = isRemote ? file.fileType === 'VIDEO' : file.type.startsWith('video/')
+      const isPdf = isRemote ? file.fileType === 'PDF' : file.type.startsWith('application/pdf')
+      const name = isRemote ? file.fileName : file.name
+      const size = isRemote ? file.size : file.size
+      const url = isRemote ? file.url : URL.createObjectURL(file)
+
+      return { isImage, isVideo, isPdf, name, size, url, isRemote }
+    })
   }, [files])
 
   if (fileMeta.length == 0) {

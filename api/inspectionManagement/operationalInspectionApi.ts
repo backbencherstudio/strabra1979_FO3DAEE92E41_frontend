@@ -15,6 +15,9 @@ export type IInspectionFormData = {
   scores: {
     [key: string]: IInspectionScoreCheckboxValue
   }
+  embedFields: {
+    [key: string]: string
+  }
   repairItems?: Array<{
     title: string
     status: string
@@ -65,7 +68,7 @@ const operationalInspectionApi = baseApi.injectEndpoints({
         const formData = new FormData()
         formData.append('data', jsonData)
 
-        files.forEach((file, index) => {
+        files.forEach((file) => {
           formData.append('files', file)
         })
 

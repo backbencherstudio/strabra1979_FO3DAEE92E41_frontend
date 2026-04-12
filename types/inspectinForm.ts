@@ -66,8 +66,35 @@ export interface AdditionalNotesConfig {
 }
 
 // -------------------- Form & Main Interface --------------------
+export type EmbedFieldsData = { [key: string]: string }
+
 export const MEDIA_FIELD_KEY_TYPES = ['mediaFiles', 'aerialMap', 'tour3d', 'documents'] as const
 export type MediaFieldKeyType = (typeof MEDIA_FIELD_KEY_TYPES)[number]
+export type MediaFieldItem = LocalMediaFile | RemoteMediaFile
+
+export type LocalMediaFile = {
+  kind: 'local'
+  key: MediaFieldKeyType
+  file: File
+}
+
+export type RemoteMediaFile = {
+  kind: 'remote'
+  key: MediaFieldKeyType
+  file: IInspectionMediaFileItem
+}
+
+export type IInspectionMediaFileItem = {
+  id: string
+  inspectionId: string
+  fileName: string
+  fileType: 'PHOTO' | 'VIDEO' | 'EMBED' | 'PDF'
+  url: string
+  size: number
+  mediaFieldKey: MediaFieldKeyType
+  category?: string
+  uploadedAt: string
+}
 
 export interface IInspectionFormData {
   headerFields: IInspectionInputField[]

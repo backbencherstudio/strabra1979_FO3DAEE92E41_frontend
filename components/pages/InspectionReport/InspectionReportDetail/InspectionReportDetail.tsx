@@ -15,16 +15,20 @@ import { getErrorMessage } from '@/lib/farmatters'
 import {
   selectInspectionAdditionalComments,
   selectInspectionHeaderData,
-  selectInspectionMediaFiles,
   selectInspectionNteValue,
   selectInspectionRepairItems,
   selectInspectionScores,
   setDefaultInspectionFormData,
 } from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { store, useAppDispatch } from '@/redux/store'
-import { IDashboardInspectionListItem } from '@/types'
+import {
+  EmbedFieldsData,
+  IDashboardInspectionListItem,
+  MediaFieldItem,
+  MediaFieldKeyType,
+} from '@/types'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { toast } from 'sonner'
 
 const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
@@ -36,14 +40,14 @@ export default function InspectionReportDetail() {
   const searchParams = useSearchParams()
   const params = useParams<{ dashboardId: string }>()
 
-  // Get ids from params
+  // Get ids from parameters
   const dashboardId = params.dashboardId
   const isEditable = searchParams.get('edit') === 'true'
   const inspectionId = searchParams.get('inspectionId')
   const scheduledInspectionId = searchParams.get('scheduledInspectionId')
 
-  console.table({ dashboardId, inspectionId, scheduledInspectionId })
-  console.log('page info ===========================')
+  // Console.table({ dashboardId, inspectionId, scheduledInspectionId })
+  // Console.log('page info ===========================')
 
   const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
     useSubmitAllInspectionFormDataMutation()
@@ -53,27 +57,41 @@ export default function InspectionReportDetail() {
   const { data: { data: inspectinData } = DEFAULT_INSPECTION_DATA, isLoading: isInspectinLoading } =
     useGetSingleInspectionWithIdQuery(inspectionId!, { skip: !inspectionId })
 
+  const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
+
+  const [embedFields, setEmbedFields] = useState<EmbedFieldsData>(() => {
+    return {}
+  })
+
+  const handleInspectinDataChange = useEffectEvent((data: IDashboardInspectionListItem) => {
+    dispatch(setDefaultInspectionFormData(data))
+
+    if (data?.mediaFiles) {
+      const mediaFieldData: MediaFieldItem[] = []
+      const embedFieldsData: EmbedFieldsData = {}
+
+      data.mediaFiles.forEach((file) => {
+        if (file.fileType === 'EMBED') {
+          embedFieldsData[file.mediaFieldKey] = file.url
+        } else {
+          mediaFieldData.push({
+            kind: 'remote' as const,
+            key: file.mediaFieldKey,
+            file,
+          })
+        }
+      })
+
+      setMediaFields(mediaFieldData)
+      setEmbedFields(embedFieldsData)
+    }
+  })
+
   useEffect(() => {
     if (inspectinData) {
-      dispatch(setDefaultInspectionFormData(inspectinData))
+      handleInspectinDataChange(inspectinData)
     }
-  }, [dispatch, inspectinData])
-
-  if (isFormConfigLoading || isInspectinLoading) {
-    return <FullPageSpinner />
-  }
-
-  const defaultData = {
-    headerData: { inspectionTitle: '2024 Annual Roof Inspection', propertyType: 'Commercial' },
-    scores: { surfaceCondition: { score: 22, notes: 'Minor cracks observed' } },
-    repairItems: [
-      { title: 'Emergency Leak Repair', status: 'Urgent', description: 'Moisture stains...' },
-    ],
-    nteValue: 7500,
-    additionalComments: 'No active leaks at time of inspection.',
-    inspectedAt: '2024-06-15T09:00:00.000Z',
-    mediaFieldKeys: ['mediaFiles'],
-  }
+  }, [inspectinData])
 
   async function handleSubmitInspectionData() {
     const state = store.getState()
@@ -82,9 +100,24 @@ export default function InspectionReportDetail() {
     const repairItems = selectInspectionRepairItems(state)
     const nteValue = selectInspectionNteValue(state)
     const additionalComments = selectInspectionAdditionalComments(state)
-    const mediaFiles = selectInspectionMediaFiles(state)
 
     const inspectedAt = new Date().toISOString()
+
+    const { fileKeyList, fileList } = mediaFields.reduce(
+      (acc, item) => {
+        acc.fileKeyList.push(item.key)
+
+        if ('file' in item && item.kind === 'local') {
+          acc.fileList.push(item.file)
+        }
+
+        return acc
+      },
+      {
+        fileKeyList: [] as MediaFieldKeyType[],
+        fileList: [] as File[],
+      },
+    )
 
     try {
       const res = await submitAllInspectionFormData({
@@ -97,19 +130,23 @@ export default function InspectionReportDetail() {
           nteValue,
           additionalComments,
           inspectedAt: inspectedAt,
-          mediaFieldKeys: [],
+          mediaFieldKeys: fileKeyList,
+          embedFields: embedFields,
         },
-        files: mediaFiles,
+        files: fileList,
       }).unwrap()
 
-      toast.success(res.message || 'Success message')
+      toast.success(res.message || 'Inspection submitted successfully', {})
     } catch (err) {
-      toast.error('Error title', {
+      toast.error('Failed to submit inspection', {
         description: getErrorMessage(err),
       })
     }
   }
 
+  if (isFormConfigLoading || isInspectinLoading) {
+    return <FullPageSpinner />
+  }
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
       <h1 className="text-heading text-center text-2xl uppercase">
@@ -140,10 +177,7 @@ export default function InspectionReportDetail() {
           inspectionData={inspectinData}
         />
         <section className="mt-5 grid items-start gap-4 @3xl:grid-cols-2 @3xl:gap-6">
-          <PriorityRepairPlanningForm
-            isEditable={isEditable}
-            // initialItems={inspectinData?.repairItems}
-          />
+          <PriorityRepairPlanningForm isEditable={isEditable} />
           <InspectionReportFinalScoreCard
             score={inspectinData?.overallScore}
             healthLabel={inspectinData?.healthLabel}
@@ -155,7 +189,13 @@ export default function InspectionReportDetail() {
 
       {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
-        <InspectionMediaForm formConfig={formConfig} />
+        <InspectionMediaForm
+          embedFields={embedFields}
+          setEmbedFields={setEmbedFields}
+          files={mediaFields}
+          setFiles={setMediaFields}
+          formConfig={formConfig}
+        />
       </section>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -191,7 +231,7 @@ export function useChecklistAndMediaTabName() {
   const isMediaFilesTab = currentTab === 'media-files'
 
   const switchTab = (tab: string | null) => {
-    // Get all existing query params
+    // Get all existing query parameters
     const updatedParams = new URLSearchParams(searchParams.toString())
     const nextTab = tab == 'media-files' ? 'checklist' : 'media-files'
     updatedParams.set('tab', nextTab)

@@ -1,35 +1,30 @@
 'use client'
 
-import { FileVideo } from '@/components/icons/File'
-import { FileInput, mbToBytes } from '@/components/reusable/FileInput/FileInput'
-import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
+import { FileImage, FileVideo } from '@/components/icons/File'
+import { mbToBytes } from '@/components/reusable/FileInput/FileInput'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import { IPropertyInspectionFormData, MediaFieldKeyType } from '@/types'
-import { useState } from 'react'
+import { EmbedFieldsData, IPropertyInspectionFormData, MediaFieldItem } from '@/types'
+import { Dispatch, SetStateAction } from 'react'
 import { MediaField } from './MediaField'
 
 interface InspectionMediaFormProps {
   formConfig?: IPropertyInspectionFormData
+  files: MediaFieldItem[]
+  setFiles: Dispatch<SetStateAction<MediaFieldItem[]>>
+  embedFields: EmbedFieldsData
+  setEmbedFields: Dispatch<SetStateAction<EmbedFieldsData>>
 }
 
-export default function InspectionMediaForm({ formConfig }: InspectionMediaFormProps) {
+export default function InspectionMediaForm({
+  formConfig,
+  files,
+  setFiles,
+  embedFields,
+  setEmbedFields,
+}: InspectionMediaFormProps) {
   const maxImageSize = mbToBytes(100)
   const maxVideoSize = mbToBytes(1024)
-  const [imageFiles, setImageFiles] = useState<File[]>([])
-  const onSelectNewImage = (file: File, index: number) => {
-    setImageFiles((v) => {
-      const cImages = [...v]
-      if (index >= 0 && index < cImages.length) {
-        cImages[index] = file
-      } else {
-        cImages.push(file)
-      }
-      return cImages
-    })
-  }
-
-  const [files, setFiles] = useState<{ key: MediaFieldKeyType; file: File }[]>([])
 
   return (
     <form>
@@ -45,6 +40,7 @@ export default function InspectionMediaForm({ formConfig }: InspectionMediaFormP
                 keyName={conf.key}
                 accept={conf.accept?.join(',')}
                 placeholder={conf.placeholder}
+                icon={<FileImage />}
                 maxSize={maxImageSize}
                 inputContainerClassName="h-35"
               />
@@ -53,29 +49,33 @@ export default function InspectionMediaForm({ formConfig }: InspectionMediaFormP
 
           if (conf.key === 'aerialMap') {
             return (
-              <Field key={conf.key}>
-                <FieldLabel>{conf.label}</FieldLabel>
-                <FileInputProvider>
-                  <FileInput
-                    accept={conf.accept?.join(',')}
-                    placeholder={conf.placeholder}
-                    onChange={(files) => onSelectNewImage(files[0], 0)}
-                    multiple={false}
-                    icon={<FileVideo />}
-                    maxSize={maxVideoSize}
-                    inputContainerClassName="h-65"
-                  />
-                </FileInputProvider>
-              </Field>
+              <MediaField
+                setFiles={setFiles}
+                files={files}
+                multiple={false}
+                key={conf.key}
+                label={conf.label}
+                keyName={conf.key}
+                accept={conf.accept?.join(',')}
+                placeholder={conf.placeholder}
+                icon={<FileVideo />}
+                maxSize={maxVideoSize}
+                inputContainerClassName="h-65"
+              />
             )
           }
 
           if (conf.key === 'tour3d') {
+            const tour3dValue = embedFields['tour3d'] ?? ''
             return (
               <Field key={conf.key}>
-                <FieldLabel>3D Tours </FieldLabel>
+                <FieldLabel>{conf.label}</FieldLabel>
                 <Textarea
                   placeholder={conf.placeholder}
+                  value={tour3dValue}
+                  onChange={(e) => {
+                    setEmbedFields({ ...embedFields, [conf.key]: e.target.value })
+                  }}
                   className="squircle h-65 resize-none bg-white md:h-full"
                 />
               </Field>

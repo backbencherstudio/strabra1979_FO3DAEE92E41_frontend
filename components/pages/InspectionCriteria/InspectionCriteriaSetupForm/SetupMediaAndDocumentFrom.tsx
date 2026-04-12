@@ -10,7 +10,7 @@ export default function SetupMediaAndDocumentFrom({
 }: SetupMediaAndDocumentFromProps) {
   return (
     <div>
-      <InspectionMediaForm />
+      {/* <InspectionMediaForm /> */}
 
       {/* Add More Input fileds */}
       <CreateMoreInputModal editFieldType={'input-media'} {...createModalOpts} />
