@@ -26,6 +26,7 @@ import { IDashboardInspectionListItem, IPropertyInspectionFormData } from '@/typ
 import { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import InspectionCheckBoxes from './InspectionCheckBoxes'
+import { cn } from '@/lib/utils'
 
 interface InspectionReportFormProps {
   isEditable: boolean
@@ -72,13 +73,18 @@ export default function InspectionReportForm({
 
   return (
     <form>
-      <FieldGroup className="grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
+      <FieldGroup
+        className={cn(
+          'grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4',
+          '[&_input]:opacity-100! [&_textarea]:opacity-100!',
+        )}
+      >
         {headerFields?.map((item) => {
           const isDropdown = item.type === 'dropdown'
           return (
             <Field key={item.key}>
               <FieldLabel data-required={item.required} htmlFor={item.key}>
-                {item.label} {item.value === '' ? 'yes' : 'no'}
+                {item.label}
               </FieldLabel>
 
               {isDropdown ? (

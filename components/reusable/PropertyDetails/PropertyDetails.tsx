@@ -1,42 +1,36 @@
 'use client'
 
+import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/inspectionFormApi'
 import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
 import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import { CircularProgressWithMeta } from '@/components/reusable/CircularProgress/CircularProgress'
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
+import { mockPropertyDetails } from '@/constant/mock'
 import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
-import { IPropertyDashboardDetails } from '@/types'
+import {
+  clearInspectionForm,
+  setDefaultInspectionFormData,
+} from '@/redux/features/inspectionForm/inspectionFormSlice'
+import { useAppDispatch } from '@/redux/store'
+import { IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
+import { useEffect, useEffectEvent } from 'react'
 import { Slide } from 'yet-another-react-lightbox'
+import FullPageSpinner from '../FullPageSpinner/FullPageSpinner'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import { MediaFiles, MediaFilesPreviewGrid } from '../MediaFiles/MediaFiles'
-import { Property } from '../PropertyCard/PropertyCard'
 import CustomTable from '../table/CustomTable'
-import PropertyScoreListPreview from './PropertyScoreList'
+import PropertyCheckListPreview from './PropertyCheckListPreview'
 
 interface PropertyDetailsProps {
   dashboardId: string
   data: IPropertyDashboardDetails
   accessExpiration?: string
   headerRightContent?: React.ReactNode
-}
-
-// TODO: mock data
-export const propertyDetails: Property = {
-  title: '2024 Annual Roof Inspection',
-  property: 'Sunset Office Complex',
-  propertyName: 'Sunset Office Complex',
-  id: 'INS2323',
-  type: 'Commercial',
-  updated_at: '12 Jan, 2025',
-  address: '1234 Sunset Blvd, Los Angeles, USA',
-  nextInspection: 'Jan 12, 2025',
-  date: 'May 15, 2025',
-  score: 76,
 }
 
 export default function PropertyDetails({
@@ -52,7 +46,28 @@ export default function PropertyDetails({
     { label: 'Next Inspection', value: naIfEmpty(formatDate(property?.nextInspectionDate)) },
   ]
 
-  const inspectin = data?.inspections[0] || {}
+  const inspectinData = data?.inspections[0] || {}
+  const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
+    useGetPropertyInspectionFormQuery(dashboardId, { skip: !dashboardId })
+
+  const dispatch = useAppDispatch()
+  const handleInspectinDataChangeFromServer = useEffectEvent(
+    (data: IDashboardInspectionListItem) => {
+      dispatch(setDefaultInspectionFormData(data))
+    },
+  )
+  useEffect(() => {
+    if (data?.inspections.length && formConfig) {
+      handleInspectinDataChangeFromServer(data?.inspections[0])
+    }
+    return () => {
+      dispatch(clearInspectionForm())
+    }
+  }, [data?.inspections, formConfig, dispatch])
+
+  if (isFormConfigLoading) {
+    return <FullPageSpinner />
+  }
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
@@ -89,16 +104,16 @@ export default function PropertyDetails({
                 <p className="text-center text-sm">Average Health Score</p>
                 <CircularProgressWithMeta
                   conf={item.config}
-                  healthLabel={inspectin?.healthLabel}
-                  placeholder={`Remaining Life: ${inspectin?.remainingLife}`}
-                  value={inspectin?.overallScore}
+                  healthLabel={inspectinData?.healthLabel}
+                  placeholder={`Remaining Life: ${inspectinData?.remainingLife}`}
+                  value={inspectinData?.overallScore}
                 />
               </SectionCard>
             )
           }
 
           if (item.type === 'media_grid') {
-            const slides: Slide[] = inspectin?.mediaFiles
+            const slides: Slide[] = inspectinData?.mediaFiles
               .filter((item) => ['PHOTO', 'VIDEO'].includes(item.fileType))
               ?.map((item) => {
                 const isVideo = item.fileType === 'VIDEO'
@@ -164,7 +179,7 @@ export default function PropertyDetails({
             return (
               <SectionCard className="col-span-full" key={item.type}>
                 <SectionTitle>Priority Repair Planning</SectionTitle>
-                <PiorityRepairPlanList items={inspectin?.repairItems ?? []} />
+                <PiorityRepairPlanList items={inspectinData?.repairItems ?? []} />
               </SectionCard>
             )
           }
@@ -172,8 +187,11 @@ export default function PropertyDetails({
           if (item.type === 'roof_health_rating') {
             return (
               <SectionCard className="col-span-full" key={item.type}>
-                {/* <SectionTitle>Priority Repair Planning</SectionTitle> */}
-                <PropertyScoreListPreview />
+                <PropertyCheckListPreview
+                  label={item.label}
+                  formConfig={formConfig}
+                  inspectionData={inspectinData}
+                />
               </SectionCard>
             )
           }
@@ -181,15 +199,15 @@ export default function PropertyDetails({
           if (item.type === 'additional_info') {
             return (
               <SectionCard className="col-span-full" key={item.type}>
-                <SectionTitle>Additional Information</SectionTitle>
+                <SectionTitle>{item.label}</SectionTitle>
                 <div className="mt-4 space-y-3">
                   <InfoCard
                     title="NTE (Not-To-Exceed)"
-                    description={withNA(inspectin?.nteValue, (f) => `$${f.toLocaleString()}`)}
+                    description={withNA(inspectinData?.nteValue, (f) => `$${f.toLocaleString()}`)}
                   />
                   <InfoCard
                     title="Additional Comments"
-                    description={naIfEmpty(inspectin?.additionalComments)}
+                    description={naIfEmpty(inspectinData?.additionalComments)}
                   />
                 </div>
               </SectionCard>

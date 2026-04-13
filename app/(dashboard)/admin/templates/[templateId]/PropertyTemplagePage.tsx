@@ -11,7 +11,7 @@ import Image from 'next/image'
 import { InfoGrid } from '@/components/reusable/InfoGrid/InfoGrid'
 import { PropertyHeaderWrapper, InfoList } from '@/components/reusable/InfoList/InfoList'
 import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
-import PropertyScoreListPreview from '@/components/reusable/PropertyDetails/PropertyScoreList'
+import PropertyCheckListPreview from '@/components/reusable/PropertyDetails/PropertyCheckListPreview'
 import CustomTable from '@/components/reusable/table/CustomTable'
 import {
   MediaFiles,
@@ -34,19 +34,6 @@ interface PropertyDetailsProps {
   property: Property
   accessExpiration?: string
   headerRightContent?: React.ReactNode
-}
-
-export const propertyDetails: Property = {
-  title: '2024 Annual Roof Inspection',
-  property: 'Sunset Office Complex',
-  propertyName: 'Sunset Office Complex',
-  id: 'INS2323',
-  type: 'Commercial',
-  updated_at: '12 Jan, 2025',
-  address: '1234 Sunset Blvd, Los Angeles, USA',
-  nextInspection: 'Jan 12, 2025',
-  date: 'May 15, 2025',
-  score: 76,
 }
 
 export const demoSlides: Slide[] = [

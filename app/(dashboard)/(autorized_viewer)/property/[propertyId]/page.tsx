@@ -1,7 +1,3 @@
-import PropertyDetails, {
-  propertyDetails,
-} from '@/components/reusable/PropertyDetails/PropertyDetails'
-
 interface PropertyDetailPageProps {
   params: Promise<{
     propertyId: string

@@ -3,19 +3,7 @@ import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
 import { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import PropertyTemplagePage from './PropertyTemplagePage'
-
-const mockpropertyDetails: Property = {
-  title: 'Roof Inspection',
-  property: 'Property name',
-  propertyName: 'Property name',
-  id: '#000',
-  type: 'Poperty type',
-  updated_at: '12 Jan, 2025',
-  address: 'Street, City, Country',
-  nextInspection: 'Date',
-  date: 'Date',
-  score: 100,
-}
+import { mockPropertyDetails } from '@/constant/mock'
 
 export default function TemplateDetailsPage() {
   return (
@@ -33,7 +21,7 @@ export default function TemplateDetailsPage() {
             </Button>
           }
           id={'1234'}
-          property={mockpropertyDetails}
+          property={mockPropertyDetails}
         />
       </section>
 

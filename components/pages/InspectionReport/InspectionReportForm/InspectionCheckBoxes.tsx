@@ -5,8 +5,8 @@ import { IInspectionScoreCheckboxValue, ScoringCategory } from '@/types'
 
 interface InspectionCheckBoxesProps {
   isEditable: boolean
-  scoringCategories: ScoringCategory[]
-  inspectionScores: Record<string, IInspectionScoreCheckboxValue>
+  scoringCategories: ScoringCategory[] | undefined
+  inspectionScores: Record<string, IInspectionScoreCheckboxValue> | undefined
   onScoreChange?: (key: string, value: number) => void
   onNotesChange?: (key: string, value: string) => void
 }
@@ -24,7 +24,7 @@ export default function InspectionCheckBoxes({
 
   const scoringFields = scoringCategories
     // .sort((a, b) => a.order - b.order)
-    .map((category) => {
+    ?.map((category) => {
       const scoreData = inspectionScores?.[category.key]
 
       return {

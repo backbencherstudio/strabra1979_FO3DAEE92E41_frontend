@@ -1,4 +1,4 @@
-import { propertyDetails } from '@/components/reusable/PropertyDetails/PropertyDetails'
+import { mockPropertyDetails } from '@/constant/mock'
 import PropertyDetailsReports from '@/components/reusable/PropertyDetails/PropertyDetailsReports'
 
 interface PropertyDetailPageProps {
@@ -13,7 +13,7 @@ export default async function PropertyDetailReportPage({ params }: PropertyDetai
     <PropertyDetailsReports
       accessExpiration="12 Jan, 2025"
       id={propertyId}
-      property={propertyDetails}
+      property={mockPropertyDetails}
     />
   )
 }

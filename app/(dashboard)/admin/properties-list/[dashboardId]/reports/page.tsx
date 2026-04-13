@@ -1,4 +1,4 @@
-import { propertyDetails } from '@/components/reusable/PropertyDetails/PropertyDetails'
+import { mockPropertyDetails } from '@/constant/mock'
 import PropertyDetailsReports from '@/components/reusable/PropertyDetails/PropertyDetailsReports'
 import PropertySharePopover from '@/components/reusable/PropertyDetails/PropertySharePopover'
 
@@ -13,7 +13,7 @@ export default async function PropertyDetailReportPage({ params }: PropertyDetai
   return (
     <PropertyDetailsReports
       id={propertyId}
-      property={propertyDetails}
+      property={mockPropertyDetails}
       headerRightContent={<PropertySharePopover />}
     />
   )

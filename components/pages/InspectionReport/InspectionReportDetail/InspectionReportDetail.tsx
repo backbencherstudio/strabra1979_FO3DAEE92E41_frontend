@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { getErrorMessage, withNA } from '@/lib/farmatters'
 import {
+  clearInspectionForm,
   selectInspectionAdditionalComments,
   selectInspectionHeaderData,
   selectInspectionNteValue,
@@ -92,7 +93,11 @@ export default function InspectionReportDetail() {
     if (inspectinData && formConfig) {
       handleInspectinDataChangeFromServer(inspectinData)
     }
-  }, [inspectinData, formConfig])
+
+    return () => {
+      dispatch(clearInspectionForm())
+    }
+  }, [inspectinData, formConfig, dispatch])
 
   const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
     useSubmitAllInspectionFormDataMutation()
