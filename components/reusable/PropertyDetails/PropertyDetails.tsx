@@ -13,11 +13,7 @@ import {
   setDefaultInspectionFormData,
 } from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { useAppDispatch } from '@/redux/store'
-import {
-  IDashboardInspectionListItem,
-  IPropertyDashboardDetails,
-  PHOTO_AND_VIDEO_FILETYPES,
-} from '@/types'
+import { IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useEffectEvent } from 'react'

@@ -61,6 +61,8 @@ export const baseApi = createApi({
     'AccessList',
 
     'Overview',
+
+    'Folders',
   ] as const,
   endpoints: () => ({}),
 })

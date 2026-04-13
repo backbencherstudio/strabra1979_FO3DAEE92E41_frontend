@@ -12,7 +12,7 @@ import SectionCard from '../SectionCard/SectionCard'
 interface FolderMeta {
   label: string
   size: string
-  fileCount: string
+  fileCount: number
   type?: 'folder' | 'file'
 }
 
@@ -64,7 +64,7 @@ export function Folder({ meta, className }: FolderProps) {
             meta={{
               type: 'file',
               label: '2024 Semi Annual Inspection',
-              fileCount: '24',
+              fileCount: 24,
               size: '12 GB',
             }}
           />
@@ -73,7 +73,7 @@ export function Folder({ meta, className }: FolderProps) {
             meta={{
               type: 'file',
               label: '2024 Semi Annual Inspection',
-              fileCount: '24',
+              fileCount: 24,
               size: '12 GB',
             }}
           />

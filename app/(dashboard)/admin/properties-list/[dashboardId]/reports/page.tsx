@@ -1,20 +1,13 @@
-import { mockPropertyDetails } from '@/constant/mock'
-import PropertyDetailsReports from '@/components/reusable/PropertyDetails/PropertyDetailsReports'
-import PropertySharePopover from '@/components/reusable/PropertyDetails/PropertySharePopover'
+import AdminPropertyDashboardReport from '@/components/pages/admin/property-list/AdminPropertyDashboardReport'
 
 interface PropertyDetailPageProps {
   params: Promise<{
-    propertyId: string
+    dashboardId: string
   }>
 }
 
 export default async function PropertyDetailReportPage({ params }: PropertyDetailPageProps) {
-  const { propertyId } = await params
-  return (
-    <PropertyDetailsReports
-      id={propertyId}
-      property={mockPropertyDetails}
-      headerRightContent={<PropertySharePopover />}
-    />
-  )
+  const { dashboardId } = await params
+
+  return <AdminPropertyDashboardReport dashboardId={dashboardId} />
 }

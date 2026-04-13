@@ -1,4 +1,5 @@
 import { IAuthUserRole } from './auth'
+import { IPropertyInspectionFolderItem } from './folder'
 import { IDashboardInspectionListItem } from './inspection'
 import { IPropertyManager } from './user'
 
@@ -198,5 +199,6 @@ export type IPropertyDashboardDetails = {
     }
   }
   inspections: Array<IDashboardInspectionListItem>
-  folders: Array<unknown>
+  folders: Array<IPropertyInspectionFolderItem>
 }
+
