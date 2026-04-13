@@ -13,7 +13,7 @@ import Image from 'next/image'
 import { Slide } from 'yet-another-react-lightbox'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
-import { MediaFiles, MediaFilesGridPreview } from '../MediaFiles/MediaFiles'
+import { MediaFiles, MediaFilesPreviewGrid } from '../MediaFiles/MediaFiles'
 import { Property } from '../PropertyCard/PropertyCard'
 import CustomTable from '../table/CustomTable'
 import PropertyScoreListPreview from './PropertyScoreList'
@@ -120,7 +120,7 @@ export default function PropertyDetails({
             return (
               <div key={item.type} className="col-span-6">
                 <MediaFiles className="bg-red-300" slides={slides}>
-                  <MediaFilesGridPreview slides={slides} />
+                  <MediaFilesPreviewGrid slides={slides} />
                 </MediaFiles>
               </div>
             )

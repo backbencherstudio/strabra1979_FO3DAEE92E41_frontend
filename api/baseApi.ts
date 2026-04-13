@@ -126,6 +126,7 @@ async function handleRefreshToken(
     } catch (error) {
       isRefreshing = false
       api.dispatch(logOut())
+      // TODO: log out the user properly
       toast.error('Session expired — please log in again.', {
         description: getErrorMessage(error),
       })

@@ -9,6 +9,7 @@ import 'yet-another-react-lightbox/styles.css'
 import SectionCard from '../SectionCard/SectionCard'
 import { MediaFilesProvider, useMediaFiles } from './MediaFilesContext'
 import { cn } from '@/lib/utils'
+import DefaultMediaImage from '@/public/images/default_media_image.png'
 
 export const demoSlides: Slide[] = [
   {
@@ -22,6 +23,39 @@ export const demoSlides: Slide[] = [
 
 interface MediaFilesProps extends React.ComponentProps<'div'> {
   slides: Slide[]
+}
+
+export function MediaFilesPreviewGrid({ slides, className }: MediaFilesProps) {
+  const { openAt } = useMediaFiles()
+
+  const maxVisibleItems = 3
+  const hasMore = Array.isArray(slides) && slides.length > maxVisibleItems
+  const previewItems = Array.isArray(slides) ? slides.slice(0, maxVisibleItems) : []
+
+  return (
+    <SectionCard
+      className={cn('grid flex-1 gap-2 bg-white', className, {
+        'sm:grid-cols-2': previewItems.length > 1,
+      })}
+    >
+      {previewItems.map((slide, index) => (
+        <PosterPreview
+          className={cn({
+            'first:row-span-2 [&_img]:aspect-22/9': previewItems.length !== 2,
+          })}
+          key={index}
+          onClick={() => openAt(index)}
+          slide={slide}
+        >
+          {hasMore && index === maxVisibleItems - 1 ? (
+            <div className="absolute z-10 grid h-full w-full place-items-center bg-black/70">
+              <span className="text-xl text-white">+{slides.length - maxVisibleItems}</span>
+            </div>
+          ) : null}
+        </PosterPreview>
+      ))}
+    </SectionCard>
+  )
 }
 
 function MediaFilesInner({ slides, children }: MediaFilesProps) {
@@ -49,50 +83,37 @@ function MediaFilesInner({ slides, children }: MediaFilesProps) {
   )
 }
 
-export function MediaFilesGridPreview({ slides, className }: MediaFilesProps) {
-  const { openAt } = useMediaFiles()
-
-  return (
-    <SectionCard className={cn('grid flex-1 gap-2 bg-white sm:grid-cols-2', className)}>
-      {Array.isArray(slides) &&
-        slides.slice(0, 3).map((slide, index) => (
-          <div
-            key={index}
-            onClick={() => openAt(index)}
-            className="aspect-video min-h-35 rounded-md bg-gray-100 first:row-span-2 sm:aspect-auto"
-          >
-            <PosterPreview slide={slide} />
-          </div>
-        ))}
-    </SectionCard>
-  )
-}
-
-interface PosterPreviewProps extends React.ComponentProps<'div'> {
+interface PosterPreviewProps extends React.ComponentProps<'button'> {
   slide: Slide
 }
 
-export function PosterPreview({ slide, ...props }: PosterPreviewProps) {
+export function PosterPreview({ slide, children, className, ...props }: PosterPreviewProps) {
   if (!slide) return null
 
-  const img = (slide as any)?.poster ?? (slide as any)?.src
+  const previewImage =
+    slide.type === 'video' ? DefaultMediaImage : ((slide as any)?.poster ?? (slide as any)?.src)
 
   return (
-    <div className="relative h-full w-full cursor-pointer overflow-hidden rounded-md" {...props}>
+    <button
+      className={cn('relative h-full w-full overflow-hidden rounded-md', className)}
+      {...props}
+    >
+      {children}
+
       <Image
         alt=""
         width={300}
         height={200}
-        // src={slide?.poster ?? slide?.src}
-        src={img}
-        className="h-full w-full object-cover"
+        src={previewImage ?? DefaultMediaImage}
+        className="h-full min-h-35 w-full bg-[#e9eef1] object-cover"
       />
+
       {slide.type === 'video' && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30">
           <PlayCircle className="size-12" />
         </div>
       )}
-    </div>
+    </button>
   )
 }
 

@@ -15,7 +15,7 @@ import PropertyScoreListPreview from '@/components/reusable/PropertyDetails/Prop
 import CustomTable from '@/components/reusable/table/CustomTable'
 import {
   MediaFiles,
-  MediaFilesGridPreview,
+  MediaFilesPreviewGrid,
   PosterPreview,
 } from '@/components/reusable/MediaFiles/MediaFiles'
 import { cn } from '@/lib/utils'
