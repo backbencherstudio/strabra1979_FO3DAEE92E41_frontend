@@ -225,9 +225,11 @@ export const formatFileSize = (bytes: number): string => {
 
   const k = 1024
   const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1)
 
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+  const value = bytes / Math.pow(k, i)
+
+  return `${Number(value.toFixed(2))} ${sizes[i]}`
 }
 
 export const mbToBytes = (mb: number) => {

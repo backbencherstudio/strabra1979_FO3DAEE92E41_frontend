@@ -1,20 +1,23 @@
 'use client'
 
 import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/inspectionFormApi'
-import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
+import { DocumentsTableColumns } from '@/components/columns/DocumentsTable'
 import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import { CircularProgressWithMeta } from '@/components/reusable/CircularProgress/CircularProgress'
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { mockPropertyDetails } from '@/constant/mock'
 import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
 import {
   clearInspectionForm,
   setDefaultInspectionFormData,
 } from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { useAppDispatch } from '@/redux/store'
-import { IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
+import {
+  IDashboardInspectionListItem,
+  IPropertyDashboardDetails,
+  PHOTO_AND_VIDEO_FILETYPES,
+} from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useEffectEvent } from 'react'
@@ -113,8 +116,21 @@ export default function PropertyDetails({
           }
 
           if (item.type === 'media_grid') {
+            if (!Array.isArray(inspectinData?.mediaFiles)) {
+              return (
+                <SectionCard
+                  key={item.type}
+                  className="col-span-6 grid place-items-center bg-white"
+                >
+                  <span className="text-muted-foreground text-sm">
+                    No photos or videos available
+                  </span>
+                </SectionCard>
+              )
+            }
+
             const slides: Slide[] = inspectinData?.mediaFiles
-              .filter((item) => ['PHOTO', 'VIDEO'].includes(item.fileType))
+              .filter((item) => item.mediaFieldKey === 'mediaFiles')
               ?.map((item) => {
                 const isVideo = item.fileType === 'VIDEO'
 
@@ -215,6 +231,14 @@ export default function PropertyDetails({
           }
 
           if (item.type === 'documents') {
+            if (!Array.isArray(inspectinData?.mediaFiles)) {
+              return null
+            }
+
+            const filteredDocuments = inspectinData.mediaFiles.filter(
+              (mf) => mf.mediaFieldKey === 'documents',
+            )
+
             return (
               <SectionCard className="col-span-full space-y-4.5" key={item.type}>
                 <div className="flex items-center justify-between">
@@ -227,12 +251,7 @@ export default function PropertyDetails({
                 <div>
                   <CustomTable
                     columns={DocumentsTableColumns}
-                    data={demoDocumentsData}
-                    //   currentPage={currentPage}
-                    //   itemsPerPage={itemsPerPage}
-                    //   onPageChange={setCurrentPage}
-                    //   sortConfig={sortConfig}
-                    //   onSort={handleSort}
+                    data={filteredDocuments}
                     minWidth={1000}
                     headerStyles={{
                       backgroundColor: '#eceff3',

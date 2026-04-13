@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { defineColumns } from '../reusable/table/CustomTable'
+import { IInspectionMediaFileItem } from '@/types'
+import { formatDate, withNA } from '@/lib/farmatters'
+import { formatFileSize } from '../reusable/FileInput/FileInput'
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
@@ -25,51 +28,30 @@ type DocumentsTableItem = {
 }
 
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const DocumentsTableColumns = defineColumns<DocumentsTableItem>([
+export const DocumentsTableColumns = defineColumns<IInspectionMediaFileItem>([
   {
     label: 'Name',
-    width: '65%',
-    accessor: 'report',
-    sortable: true,
-    formatter: (value, row) => {
-      return <p className="text-forground text-xs">{value}</p>
-    },
+    accessor: 'fileName',
   },
   {
     label: 'Last Update',
-    width: '20%',
-    accessor: 'updated_at',
-    sortable: true,
-    formatter: (value, row) => {
-      return (
-        <div>
-          <p className="text-forground text-xs">{formatUserDate(value)}</p>
-        </div>
-      )
-    },
+    accessor: 'uploadedAt',
+    formatter: (value) => withNA(value, formatDate),
   },
   {
     label: 'File Size',
-    width: '10%',
     accessor: 'size',
-    sortable: true,
-    formatter: (value, row) => {
-      return (
-        <div>
-          <p className="text-forground text-xs uppercase">{value}</p>
-        </div>
-      )
-    },
+    formatter: (value) => withNA(value, formatFileSize),
   },
   {
     label: '',
-    accessor: 'no',
-    width: '5%',
-    formatter: (value, row) => {
+    accessor: 'url',
+    formatter: (value) => {
+      if (!value) return
+
       return (
         <Button asChild variant="muted" size="icon" className="rounded-full">
-          <Link href={`#`}>
-            {/* <Link href={`/property/${row.id}/reports`}> */}
+          <Link href={value}>
             <EyeIcon />
           </Link>
         </Button>

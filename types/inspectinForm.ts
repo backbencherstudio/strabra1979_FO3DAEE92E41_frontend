@@ -84,6 +84,8 @@ export type RemoteMediaFile = {
   file: IInspectionMediaFileItem
 }
 
+export type MediaFileType = 'PHOTO' | 'VIDEO' | 'EMBED' | 'PDF'
+export const PHOTO_AND_VIDEO_FILETYPES: MediaFileType[] = ['PHOTO', 'VIDEO'] as const
 export type IInspectionMediaFileItem = {
   id: string
   inspectionId: string

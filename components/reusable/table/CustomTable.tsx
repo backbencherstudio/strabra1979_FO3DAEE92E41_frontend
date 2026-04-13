@@ -123,11 +123,7 @@ export default function CustomTable<T>({
                       padding: headerStyles.padding,
                       fontWeight: headerStyles.fontWeight,
                     }}
-                    className={`text-descriptionColor border-b px-4 py-3 text-base font-light whitespace-nowrap text-[#fff] capitalize ${
-                      index === columns.length - 1 && !(onView || onDelete || hasActionsColumn)
-                        ? 'rounded-r-2xl'
-                        : ''
-                    }`}
+                    className={`text-descriptionColor border-b px-4 py-3 text-base font-light whitespace-nowrap capitalize`}
                   >
                     <div
                       className={`flex items-center gap-1 ${col.sortable ? 'cursor-pointer' : ''}`}
