@@ -1,3 +1,4 @@
+"use client"
 import { ReportManagementColumns, demoReportData } from '@/components/columns/ReportsManagement'
 import { StatListItemProps } from '@/components/dashboard/StatItem/StatListItem'
 import StatsList from '@/components/dashboard/StatItem/StatsList'
@@ -12,29 +13,54 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { ChevronRight, Search } from 'lucide-react'
 import Link from 'next/link'
 import { properties } from '../(autorized_viewer)/mock'
+import { useGetManagerOverviewQuery } from '@/api/dashboard/overviewApi'
+import { isArrayEmpty } from '@/lib/utils'
+import { routes } from '@/constant'
+import { formatDate, naIfEmpty, withNAf } from '@/lib/farmatters'
+
+export default function page() {
+const { data } = useGetManagerOverviewQuery();
+console.log(data, "=d=d=d==d=d==d");
+
+
+const item = data?.data?.stats;
+console.log(item, "Stats from first report");
+
+const recentReports = data?.data?.recentReports || [];  
+
+const formattedReports = recentReports.map((report:any, index:any) => ({
+  id: report.id,
+  no: index + 1,
+  report: report.reportName || "Unknown Report",
+  property: report.propertyName,
+  address: report.address,
+  updated_at: report.inspectedAt,
+  status: report.healthLabel.toLowerCase(), 
+}));
+
 
 const stats: StatListItemProps[] = [
   {
     title: 'Total Properties',
-    value: 20,
+    value: item?.totalProperties ?? 0,  
     icon: <HouseIcon />,
     subtitle: '',
   },
   {
     title: 'Avg. Roof Health',
-    value: '76%',
+    value: `${item?.avgRoofHealthPercent ?? 0}%`,  
     icon: <CubeIcon />,
     subtitle: '',
   },
   {
     title: 'Urgent Repairs',
-    value: 80,
+    value: item?.urgentRepairs ?? 0,  
     icon: <InformationSquare />,
     subtitle: '',
   },
-]
+];
 
-export default function page() {
+  console.table()
   return (
     <div className="grid grid-cols-1 gap-6">
       <StatsList stats={stats} isLoading={false} />
@@ -42,14 +68,14 @@ export default function page() {
         <div className="flex items-center justify-between">
           <SectionTitle>My Properties</SectionTitle>
 
-          <div className="ml-auto">
+          {/* <div className="ml-auto">
             <InputGroup className="bg-transparen h-10.5">
               <InputGroupInput placeholder="Search..." />
               <InputGroupAddon>
                 <Search />
               </InputGroupAddon>
             </InputGroup>
-          </div>
+          </div> */}
 
           <Button asChild variant="link" theme="text">
             <Link href="/manager/property-list">
@@ -59,16 +85,29 @@ export default function page() {
         </div>
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {properties.slice(0, 3).map((p) => (
-            <PropertyCard slug="/manager/property-list/123" hasAccess key={p.title} {...p}>
-              <PropertyCardInfoList
-                items={[
-                  { label: 'Type', value: p.type },
-                  { label: 'Next Inspection', value: p.date },
-                ]}
-              />
-            </PropertyCard>
-          ))}
+       {isArrayEmpty(data?.data?.properties)
+                 ? null
+                 : data?.data?.properties?.map((p:any) => (
+                     <PropertyCard
+                       slug={routes.manager.propertyDetail.build({ dashboardId: p?.dashboardId })}
+                       hasAccess
+                       key={p.id}
+                       id={p.id}
+                       propertyName={p.name}
+                       address={naIfEmpty(p.address)}
+                       score={p?.roofHealth?.overallScore ?? 0}
+                     >
+                       <PropertyCardInfoList
+                         items={[
+                           { label: 'Type', value: withNAf(p.propertyType) },
+                           {
+                             label: 'Next Inspection',
+                             value: withNAf(p?.nextInspectionDate, formatDate),
+                           },
+                         ]}
+                       />
+                     </PropertyCard>
+                   ))}
         </div>
       </SectionCard>
 
@@ -86,12 +125,12 @@ export default function page() {
         <div>
           <CustomTable
             columns={ReportManagementColumns}
-            data={demoReportData}
-            //   currentPage={currentPage}
-            //   itemsPerPage={itemsPerPage}
-            //   onPageChange={setCurrentPage}
-            //   sortConfig={sortConfig}
-            //   onSort={handleSort}
+            data={formattedReports}
+              // currentPage={currentPage}
+              // itemsPerPage={itemsPerPage}
+              // onPageChange={setCurrentPage}
+              // sortConfig={sortConfig}
+              // onSort={handleSort}
             minWidth={1000}
             headerStyles={{
               backgroundColor: '#eceff3',
