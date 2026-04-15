@@ -13,6 +13,8 @@ import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { InfoItem } from '../InfoGrid/InfoGrid'
 import PropertyCardAdminActions from './PropertyCardAdminActions'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCreateDashboardAccessMutation } from '@/api/dashboard/properties/propertiesApi'
+import { toast } from 'sonner'
 
 export interface Property {
   id: string
@@ -65,6 +67,24 @@ export default function PropertyCard({
     setIsSelected(defaultSelected)
   }, [defaultSelected])
 
+const [requestAccess, { isLoading }] = useCreateDashboardAccessMutation();
+
+const handleRequestAccess = async () => {
+  try {
+    await requestAccess({
+      dashboardId: dashboardId!,
+      message: "I need access to view this dashboard",
+    }).unwrap();
+
+    toast.success("Request sent successfully");
+  } catch (err: any) {
+    if (err?.status === 409) {
+      toast.error("Already requested or have access");
+    } else {
+      toast.error("Something went wrong");
+    }
+  }
+};
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (isSelectable) {
@@ -142,19 +162,25 @@ export default function PropertyCard({
             </Button>
           ) : (
             <ConfirmDialog
-              iconContainerClass="bg-transparent p-0"
-              icon={<NoEntryIcon className="size-14" />}
-              trigger={
-                <Button size="lg" className="w-full" variant="outline">
-                  View Details
-                </Button>
-              }
-              title="Access Not Granted"
-              desc="You don’t currently have permission to view this property dashboard. Please request access from the property manager to continue."
-            >
-              <AlertDialogCancel>Decline</AlertDialogCancel>
-              <AlertDialogAction variant="default">Request Access</AlertDialogAction>
-            </ConfirmDialog>
+  iconContainerClass="bg-transparent p-0"
+  icon={<NoEntryIcon className="size-14" />}
+  trigger={
+    <Button size="lg" className="w-full" variant="outline">
+      View Details
+    </Button>
+  }
+  title="Access Not Granted"
+  desc="You don’t currently have permission to view this property dashboard. Please request access."
+>
+  <AlertDialogCancel>Decline</AlertDialogCancel>
+
+  <AlertDialogAction
+    onClick={handleRequestAccess}
+    disabled={isLoading}
+  >
+    {isLoading ? "Sending..." : "Request Access"}
+  </AlertDialogAction>
+</ConfirmDialog>
           )}
         </section>
       </div>

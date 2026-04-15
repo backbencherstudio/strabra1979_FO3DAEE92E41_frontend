@@ -42,6 +42,47 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Property'] as const,
     }),
+
+     getPropertyDashboarIdCheck: builder.query<WithApiStatus<IPropertyDashboardDetails>, string>({
+      query: (dashboardId) => ({
+        url: `/properties/dashboard/${dashboardId}/access/check`,
+        providesTags: ['PropertyDashboard'] as const,
+      }),
+    }),
+
+    //property check
+
+     getPropertyCheck: builder.query<WithApiStatus<IPropertyDashboardDetails>, string>({
+      query: (dashboardId) => ({
+        url: `/properties/dashboard/${dashboardId}/access/check`,
+        providesTags: ['PropertyDashboard'] as const,
+      }),
+    }),
+
+    //property id request
+
+    CreateDashboardAccess: builder.mutation<
+  any,
+  { dashboardId: string; message: string }
+>({
+  query: ({ dashboardId, message }) => ({
+    url: `/properties/dashboard/${dashboardId}/access/request`,
+    method: "POST",
+    body: { message },
+  }),
+}),
+
+        getPropertiesId: builder.query<
+      WithPaginationAndStatus<IPropertyListItem[]>,
+      (IPaginationPayload & IFilterPayload) | void
+    >({
+      query: (arg) => ({
+        url: `/properties`,
+        params: arg ?? undefined,
+      }),
+      providesTags: ['Property'] as const,
+    }),
+
     createProperty: builder.mutation<WithApiStatus<void>, ICreatePropertyPayload>({
       query: (body) => ({
         url: '/properties',
@@ -106,8 +147,11 @@ const propertiesApi = baseApi.injectEndpoints({
 
 export const {
   useGetPropertiesQuery,
+  useGetPropertiesIdQuery,
+  useGetPropertyCheckQuery,
   useCreatePropertyMutation,
   useGetPropertyDashboardAccessListQuery,
+  useCreateDashboardAccessMutation,
   useRevokeDashboardAccessMutation,
   useAssignUserToPropertyMutation,
   useSetAccessExpirationMutation,
