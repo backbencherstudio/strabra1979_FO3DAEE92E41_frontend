@@ -1,11 +1,39 @@
+"use client"
+import { useGetReportsQuery } from '@/api/dashboard/manager'
 import { ReportManagementColumns, demoReportData } from '@/components/columns/ReportsManagement'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
-import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import { SharedPropertyCardListContextProvider, useSharedPropertyCardListContext } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
+import { usePaginatedQuery, usePaginationPage } from '@/components/reusable/Pagination/PaginationPageProvider'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import CustomTable from '@/components/reusable/table/CustomTable'
+import { addDaysBy } from '@/lib/farmatters'
 
 export default function page() {
+
+    const { sortOrder, dateFrom, search } =
+      useSharedPropertyCardListContext();
+  
+    const { page } = usePaginationPage();
+  
+    const {
+      data: { data: properties = [], meta } = {},
+      isLoading,
+    } = useGetReportsQuery({
+      page,
+      sortOrder,
+      search,
+      limit: 9,
+      dateFrom: dateFrom?.formatted,
+      dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
+      
+    });
+
+   const item = properties;
+console.log(item, "ppppppppppp");
+  
+    usePaginatedQuery({ meta_data: meta });
+    console.log(properties,"-=-=-=-=-=-=");
   return (
     <div className="w-full">
       <SectionCard className="space-y-4.5">

@@ -15,5 +15,6 @@ export default async function PropertyDetailReportPage({ params }: PropertyDetai
       id={propertyId}
       property={mockPropertyDetails}
     />
+    
   )
 }

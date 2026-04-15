@@ -18,9 +18,17 @@ const overviewApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Overview'] as const,
     }),
+
+    getManagerOverview: builder.query<WithApiStatus<any>, void>({
+      query: (arg) => ({
+        url: `/overview/me`,
+        params: arg ?? undefined,
+      }),
+      providesTags: ['Overview'] as const,
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetAdminOverviewQuery, useGetOperatorOverviewQuery } = overviewApi
+export const { useGetAdminOverviewQuery, useGetOperatorOverviewQuery,useGetManagerOverviewQuery } = overviewApi
 export default overviewApi
