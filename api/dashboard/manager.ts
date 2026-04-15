@@ -2,10 +2,8 @@ import {
   IFilterPayload,
   IPaginationPayload,
   IPropertyListItem,
-  WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
-import { IOverviewAdmin, IOverviewOperational } from '@/types/overview'
 import { baseApi } from '../baseApi'
 
 const manager = baseApi.injectEndpoints({

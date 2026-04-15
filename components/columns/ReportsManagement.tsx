@@ -56,7 +56,7 @@ const formatUserDate = (dateString: string) => {
 export const ReportManagementColumns = defineColumns<{
   id: string
   no: number
-  report: string
+  // report: string
   property: string
   address: string
   updated_at: string
@@ -89,15 +89,15 @@ export const ReportManagementColumns = defineColumns<{
       )
     },
   },
-  {
-    label: 'Report',
-    width: '18%',
-    accessor: 'report',
-    sortable: true,
-    formatter: (value, row) => {
-      return <p className="text-forground text-xs">{value}</p>
-    },
-  },
+  // {
+  //   label: 'Report',
+  //   width: '18%',
+  //   accessor: 'report',
+  //   sortable: true,
+  //   formatter: (value, row) => {
+  //     return <p className="text-forground text-xs">{value}</p>
+  //   },
+  // },
   {
     label: 'Property',
     width: '22%',
@@ -133,20 +133,20 @@ export const ReportManagementColumns = defineColumns<{
       return <ReportStatusBadge status={value} />
     },
   },
-  {
-    label: '',
-    accessor: 'id',
-    width: '5%',
-    formatter: (value, row) => {
-      return (
-        <Button asChild variant="muted" size="icon" className="rounded-full">
-          <Link href={`/manager/property-list/${row.id}`}>
-            <EyeIcon />
-          </Link>
-        </Button>
-      )
-    },
-  },
+  // {
+  //   label: '',
+  //   accessor: 'id',
+  //   width: '5%',
+  //   formatter: (value, row) => {
+  //     return (
+  //       <Button asChild variant="muted" size="icon" className="rounded-full">
+  //         <Link href={`/manager/property-list/${row.id}`}>
+  //           <EyeIcon />
+  //         </Link>
+  //       </Button>
+  //     )
+  //   },
+  // },
 ])
 
 // ==================== DEMO DATA ====================

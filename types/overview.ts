@@ -38,11 +38,7 @@ export type IOverviewAdmin = {
     propertyType?: string
     nextInspectionDate?: string
     dashboardId: string
-    propertyManager?: {
-      id: string
-      name?: string
-      avatar?: string
-    }
+    propertyManager?: IUserBasicInfo
     roofHealth?: {
       overallScore: number
       healthLabel: string
@@ -60,4 +56,35 @@ export type IOverviewOperational = {
   }
   todaysInspections: Array<IScheduledInspectionTableItem>
   recentInspections: Array<IScheduledInspectionTableItem>
+}
+
+export type IOverviewManager = {
+  role: string
+  stats: {
+    totalProperties: number
+    avgRoofHealthPercent: number
+    urgentRepairs: number
+  }
+  properties: Array<{
+    id: string
+    name: string
+    address: string
+    propertyType?: string
+    nextInspectionDate?: string
+    dashboardId?: string
+    roofHealth?: {
+      overallScore: number
+      healthLabel: string
+      remainingLife: string
+    }
+  }>
+  recentReports: Array<{
+    id: string
+    propertyName: string
+    address: string
+    inspectedAt: string
+    healthLabel: string
+    overallScore: number
+    inspector: IUserBasicInfo
+  }>
 }

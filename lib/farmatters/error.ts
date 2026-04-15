@@ -47,11 +47,12 @@ export function getErrorMessage(
 
 export const notAvailableLabel = '........'
 
-export function naIfEmpty(value: string | null | undefined): string {
-  if (value == '') {
-    return notAvailableLabel
+export function naIfEmpty<T>(value: T, formatter?: (val: T) => T): T {
+  if (value === null || value === undefined || value === '') {
+    return notAvailableLabel as T
   }
-  return value ?? notAvailableLabel
+
+  return formatter ? formatter(value) : value
 }
 
 export function withNAf<T>(

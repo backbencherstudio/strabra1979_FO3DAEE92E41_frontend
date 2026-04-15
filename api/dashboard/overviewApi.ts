@@ -1,5 +1,5 @@
 import { WithApiStatus } from '@/types'
-import { IOverviewAdmin, IOverviewOperational } from '@/types/overview'
+import { IOverviewAdmin, IOverviewManager, IOverviewOperational } from '@/types/overview'
 import { baseApi } from '../baseApi'
 
 const overviewApi = baseApi.injectEndpoints({
@@ -19,7 +19,7 @@ const overviewApi = baseApi.injectEndpoints({
       providesTags: ['Overview'] as const,
     }),
 
-    getManagerOverview: builder.query<WithApiStatus<any>, void>({
+    getManagerOverview: builder.query<WithApiStatus<IOverviewManager>, void>({
       query: (arg) => ({
         url: `/overview/me`,
         params: arg ?? undefined,
