@@ -1,27 +1,23 @@
+import { useDeleteSingleFolderMutation } from '@/api/inspectionManagement/folderManagementApi'
 import { FolderFileTypeIcon, FolderIcon } from '@/components/icons/FolderIcon'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { cn, isArrayEmpty } from '@/lib/utils'
-import SectionCard from '../SectionCard/SectionCard'
-import { IFolderInspectionInfo } from '@/types'
-import { formatDate, getErrorMessage } from '@/lib/farmatters'
 import { Trush } from '@/components/icons/Trush'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import {
-  DropdownMenuTrigger,
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenu,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { EllipsisVertical, Eye, Edit } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { formatDate, getErrorMessage } from '@/lib/farmatters'
+import { cn, isArrayEmpty } from '@/lib/utils'
+import { IFolderInspectionReportSelectItem } from '@/types'
+import { Edit, EllipsisVertical } from 'lucide-react'
 import { useState } from 'react'
-import { useDeleteSingleFolderMutation } from '@/api/inspectionManagement/folderManagementApi'
 import { toast } from 'sonner'
+import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
+import SectionCard from '../SectionCard/SectionCard'
 
 interface FolderMeta {
   label: string
@@ -38,27 +34,6 @@ interface FolderPreviewProps extends React.PropsWithChildren {
 }
 
 export function FolderPreview({ meta, className, children, onOpen }: FolderPreviewProps) {
-  function formateFileInfo() {
-    const info = []
-
-    if (meta.fileCount != null) {
-      const count = Number(meta.fileCount)
-
-      if (!Number.isNaN(count)) {
-        info.push(`${count} File${count === 1 ? '' : 's'}`)
-      }
-    }
-
-    if (meta.size != null) {
-      if (info.length) {
-        info.push('•')
-      }
-      info.push(meta.size)
-    }
-
-    return info.join(' ')
-  }
-
   return (
     <SectionCard className={cn('flex items-center gap-1.5 bg-white p-4', className)}>
       <div className="cursor-pointer" onClick={onOpen}>
@@ -80,7 +55,7 @@ export function FolderPreview({ meta, className, children, onOpen }: FolderPrevi
 interface FolderProps extends React.PropsWithChildren {
   meta: FolderMeta
   className?: string
-  childrenFolders: IFolderInspectionInfo[] | undefined
+  childrenFolders: IFolderInspectionReportSelectItem[] | undefined
   isLoading?: boolean
   onOpenClick: () => void
 }
@@ -147,7 +122,11 @@ export function Folder({
   )
 }
 
-export function FolderDropdownMenu(props: { dashboardId: string; folderId: string }) {
+export function FolderDropdownMenu(props: {
+  dashboardId: string
+  folderId: string
+  onEdit: () => void
+}) {
   const [deleteFolder, { isLoading: isLoadingDelete }] = useDeleteSingleFolderMutation()
 
   async function handleDelete() {
@@ -164,24 +143,41 @@ export function FolderDropdownMenu(props: { dashboardId: string; folderId: strin
       })
     }
   }
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="border-none" size="icon" variant="outline">
-          <EllipsisVertical />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Edit />
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem disabled={isLoadingDelete} onClick={handleDelete}>
-          <Trush />
+    <>
+      <ConfirmDialog
+        open={openConfirmDialog}
+        iconContainerClass="bg-destructive"
+        icon={<Trush />}
+        onOpenChange={setOpenConfirmDialog}
+        title="Delete Folder"
+        desc="Are you sure you want to delete this folder?"
+      >
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction onClick={handleDelete} variant="destructive">
           Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </AlertDialogAction>
+      </ConfirmDialog>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="border-none" size="icon" variant="outline">
+            <EllipsisVertical />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={props.onEdit}>
+            <Edit />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem disabled={isLoadingDelete} onClick={() => setOpenConfirmDialog(true)}>
+            <Trush />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   )
 }

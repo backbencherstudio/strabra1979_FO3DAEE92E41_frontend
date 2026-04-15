@@ -8,14 +8,14 @@ import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPrope
 import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { IPropertyDashboardDetails, ISingleFolderInfo } from '@/types'
+import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
+import { IFolderItem, IPropertyDashboardDetails, ISingleFolderInfo } from '@/types'
 import { useState } from 'react'
 import CreateFolderDialog from '../CreateFolderDialog/CreateFolderDialog'
 import { Folder, FolderDropdownMenu } from '../Folder/Folder'
+import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import PaginationControls from '../Pagination/Pagination'
-import { InfoGrid } from '../InfoGrid/InfoGrid'
-import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
 
 interface PropertyDetailsReportsProps {
   dashboardId: string
@@ -43,7 +43,10 @@ export default function PropertyDetailsReports({
     { label: 'Next Inspection', value: naIfEmpty(formatDate(property?.nextInspectionDate)) },
   ]
 
-  const [getFolderInfo, { isFetching: isFetchingFolderData }] = useLazyGetSingleFolderInfoQuery()
+  const [
+    getFolderInfo,
+    { isFetching: isFetchingFolderData, data: { data: renameDefaultDataInfo } = {} },
+  ] = useLazyGetSingleFolderInfoQuery()
   const [opneFoderData, setOpneFoderData] = useState<Record<string, ISingleFolderInfo>>({})
   const handleOpenFolderClick = async (folderId: string, dashboardId: string) => {
     try {
@@ -56,6 +59,10 @@ export default function PropertyDetailsReports({
     }
   }
 
+  const [selectedFolderToRename, setSelectedFolderToRename] = useState<undefined | IFolderItem>()
+  const [createFolderDialogMode, setCreateFolderDialogMode] = useState<'rename' | 'create'>(
+    'create',
+  )
   const [openFolderCreateDialog, setOpenFolderCreateDialog] = useState(false)
 
   return (
@@ -63,7 +70,14 @@ export default function PropertyDetailsReports({
       <PropertyHeaderWrapper
         title={withNA(property?.name)}
         rightContent={
-          <Button size="xl" variant="outline" onClick={() => setOpenFolderCreateDialog(true)}>
+          <Button
+            size="xl"
+            variant="outline"
+            onClick={() => {
+              setCreateFolderDialogMode('create')
+              setOpenFolderCreateDialog(true)
+            }}
+          >
             Create New Folder
           </Button>
         }
@@ -85,6 +99,8 @@ export default function PropertyDetailsReports({
       </section>
 
       <CreateFolderDialog
+        mode={createFolderDialogMode}
+        defaultFoderInfo={renameDefaultDataInfo}
         dashboardId={dashboardId}
         open={openFolderCreateDialog}
         onOpenChange={setOpenFolderCreateDialog}
@@ -102,7 +118,19 @@ export default function PropertyDetailsReports({
               info: [`${f.inspectionCount} Files`, f.totalSizeLabel],
             }}
           >
-            <FolderDropdownMenu dashboardId={f.dashboardId} folderId={f.id} />
+            <FolderDropdownMenu
+              onEdit={async () => {
+                await getFolderInfo({ folderId: f.id, dashboardId: f.dashboardId }).unwrap()
+
+                setCreateFolderDialogMode('rename')
+                setSelectedFolderToRename(f)
+                setOpenFolderCreateDialog(true)
+
+                console.log('onEdit')
+              }}
+              dashboardId={f.dashboardId}
+              folderId={f.id}
+            />
           </Folder>
         ))}
       </div>

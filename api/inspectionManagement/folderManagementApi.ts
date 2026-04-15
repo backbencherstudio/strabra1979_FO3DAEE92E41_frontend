@@ -49,9 +49,48 @@ const folderManagementApi = baseApi.injectEndpoints({
       }),
       providesTags: (_, __, arg) => [{ type: 'Folders', id: arg?.folderId }],
     }),
-    deleteSingleFolder: builder.mutation<WithApiStatus<void>, { dashboardId: string; folderId: string }>({
+    deleteSingleFolder: builder.mutation<
+      WithApiStatus<void>,
+      { dashboardId: string; folderId: string }
+    >({
       query: ({ dashboardId, folderId }) => ({
         url: `/dashboards/${dashboardId}/folders/${folderId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Folders'],
+    }),
+    renameFolderName: builder.mutation<
+      WithApiStatus<void>,
+      { dashboardId: string; folderId: string; data: { name: string } }
+    >({
+      query: ({ dashboardId, folderId, data }) => ({
+        url: `/dashboards/${dashboardId}/folders/${folderId}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['Folders'],
+    }),
+    addInspectionsToAFolder: builder.mutation<
+      WithApiStatus<void>,
+      {
+        dashboardId: string
+        folderId: string
+        data: { inspectionIds: ICreateNewFolderWithInspectionPayload['inspectionIds'] }
+      }
+    >({
+      query: ({ dashboardId, folderId, data }) => ({
+        url: `/dashboards/${dashboardId}/folders/${folderId}/inspections`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Folders'],
+    }),
+    removeAnInspectionFromAFolder: builder.mutation<
+      WithApiStatus<void>,
+      { dashboardId: string; folderId: string; inspectionId: string }
+    >({
+      query: ({ dashboardId, folderId, inspectionId }) => ({
+        url: `/dashboards/${dashboardId}/folders/${folderId}/inspections/${inspectionId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Folders'],
@@ -66,5 +105,8 @@ export const {
   useCreateNewFolderWithInspectionDataMutation,
   useLazyGetSingleFolderInfoQuery,
   useDeleteSingleFolderMutation,
+  useRenameFolderNameMutation,
+  useRemoveAnInspectionFromAFolderMutation,
+  useAddInspectionsToAFolderMutation,
 } = folderManagementApi
 export default folderManagementApi

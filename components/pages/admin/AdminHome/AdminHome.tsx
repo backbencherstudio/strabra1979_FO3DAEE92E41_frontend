@@ -55,6 +55,7 @@ export default function AdminHome() {
     <div className="space-y-5">
       <StatsList isLoading={isLoading} stats={statsData} />
 
+      {/* FIXME: can't see month */}
       <div className="grid gap-5 lg:grid-cols-12">
         <div className="lg:col-span-7 xl:col-span-8 2xl:col-span-9">
           {/* chart */}
