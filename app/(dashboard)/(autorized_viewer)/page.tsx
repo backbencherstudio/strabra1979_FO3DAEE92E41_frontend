@@ -1,30 +1,77 @@
 'use client'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
-import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
+import PropertyCard, {
+  PropertyCardInfoList,
+  PropertyCardSkeleton,
+} from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { properties } from './mock'
-import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import {
+  SharedPropertyCardListContextProvider,
+  useSharedPropertyCardListContext,
+} from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import { useGetPropertiesQuery } from '@/api/dashboard/properties/propertiesApi'
+import {
+  usePaginationPage,
+  usePaginatedQuery,
+  PaginationPageProvider,
+} from '@/components/reusable/Pagination/PaginationPageProvider'
+import { addDaysBy, naIfEmpty } from '@/lib/farmatters'
+import { PropertyCardAdminInfoList } from '@/components/reusable/PropertyCard/PropertyCardAdminInfoList'
+import { routes } from '@/constant'
 
 export default function AutorizedViewerLandingPage() {
   return (
+    <SharedPropertyCardListContextProvider>
+      <PaginationPageProvider>
+        <AutorizedViewerLandingPageContent />
+      </PaginationPageProvider>
+    </SharedPropertyCardListContextProvider>
+  )
+}
+
+function AutorizedViewerLandingPageContent() {
+  const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
+  const { page } = usePaginationPage()
+  const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
+    page,
+    sortOrder,
+    search,
+    limit: 9,
+    dateFrom: dateFrom?.formatted,
+    dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
+  })
+  usePaginatedQuery({ meta_data: meta })
+
+  return (
     <div className="grid grid-cols-1 gap-6">
       <SectionCard>
-        <SharedPropertyCardListContextProvider>
-          <SharedPropertyCardListActions title="Shared Property Dashboards" />
-        </SharedPropertyCardListContextProvider>
+        <SharedPropertyCardListActions
+          showSearch
+          showDateFilter
+          showSortOrder
+          title="Shared Property Dashboards"
+        />
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {properties.map((p, index) => (
-            <PropertyCard slug="/property/123" hasAccess={index == 1} key={index} {...p}>
-              <PropertyCardInfoList
-                items={[
-                  { label: 'Type', value: p.type },
-                  { label: 'Access expiration', value: p.date },
-                ]}
-              />
-            </PropertyCard>
-          ))}
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
+            : properties.map((p) => (
+                <PropertyCard
+                  {...p}
+                  key={p.id}
+                  slug={routes.admin.propertyDashboarDetail.build({
+                    dashboardId: p?.dashboard?.id,
+                  })}
+                  hasAccess={false}
+                  propertyName={p.name}
+                  address={naIfEmpty(p.address)}
+                  score={p?.dashboard?.latestInspection?.overallScore}
+                >
+                  <PropertyCardAdminInfoList property={p} />
+                </PropertyCard>
+              ))}
         </div>
       </SectionCard>
 
