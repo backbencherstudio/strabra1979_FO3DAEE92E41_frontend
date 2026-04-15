@@ -11,7 +11,7 @@ interface InfoListProps {
 
 export function InfoList({ items }: InfoListProps) {
   return (
-    <ul>
+    <ul className="space-y-0.5">
       {items.map((item) => (
         <li key={item.label} className="text-sm">
           {item.label ? `${item.label}:` : null} <span className="font-medium">{item.value}</span>
@@ -28,7 +28,7 @@ interface PropertyHeaderProps extends React.PropsWithChildren {
 
 export function PropertyHeaderWrapper({ title, children, rightContent }: PropertyHeaderProps) {
   return (
-    <section className="mt-1 flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
+    <section className="mt-1 flex flex-col justify-between gap-3 lg:flex-row">
       <div className="space-y-1">
         <h1 className="text-lg font-semibold">{title}</h1>
         {children}

@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/button'
 import { IPropertyDashboardDetails, ISingleFolderInfo } from '@/types'
 import { useState } from 'react'
 import CreateFolderDialog from '../CreateFolderDialog/CreateFolderDialog'
-import { Folder } from '../Folder/Folder'
+import { Folder, FolderDropdownMenu } from '../Folder/Folder'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import PaginationControls from '../Pagination/Pagination'
+import { InfoGrid } from '../InfoGrid/InfoGrid'
+import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
 
 interface PropertyDetailsReportsProps {
   dashboardId: string
@@ -28,21 +30,23 @@ export default function PropertyDetailsReports({
   accessExpiration,
   headerRightContent = null,
 }: PropertyDetailsReportsProps) {
-  // const rowInfos = [
-  //   { label: 'Type', value: property.type },
-  //   { label: 'Address', value: property.address },
-  //   { label: 'Next Inspection', value: property.nextInspection ?? '' },
-  // ]
   const { data: { data: folders } = {} } = useGetAllFolderWithDashboardIdQuery(
     { dashboardId: dashboardId },
     { skip: !dashboardId },
   )
 
+  const { property } = data
+
+  const rowInfos = [
+    { label: 'Type', value: naIfEmpty(property?.propertyType) },
+    { label: 'Address', value: naIfEmpty(property?.address) },
+    { label: 'Next Inspection', value: naIfEmpty(formatDate(property?.nextInspectionDate)) },
+  ]
+
   const [getFolderInfo, { isFetching: isFetchingFolderData }] = useLazyGetSingleFolderInfoQuery()
   const [opneFoderData, setOpneFoderData] = useState<Record<string, ISingleFolderInfo>>({})
   const handleOpenFolderClick = async (folderId: string, dashboardId: string) => {
     try {
-      // setOpneFoderData(undefined)
       const res = await getFolderInfo({ folderId, dashboardId }).unwrap()
       setOpneFoderData((v) => {
         return { ...v, [folderId]: res.data }
@@ -53,12 +57,11 @@ export default function PropertyDetailsReports({
   }
 
   const [openFolderCreateDialog, setOpenFolderCreateDialog] = useState(false)
-  console.table(folders)
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
       <PropertyHeaderWrapper
-        title={'asdf'}
+        title={withNA(property?.name)}
         rightContent={
           <Button size="xl" variant="outline" onClick={() => setOpenFolderCreateDialog(true)}>
             Create New Folder
@@ -66,17 +69,20 @@ export default function PropertyDetailsReports({
         }
       >
         <InfoList
-          items={
-            [
-              // { label: 'Last updated', value: property.up ?? '' },
-              // { label: 'Inspection ID', value: property.id },
-              // { value: property.property },
-              // { label: 'Date', value: property.date },
-            ]
-          }
+          items={[
+            { label: 'Last updated', value: withNA(formatDate(data.updatedAt)) },
+            { label: 'Status', value: withNA(property?.status) },
+          ]}
         />
       </PropertyHeaderWrapper>
-      {/* <InfoGrid items={rowInfos} /> */}
+
+      <section className="grid grid-cols-8 gap-6">
+        {data.templateSnapshot?.map((item) => {
+          if (item.type === 'header_info') {
+            return <InfoGrid className="col-span-full" key={item.type} items={rowInfos} />
+          }
+        })}
+      </section>
 
       <CreateFolderDialog
         dashboardId={dashboardId}
@@ -95,7 +101,9 @@ export default function PropertyDetailsReports({
               label: f.name,
               info: [`${f.inspectionCount} Files`, f.totalSizeLabel],
             }}
-          />
+          >
+            <FolderDropdownMenu dashboardId={f.dashboardId} folderId={f.id} />
+          </Folder>
         ))}
       </div>
 

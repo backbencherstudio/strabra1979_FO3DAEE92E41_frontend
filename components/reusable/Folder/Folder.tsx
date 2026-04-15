@@ -9,7 +9,19 @@ import {
 import { cn, isArrayEmpty } from '@/lib/utils'
 import SectionCard from '../SectionCard/SectionCard'
 import { IFolderInspectionInfo } from '@/types'
-import { formatDate } from '@/lib/farmatters'
+import { formatDate, getErrorMessage } from '@/lib/farmatters'
+import { Trush } from '@/components/icons/Trush'
+import {
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenu,
+} from '@/components/ui/dropdown-menu'
+import { EllipsisVertical, Eye, Edit } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { useDeleteSingleFolderMutation } from '@/api/inspectionManagement/folderManagementApi'
+import { toast } from 'sonner'
 
 interface FolderMeta {
   label: string
@@ -22,9 +34,10 @@ interface FolderMeta {
 interface FolderPreviewProps extends React.PropsWithChildren {
   meta: FolderMeta
   className?: string
+  onOpen?: () => void
 }
 
-export function FolderPreview({ meta, className, children }: FolderPreviewProps) {
+export function FolderPreview({ meta, className, children, onOpen }: FolderPreviewProps) {
   function formateFileInfo() {
     const info = []
 
@@ -48,9 +61,11 @@ export function FolderPreview({ meta, className, children }: FolderPreviewProps)
 
   return (
     <SectionCard className={cn('flex items-center gap-1.5 bg-white p-4', className)}>
-      <div>{meta.type == 'file' ? <FolderFileTypeIcon /> : <FolderIcon />}</div>
+      <div className="cursor-pointer" onClick={onOpen}>
+        {meta.type == 'file' ? <FolderFileTypeIcon /> : <FolderIcon />}
+      </div>
 
-      <div className="flex flex-1 flex-col text-left">
+      <div onClick={onOpen} className="flex flex-1 cursor-pointer flex-col text-left">
         <span className="line-clamp-1 text-sm font-medium">{meta.label}</span>
         <span className="text-gray-black-300 text-sm">
           {isArrayEmpty(meta?.info) ? null : meta?.info.join(' • ')}
@@ -62,7 +77,7 @@ export function FolderPreview({ meta, className, children }: FolderPreviewProps)
   )
 }
 
-interface FolderProps {
+interface FolderProps extends React.PropsWithChildren {
   meta: FolderMeta
   className?: string
   childrenFolders: IFolderInspectionInfo[] | undefined
@@ -70,12 +85,28 @@ interface FolderProps {
   onOpenClick: () => void
 }
 
-export function Folder({ meta, isLoading, className, childrenFolders, onOpenClick }: FolderProps) {
+export function Folder({
+  meta,
+  isLoading,
+  className,
+  childrenFolders,
+  onOpenClick,
+  children,
+}: FolderProps) {
+  const [open, setOpen] = useState(false)
+
   return (
-    <Dialog>
-      <DialogTrigger onClick={onOpenClick}>
-        <FolderPreview meta={meta} className={className} />
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <FolderPreview
+        onOpen={() => {
+          setOpen((v) => !v)
+          onOpenClick()
+        }}
+        meta={meta}
+        className={className}
+      >
+        {children}
+      </FolderPreview>
 
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
@@ -113,5 +144,44 @@ export function Folder({ meta, isLoading, className, childrenFolders, onOpenClic
         </div>
       </DialogContent>
     </Dialog>
+  )
+}
+
+export function FolderDropdownMenu(props: { dashboardId: string; folderId: string }) {
+  const [deleteFolder, { isLoading: isLoadingDelete }] = useDeleteSingleFolderMutation()
+
+  async function handleDelete() {
+    try {
+      const res = await deleteFolder({
+        dashboardId: props.dashboardId,
+        folderId: props.folderId,
+      }).unwrap()
+
+      toast.success(res.message || 'Folder deleted successfully')
+    } catch (err) {
+      toast.error('Failed to delete folder', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className="border-none" size="icon" variant="outline">
+          <EllipsisVertical />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>
+          <Edit />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled={isLoadingDelete} onClick={handleDelete}>
+          <Trush />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

@@ -49,6 +49,13 @@ const folderManagementApi = baseApi.injectEndpoints({
       }),
       providesTags: (_, __, arg) => [{ type: 'Folders', id: arg?.folderId }],
     }),
+    deleteSingleFolder: builder.mutation<WithApiStatus<void>, { dashboardId: string; folderId: string }>({
+      query: ({ dashboardId, folderId }) => ({
+        url: `/dashboards/${dashboardId}/folders/${folderId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Folders'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -58,5 +65,6 @@ export const {
   useGetInspectionReportsWithDashboardIdQuery,
   useCreateNewFolderWithInspectionDataMutation,
   useLazyGetSingleFolderInfoQuery,
+  useDeleteSingleFolderMutation,
 } = folderManagementApi
 export default folderManagementApi

@@ -265,11 +265,11 @@ export default function PropertyDetails({
             )
           }
 
-          return (
-            <div key={item.type} className="bg-blue-300">
-              {item.type}
-            </div>
-          )
+          //          return (
+          //            <div key={item.type} className="bg-blue-300">
+          //              {item.type}
+          //          )
+          //            </div>
         })}
       </section>
     </SectionCard>
