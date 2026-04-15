@@ -29,8 +29,16 @@ export default function page() {
       
     });
 
-   const item = properties;
-console.log(item, "ppppppppppp");
+   const tableData = properties?.map((item, index) => ({
+  id: item.id,
+  no: index + 1,
+  report: item.propertyType || 'N/A', 
+  property: item.name,
+  address: item.address,
+  updated_at: item.updatedAt,
+  status: item.status === 'ACTIVE' ? 'good' : 'fair', 
+}));
+// console.log(item, "ppppppppppp");
   
     usePaginatedQuery({ meta_data: meta });
     console.log(properties,"-=-=-=-=-=-=");
@@ -43,7 +51,7 @@ console.log(item, "ppppppppppp");
         <div>
           <CustomTable
             columns={ReportManagementColumns}
-            data={demoReportData}
+            data={tableData}
             //   currentPage={currentPage}
             //   itemsPerPage={itemsPerPage}
             //   onPageChange={setCurrentPage}
