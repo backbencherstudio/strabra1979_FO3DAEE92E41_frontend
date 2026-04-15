@@ -9,9 +9,10 @@ import { Search } from 'lucide-react'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { Checkbox } from '../../ui/checkbox'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../../ui/input-group'
+import { formatDate } from '@/lib/farmatters'
 
 interface SelectInspectionDialogProps {
-  onSelect?: (id: string) => void
+  onSelectConfirm?: (selectedIds: IFolderInspectionReportSelectItem[]) => void
   dashboardId: string
 
   selectedIds: IFolderInspectionReportSelectItem[]
@@ -19,7 +20,7 @@ interface SelectInspectionDialogProps {
 }
 
 export function SelectInspectionDialog({
-  onSelect,
+  onSelectConfirm,
   dashboardId,
 
   selectedIds,
@@ -52,20 +53,21 @@ export function SelectInspectionDialog({
         ? prevIds.filter((item) => item.id !== newItem.id)
         : [...prevIds, newItem],
     )
-    onSelect?.(newItem.id)
   }
 
   const { data: { data: inspectionReports = [] } = {} } =
-    useGetInspectionReportsWithDashboardIdQuery({ dashboardId }, { skip: !dashboardId })
+    useGetInspectionReportsWithDashboardIdQuery(
+      { dashboardId, search: searchValue },
+      { skip: !dashboardId },
+    )
 
   return (
-    <div className="relative mt-2" ref={dropdownRef}>
-      {/* Trigger Button */}
+    <div className="relative" ref={dropdownRef}>
       <Button
         variant="outline"
         type="button"
         size="xl"
-        className="border-border/50 w-full border-2 border-dashed"
+        className="border-border/50 w-full flex-1 border-2 border-dashed"
         onClick={() => toggleOpenChange(true)}
       >
         <PlusSignSquare />
@@ -95,7 +97,7 @@ export function SelectInspectionDialog({
               inspectionReports.map((item) => (
                 <div
                   key={item.id}
-                  className={`hover:bg-normal-25 flex items-center gap-3 px-3 py-2 transition-colors not-last:border-b ${
+                  className={`hover:bg-normal-25 grid grid-cols-[20px_2fr_1fr] items-center gap-3 px-3 py-2 transition-colors not-last:border-b ${
                     selectedIds.some((selected) => selected.id === item.id) ? 'bg-[#f0f7ff]' : ''
                   }`}
                 >
@@ -103,8 +105,8 @@ export function SelectInspectionDialog({
                     onClick={() => handleOnSelect(item)}
                     checked={selectedIds.some((selected) => selected.id === item.id)}
                   />
-                  <div>{item.title}</div>
-                  <div>{item.createdAt}</div>
+                  <div className="flex-1">{item.title}</div>
+                  <div className="flex-1">{formatDate(item.createdAt)}</div>
                 </div>
               ))
             ) : (
@@ -118,7 +120,10 @@ export function SelectInspectionDialog({
               type="button"
               size="xl"
               className="flex-1"
-              onClick={() => toggleOpenChange(false)}
+              onClick={() => {
+                toggleOpenChange(false)
+                setSelectedIds([])
+              }}
             >
               Cancel
             </Button>
@@ -127,7 +132,10 @@ export function SelectInspectionDialog({
               type="button"
               size="xl"
               className="flex-1"
-              onClick={() => toggleOpenChange(false)}
+              onClick={() => {
+                toggleOpenChange(false)
+                onSelectConfirm?.(selectedIds)
+              }}
             >
               Select
             </Button>

@@ -26,3 +26,22 @@ export type IFolderInspectionReportSelectItem = {
   title: string
   createdAt: string
 }
+
+export type ICreateNewFolderWithInspectionPayload = {
+  name: string
+  inspectionIds: Array<string>
+}
+
+export type IFolderInspectionInfo = {
+  id: string
+  title: string
+  createdAt: string
+}
+
+export interface ISingleFolderInfo {
+  id: string
+  name: string
+  dashboardId: string
+  createdAt: string
+  inspections: IFolderInspectionInfo[]
+}

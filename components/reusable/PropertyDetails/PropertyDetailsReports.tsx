@@ -1,19 +1,19 @@
 'use client'
 
-import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
+import {
+  useGetAllFolderWithDashboardIdQuery,
+  useLazyGetSingleFolderInfoQuery,
+} from '@/api/inspectionManagement/folderManagementApi'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
-import { IPropertyDashboardDetails } from '@/types'
+import { Button } from '@/components/ui/button'
+import { IPropertyDashboardDetails, ISingleFolderInfo } from '@/types'
+import { useState } from 'react'
+import CreateFolderDialog from '../CreateFolderDialog/CreateFolderDialog'
 import { Folder } from '../Folder/Folder'
-import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import PaginationControls from '../Pagination/Pagination'
-import CustomTable from '../table/CustomTable'
-import { useGetAllFolderWithDashboardIdQuery } from '@/api/inspectionManagement/folderManagementApi'
-import CreateFolderDialog from '../CreateFolderDialog/CreateFolderDialog'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
 
 interface PropertyDetailsReportsProps {
   dashboardId: string
@@ -38,7 +38,22 @@ export default function PropertyDetailsReports({
     { skip: !dashboardId },
   )
 
+  const [getFolderInfo, { isFetching: isFetchingFolderData }] = useLazyGetSingleFolderInfoQuery()
+  const [opneFoderData, setOpneFoderData] = useState<Record<string, ISingleFolderInfo>>({})
+  const handleOpenFolderClick = async (folderId: string, dashboardId: string) => {
+    try {
+      // setOpneFoderData(undefined)
+      const res = await getFolderInfo({ folderId, dashboardId }).unwrap()
+      setOpneFoderData((v) => {
+        return { ...v, [folderId]: res.data }
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const [openFolderCreateDialog, setOpenFolderCreateDialog] = useState(false)
+  console.table(folders)
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
@@ -61,18 +76,24 @@ export default function PropertyDetailsReports({
           }
         />
       </PropertyHeaderWrapper>
-
       {/* <InfoGrid items={rowInfos} /> */}
-      <CreateFolderDialog dashboardId={dashboardId} open={openFolderCreateDialog} onOpenChange={setOpenFolderCreateDialog} />
+
+      <CreateFolderDialog
+        dashboardId={dashboardId}
+        open={openFolderCreateDialog}
+        onOpenChange={setOpenFolderCreateDialog}
+      />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {folders?.map((f) => (
           <Folder
+            onOpenClick={() => handleOpenFolderClick(f.id, f.dashboardId)}
+            isLoading={isFetchingFolderData}
+            childrenFolders={opneFoderData[f.id] ? opneFoderData[f.id].inspections : undefined}
             key={f.id}
             meta={{
               label: f.name,
-              fileCount: f.inspectionCount,
-              size: f.totalSizeLabel,
+              info: [`${f.inspectionCount} Files`, f.totalSizeLabel],
             }}
           />
         ))}

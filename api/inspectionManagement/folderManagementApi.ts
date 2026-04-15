@@ -1,5 +1,13 @@
 import { baseApi } from '@/api/baseApi'
-import type { IFolderInspectionReportSelectItem, IFolderItem, WithApiStatus } from '@/types'
+import type {
+  ICreateNewFolderWithInspectionPayload,
+  IDashboardInspectionListItem,
+  IFilterPayload,
+  IFolderInspectionReportSelectItem,
+  IFolderItem,
+  ISingleFolderInfo,
+  WithApiStatus,
+} from '@/types'
 
 const folderManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,16 +22,41 @@ const folderManagementApi = baseApi.injectEndpoints({
     }),
     getInspectionReportsWithDashboardId: builder.query<
       WithApiStatus<IFolderInspectionReportSelectItem[]>,
-      { dashboardId: string }
+      { dashboardId: string } & IFilterPayload
     >({
-      query: ({ dashboardId }) => ({
+      query: ({ dashboardId, ...params }) => ({
         url: `/dashboards/${dashboardId}/inspections`,
+        params: params,
       }),
+    }),
+    createNewFolderWithInspectionData: builder.mutation<
+      WithApiStatus<void>,
+      { dashboardId: string; data: ICreateNewFolderWithInspectionPayload }
+    >({
+      query: ({ dashboardId, data }) => ({
+        url: `/dashboards/${dashboardId}/folders`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Folders'],
+    }),
+    getSingleFolderInfo: builder.query<
+      WithApiStatus<ISingleFolderInfo>,
+      { dashboardId: string; folderId: string }
+    >({
+      query: ({ dashboardId, folderId }) => ({
+        url: `/dashboards/${dashboardId}/folders/${folderId}`,
+      }),
+      providesTags: (_, __, arg) => [{ type: 'Folders', id: arg?.folderId }],
     }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetAllFolderWithDashboardIdQuery, useGetInspectionReportsWithDashboardIdQuery } =
-  folderManagementApi
+export const {
+  useGetAllFolderWithDashboardIdQuery,
+  useGetInspectionReportsWithDashboardIdQuery,
+  useCreateNewFolderWithInspectionDataMutation,
+  useLazyGetSingleFolderInfoQuery,
+} = folderManagementApi
 export default folderManagementApi
