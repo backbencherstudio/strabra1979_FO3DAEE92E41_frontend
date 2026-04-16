@@ -1,6 +1,7 @@
 import { IActivityLogListItem } from './activity'
 import { IScheduledInspectionTableItem } from './inspection'
-import { IUserBasicInfo } from './user'
+import { IPropertyType } from './property'
+import { IPropertyManager, IUserBasicInfo } from './user'
 
 export type IScheduledInspectionTabs = {
   all: number
@@ -35,10 +36,10 @@ export type IOverviewAdmin = {
     id: string
     name: string
     address: string
-    propertyType?: string
+    propertyType?: IPropertyType
     nextInspectionDate?: string
     dashboardId: string
-    propertyManager?: IUserBasicInfo
+    propertyManager?: IPropertyManager
     roofHealth?: {
       overallScore: number
       healthLabel: string
