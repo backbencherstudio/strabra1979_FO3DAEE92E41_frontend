@@ -29,6 +29,7 @@
     "react-redux": "^9.2.0",
     "react-timezone-select": "^3.3.2",
     "recharts": "^2.15.4",
+    "socket.io-client": "^4.8.3",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
     "yet-another-react-lightbox": "^3.29.1",
