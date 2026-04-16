@@ -2,6 +2,7 @@
 
 import {
   useGetAllFolderWithDashboardIdQuery,
+  useGetinspectionPropertyQuery,
   useLazyGetSingleFolderInfoQuery,
 } from '@/api/inspectionManagement/folderManagementApi'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
@@ -15,6 +16,7 @@ import {
   IPropertyDashboardDetails,
   ISingleFolderInfo,
   RoleUtils,
+  TableRow,
 } from '@/types'
 import { useState } from 'react'
 import CreateFolderDialog from '../CreateFolderDialog/CreateFolderDialog'
@@ -22,6 +24,9 @@ import { Folder, FolderDropdownMenu } from '../Folder/Folder'
 import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import PaginationControls from '../Pagination/Pagination'
+import CustomTable from '../table/CustomTable'
+import { demoDocumentsData, DocumentsTableColumns } from '@/components/columns/DocumentsTable'
+import { ReportsTableColumns } from '@/components/columns/ReportsTable'
 
 interface PropertyDetailsReportsProps {
   dashboardId: string
@@ -29,6 +34,7 @@ interface PropertyDetailsReportsProps {
   headerRightContent?: React.ReactNode
   role: IAuthUserRole | null
 }
+
 
 export default function PropertyDetailsReports({
   dashboardId,
@@ -72,6 +78,20 @@ export default function PropertyDetailsReports({
   const [openFolderCreateDialog, setOpenFolderCreateDialog] = useState(false)
 
   const isAdmin = RoleUtils.isAdmin(role)
+
+
+const { data: inspectionData } = useGetinspectionPropertyQuery({dashboardId});
+const inspections = inspectionData?.data || [];
+console.log(inspections)
+
+const tableData: TableRow[] = inspections.map((item: any) => ({
+  name: item.propertyName,
+  status: item.status,
+  lastUpdate: item.date,
+  size: 0, 
+  url: "", 
+}));
+
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
@@ -154,28 +174,24 @@ export default function PropertyDetailsReports({
           <SharedPropertyCardListActions titleClassName="text-forground" title="Report Updates" />
         </SharedPropertyCardListContextProvider>
 
-        {/* <div> */}
-        {/*   <CustomTable */}
-        {/*     columns={DocumentsTableColumns} */}
-        {/*     data={demoDocumentsData} */}
-        {/*     //   currentPage={currentPage} */}
-        {/*     //   itemsPerPage={itemsPerPage} */}
-        {/*     //   onPageChange={setCurrentPage} */}
-        {/*     //   sortConfig={sortConfig} */}
-        {/*     //   onSort={handleSort} */}
-        {/*     minWidth={1000} */}
-        {/*     headerStyles={{ */}
-        {/*       backgroundColor: '#eceff3', */}
-        {/*       textColor: '#4a4c56', */}
-        {/*       fontSize: '14px', */}
-        {/*       fontWeight: '400', */}
-        {/*       padding: '12px 16px', */}
-        {/*     }} */}
-        {/*     cellBorderColor="#eceff3" */}
-        {/*     hasWrapperBorder={false} */}
-        {/*     roundedClass="rounded-lg" */}
-        {/*   /> */}
-        {/* </div> */}
+        <div>
+        <CustomTable
+  columns={ReportsTableColumns}
+  data={tableData}
+  minWidth={1000}
+  headerStyles={{
+    backgroundColor: '#eceff3',
+    textColor: '#4a4c56',
+    fontSize: '14px',
+    fontWeight: '400',
+    padding: '12px 16px',
+  }}
+  cellBorderColor="#eceff3"
+  hasWrapperBorder={false}
+  roundedClass="rounded-lg"
+
+/>
+        </div>
         <PaginationControls showHomeAndEnd={false} className="justify-start" size="icon-xs" />
       </SectionCard>
     </SectionCard>

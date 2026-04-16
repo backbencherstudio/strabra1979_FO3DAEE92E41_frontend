@@ -19,6 +19,8 @@ const badgeVariants = cva(
           "bg-[#EDFAF6] text-[#008C5D] border border-[#D8EBE5] [a&]:hover:bg-secondary/90",
         danger:
           "bg-[#FEF0F4] text-[#C7262B] border border-[#F4DFE0] [a&]:hover:bg-secondary/90",
+          complete:
+          "bg-[#FEF0F4] text-[#C7262B] border border-[#F4DFE0] [a&]:hover:bg-secondary/90",
         destructive:
           "bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

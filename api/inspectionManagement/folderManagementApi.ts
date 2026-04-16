@@ -20,6 +20,12 @@ const folderManagementApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Folders'],
     }),
+    getinspectionProperty: builder.query<WithApiStatus<IFolderItem[]>, { dashboardId: string }>({
+      query: ({ dashboardId }) => ({
+        url: `/inspections/property/${dashboardId}`,
+      }),
+      providesTags: ['Folders'],
+    }),
     getInspectionReportsWithDashboardId: builder.query<
       WithApiStatus<IFolderInspectionReportSelectItem[]>,
       { dashboardId: string } & IFilterPayload
@@ -101,6 +107,7 @@ const folderManagementApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllFolderWithDashboardIdQuery,
+  useGetinspectionPropertyQuery,
   useGetInspectionReportsWithDashboardIdQuery,
   useCreateNewFolderWithInspectionDataMutation,
   useLazyGetSingleFolderInfoQuery,

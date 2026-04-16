@@ -98,6 +98,14 @@ export type IInspectionMediaFileItem = {
   uploadedAt: string
 }
 
+export type TableRow = {
+  name: string
+  status: string
+  lastUpdate: string
+  size: number
+  url: string
+}
+
 export interface IInspectionFormData {
   headerFields: IInspectionInputField[]
   scoringCategories: ScoringCategory[]
