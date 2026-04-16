@@ -1,18 +1,5 @@
-interface PropertyDetailPageProps {
-  params: Promise<{
-    propertyId: string
-  }>
-}
+import { PropertyDashboardDetailTab } from '@/components/reusable/PropertyDetails'
 
-export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
-  const { propertyId } = await params
-  // TODO: fix this
-  return null
-  // return (
-  //   <PropertyDetails
-  //     dashboardId={propertyId}
-  //     headerRightContent={<PropertySharePopover />}
-  //     data={propertyDetails}
-  //   />
-  // )
+export default async function PropertyDetailPage() {
+  return <PropertyDashboardDetailTab />
 }

@@ -1,12 +1,5 @@
-import AdminPropertyDashboard from '@/components/pages/admin/property-list/AdminPropertyDashboard'
+import { PropertyDashboardReportTab } from '@/components/reusable/PropertyDetails'
 
-interface PropertyDetailPageProps {
-  params: Promise<{
-    dashboardId: string
-  }>
-}
-
-export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
-  const { dashboardId } = await params
-  return <AdminPropertyDashboard dashboardId={dashboardId} />
+export default async function PropertyDetailPage() {
+  return <PropertyDashboardReportTab />
 }
