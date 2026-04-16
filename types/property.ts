@@ -202,3 +202,7 @@ export type IPropertyDashboardDetails = {
   folders: Array<IPropertyInspectionFolderItem>
 }
 
+export type INOAccessReason = 'NO_ACCESS' | 'REVOKED' | 'EXPIRED'
+export type ICheckPropertyAccessResponse =
+  | { hasAccess: true }
+  | { hasAccess: false; reason: INOAccessReason }
