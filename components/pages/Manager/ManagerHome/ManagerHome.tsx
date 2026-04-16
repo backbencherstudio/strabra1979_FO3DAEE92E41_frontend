@@ -14,7 +14,7 @@ import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/Sec
 import CustomTable from '@/components/reusable/table/CustomTable'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
-import { formatDate, naIfEmpty, withNAf } from '@/lib/farmatters'
+import { formatDate, naIfEmpty } from '@/lib/farmatters'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -85,14 +85,14 @@ export default function ManagerHome() {
             ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
             : data?.data?.properties?.map((p) => (
                 <PropertyCard
+                  key={p.id}
+                  id={p.id}
+                  hasAccess
                   slug={
                     p?.dashboardId
                       ? routes.manager.propertyDetail.build({ dashboardId: p?.dashboardId })
                       : '#'
                   }
-                  hasAccess
-                  key={p.id}
-                  id={p.id}
                   propertyName={p.name}
                   address={naIfEmpty(p.address)}
                   score={p?.roofHealth?.overallScore ?? 0}

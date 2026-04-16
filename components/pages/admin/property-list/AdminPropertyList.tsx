@@ -67,9 +67,11 @@ function AdminPropertyListContend() {
                   hasAccess
                   key={p.id}
                   id={p.id}
-                  slug={routes.admin.propertyDashboarDetail.build({
-                    dashboardId: p?.dashboard?.id,
-                  })}
+                  slug={
+                    p?.dashboard?.id
+                      ? routes.admin.propertyDetail.build({ dashboardId: p?.dashboard?.id })
+                      : '#'
+                  }
                   isAdmin={isAdmin}
                   propertyName={p.name}
                   dashboardId={p?.dashboard?.id}

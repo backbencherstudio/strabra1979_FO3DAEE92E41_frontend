@@ -1,5 +1,7 @@
+'use client'
+
 import { PropertyDashboardReportTab } from '@/components/reusable/PropertyDetails'
 
-export default async function PropertyDetailReportPage() {
+export default function Page() {
   return <PropertyDashboardReportTab />
 }

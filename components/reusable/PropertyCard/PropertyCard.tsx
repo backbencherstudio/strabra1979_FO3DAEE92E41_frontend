@@ -1,20 +1,15 @@
 'use client'
 import { LocationPin } from '@/components/icons/LocationPin'
-import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
-import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { Check } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
-import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { InfoItem } from '../InfoGrid/InfoGrid'
 import PropertyCardAdminActions from './PropertyCardAdminActions'
-import { Skeleton } from '@/components/ui/skeleton'
-import { useCreateDashboardAccessMutation } from '@/api/dashboard/properties/propertiesApi'
-import { toast } from 'sonner'
 
 export interface Property {
   id: string
@@ -34,7 +29,8 @@ export interface Property {
 
 export interface PropertyCardProps extends Property, React.PropsWithChildren {
   hasAccess?: boolean
-  slug: string
+  actionButton?: React.ReactNode
+  slug?: string
   accessExpiration?: string
   isSelectable?: boolean
   onSelect?: (selected: boolean) => void
@@ -52,7 +48,8 @@ export default function PropertyCard({
   scoreTitle = 'Overall Health',
   previewImageUrl,
   hasAccess,
-  slug = '#',
+  actionButton,
+  slug,
   children,
   isSelectable = false,
   onSelect,
@@ -67,24 +64,6 @@ export default function PropertyCard({
     setIsSelected(defaultSelected)
   }, [defaultSelected])
 
-const [requestAccess, { isLoading }] = useCreateDashboardAccessMutation();
-
-const handleRequestAccess = async () => {
-  try {
-    await requestAccess({
-      dashboardId: dashboardId!,
-      message: "I need access to view this dashboard",
-    }).unwrap();
-
-    toast.success("Request sent successfully");
-  } catch (err: any) {
-    if (err?.status === 409) {
-      toast.error("Already requested or have access");
-    } else {
-      toast.error("Something went wrong");
-    }
-  }
-};
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (isSelectable) {
@@ -156,32 +135,13 @@ const handleRequestAccess = async () => {
           </div>
         </section>
         <section className="mt-4.5">
-          {hasAccess ? (
+          {actionButton ? (
+            actionButton
+          ) : hasAccess && slug !== undefined && slug !== '' ? (
             <Button asChild size="lg" className="w-full" variant="outline">
               <Link href={slug}>View Details</Link>
             </Button>
-          ) : (
-            <ConfirmDialog
-  iconContainerClass="bg-transparent p-0"
-  icon={<NoEntryIcon className="size-14" />}
-  trigger={
-    <Button size="lg" className="w-full" variant="outline">
-      View Details
-    </Button>
-  }
-  title="Access Not Granted"
-  desc="You don’t currently have permission to view this property dashboard. Please request access."
->
-  <AlertDialogCancel>Decline</AlertDialogCancel>
-
-  <AlertDialogAction
-    onClick={handleRequestAccess}
-    disabled={isLoading}
-  >
-    {isLoading ? "Sending..." : "Request Access"}
-  </AlertDialogAction>
-</ConfirmDialog>
-          )}
+          ) : null}
         </section>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { PropertyDashboardDetailTab } from '@/components/reusable/PropertyDetails'
 
-export default async function PropertyDetailPage() {
+export default function Page() {
   return <PropertyDashboardDetailTab />
 }

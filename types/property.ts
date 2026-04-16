@@ -155,6 +155,7 @@ export type IPropertyDashboardDetails = {
   property: {
     id: string
     name: string
+    accessExpiresAt?: string
     address: string
     propertyType?: string
     nextInspectionDate?: string
@@ -202,3 +203,7 @@ export type IPropertyDashboardDetails = {
   folders: Array<IPropertyInspectionFolderItem>
 }
 
+export type INOAccessReason = 'NO_ACCESS' | 'REVOKED' | 'EXPIRED'
+export type ICheckPropertyAccessResponse =
+  | { hasAccess: true }
+  | { hasAccess: false; reason: INOAccessReason }

@@ -8,12 +8,13 @@ import { ChevronRight, User2 } from 'lucide-react'
 import { useGetAdminOverviewQuery } from '@/api/dashboard/overviewApi'
 import { StatListItemProps } from '@/components/dashboard/StatItem/StatListItem'
 import StatsList from '@/components/dashboard/StatItem/StatsList'
-import PropertyCard, { PropertyCardInfoList } from '@/components/reusable/PropertyCard/PropertyCard'
+import PropertyCard from '@/components/reusable/PropertyCard/PropertyCard'
+import { PropertyCardAdminInfoList } from '@/components/reusable/PropertyCard/PropertyCardAdminInfoList'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { TabFilterButtons } from '@/components/reusable/TabFilterButtons/TabFilterButtons'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
-import { formatDate, naIfEmpty, withNAf } from '@/lib/farmatters'
+import { naIfEmpty, withNAf } from '@/lib/farmatters'
 import { isArrayEmpty } from '@/lib/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -109,23 +110,15 @@ export default function AdminHome() {
             ? null
             : latestProperties?.map((p) => (
                 <PropertyCard
-                  slug={routes.admin.propertyDashboarDetail.build({ dashboardId: p?.dashboardId })}
                   hasAccess
+                  slug={routes.admin.propertyDetail.build({ dashboardId: p?.dashboardId })}
                   key={p.id}
                   id={p.id}
                   propertyName={p.name}
                   address={naIfEmpty(p.address)}
                   score={p?.roofHealth?.overallScore ?? 0}
                 >
-                  <PropertyCardInfoList
-                    items={[
-                      { label: 'Type', value: withNAf(p.propertyType) },
-                      {
-                        label: 'Next Inspection',
-                        value: withNAf(p?.nextInspectionDate, formatDate),
-                      },
-                    ]}
-                  />
+                  <PropertyCardAdminInfoList property={p} />
                 </PropertyCard>
               ))}
         </div>

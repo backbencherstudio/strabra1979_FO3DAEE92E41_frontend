@@ -2,7 +2,7 @@ import { formatDate, naIfEmpty } from '@/lib/farmatters'
 import { IPropertyListItem } from '@/types'
 import { PropertyCardInfoList } from './PropertyCard'
 
-export function PropertyCardAdminInfoList({ property }: { property: IPropertyListItem }) {
+export function PropertyCardAdminInfoList({ property }: { property: Partial<IPropertyListItem> }) {
   return (
     <PropertyCardInfoList
       items={[

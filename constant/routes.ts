@@ -8,7 +8,7 @@ export const routes = {
     home: '/admin',
 
     propertyList: '/admin/properties-list',
-    propertyDashboarDetail: createRoute('/admin/properties-list/[dashboardId]'),
+    propertyDetail: createRoute('/admin/properties-list/[dashboardId]'),
 
     userManagement: '/admin/user-management',
 
@@ -44,7 +44,8 @@ export const routes = {
 
   viewer: {
     home: '/',
-    propertyDetail: createRoute('/property/[dashboardId]'),
+    propertyList: '/property-list',
+    propertyDetail: createRoute('/property-list/[dashboardId]'),
     settings: '/settings',
   },
 } as const
