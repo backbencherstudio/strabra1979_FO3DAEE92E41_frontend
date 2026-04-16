@@ -22,7 +22,6 @@ export default function ManagerHome() {
   const { data, isLoading } = useGetManagerOverviewQuery()
 
   const item = data?.data?.stats
-  console.log(item, 'Stats from first report')
 
   const recentReports = data?.data?.recentReports || []
 

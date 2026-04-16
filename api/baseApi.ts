@@ -1,4 +1,4 @@
-import { baseApiURL } from '@/constant'
+import { config } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
 import { logOut, setCredentials } from '@/redux/features/auth/authSlice'
 import { RootState } from '@/redux/store'
@@ -16,7 +16,7 @@ import {
 import { toast } from 'sonner'
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: baseApiURL,
+  baseUrl: config.apiBaseUrl,
   // credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     // Setting header on every API call
@@ -63,6 +63,7 @@ export const baseApi = createApi({
     'Overview',
 
     'Folders',
+    'Notification',
   ] as const,
   endpoints: () => ({}),
 })

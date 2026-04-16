@@ -8,6 +8,18 @@ export const cookieAge = {
   day30: day1 * 30,
 }
 
-export const baseApiURL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  'https://displayed-travelers-marco-suspected.trycloudflare.com/api'
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL
+
+if (!API_URL) {
+  throw new Error('NEXT_PUBLIC_API_URL is not defined')
+}
+
+if (!SOCKET_URL) {
+  throw new Error('NEXT_PUBLIC_SOCKET_URL is not defined')
+}
+
+export const config = {
+  apiBaseUrl: API_URL,
+  socketUrl: SOCKET_URL,
+}
