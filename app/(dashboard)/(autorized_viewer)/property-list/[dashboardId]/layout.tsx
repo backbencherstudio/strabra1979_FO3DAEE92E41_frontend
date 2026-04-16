@@ -1,27 +1,28 @@
 import { NavMain } from '@/components/dashboard/Sidebar/DashboardSidebr'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import { routes } from '@/constant'
 import { MenuItem } from '@/lib/menuConfig'
 
 interface PropertyDetailPageProps extends React.PropsWithChildren {
   params: Promise<{
-    propertyId: string
+    dashboardId: string
   }>
 }
 
 export default async function PropertyDetailPage({ params, children }: PropertyDetailPageProps) {
-  const { propertyId } = await params
+  const { dashboardId } = await params
 
   const menu: MenuItem[] = [
     {
       id: 'dashboard',
       label: 'Property Dashboard',
       checks: 'exectMatch',
-      href: `/manager/property-list/${propertyId}`,
+      href: `${routes.viewer.propertyList}/${dashboardId}`,
     },
     {
       id: 'browse',
       label: 'All reports',
-      href: `/manager/property-list/${propertyId}/reports`,
+      href: `${routes.viewer.propertyList}/${dashboardId}/reports`,
     },
   ]
 

@@ -118,7 +118,7 @@ function SelectPropertyDialogContent({
                   <PropertyCard
                     {...p}
                     key={p.id}
-                    slug={routes.admin.propertyDashboarDetail.build({
+                    slug={routes.admin.propertyDetail.build({
                       dashboardId: p?.dashboard?.id,
                     })}
                     hasAccess

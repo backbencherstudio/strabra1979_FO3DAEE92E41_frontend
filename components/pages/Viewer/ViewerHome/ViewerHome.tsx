@@ -6,7 +6,10 @@ import {
   useSharedPropertyCardListContext,
 } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
-import PropertyCard, { PropertyCardSkeleton } from '@/components/reusable/PropertyCard/PropertyCard'
+import PropertyCard, {
+  PropertyCardInfoList,
+  PropertyCardSkeleton,
+} from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 
 import {
@@ -23,7 +26,7 @@ import {
 
 import { PropertyCardAdminInfoList } from '@/components/reusable/PropertyCard/PropertyCardAdminInfoList'
 import { routes } from '@/constant'
-import { addDaysBy, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
+import { addDaysBy, formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
 import { INOAccessReason, IPropertyListItem } from '@/types'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
 import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
@@ -33,6 +36,7 @@ import { toast } from 'sonner'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/ui/spinner'
+import { property } from 'zod'
 
 export default function ViewerHome() {
   return (
@@ -169,7 +173,15 @@ function PropertyCardWrapper({ p }: { p: IPropertyListItem }) {
           </Button>
         }
       >
-        <PropertyCardAdminInfoList property={p} />
+        <PropertyCardInfoList
+          items={[
+            { label: 'Type', value: naIfEmpty(p.propertyType) },
+            {
+              label: 'Access expiration', // TODO: update from fahim bhai
+              value: naIfEmpty(p?.nextInspectionDate, formatDate),
+            },
+          ]}
+        />
       </PropertyCard>
     </>
   )

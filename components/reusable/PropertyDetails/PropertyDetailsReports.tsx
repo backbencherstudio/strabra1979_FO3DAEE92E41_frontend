@@ -9,7 +9,13 @@ import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
-import { IFolderItem, IPropertyDashboardDetails, ISingleFolderInfo } from '@/types'
+import {
+  IAuthUserRole,
+  IFolderItem,
+  IPropertyDashboardDetails,
+  ISingleFolderInfo,
+  RoleUtils,
+} from '@/types'
 import { useState } from 'react'
 import CreateFolderDialog from '../CreateFolderDialog/CreateFolderDialog'
 import { Folder, FolderDropdownMenu } from '../Folder/Folder'
@@ -19,16 +25,16 @@ import PaginationControls from '../Pagination/Pagination'
 
 interface PropertyDetailsReportsProps {
   dashboardId: string
-  accessExpiration?: string
   data: IPropertyDashboardDetails
   headerRightContent?: React.ReactNode
+  role: IAuthUserRole | null
 }
 
 export default function PropertyDetailsReports({
   dashboardId,
   data,
-  accessExpiration,
   headerRightContent = null,
+  role,
 }: PropertyDetailsReportsProps) {
   const { data: { data: folders } = {} } = useGetAllFolderWithDashboardIdQuery(
     { dashboardId: dashboardId },
@@ -65,21 +71,27 @@ export default function PropertyDetailsReports({
   )
   const [openFolderCreateDialog, setOpenFolderCreateDialog] = useState(false)
 
+  const isAdmin = RoleUtils.isAdmin(role)
+
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
       <PropertyHeaderWrapper
         title={withNA(property?.name)}
         rightContent={
-          <Button
-            size="xl"
-            variant="outline"
-            onClick={() => {
-              setCreateFolderDialogMode('create')
-              setOpenFolderCreateDialog(true)
-            }}
-          >
-            Create New Folder
-          </Button>
+          headerRightContent ? (
+            headerRightContent
+          ) : isAdmin ? (
+            <Button
+              size="xl"
+              variant="outline"
+              onClick={() => {
+                setCreateFolderDialogMode('create')
+                setOpenFolderCreateDialog(true)
+              }}
+            >
+              Create New Folder
+            </Button>
+          ) : null
         }
       >
         <InfoList
@@ -118,19 +130,21 @@ export default function PropertyDetailsReports({
               info: [`${f.inspectionCount} Files`, f.totalSizeLabel],
             }}
           >
-            <FolderDropdownMenu
-              onEdit={async () => {
-                await getFolderInfo({ folderId: f.id, dashboardId: f.dashboardId }).unwrap()
+            {isAdmin ? (
+              <FolderDropdownMenu
+                onEdit={async () => {
+                  await getFolderInfo({ folderId: f.id, dashboardId: f.dashboardId }).unwrap()
 
-                setCreateFolderDialogMode('rename')
-                setSelectedFolderToRename(f)
-                setOpenFolderCreateDialog(true)
+                  setCreateFolderDialogMode('rename')
+                  setSelectedFolderToRename(f)
+                  setOpenFolderCreateDialog(true)
 
-                console.log('onEdit')
-              }}
-              dashboardId={f.dashboardId}
-              folderId={f.id}
-            />
+                  console.log('onEdit')
+                }}
+                dashboardId={f.dashboardId}
+                folderId={f.id}
+              />
+            ) : null}
           </Folder>
         ))}
       </div>

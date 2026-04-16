@@ -109,7 +109,7 @@ export default function AdminHome() {
             ? null
             : latestProperties?.map((p) => (
                 <PropertyCard
-                  slug={routes.admin.propertyDashboarDetail.build({ dashboardId: p?.dashboardId })}
+                  slug={routes.admin.propertyDetail.build({ dashboardId: p?.dashboardId })}
                   hasAccess
                   key={p.id}
                   id={p.id}

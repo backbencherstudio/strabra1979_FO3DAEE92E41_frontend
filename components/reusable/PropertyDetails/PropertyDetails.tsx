@@ -28,15 +28,13 @@ import PropertyCheckListPreview from './PropertyCheckListPreview'
 interface PropertyDetailsProps {
   dashboardId: string
   data: IPropertyDashboardDetails
-  accessExpiration?: string
   headerRightContent?: React.ReactNode
 }
 
 export default function PropertyDetails({
   dashboardId,
   data,
-  accessExpiration,
-  headerRightContent = null,
+  headerRightContent,
 }: PropertyDetailsProps) {
   const { property } = data
   const rowInfos = [
@@ -70,16 +68,7 @@ export default function PropertyDetails({
 
   return (
     <SectionCard className="grid grid-cols-1 gap-5">
-      <PropertyHeaderWrapper
-        title={withNA(property?.name)}
-        rightContent={
-          accessExpiration ? (
-            <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
-          ) : (
-            headerRightContent
-          )
-        }
-      >
+      <PropertyHeaderWrapper title={withNA(property?.name)} rightContent={headerRightContent}>
         <InfoList
           items={[
             // { label: 'Inspection ID', value: data.id },

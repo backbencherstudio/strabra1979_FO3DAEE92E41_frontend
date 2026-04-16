@@ -1,5 +1,5 @@
-import { PropertyDashboardReportTab } from '@/components/reusable/PropertyDetails'
+import { PropertyDashboardDetailTab } from '@/components/reusable/PropertyDetails'
 
 export default async function PropertyDetailPage() {
-  return <PropertyDashboardReportTab />
+  return <PropertyDashboardDetailTab />
 }

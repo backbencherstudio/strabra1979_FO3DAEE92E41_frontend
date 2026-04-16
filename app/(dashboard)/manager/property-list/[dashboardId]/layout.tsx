@@ -1,5 +1,6 @@
 import { NavMain } from '@/components/dashboard/Sidebar/DashboardSidebr'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import { routes } from '@/constant'
 import { MenuItem } from '@/lib/menuConfig'
 
 interface PropertyDetailPageProps extends React.PropsWithChildren {
@@ -16,12 +17,12 @@ export default async function PropertyDetailPage({ params, children }: PropertyD
       id: 'dashboard',
       label: 'Property Dashboard',
       checks: 'exectMatch',
-      href: `/property/${dashboardId}`,
+      href: `${routes.manager.propertyList}/${dashboardId}`,
     },
     {
       id: 'browse',
       label: 'All reports',
-      href: `/property/${dashboardId}/reports`,
+      href: `${routes.manager.propertyList}/${dashboardId}/reports`,
     },
   ]
 

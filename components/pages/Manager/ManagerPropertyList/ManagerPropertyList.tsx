@@ -12,7 +12,7 @@ import PropertyCard, {
   PropertyCardSkeleton,
 } from '@/components/reusable/PropertyCard/PropertyCard'
 import { routes } from '@/constant'
-import { addDaysBy, formatDate, naIfEmpty, withNA, withNAf } from '@/lib/farmatters'
+import { addDaysBy, formatDate, naIfEmpty } from '@/lib/farmatters'
 import { useAuth } from '@/redux/features/auth/useAuth'
 import { RoleUtils } from '@/types'
 import SharedPropertyCardListActions from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
@@ -21,17 +21,17 @@ import {
   useSharedPropertyCardListContext,
 } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 
-export default function ViewerPropertyList() {
+export default function ManagerPropertyList() {
   return (
     <PaginationPageProvider>
       <SharedPropertyCardListContextProvider>
-        <AdminPropertyListContend />
+        <ManagerPropertyListContent />
       </SharedPropertyCardListContextProvider>
     </PaginationPageProvider>
   )
 }
 
-function AdminPropertyListContend() {
+function ManagerPropertyListContent() {
   const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
   const { page } = usePaginationPage()
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
@@ -42,8 +42,6 @@ function AdminPropertyListContend() {
     dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
   })
   usePaginatedQuery({ meta_data: meta })
-  const { role } = useAuth()
-  const isAdmin = RoleUtils.isAdmin(role)
 
   return (
     <div className="bg-normal-25 rounded-3xl p-4">
@@ -64,10 +62,11 @@ function AdminPropertyListContend() {
                   hasAccess
                   key={p.id}
                   id={p.id}
-                  slug={routes.manager.propertyDetail.build({
-                    dashboardId: p?.dashboard?.id,
-                  })}
-                  isAdmin={isAdmin}
+                  slug={
+                    p?.dashboard?.id
+                      ? routes.manager.propertyDetail.build({ dashboardId: p?.dashboard?.id })
+                      : '#'
+                  }
                   propertyName={p.name}
                   dashboardId={p?.dashboard?.id}
                   address={naIfEmpty(p.address)}

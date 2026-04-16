@@ -155,6 +155,7 @@ export type IPropertyDashboardDetails = {
   property: {
     id: string
     name: string
+    accessExpiresAt?: string
     address: string
     propertyType?: string
     nextInspectionDate?: string
