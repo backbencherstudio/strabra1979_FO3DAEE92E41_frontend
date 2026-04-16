@@ -1,3 +1,4 @@
+import { useGetNotificationsQuery } from '@/api/notification/notificationApi'
 import { Notification, NotificationCircle } from '@/components/icons/Notification'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,14 +8,21 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { formatDate } from '@/lib/farmatters'
+import { selectNotificationUnreadCount } from '@/redux/features/notification/notificationSlice'
 import { ReactNode } from 'react'
+import { useSelector } from 'react-redux'
 import UserAvatar from '../UserAvatar'
 
 export default function NotificationPanel() {
+  const count = useSelector(selectNotificationUnreadCount)
+  const { data: { data: notifications = [] } = {} } = useGetNotificationsQuery({})
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button size="icon-lg" variant="outline" className="rounded-full shadow-none">
+          {count}
           <Notification className="size-6" />
         </Button>
       </PopoverTrigger>
@@ -30,6 +38,18 @@ export default function NotificationPanel() {
           </Button>
         </PopoverHeader>
         <section className="slim-scrollbar max-h-100 divide-y overflow-y-auto pb-3 md:max-h-120">
+          {notifications.map((n) => {
+            const event = n.notification_event
+            return (
+              <NotificationPanelItem
+                time={formatDate(n.created_at)}
+                key={n.id}
+                title={event.type}
+                content={event.text}
+              />
+            )
+          })}
+
           {/* // Notification 1 — with user avatar, accept/decline actions */}
           <NotificationPanelItem
             avatar={

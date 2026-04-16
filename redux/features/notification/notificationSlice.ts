@@ -1,3 +1,4 @@
+import { RootState } from '@/redux/store'
 import { createSlice } from '@reduxjs/toolkit'
 
 const notificationSlice = createSlice({
@@ -15,5 +16,6 @@ const notificationSlice = createSlice({
   },
 })
 
+export const selectNotificationUnreadCount = (state: RootState) => state.notification.unreadCount
 export const { setUnreadCount, increment } = notificationSlice.actions
 export default notificationSlice.reducer

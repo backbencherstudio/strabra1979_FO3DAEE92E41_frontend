@@ -1,10 +1,16 @@
 import { baseApi } from '@/api/baseApi'
-import { INotificationItem, WithPaginationAndStatus } from '@/types'
+import { INotificationItem, IPaginationPayload, WithPaginationAndStatus } from '@/types'
 
 const notificationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getNotifications: builder.query<WithPaginationAndStatus<INotificationItem[]>, number>({
-      query: (page = 1) => `/notifications?page=${page}`,
+    getNotifications: builder.query<
+      WithPaginationAndStatus<INotificationItem[]>,
+      IPaginationPayload
+    >({
+      query: (args) => ({
+        url: `/notifications`,
+        params: args ?? undefined,
+      }),
       providesTags: ['Notification'],
     }),
 
@@ -19,5 +25,5 @@ const notificationApi = baseApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const {} = notificationApi
+export const { useGetNotificationsQuery } = notificationApi
 export default notificationApi
