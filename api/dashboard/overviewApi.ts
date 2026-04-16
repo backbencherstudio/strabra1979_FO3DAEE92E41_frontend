@@ -30,5 +30,6 @@ const overviewApi = baseApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const { useGetAdminOverviewQuery, useGetOperatorOverviewQuery,useGetManagerOverviewQuery } = overviewApi
+export const { useGetAdminOverviewQuery, useGetOperatorOverviewQuery, useGetManagerOverviewQuery } =
+  overviewApi
 export default overviewApi
