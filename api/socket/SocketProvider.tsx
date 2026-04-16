@@ -59,12 +59,19 @@ export function SocketProvider({ children }: PropsWithChildren) {
 export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
   // unread count
   socket.on('notification:unread_count', (data) => {
-    dispatch(setUnreadCount(data.count))
+    console.warn('notification:unread_count ======================')
+    // dispatch(setUnreadCount(data.count))
+  })
+
+  socket.on('notification', (data) => {
+    console.warn('notification ======================')
+    // dispatch(setUnreadCount(data.count))
   })
 
   // new notification
   socket.on('notification:dashboard_assigned', (data) => {
-    dispatch(increment())
+    console.warn('notification:dashboard_assigned ======================')
+    // dispatch(increment())
 
     // inject into RTK cache
     // store.dispatch(
