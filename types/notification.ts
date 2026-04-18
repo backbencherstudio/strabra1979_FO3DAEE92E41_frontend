@@ -72,7 +72,7 @@ export type INotificationActionItem = {
   action: 'reject' | 'approve'
   label: string
   dashboardId?: string
-  senderId?: string
+  requestId?: string
 }
 
 type ReviewAction = 'APPROVED' | 'DECLINED'
