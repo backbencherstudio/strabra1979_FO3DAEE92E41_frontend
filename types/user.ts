@@ -5,7 +5,9 @@ export interface IUserBasicInfo {
   username: string
   email?: string
   name?: string
-  avatar?: string | null
+  first_name?: string
+  last_name?: string
+  avatar?: string
   role?: IAuthUserRole
 }
 

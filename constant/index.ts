@@ -10,14 +10,8 @@ export const cookieAge = {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL
-
-if (!API_URL) {
-  throw new Error('NEXT_PUBLIC_API_URL is not defined')
-}
-
-if (!SOCKET_URL) {
-  throw new Error('NEXT_PUBLIC_SOCKET_URL is not defined')
-}
+if (!API_URL) throw new Error('NEXT_PUBLIC_API_URL is not defined')
+if (!SOCKET_URL) throw new Error('NEXT_PUBLIC_SOCKET_URL is not defined')
 
 export const config = {
   apiBaseUrl: API_URL,

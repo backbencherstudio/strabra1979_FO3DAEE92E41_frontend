@@ -1,5 +1,43 @@
 import { IUserBasicInfo } from './user'
 
+export const NOTIFICATION_EVENTS = {
+  // Property Manager / Authorized Viewer
+  access_request: 'Access Request',
+  access_approved: 'Access Approved',
+  access_declined: 'Access Declined',
+  dashboard_assigned: 'Dashboard Assigned',
+  dashboard_shared: 'Dashboard Shared',
+  dashboard_updated: 'Dashboard Updated',
+
+  // Operational Team
+  due_inspection: 'Due Inspection',
+  new_inspection_assigned: 'New Inspection Assigned',
+
+  // Admin
+  new_user_registration: 'New User Registration',
+  new_user_approval_request: 'New User Approval Request',
+  inspection_report_update: 'Inspection Report Update',
+
+  // User receives after admin decision
+  account_approved: 'Account Approved',
+  account_declined: 'Account Declined',
+} as const
+
+export type NotificationType = keyof typeof NOTIFICATION_EVENTS
+
+export interface WithNotificationMetaAndStatus<T> {
+  data: T
+  success: boolean
+  message: string
+  meta: {
+    total: number
+    unreadCount: number
+    page: number
+    limit: number
+    totalPages: number
+  }
+}
+
 export type INotificationItem = {
   id: string
   created_at: string
@@ -14,9 +52,74 @@ export type INotificationItem = {
     id: string
     created_at: string
     updated_at: string
-    status: number
-    type: string
+    type: NotificationType
     text: string
   }
   sender: IUserBasicInfo
 }
+
+// ==============================
+// Base Types
+// ==============================
+export type BaseNotificationEvent<TType extends string, TMeta> = {
+  notificationId: string
+  type: TType
+  text: string
+  entityId: string
+  isRead: boolean
+  createdAt: string
+  timestamp: string
+  sender: IUserBasicInfo
+  metadata: TMeta
+}
+
+// ==============================
+// Metadata Definitions
+// ==============================
+export type DashboardAssignedMeta = {
+  propertyId: string
+  propertyName: string
+  dashboardId: string
+  link: {
+    label: string
+    href: string
+  }
+}
+
+// ==============================
+// Notification Map (SOURCE OF TRUTH)
+// ==============================
+type NotificationMap = {
+  dashboard_assigned: DashboardAssignedMeta
+
+  // next:
+  user_invited: {
+    foo: string
+    bar: number
+  }
+  // message_received: MessageReceivedMeta
+}
+
+// Final Union Type
+export type INotificationEventPayload = {
+  [K in keyof NotificationMap]: BaseNotificationEvent<K, NotificationMap[K]>
+}[keyof NotificationMap]
+
+// ==============================
+// Example Usage (Type Narrowing)
+// ==============================
+// export function handleNotification(n: NotificationEventPayload) {
+//   switch (n.type) {
+//     case 'dashboard_assigned': {
+//       console.log(n.metadata.dashboardId)
+//       console.log(n.metadata.link.href)
+//       break
+//     }
+//
+//     // case 'user_invited':
+//     //   break
+//
+//     default:
+//       break
+//   }
+// }

@@ -2,10 +2,10 @@
 
 import { config } from '@/constant'
 import { useAuth } from '@/redux/features/auth/useAuth'
-import { increment, setUnreadCount } from '@/redux/features/notification/notificationSlice'
-import { AppDispatch, useAppDispatch } from '@/redux/store'
+import { useAppDispatch } from '@/redux/store'
 import { PropsWithChildren, useEffect, useRef } from 'react'
 import { io, Socket } from 'socket.io-client'
+import { initSocket } from './socketListeners'
 
 export function SocketProvider({ children }: PropsWithChildren) {
   const { token, isAuthenticated } = useAuth()
@@ -36,7 +36,7 @@ export function SocketProvider({ children }: PropsWithChildren) {
     })
 
     socket.onAny((event, data) => {
-      console.log('Event:', event)
+      console.log('=============== Event:', event, '====================')
       console.log('Payload:', data)
     })
 
@@ -54,52 +54,4 @@ export function SocketProvider({ children }: PropsWithChildren) {
   }, [dispatch, isAuthenticated, token])
 
   return <>{children}</>
-}
-
-export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
-  // unread count
-  socket.on('notification:unread_count', (data) => {
-    console.warn('notification:unread_count ======================')
-    // dispatch(setUnreadCount(data.count))
-  })
-
-  socket.on('notification', (data) => {
-    console.warn('notification ======================')
-    // dispatch(setUnreadCount(data.count))
-  })
-
-  // new notification
-  socket.on('notification:dashboard_assigned', (data) => {
-    console.warn('notification:dashboard_assigned ======================')
-    // dispatch(increment())
-
-    // inject into RTK cache
-    // store.dispatch(
-    //   notificationApi.util.updateQueryData(
-    //     'getNotifications',
-    //     1,
-    //     (draft: any) => {
-    //       if (!draft?.data) return
-    //
-    //       const exists = draft.data.some(
-    //         (n: any) => n.id === data.notificationId
-    //       )
-    //       if (exists) return
-    //
-    //       draft.data.unshift({
-    //         id: data.notificationId,
-    //         created_at: data.createdAt,
-    //         read_at: null,
-    //         status: 1,
-    //         entity_id: data.entityId,
-    //         notification_event: {
-    //           type: data.type,
-    //           text: data.text,
-    //         },
-    //         sender: data.sender,
-    //       })
-    //     }
-    //   )
-    // )
-  })
 }
