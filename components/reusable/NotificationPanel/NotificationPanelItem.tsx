@@ -92,7 +92,7 @@ export const RenderFooter = ({ actions, notification_event }: INotificationItem)
 
       reviewAccessRequest({
         dashboardId: payload.dashboardId ?? '',
-        requestId: payload.senderId ?? '',
+        requestId: payload.requestId ?? '',
         ...body,
       })
     },

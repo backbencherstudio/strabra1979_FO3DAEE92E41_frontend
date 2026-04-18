@@ -20,6 +20,26 @@ const notificationApi = baseApi.injectEndpoints({
         params: args ?? undefined,
       }),
       providesTags: ['Notification'],
+
+      // Treat all pages as SAME cache key
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName
+      },
+
+      // Merge new page into existing cache
+      merge: (currentCache, newData) => {
+        if (!currentCache.data) {
+          currentCache.data = []
+        }
+
+        currentCache.data.push(...newData.data)
+        currentCache.meta = newData.meta
+      },
+
+      // Refetch when page changes
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg?.page !== previousArg?.page
+      },
     }),
 
     markSingleNotificationAsRead: builder.mutation<WithApiStatus<void>, string>({
