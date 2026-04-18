@@ -1,8 +1,11 @@
-import { INotificationItem } from '@/types'
-import { memo } from 'react'
+import { INotificationItem, INotificationActionItem, IReviewAccessRequestBody } from '@/types'
+import { memo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { useReviewAccessRequestMutation } from '@/api/notification/notificationApi'
+import dayjs from 'dayjs'
 
-interface NotificationPanelItemProps extends React.PropsWithChildren {
+interface NotificationPanelItemProps extends React.ComponentProps<'div'> {
   time: string
   title: string
   avatar?: React.ReactNode
@@ -19,9 +22,14 @@ export function NotificationPanelItem({
   footer,
   isUnread = false,
   children,
+  className,
+  ...props
 }: NotificationPanelItemProps) {
   return (
-    <div className="flex gap-3 px-6 py-4">
+    <div
+      {...props}
+      className={cn('flex gap-3 px-6 py-4', className, { 'bg-disabled-0': isUnread })}
+    >
       <div className="shrink-0">{avatar}</div>
 
       <div className="flex-1">
@@ -31,9 +39,11 @@ export function NotificationPanelItem({
             <p className="text-foreground font-semibold">{title}</p>
             {subtitle && <p className="text-gray-black-300 text-sm">{subtitle}</p>}
           </div>
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="relative flex shrink-0 items-center gap-1">
             <span className="text-gray-black-200 text-sm whitespace-nowrap">{time}</span>
-            {isUnread && <span className="border-navy-300 mt-0.5 size-2.5 rounded-full" />}
+            {isUnread ? (
+              <span className="bg-mid-orange absolute top-1/2 -right-3 size-1.5 -translate-y-1/2 rounded-full" />
+            ) : null}
           </div>
         </div>
 
@@ -65,17 +75,53 @@ export const NotificationText = memo(({ text }: { text: string }) => {
 })
 NotificationText.displayName = 'NotificationText'
 
-export const RenderFooter = ({ notification_event }: INotificationItem) => {
-  const { type } = notification_event
+export const RenderFooter = ({ actions, notification_event }: INotificationItem) => {
+  const [reviewAccessRequest, { isLoading }] = useReviewAccessRequestMutation()
 
-  if (type === 'access_request') {
-    return (
-      <div className="flex gap-3 *:flex-1">
-        <Button>Accept</Button>
-        <Button variant="outline">Decline</Button>
-      </div>
-    )
-  }
+  const handleAccessRequest = useCallback(
+    (action: 'APPROVED' | 'DECLINED', payload: INotificationActionItem) => {
+      const expiresAt = dayjs().add(1, 'year').toISOString()
 
-  return null
+      const body: IReviewAccessRequestBody = {
+        action,
+        ...(action === 'DECLINED' && {
+          declineReason: 'Access is only available after contract signing.',
+        }),
+        ...(action === 'APPROVED' && { expiresAt }),
+      }
+
+      reviewAccessRequest({
+        dashboardId: payload.dashboardId ?? '',
+        requestId: payload.senderId ?? '',
+        ...body,
+      })
+    },
+    [reviewAccessRequest],
+  )
+
+  if (!actions) return null
+
+  const actionList = Object.entries(actions).map(([key, value]) => ({
+    key,
+    ...value,
+  }))
+
+  return (
+    <div className="flex gap-3 *:flex-1">
+      {actionList.map((action) => (
+        <Button
+          key={action.key}
+          variant={action.key === 'decline' ? 'outline' : 'default'}
+          disabled={isLoading}
+          onClick={() => {
+            if (notification_event.type === 'access_request') {
+              handleAccessRequest(action.action === 'approve' ? 'APPROVED' : 'DECLINED', action)
+            }
+          }}
+        >
+          {action.label}
+        </Button>
+      ))}
+    </div>
+  )
 }
