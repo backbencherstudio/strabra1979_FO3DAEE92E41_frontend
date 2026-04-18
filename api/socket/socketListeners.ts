@@ -1,9 +1,8 @@
 import { AppDispatch, store } from '@/redux/store'
-import { INotificationEventPayload, NOTIFICATION_EVENTS } from '@/types'
+import { INotificationEventPayload, NOTIFICATION_EVENTS, NotificationType } from '@/types'
 import { Socket } from 'socket.io-client'
 import notificationApi from '../notification/notificationApi'
 import { setUnreadCount, increment } from '@/redux/features/notification/notificationSlice'
-
 
 export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
   // Unread count
@@ -33,6 +32,7 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
             sender_id: data.sender.id,
             receiver_id: '',
             notification_event_id: data.notificationId,
+            actions: data.actions,
             notification_event: {
               id: data.notificationId,
               type: data.type,

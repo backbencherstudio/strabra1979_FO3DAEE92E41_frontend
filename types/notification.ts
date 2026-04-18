@@ -56,6 +56,36 @@ export type INotificationItem = {
     text: string
   }
   sender: IUserBasicInfo
+  actions?: Record<string, INotificationActionItem>
+}
+
+// ==============================
+// Action types
+// ==============================
+
+export const isValidMethod = (method: string): method is HttpMethod =>
+  ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(method)
+
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
+export type INotificationActionItem = {
+  action: 'reject' | 'approve'
+  label: string
+  dashboardId?: string
+  senderId?: string
+}
+
+type ReviewAction = 'APPROVED' | 'DECLINED'
+
+export type IReviewAccessRequestBody = {
+  action: ReviewAction
+  declineReason?: string
+  expiresAt?: string
+}
+
+export type IReviewAccessRequestParams = {
+  dashboardId: string
+  requestId: string
 }
 
 // ==============================
@@ -71,6 +101,7 @@ export type BaseNotificationEvent<TType extends string, TMeta> = {
   timestamp: string
   sender: IUserBasicInfo
   metadata: TMeta
+  actions?: Record<string, INotificationActionItem>
 }
 
 // ==============================
@@ -91,12 +122,6 @@ export type DashboardAssignedMeta = {
 // ==============================
 type NotificationMap = {
   dashboard_assigned: DashboardAssignedMeta
-
-  // next:
-  user_invited: {
-    foo: string
-    bar: number
-  }
   // message_received: MessageReceivedMeta
 }
 

@@ -32,10 +32,10 @@ export function useAuth() {
 
   function logOut() {
     dispatch(reduxLogout())
-    router.push('/signin')
     setTimeout(() => {
+      router.push('/signin')
       dispatch(baseApi.util.resetApiState())
-    }, 500)
+    }, 300)
   }
 
   function invalidUserToken() {

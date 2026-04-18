@@ -1,4 +1,8 @@
-import { useGetNotificationsQuery } from '@/api/notification/notificationApi'
+import {
+  useGetNotificationsQuery,
+  useMarkAllNotificationsAsReadMutation,
+  useMarkSingleNotificationAsReadMutation,
+} from '@/api/notification/notificationApi'
 import { Notification, NotificationCircle } from '@/components/icons/Notification'
 import { Button } from '@/components/ui/button'
 import {
@@ -8,12 +12,13 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { formatTimeAgo } from '@/lib/farmatters'
+import { formatTimeAgo, formatZeroPrefix, getErrorMessage } from '@/lib/farmatters'
 import { selectNotificationUnreadCount } from '@/redux/features/notification/notificationSlice'
 import { useSelector } from 'react-redux'
 import UserAvatar from '../UserAvatar'
 import { NotificationText, NotificationPanelItem, RenderFooter } from './NotificationPanelItem'
 import { INotificationItem, NOTIFICATION_EVENTS, NotificationType } from '@/types'
+import { toast } from 'sonner'
 
 const showUserInfoFor = new Set<NotificationType>(['access_request', 'access_declined'])
 function resolveNotificationUI(n: INotificationItem) {
@@ -33,15 +38,40 @@ function resolveNotificationUI(n: INotificationItem) {
 export default function NotificationPanel() {
   const count = useSelector(selectNotificationUnreadCount)
   const { data: { data: notifications = [], meta } = {} } = useGetNotificationsQuery({})
+  const [markAllNotificationsAsRead, { isLoading: isMarkAllLoading }] =
+    useMarkAllNotificationsAsReadMutation()
+  async function handleMarkAllAsRead() {
+    try {
+      await markAllNotificationsAsRead().unwrap()
+    } catch (err) {
+      toast.error('Faild to update notification read status.', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
+
+  const [markSingleNotificationsAsRead, { isLoading: isMarkSingleLoading }] =
+    useMarkSingleNotificationAsReadMutation()
+  async function handleMarkSingleAsRead(id: string) {
+    if (isMarkSingleLoading) return
+
+    try {
+      await markSingleNotificationsAsRead(id).unwrap()
+    } catch (err) {
+      toast.error('Faild to update notification read status.', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button size="icon-lg" variant="outline" className="relative rounded-full shadow-none">
           <Notification className="size-6" />
-          {(meta as { unreadCount?: number })?.unreadCount ? (
+          {meta?.unreadCount ? (
             <span className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex items-center justify-center rounded-lg px-1 pt-px text-center text-[10px]">
-              {(meta as { unreadCount?: number }).unreadCount}
+              {formatZeroPrefix(meta?.unreadCount)}
             </span>
           ) : null}
         </Button>
@@ -53,16 +83,26 @@ export default function NotificationPanel() {
       >
         <PopoverHeader className="flex flex-row items-center justify-between border-b p-6 pb-4.5">
           <PopoverTitle className="text-lg font-semibold md:text-2xl">Notification</PopoverTitle>
-          <Button variant="link" className="px-0">
+          <Button
+            onClick={handleMarkAllAsRead}
+            disabled={isMarkAllLoading}
+            variant="link"
+            className="px-0 text-xs"
+          >
             Mark all as read
           </Button>
         </PopoverHeader>
         <section className="slim-scrollbar max-h-100 divide-y overflow-y-auto pb-3 md:max-h-120">
           {notifications.map((n) => {
             const { title, subtitle } = resolveNotificationUI(n)
+            if(n.notification_event.type === 'access_request') {
+              console.log(n)
+            }
 
             return (
               <NotificationPanelItem
+                onClick={() => handleMarkSingleAsRead(n?.id)}
+                isUnread={!n.read_at}
                 key={n.id}
                 title={title}
                 subtitle={subtitle}
