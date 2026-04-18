@@ -11,16 +11,16 @@ interface UserAvatarProps extends React.ComponentProps<typeof Avatar> {
 export default function UserAvatar({ src, name = '', className, ...props }: UserAvatarProps) {
   return (
     <Avatar className={cn('border-pressed-100 size-10 border', className)} {...props}>
-      {src && <AvatarImage src={src} alt={name} />}
+      <AvatarImage src={src} alt={name} />
       <AvatarFallback>{getInitials(name)}</AvatarFallback>
     </Avatar>
   )
 }
 
-const getInitials = (fullName: string): string => {
-  if (!fullName) return 'U'
+const getInitials = (name: string): string => {
+  if (!name) return 'U'
 
-  const names = fullName.trim().split(' ')
+  const names = name.trim().split(' ')
 
   if (names.length === 1) {
     return names[0][0]?.toUpperCase() ?? 'U'

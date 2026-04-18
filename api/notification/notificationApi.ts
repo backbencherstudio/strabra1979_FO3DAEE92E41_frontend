@@ -1,10 +1,10 @@
 import { baseApi } from '@/api/baseApi'
-import { INotificationItem, IPaginationPayload, WithPaginationAndStatus } from '@/types'
+import { INotificationItem, IPaginationPayload, WithNotificationMetaAndStatus } from '@/types'
 
 const notificationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getNotifications: builder.query<
-      WithPaginationAndStatus<INotificationItem[]>,
+      WithNotificationMetaAndStatus<INotificationItem[]>,
       IPaginationPayload
     >({
       query: (args) => ({

@@ -8,22 +8,42 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { formatDate } from '@/lib/farmatters'
+import { formatTimeAgo } from '@/lib/farmatters'
 import { selectNotificationUnreadCount } from '@/redux/features/notification/notificationSlice'
-import { ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 import UserAvatar from '../UserAvatar'
+import { NotificationText, NotificationPanelItem, RenderFooter } from './NotificationPanelItem'
+import { INotificationItem, NOTIFICATION_EVENTS, NotificationType } from '@/types'
+
+const showUserInfoFor = new Set<NotificationType>(['access_request', 'access_declined'])
+function resolveNotificationUI(n: INotificationItem) {
+  const event = n.notification_event
+
+  const hasUserInfo = showUserInfoFor.has(event.type) && n?.sender?.username
+
+  return {
+    title: hasUserInfo
+      ? n.sender.username
+      : (NOTIFICATION_EVENTS[event.type] ?? event.type ?? 'Notification'),
+
+    subtitle: hasUserInfo && n?.sender?.email ? n.sender.email : undefined,
+  }
+}
 
 export default function NotificationPanel() {
   const count = useSelector(selectNotificationUnreadCount)
-  const { data: { data: notifications = [] } = {} } = useGetNotificationsQuery({})
+  const { data: { data: notifications = [], meta } = {} } = useGetNotificationsQuery({})
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="icon-lg" variant="outline" className="rounded-full shadow-none">
-          {count}
+        <Button size="icon-lg" variant="outline" className="relative rounded-full shadow-none">
           <Notification className="size-6" />
+          {(meta as { unreadCount?: number })?.unreadCount ? (
+            <span className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex items-center justify-center rounded-lg px-1 pt-px text-center text-[10px]">
+              {(meta as { unreadCount?: number }).unreadCount}
+            </span>
+          ) : null}
         </Button>
       </PopoverTrigger>
 
@@ -39,14 +59,25 @@ export default function NotificationPanel() {
         </PopoverHeader>
         <section className="slim-scrollbar max-h-100 divide-y overflow-y-auto pb-3 md:max-h-120">
           {notifications.map((n) => {
-            const event = n.notification_event
+            const { title, subtitle } = resolveNotificationUI(n)
+
             return (
               <NotificationPanelItem
-                time={formatDate(n.created_at)}
                 key={n.id}
-                title={event.type}
-                content={event.text}
-              />
+                title={title}
+                subtitle={subtitle}
+                time={formatTimeAgo(n.created_at)}
+                footer={<RenderFooter {...n} />}
+                avatar={
+                  <UserAvatar
+                    src={n?.sender?.avatar ?? undefined}
+                    name={n?.sender?.username ?? n?.sender?.first_name}
+                    className="border-pressed-100 size-12 border"
+                  />
+                }
+              >
+                <NotificationText text={n?.notification_event?.text} />
+              </NotificationPanelItem>
             )
           })}
 
@@ -63,110 +94,60 @@ export default function NotificationPanel() {
             subtitle="manhhachkt08@gmail.com"
             time="2m ago"
             isUnread={true}
-            content={
-              <p>
-                Requested to View <strong>Sunset Office Complex</strong> Property.
-              </p>
-            }
             footer={
               <div className="flex gap-3 *:flex-1">
                 <Button>Accept</Button>
                 <Button variant="outline">Decline</Button>
               </div>
             }
-          />
+          >
+            <p>
+              Requested to View <strong>Sunset Office Complex</strong> Property.
+            </p>
+          </NotificationPanelItem>
 
           {/* // Notification 2 — bell icon, link in content */}
           <NotificationPanelItem
             avatar={<NotificationCircle />}
             title="New Property Dashboard Assigned"
             time="4m ago"
-            content={
-              <p>
-                You've been assigned to a new property dashboard by an admin.{' '}
-                <a href="#" className="text-blue-500 underline">
-                  View Dashboard
-                </a>
-              </p>
-            }
-          />
+          >
+            <p>
+              You've been assigned to a new property dashboard by an admin.
+              <a href="#" className="text-blue-500 underline">
+                View Dashboard
+              </a>
+            </p>
+          </NotificationPanelItem>
 
           {/* // Notification 3 — bell icon, bold text + link */}
           <NotificationPanelItem
             avatar={<NotificationCircle />}
             title="Property Dashboard Updated"
             time="5m ago"
-            content={
-              <p>
-                New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '}
-                <a href="#" className="text-blue-500 underline">
-                  View Dashboard
-                </a>
-              </p>
-            }
-          />
+          >
+            <p>
+              New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '}
+              <a href="#" className="text-blue-500 underline">
+                View Dashboard
+              </a>
+            </p>
+          </NotificationPanelItem>
 
           <NotificationPanelItem
             avatar={<NotificationCircle />}
             title="Property Dashboard Updated"
             time="5m ago"
-            content={
-              <p>
-                New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '}
-                <a href="#" className="text-blue-500 underline">
-                  View Dashboard
-                </a>
-              </p>
-            }
-          />
+          >
+            <p>
+              New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '}
+              <a href="#" className="text-blue-500 underline">
+                View Dashboard
+              </a>
+            </p>
+          </NotificationPanelItem>
         </section>
       </PopoverContent>
     </Popover>
-  )
-}
-
-interface NotificationPanelItemProps {
-  time: string
-  title: string
-  avatar?: ReactNode
-  subtitle?: string
-  content: string | ReactNode
-  footer?: ReactNode
-  isUnread?: boolean
-}
-
-export function NotificationPanelItem({
-  time,
-  title,
-  avatar,
-  subtitle,
-  content,
-  footer,
-  isUnread = false,
-}: NotificationPanelItemProps) {
-  return (
-    <div className="flex gap-3 px-6 py-4">
-      <div className="shrink-0">{avatar}</div>
-
-      <div className="flex-1">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="text-foreground font-semibold">{title}</p>
-            {subtitle && <p className="text-gray-black-300 text-sm">{subtitle}</p>}
-          </div>
-          <div className="flex shrink-0 items-center gap-1">
-            <span className="text-gray-black-200 text-sm whitespace-nowrap">{time}</span>
-            {isUnread && <span className="border-navy-300 mt-0.5 size-2.5 rounded-full" />}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="text-foreground mt-1 text-sm">{content}</div>
-
-        {/* Footer */}
-        {footer && <div className="mt-3">{footer}</div>}
-      </div>
-    </div>
   )
 }
