@@ -32,7 +32,9 @@ const notificationApi = baseApi.injectEndpoints({
           currentCache.data = []
         }
 
-        currentCache.data.push(...newData.data)
+        const existingIds = new Set(currentCache.data.map((n) => n.id))
+        const newItems = newData.data.filter((n) => !existingIds.has(n.id))
+        currentCache.data.push(...newItems)
         currentCache.meta = newData.meta
       },
 

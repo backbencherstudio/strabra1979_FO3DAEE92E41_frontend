@@ -23,7 +23,11 @@ import { ArrowDown } from 'lucide-react'
 import { useState } from 'react'
 import { Spinner } from '@/components/ui/spinner'
 
-const showUserInfoFor = new Set<NotificationType>(['access_request', 'access_declined'])
+const showUserInfoFor = new Set<NotificationType>([
+  'access_request',
+  'new_user_registration',
+  'inspection_report_update',
+])
 function resolveNotificationUI(n: INotificationItem) {
   const event = n.notification_event
 
@@ -76,10 +80,17 @@ export default function NotificationPanel() {
     }
   }
 
+  const [openPanel, setOpenPanel] = useState(false)
+
   return (
-    <Popover>
+    <Popover open={openPanel} onOpenChange={setOpenPanel}>
       <PopoverTrigger asChild>
-        <Button size="icon-lg" variant="outline" className="relative rounded-full shadow-none">
+        <Button
+          onClick={() => setOpenPanel((v) => !v)}
+          size="icon-lg"
+          variant="outline"
+          className="relative rounded-full shadow-none"
+        >
           <Notification className="size-6" />
           {meta?.unreadCount ? (
             <span className="bg-primary text-primary-foreground absolute -top-1 -right-1 flex items-center justify-center rounded-lg px-1 pt-px text-center text-[10px]">

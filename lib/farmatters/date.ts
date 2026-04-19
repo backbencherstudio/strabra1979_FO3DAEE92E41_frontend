@@ -27,8 +27,8 @@ export const formatTimeAgo = (date: string) => dayjs(date).fromNow()
 dayjs.updateLocale('en', {
   relativeTime: {
     future: 'in %s',
-    past: '%s ago',
-    s: '1s',
+    past: (s: string) => (s === 'just now' ? s : `${s} ago`),
+    s: 'just now',
     m: '1min',
     mm: '%dmin',
     h: '1h',
