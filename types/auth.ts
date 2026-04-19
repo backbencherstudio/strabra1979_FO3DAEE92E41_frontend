@@ -8,6 +8,7 @@ export const ROLE_LABELS: Record<IAuthUserRole, string> = {
   OPERATIONAL: 'Operational',
 }
 
+export type AuthToken = string | null | false
 export interface AuthCredential {
   token?: string | null
   role?: IAuthUserRole | null
