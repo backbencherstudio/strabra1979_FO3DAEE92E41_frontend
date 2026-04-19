@@ -1,6 +1,6 @@
 import { config } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
-import { logOut, setCredentials } from '@/redux/features/auth/authSlice'
+import { clearToken, setCredentials } from '@/redux/features/auth/authSlice'
 import { RootState } from '@/redux/store'
 import { IAuthRefreshTokenPayload } from '@/types'
 import {
@@ -128,8 +128,7 @@ async function handleRefreshToken(
       result = await baseQuery(args, api, extraOptions)
     } catch (error) {
       isRefreshing = false
-      api.dispatch(logOut())
-      // TODO: log out the user properly
+      api.dispatch(clearToken())
       toast.error('Session expired — please log in again.', {
         description: getErrorMessage(error),
       })

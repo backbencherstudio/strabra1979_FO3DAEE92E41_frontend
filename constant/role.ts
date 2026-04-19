@@ -6,8 +6,6 @@ export const TOKENS = {
   refreshToken: 'refresh-token',
 } as const
 
-export const publicRoutes = ['/signin', '/signup']
-
 export const roleRoutes: Record<string, IAuthUserRole[]> = {
   '/': ['AUTHORIZED_VIEWER'],
   '/settings': ['AUTHORIZED_VIEWER'],

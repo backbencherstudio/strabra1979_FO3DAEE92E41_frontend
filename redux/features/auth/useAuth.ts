@@ -1,17 +1,11 @@
 import { useLoginMutation } from '@/api/auth/authApi'
-import { baseApi } from '@/api/baseApi'
 import { getErrorMessage } from '@/lib/farmatters'
 import { useAppDispatch } from '@/redux/store'
 import { ILoginParams } from '@/types'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { toast } from 'sonner'
-import {
-  invalidToken,
-  logOut as reduxLogout,
-  selectCurrentRole,
-  selectCurrentToken,
-} from './authSlice'
+import { invalidToken, clearToken, selectCurrentRole, selectCurrentToken } from './authSlice'
 
 // Validate redirect URL
 const isValidRedirect = (url: string) => {
@@ -24,22 +18,13 @@ const isValidRedirect = (url: string) => {
 
 export function useAuth() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const dispatch = useAppDispatch()
   const [logInMutatin, ctx] = useLoginMutation()
   const token = useSelector(selectCurrentToken)
   const role = useSelector(selectCurrentRole)
 
   function logOut() {
-    dispatch(reduxLogout())
-    setTimeout(() => {
-      router.push('/signin')
-      dispatch(baseApi.util.resetApiState())
-    }, 300)
-  }
-
-  function invalidUserToken() {
-    dispatch(invalidToken())
+    dispatch(clearToken())
   }
 
   async function logIn(params: ILoginParams) {
@@ -57,7 +42,6 @@ export function useAuth() {
     isAuthenticated: !!token,
     logIn,
     logOut,
-    invalidUserToken,
     ...ctx,
   }
 }

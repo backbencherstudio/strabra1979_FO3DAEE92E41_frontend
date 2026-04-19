@@ -1,10 +1,10 @@
-import { deleteAuthCookies, setAuthCookies } from '@/lib/actions/auth'
+import { setAuthCookies } from '@/lib/actions/auth'
 import { RootState } from '@/redux/store'
-import { AuthCredential, IAuthUserRole } from '@/types'
+import { AuthCredential, AuthToken, IAuthUserRole } from '@/types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface AuthState {
-  token: string | null | false
+  token: AuthToken
   refreshToken: string | null
   role: IAuthUserRole | null
 }
@@ -27,19 +27,18 @@ const authSlice = createSlice({
       state.refreshToken = refreshToken
       state.role = role
     },
-    invalidToken: (state) => {
-      state.token = state.token + 'yyy'
-    },
-    logOut: (state) => {
-      deleteAuthCookies()
+    clearToken: (state) => {
       state.token = null
       state.refreshToken = null
       state.role = null
     },
+    invalidToken: (state) => {
+      state.token = state.token + 'yyy'
+    },
   },
 })
 
-export const { setCredentials, logOut, invalidToken } = authSlice.actions
+export const { setCredentials, clearToken, invalidToken } = authSlice.actions
 
 export default authSlice.reducer
 

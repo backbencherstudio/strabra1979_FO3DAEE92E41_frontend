@@ -50,8 +50,6 @@ export default function NotificationPanel() {
 
   const isLastPage = page == (meta?.totalPages ?? 1)
 
-  console.table(meta)
-
   const [markAllNotificationsAsRead, { isLoading: isMarkAllLoading }] =
     useMarkAllNotificationsAsReadMutation()
   async function handleMarkAllAsRead() {
@@ -109,9 +107,8 @@ export default function NotificationPanel() {
         <section className="slim-scrollbar max-h-100 divide-y overflow-y-auto md:max-h-120">
           {notifications.map((n) => {
             const { title, subtitle } = resolveNotificationUI(n)
-            if (n.notification_event.type === 'access_request') {
-              console.log(n)
-            }
+            // if (n.notification_event.type === 'access_request') {
+            // }
 
             return (
               <NotificationPanelItem

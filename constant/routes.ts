@@ -49,3 +49,5 @@ export const routes = {
     settings: '/settings',
   },
 } as const
+
+export const publicRoutes = [routes.signin, routes.signup]
