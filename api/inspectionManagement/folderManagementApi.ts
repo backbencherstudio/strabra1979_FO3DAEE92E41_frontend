@@ -5,8 +5,11 @@ import type {
   IFilterPayload,
   IFolderInspectionReportSelectItem,
   IFolderItem,
+  IInspecitonPropertyReportItem,
+  IPaginationPayload,
   ISingleFolderInfo,
   WithApiStatus,
+  WithPaginationAndStatus,
 } from '@/types'
 
 const folderManagementApi = baseApi.injectEndpoints({
@@ -20,9 +23,13 @@ const folderManagementApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Folders'],
     }),
-    getinspectionProperty: builder.query<WithApiStatus<IFolderItem[]>, { dashboardId: string }>({
-      query: ({ dashboardId }) => ({
+    getinspectionProperty: builder.query<
+      WithPaginationAndStatus<IInspecitonPropertyReportItem[]>,
+      { dashboardId: string } & IPaginationPayload
+    >({
+      query: ({ dashboardId, ...args }) => ({
         url: `/inspections/property/${dashboardId}`,
+        params: args,
       }),
       providesTags: ['Folders'],
     }),

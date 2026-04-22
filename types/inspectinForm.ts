@@ -1,4 +1,4 @@
-import { IRepairProgressStatus } from './inspection'
+import { InspectionProgressStatus, IRepairProgressStatus } from './inspection'
 
 // -------------------- Reusable Base Interfaces --------------------
 interface BaseField {
@@ -100,7 +100,7 @@ export type IInspectionMediaFileItem = {
 
 export type TableRow = {
   name: string
-  status: string
+  status: InspectionProgressStatus
   lastUpdate: string
   size: number
   url: string
