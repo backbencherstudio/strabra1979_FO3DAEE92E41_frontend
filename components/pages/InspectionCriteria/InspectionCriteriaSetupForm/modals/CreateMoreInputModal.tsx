@@ -82,6 +82,7 @@ export function CreateMoreInputModal({
         }).unwrap();
         console.log("criteriaId =>", criteriaId);
 
+
         toast.success(res?.message ?? "Header field created successfully");
       } catch (error) {
         toast.error("Failed to create header field", {
@@ -90,9 +91,10 @@ export function CreateMoreInputModal({
       }
     },
   })
-  console.log("criteriaId =>", criteriaId);
+
   return (
     <EditInputDialog
+
       title="Add More Input fileds"
       titleClass="text-center w-full"
       dialogContainerClass={cn('', {
