@@ -3,7 +3,7 @@ import {
   useMarkAllNotificationsAsReadMutation,
   useMarkSingleNotificationAsReadMutation,
 } from '@/api/notification/notificationApi'
-import { Notification, NotificationCircle } from '@/components/icons/Notification'
+import { Notification } from '@/components/icons/Notification'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -12,16 +12,16 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { Spinner } from '@/components/ui/spinner'
 import { formatTimeAgo, formatZeroPrefix, getErrorMessage } from '@/lib/farmatters'
 import { selectNotificationUnreadCount } from '@/redux/features/notification/notificationSlice'
-import { useSelector } from 'react-redux'
-import UserAvatar from '../UserAvatar'
-import { NotificationText, NotificationPanelItem, RenderFooter } from './NotificationPanelItem'
 import { INotificationItem, NOTIFICATION_EVENTS, NotificationType } from '@/types'
-import { toast } from 'sonner'
 import { ArrowDown } from 'lucide-react'
 import { useState } from 'react'
-import { Spinner } from '@/components/ui/spinner'
+import { useSelector } from 'react-redux'
+import { toast } from 'sonner'
+import UserAvatar from '../UserAvatar'
+import { NotificationPanelItem, NotificationText, RenderFooter } from './NotificationPanelItem'
 
 const showUserInfoFor = new Set<NotificationType>([
   'access_request',
@@ -143,75 +143,75 @@ export default function NotificationPanel() {
             )
           })}
 
-          {false && (
-            <>
-              {/* // Notification 1 — with user avatar, accept/decline actions */}
-              <NotificationPanelItem
-                avatar={
-                  <UserAvatar
-                    src="https://i.pravatar.cc/150?img=8"
-                    name="Gustavo Xavier"
-                    className="border-pressed-100 size-12 border"
-                  />
-                }
-                title="Gustavo Xavier"
-                subtitle="manhhachkt08@gmail.com"
-                time="2m ago"
-                isUnread={true}
-                footer={
-                  <div className="flex gap-3 *:flex-1">
-                    <Button>Accept</Button>
-                    <Button variant="outline">Decline</Button>
-                  </div>
-                }
-              >
-                <p>
-                  Requested to View <strong>Sunset Office Complex</strong> Property.
-                </p>
-              </NotificationPanelItem>
-
-              {/* // Notification 2 — bell icon, link in content */}
-              <NotificationPanelItem
-                avatar={<NotificationCircle />}
-                title="New Property Dashboard Assigned"
-                time="4m ago"
-              >
-                <p>
-                  You've been assigned to a new property dashboard by an admin.
-                  <a href="#" className="text-blue-500 underline">
-                    View Dashboard
-                  </a>
-                </p>
-              </NotificationPanelItem>
-
-              {/* // Notification 3 — bell icon, bold text + link */}
-              <NotificationPanelItem
-                avatar={<NotificationCircle />}
-                title="Property Dashboard Updated"
-                time="5m ago"
-              >
-                <p>
-                  New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '}
-                  <a href="#" className="text-blue-500 underline">
-                    View Dashboard
-                  </a>
-                </p>
-              </NotificationPanelItem>
-
-              <NotificationPanelItem
-                avatar={<NotificationCircle />}
-                title="Property Dashboard Updated"
-                time="5m ago"
-              >
-                <p>
-                  New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '}
-                  <a href="#" className="text-blue-500 underline">
-                    View Dashboard
-                  </a>
-                </p>
-              </NotificationPanelItem>
-            </>
-          )}
+          {/* {false && ( */}
+          {/*   <> */}
+          {/*     <NotificationPanelItem */}
+          {/*       // Notification 1 — with user avatar, accept/decline actions */}
+          {/*       avatar={ */}
+          {/*         <UserAvatar */}
+          {/*           src="https://i.pravatar.cc/150?img=8" */}
+          {/*           name="Gustavo Xavier" */}
+          {/*           className="border-pressed-100 size-12 border" */}
+          {/*         /> */}
+          {/*       } */}
+          {/*       title="Gustavo Xavier" */}
+          {/*       subtitle="manhhachkt08@gmail.com" */}
+          {/*       time="2m ago" */}
+          {/*       isUnread={true} */}
+          {/*       footer={ */}
+          {/*         <div className="flex gap-3 *:flex-1"> */}
+          {/*           <Button>Accept</Button> */}
+          {/*           <Button variant="outline">Decline</Button> */}
+          {/*         </div> */}
+          {/*       } */}
+          {/*     > */}
+          {/*       <p> */}
+          {/*         Requested to View <strong>Sunset Office Complex</strong> Property. */}
+          {/*       </p> */}
+          {/*     </NotificationPanelItem> */}
+          {/**/}
+          {/*     <NotificationPanelItem */}
+          {/*       // Notification 2 — bell icon, link in content */}
+          {/*       avatar={<NotificationCircle />} */}
+          {/*       title="New Property Dashboard Assigned" */}
+          {/*       time="4m ago" */}
+          {/*     > */}
+          {/*       <p> */}
+          {/*         You've been assigned to a new property dashboard by an admin. */}
+          {/*         <a href="#" className="text-blue-500 underline"> */}
+          {/*           View Dashboard */}
+          {/*         </a> */}
+          {/*       </p> */}
+          {/*     </NotificationPanelItem> */}
+          {/**/}
+          {/*     <NotificationPanelItem */}
+          {/*       // Notification 3 — bell icon, bold text + link */}
+          {/*       avatar={<NotificationCircle />} */}
+          {/*       title="Property Dashboard Updated" */}
+          {/*       time="5m ago" */}
+          {/*     > */}
+          {/*       <p> */}
+          {/*         New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '} */}
+          {/*         <a href="#" className="text-blue-500 underline"> */}
+          {/*           View Dashboard */}
+          {/*         </a> */}
+          {/*       </p> */}
+          {/*     </NotificationPanelItem> */}
+          {/**/}
+          {/*     <NotificationPanelItem */}
+          {/*       avatar={<NotificationCircle />} */}
+          {/*       title="Property Dashboard Updated" */}
+          {/*       time="5m ago" */}
+          {/*     > */}
+          {/*       <p> */}
+          {/*         New files have been uploaded to <strong>Sunset Office Complex</strong>.{' '} */}
+          {/*         <a href="#" className="text-blue-500 underline"> */}
+          {/*           View Dashboard */}
+          {/*         </a> */}
+          {/*       </p> */}
+          {/*     </NotificationPanelItem> */}
+          {/*   </> */}
+          {/* )} */}
 
           <div className="flex justify-center px-3 py-3">
             <Button

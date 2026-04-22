@@ -14,7 +14,9 @@ import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinn
 import TabSwitcher from '@/components/reusable/TabSwitcher/TabSwitcher'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import { routes } from '@/constant'
 import { getErrorMessage, withNA } from '@/lib/farmatters'
+import { useAuth } from '@/redux/features/auth/useAuth'
 import {
   clearInspectionForm,
   selectInspectionAdditionalComments,
@@ -30,6 +32,7 @@ import {
   IDashboardInspectionListItem,
   MediaFieldItem,
   MediaFieldKeyType,
+  RoleUtils,
 } from '@/types'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useEffectEvent, useState } from 'react'
@@ -43,6 +46,7 @@ export default function InspectionReportDetail() {
 
   const searchParams = useSearchParams()
   const params = useParams<{ dashboardId: string }>()
+  const router = useRouter()
 
   // Get ids from parameters
   const dashboardId = params.dashboardId
@@ -99,6 +103,8 @@ export default function InspectionReportDetail() {
     }
   }, [inspectinData, formConfig, dispatch])
 
+  const { role } = useAuth()
+
   const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
     useSubmitAllInspectionFormDataMutation()
   async function handleSubmitInspectionData() {
@@ -145,6 +151,12 @@ export default function InspectionReportDetail() {
       }).unwrap()
 
       toast.success(res.message || 'Inspection submitted successfully', {})
+
+      if (RoleUtils.isOperational(role)) {
+        router.push(routes.operational.inspectionList)
+      } else if (RoleUtils.isAdmin(role)) {
+        router.push(routes.admin.inspectionList)
+      }
     } catch (err) {
       toast.error('Failed to submit inspection', {
         description: getErrorMessage(err),
