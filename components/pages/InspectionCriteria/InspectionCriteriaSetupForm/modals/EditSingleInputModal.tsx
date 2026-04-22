@@ -12,9 +12,11 @@ import { InputFieldType, EditInputDialog } from './EditInputDialog/EditInputDial
 
 interface EditSingleInputModalProps extends React.ComponentProps<typeof Dialog> {
   editFieldType?: InputFieldType
+  criteriaId: string | undefined
 }
 
-export function EditSingleInputModal({ editFieldType, ...props }: EditSingleInputModalProps) {
+export function EditSingleInputModal({ criteriaId, editFieldType, ...props }: EditSingleInputModalProps) {
+
   return (
     <EditInputDialog
       headdingAction={

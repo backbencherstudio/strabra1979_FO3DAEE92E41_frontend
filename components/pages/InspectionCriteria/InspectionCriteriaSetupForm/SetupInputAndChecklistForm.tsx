@@ -77,6 +77,7 @@ export default function SetupInputAndChecklistForm({
       />
 
       <EditSingleInputModal
+        criteriaId={id}
         editFieldType={editFieldType}
         open={openEditFieldsModal}
         onOpenChange={(v) => setOpenEditFieldsModal(v)}
