@@ -61,6 +61,7 @@ export const DocumentsTableColumns = defineColumns<IInspectionMediaFileItem>([
 ])
 
 // ==================== DEMO DATA ====================
+// TODO: remove mock
 export const demoDocumentsData: DocumentsTableItem[] = [
   {
     id: 'report_001',

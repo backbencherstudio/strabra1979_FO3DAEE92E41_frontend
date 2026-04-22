@@ -1,13 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { formatDate, withNA } from '@/lib/farmatters'
+import { TableRow } from '@/types'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
-import { defineColumns } from '../reusable/table/CustomTable'
-import {  TableRow } from '@/types'
-import { formatDate, withNA } from '@/lib/farmatters'
+import ProgressStatusBadge from '../dashboard/ProgressStatusBadge/ProgressStatusBadge'
 import { formatFileSize } from '../reusable/FileInput/FileInput'
-import { Badge } from '../ui/badge'
+import { defineColumns } from '../reusable/table/CustomTable'
 
 // ==================== DATE FORMATTER ====================
 const formatUserDate = (dateString: string) => {
@@ -34,10 +34,11 @@ export const ReportsTableColumns = defineColumns<TableRow>([
     label: 'Name',
     accessor: 'name',
   },
- {
-  label: 'Status',
-  accessor: 'status',                                                                                            
-},
+  {
+    label: 'Status',
+    accessor: 'status',
+    formatter: (value) => <ProgressStatusBadge status={value} />,
+  },
   {
     label: 'Last Update',
     accessor: 'lastUpdate',

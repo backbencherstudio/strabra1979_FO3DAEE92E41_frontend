@@ -17,6 +17,16 @@ export type IPiorityRepairPlanItem = {
   status: IRepairProgressStatus
   description: string
 }
+type IInspecitonPropertyReportItem = {
+  id: string
+  propertyName: string
+  inspectionId?: string
+  address: string
+  date: string
+  status: InspectionProgressStatus
+  dashboardId: string
+  createdAt: string
+}
 
 // export interface IInspectionFieldValue {
 //   propertyType: string
@@ -82,4 +92,3 @@ export type IAdminScheduledInspectinTableItem = {
   createdAt: string
   nextInspectionDate: string
 }
-
