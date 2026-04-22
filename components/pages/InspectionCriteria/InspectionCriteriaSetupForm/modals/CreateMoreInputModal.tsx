@@ -22,6 +22,7 @@ export const inspectionCriteriaSchema = z
     required: z.boolean().optional(),
     isDropdown: z.boolean().optional(),
     options: z.array(z.string()).optional(),
+    mediaType: ''
   })
   .refine(
     (data) => {
@@ -60,24 +61,6 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
     onSubmit: async ({ value }) => {
       console.log('VALID DATA', value)
     },
-
-    // validatorAdapter: {
-    //   validate: (values) => {
-    //     const result = inspectionCriteriaSchema.safeParse(values)
-    //
-    //     if (result.success) return {}
-    //
-    //     // map Zod errors → TanStack Form format
-    //     const fieldErrors: Record<string, string> = {}
-    //
-    //     result.error.errors.forEach((err) => {
-    //       const key = err.path.join('.')
-    //       fieldErrors[key] = err.message
-    //     })
-    //
-    //     return fieldErrors
-    //   },
-    // },
   })
 
   return (

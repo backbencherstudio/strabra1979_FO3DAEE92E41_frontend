@@ -3,7 +3,7 @@
 import { PlusSignSquare } from '@/components/icons/File'
 import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
+import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
 import {
   Select,
   SelectContent,
@@ -23,6 +23,7 @@ import {
   EditSingleInputModal,
   InputFieldType,
 } from './modals'
+import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 
 interface InputAndChecklistSetupFormProps {
   isEditable: boolean
@@ -77,7 +78,7 @@ export default function SetupInputAndChecklistForm({
         onOpenChange={(v) => setOpenEditFieldsModal(v)}
       />
 
-      <form>
+      <form className="space-y-3">
         <FieldGroup className="grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
           {typeof currentCriteria !== undefined &&
             currentCriteria?.headerFields.map((item) => {
@@ -132,6 +133,56 @@ export default function SetupInputAndChecklistForm({
                 </Field>
               )
             })}
+
+          <Button
+            onClick={() => handleCreateFieldOpen('input-text')}
+            variant="muted"
+            type="button"
+            className="col-span-full h-23 flex-col"
+          >
+            <PlusSignSquare className="size-6" />
+            Add More Input fileds
+          </Button>
+        </FieldGroup>
+
+        <FieldGroup className="grid grid-cols-1 gap-3 @3xl:grid-cols-2 @3xl:gap-4">
+          {typeof currentCriteria !== undefined &&
+            currentCriteria?.scoringCategories.map((item) => {
+              return (
+                <Field key={item.key}>
+                  <FieldLabel htmlFor={item.key}>
+                    {item.label} ({item.maxPoints} pts)
+                  </FieldLabel>
+
+                  <MarkInput
+                    onChange={() => {}}
+                    value={0}
+                    maxValue={item.maxPoints}
+                    // disabled={!isEditable}
+                  />
+
+                  {/* <InputGroup> */}
+                  {/*   <InputGroupTextarea */}
+                  {/*     placeholder="Add Observations Notes" */}
+                  {/*     value={item.notes} */}
+                  {/*     onChange={(e) => onNotesChange?.(item.key, e.target.value)} */}
+                  {/*     disabled={!isEditable} */}
+                  {/*   /> */}
+                  {/* </InputGroup> */}
+                </Field>
+              )
+            })}
+
+          <Button
+            onClick={() => handleCreateFieldOpen('input-mark')}
+            variant="muted"
+            type="button"
+            className="col-span-full h-23 flex-col"
+          >
+            <PlusSignSquare className="size-6" />
+            Add More Condition Rating Scale
+          </Button>
+          {/**/}
           {/* <Field> */}
           {/*   <div className="flex items-center justify-between"> */}
           {/*     <FieldLabel htmlFor="name">Property</FieldLabel> */}
@@ -492,53 +543,43 @@ export default function SetupInputAndChecklistForm({
           {/*   Add More Condition Rating Scale */}
           {/* </Button> */}
           {/**/}
-          {/* <Field className="col-span-full"> */}
-          {/*   <div className="flex items-center justify-between"> */}
-          {/*     <FieldLabel htmlFor="name">NTE (Not-To-Exceed):</FieldLabel> */}
-          {/**/}
-          {/*     {editMode && ( */}
-          {/*       <Button */}
-          {/*         size="icon" */}
-          {/*         onClick={() => handleEditFieldClick('input-textarea')} */}
-          {/*         variant="outline" */}
-          {/*       > */}
-          {/*         <Edit2 /> */}
-          {/*       </Button> */}
-          {/*     )} */}
-          {/*   </div> */}
-          {/*   <InputGroup> */}
-          {/*     <InputGroupInput placeholder="Enter NTE" /> */}
-          {/*   </InputGroup> */}
-          {/* </Field> */}
-          {/**/}
-          {/* <Field className="col-span-full"> */}
-          {/*   <div className="flex items-center justify-between"> */}
-          {/*     <FieldLabel htmlFor="">Additional Notes/Comments</FieldLabel> */}
-          {/**/}
-          {/*     {editMode && ( */}
-          {/*       <Button */}
-          {/*         size="icon" */}
-          {/*         onClick={() => handleEditFieldClick('input-textarea')} */}
-          {/*         variant="outline" */}
-          {/*       > */}
-          {/*         <Edit2 /> */}
-          {/*       </Button> */}
-          {/*     )} */}
-          {/*   </div> */}
-          {/*   <InputGroup> */}
-          {/*     <InputGroupTextarea placeholder="Type Any Additional Notes/Comments" /> */}
-          {/*   </InputGroup> */}
-          {/* </Field> */}
-          {/**/}
-          <Button
-            onClick={() => handleCreateFieldOpen('input-text')}
-            variant="muted"
-            type="button"
-            className="col-span-full h-23 flex-col"
-          >
-            <PlusSignSquare className="size-6" />
-            Add More Input fileds
-          </Button>
+          <Field className="col-span-full">
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor="name">NTE (Not-To-Exceed):</FieldLabel>
+
+              {isEditable && (
+                <Button
+                  size="icon"
+                  onClick={() => handleEditFieldClick('input-textarea')}
+                  variant="outline"
+                >
+                  <Edit2 />
+                </Button>
+              )}
+            </div>
+            <InputGroup>
+              <InputGroupInput placeholder="Enter NTE" />
+            </InputGroup>
+          </Field>
+
+          <Field className="col-span-full">
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor="">Additional Notes/Comments</FieldLabel>
+
+              {isEditable && (
+                <Button
+                  size="icon"
+                  onClick={() => handleEditFieldClick('input-textarea')}
+                  variant="outline"
+                >
+                  <Edit2 />
+                </Button>
+              )}
+            </div>
+            <InputGroup>
+              <InputGroupTextarea placeholder="Type Any Additional Notes/Comments" />
+            </InputGroup>
+          </Field>
         </FieldGroup>
       </form>
     </div>
