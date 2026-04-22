@@ -27,10 +27,12 @@ import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 
 interface InputAndChecklistSetupFormProps {
   isEditable: boolean
+  id: string | undefined
   currentCriteria: IInspectionCriteria | undefined
 }
 
 export default function SetupInputAndChecklistForm({
+  id,
   isEditable,
   currentCriteria,
 }: InputAndChecklistSetupFormProps) {
@@ -61,7 +63,9 @@ export default function SetupInputAndChecklistForm({
     <div>
       {/* Add More Input fileds */}
       <CreateMoreInputModal
+        criteriaId={id}
         editFieldType={editFieldType}
+
         open={openCreateFieldsModal}
         onOpenChange={(v) => setOpenCreateFieldsModal(v)}
       />
@@ -102,7 +106,7 @@ export default function SetupInputAndChecklistForm({
                   {isDropdown ? (
                     <Select
                       required={item.required}
-                      // disabled={!isEditable}
+                    // disabled={!isEditable}
                     >
                       <SelectTrigger id={item.key}>
                         <SelectValue placeholder={item.placeholder} />
@@ -126,7 +130,7 @@ export default function SetupInputAndChecklistForm({
                         required={item.required}
                         id={item.key}
                         placeholder={item.placeholder}
-                        // disabled={!isEditable}
+                      // disabled={!isEditable}
                       />
                     </InputGroup>
                   )}
@@ -155,10 +159,10 @@ export default function SetupInputAndChecklistForm({
                   </FieldLabel>
 
                   <MarkInput
-                    onChange={() => {}}
+                    onChange={() => { }}
                     value={0}
                     maxValue={item.maxPoints}
-                    // disabled={!isEditable}
+                  // disabled={!isEditable}
                   />
 
                   {/* <InputGroup> */}
