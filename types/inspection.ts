@@ -17,7 +17,8 @@ export type IPiorityRepairPlanItem = {
   status: IRepairProgressStatus
   description: string
 }
-type IInspecitonPropertyReportItem = {
+
+export type IInspecitonPropertyReportItem = {
   id: string
   propertyName: string
   inspectionId?: string
