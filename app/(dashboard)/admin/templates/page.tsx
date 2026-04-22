@@ -2,9 +2,10 @@
 
 import { Edit } from '@/components/icons/Edit'
 import { Trush } from '@/components/icons/Trush'
-import EditInputFeilds, {
+import {
   DialogProps,
-} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/EditInputFeilds/EditInputFeilds'
+  EditInputDialog,
+} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals/EditInputDialog/EditInputDialog'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { DialogClose } from '@/components/ui/dialog'
@@ -45,7 +46,7 @@ export default function page() {
 
 function CreateNewTemplateModal({ ...props }: DialogProps) {
   return (
-    <EditInputFeilds
+    <EditInputDialog
       title="Add New Template"
       titleClass="text-center w-full"
       trigger={
@@ -79,7 +80,7 @@ function CreateNewTemplateModal({ ...props }: DialogProps) {
           </InputGroup>
         </Field>
       </section>
-    </EditInputFeilds>
+    </EditInputDialog>
   )
 }
 

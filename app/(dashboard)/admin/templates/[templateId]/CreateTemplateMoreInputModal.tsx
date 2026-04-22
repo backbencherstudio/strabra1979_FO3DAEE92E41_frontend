@@ -1,7 +1,6 @@
 import { PlusSignSquare } from '@/components/icons/File'
-import EditInputFeilds, {
-  CreateMoreInputModalProps,
-} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/EditInputFeilds/EditInputFeilds'
+import { CreateMoreInputModalProps } from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals'
+import { EditInputDialog } from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals/EditInputDialog/EditInputDialog'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { DialogClose } from '@/components/ui/dialog'
@@ -21,7 +20,7 @@ export function CreateTemplateMoreInputModal({
   const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
 
   return (
-    <EditInputFeilds
+    <EditInputDialog
       title="Add More Supporting Media & Embedded Contents"
       titleClass="text-center w-full"
       dialogContainerClass={cn('', {
@@ -106,6 +105,6 @@ export function CreateTemplateMoreInputModal({
           ) : null}
         </section>
       </div>
-    </EditInputFeilds>
+    </EditInputDialog>
   )
 }

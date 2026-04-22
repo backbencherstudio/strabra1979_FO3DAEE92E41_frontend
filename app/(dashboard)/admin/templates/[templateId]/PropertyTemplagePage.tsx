@@ -25,7 +25,7 @@ import { FileImage, PlusSignSquare } from '@/components/icons/File'
 import {
   CreateMoreInputModal,
   InputFieldType,
-} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/EditInputFeilds/EditInputFeilds'
+} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals/EditInputDialog/EditInputDialog'
 import React from 'react'
 import { CreateTemplateMoreInputModal } from './CreateTemplateMoreInputModal'
 

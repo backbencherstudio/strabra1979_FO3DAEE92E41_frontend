@@ -57,6 +57,7 @@ export const baseApi = createApi({
     'PropertyDashboard',
 
     'InspectionManagement',
+    'InspectionCriteria',
 
     'AccessList',
 

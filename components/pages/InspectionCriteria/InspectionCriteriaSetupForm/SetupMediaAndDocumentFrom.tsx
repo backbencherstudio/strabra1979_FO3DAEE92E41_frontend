@@ -1,5 +1,6 @@
 import InspectionMediaForm from '../../InspectionReport/InspectionMediaForm/InspectionMediaForm'
-import { CreateMoreInputModal, DialogProps } from './EditInputFeilds/EditInputFeilds'
+import { DialogProps } from './modals/EditInputDialog/EditInputDialog'
+import { CreateMoreInputModal } from './modals'
 
 interface SetupMediaAndDocumentFromProps {
   createModalOpts: DialogProps
