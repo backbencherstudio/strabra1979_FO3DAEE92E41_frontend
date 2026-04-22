@@ -59,6 +59,8 @@ export const baseApi = createApi({
     'InspectionManagement',
     'InspectionCriteria',
 
+    'Templates',
+
     'AccessList',
 
     'Overview',

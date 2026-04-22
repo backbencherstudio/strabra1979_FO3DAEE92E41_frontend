@@ -5,13 +5,11 @@ import { useAuth } from '@/redux/features/auth/useAuth'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from 'lucide-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import z from 'zod'
 import FormInputField from '../form/form-input-field'
 import { Button } from '../ui/button'
 import { Spinner } from '../ui/spinner'
-
-interface DynamicFormProps {}
 
 const signInSchema = z.object({
   email: z.email('Enter a valid email address'),
@@ -20,7 +18,7 @@ const signInSchema = z.object({
 
 export type SigninFormValues = z.infer<typeof signInSchema>
 
-const SignInForm: React.FC<DynamicFormProps> = ({}) => {
+const SignInForm = () => {
   const { logIn, isLoading: isLoginLoading } = useAuth()
 
   const form = useForm({

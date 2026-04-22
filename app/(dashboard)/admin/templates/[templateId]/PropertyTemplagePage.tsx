@@ -1,32 +1,18 @@
 'use client'
 
-import { DocumentsTableColumns, demoDocumentsData } from '@/components/columns/DocumentsTable'
-import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
-import { CircularProgressWithMeta } from '@/components/reusable/CircularProgress/CircularProgress'
+import { FileImage, PlusSignSquare } from '@/components/icons/File'
+import { PlayCircle } from '@/components/icons/PlayIcon'
+import { InputFieldType } from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals'
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
+import { InfoGrid } from '@/components/reusable/InfoGrid/InfoGrid'
+import { InfoList, PropertyHeaderWrapper } from '@/components/reusable/InfoList/InfoList'
+import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { ChevronRight } from 'lucide-react'
-import Image from 'next/image'
-import { InfoGrid } from '@/components/reusable/InfoGrid/InfoGrid'
-import { PropertyHeaderWrapper, InfoList } from '@/components/reusable/InfoList/InfoList'
-import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
-import PropertyCheckListPreview from '@/components/reusable/PropertyDetails/PropertyCheckListPreview'
-import CustomTable from '@/components/reusable/table/CustomTable'
-import {
-  MediaFiles,
-  MediaFilesPreviewGrid,
-  PosterPreview,
-} from '@/components/reusable/MediaFiles/MediaFiles'
 import { cn } from '@/lib/utils'
-import { Slide } from 'yet-another-react-lightbox'
-import { PlayCircle } from '@/components/icons/PlayIcon'
-import { FileImage, PlusSignSquare } from '@/components/icons/File'
-import {
-  CreateMoreInputModal,
-  InputFieldType,
-} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals/EditInputDialog/EditInputDialog'
+import { ChevronRight } from 'lucide-react'
 import React from 'react'
+import { Slide } from 'yet-another-react-lightbox'
 import { CreateTemplateMoreInputModal } from './CreateTemplateMoreInputModal'
 
 interface PropertyDetailsProps {
