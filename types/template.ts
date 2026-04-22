@@ -1,9 +1,9 @@
-export type ITemplateActiveStatus = 'Active' | 'Inactive' | 'DELETED'
+export type ITemplateActiveStatus = 'ACTIVE' | 'INACTIVE' | 'DELETED'
 
-export type ITemplateListItem = {
+export type IDashboardTemplate = {
   id: string
   name: string
-  status: string
+  status: ITemplateActiveStatus
   criteriaId: string
   createdAt: string
   updatedAt: string
@@ -100,4 +100,10 @@ export type ITemplateListItem = {
   _count: {
     properties: number
   }
+}
+
+export type IDashboardTemplateListItem = {
+  id: string
+  name: string
+  status: ITemplateActiveStatus
 }

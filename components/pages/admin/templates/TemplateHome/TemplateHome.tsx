@@ -1,27 +1,34 @@
 'use client'
 
+import {
+  useGetDashboardTemplateListQuery,
+  useHardDeleteSingleDashboardTemplateMutation,
+} from '@/api/template/templateManagementApi'
 import { Edit } from '@/components/icons/Edit'
 import { Trush } from '@/components/icons/Trush'
-import {
-  DialogProps,
-  EditInputDialog,
-} from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals/EditInputDialog/EditInputDialog'
+import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinner'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { DialogClose } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Field, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
-import { EllipsisVertical, Eye, Plus } from 'lucide-react'
+import { routes } from '@/constant'
+import { getErrorMessage } from '@/lib/farmatters'
+import { Check, EllipsisVertical, Eye } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import CreateNewTemplateModal from '../CreateNewTemplateModal/CreateNewTemplateModal'
 
 export default function TemplateHome() {
-  const templates = ['Sync Template', 'Orbit Template', 'Pulse Template']
+  const { data: { data = [] } = {}, isLoading } = useGetDashboardTemplateListQuery()
+
+  if (isLoading) {
+    return <FullPageSpinner />
+  }
+
   return (
     <div>
       <SectionCard>
@@ -30,12 +37,12 @@ export default function TemplateHome() {
           <CreateNewTemplateModal />
         </div>
 
-        <section className="mt-4 grid grid-cols-3 gap-5">
-          {templates.map((item) => (
-            <SectionCard key={item} className="flex items-center justify-between bg-white py-3">
-              <SectionTitle className="text-lg">{item}</SectionTitle>
+        <section className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {data.map((item) => (
+            <SectionCard key={item.id} className="flex items-start justify-between bg-white py-3">
+              <SectionTitle className="mt-1 text-lg">{item.name}</SectionTitle>
 
-              <DropdownMenuIcons />
+              <DropdownMenuIcons id={item.id} />
             </SectionCard>
           ))}
         </section>
@@ -44,48 +51,24 @@ export default function TemplateHome() {
   )
 }
 
-function CreateNewTemplateModal({ ...props }: DialogProps) {
-  return (
-    <EditInputDialog
-      title="Add New Template"
-      titleClass="text-center w-full"
-      trigger={
-        <Button size="xl">
-          <Plus className="size-5" />
-          Add New Template
-        </Button>
-      }
-      footer={
-        <>
-          <DialogClose asChild>
-            <Button type="button" size="xl" variant="outline">
-              Cancel
-            </Button>
-          </DialogClose>
-
-          <DialogClose asChild>
-            <Button type="button" size="xl">
-              Create
-            </Button>
-          </DialogClose>
-        </>
-      }
-      {...props}
-    >
-      <section className="relative space-y-3 pb-1">
-        <Field>
-          <FieldLabel htmlFor="name">Template Name</FieldLabel>
-          <InputGroup>
-            <InputGroupInput placeholder="Enter new template name" />
-          </InputGroup>
-        </Field>
-      </section>
-    </EditInputDialog>
-  )
-}
-
-export function DropdownMenuIcons() {
+export function DropdownMenuIcons({ id }: { id: string }) {
   const router = useRouter()
+  const [hardDeleteSingleDashboardTemplate, { isLoading: isLoadingDelete }] =
+    useHardDeleteSingleDashboardTemplateMutation()
+
+  async function handleDelete(id: string) {
+    try {
+      const res = await hardDeleteSingleDashboardTemplate({
+        id,
+      }).unwrap()
+
+      toast.success(res.message || 'Success message')
+    } catch (err) {
+      toast.error('Error title', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -94,8 +77,11 @@ export function DropdownMenuIcons() {
           <EllipsisVertical />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => router.push(`/admin/templates/${123}`)}>
+        <DropdownMenuItem
+          onClick={() => router.push(routes.admin.templatesDetial.build({ templateId: id }))}
+        >
           <Eye />
           View
         </DropdownMenuItem>
@@ -103,7 +89,13 @@ export function DropdownMenuIcons() {
           <Edit />
           Edit
         </DropdownMenuItem>
+
         <DropdownMenuItem>
+          <Check />
+          Activate
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={() => handleDelete(id)} disabled={isLoadingDelete}>
           <Trush />
           Delete
         </DropdownMenuItem>

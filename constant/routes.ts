@@ -14,6 +14,7 @@ export const routes = {
 
     activityLog: '/admin/activity-log',
     templates: '/admin/templates',
+    templatesDetial: createRoute('/admin/templates/[templateId]'),
     inspectionCriteria: '/admin/inspection-criteria',
 
     inspectionList: '/admin/inspection-list',
