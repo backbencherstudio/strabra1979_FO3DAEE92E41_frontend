@@ -4,6 +4,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import authReducer from './features/auth/authSlice'
 import inspectionFormReducer from './features/inspectionForm/inspectionFormSlice'
 import notificationReducer from './features/notification/notificationSlice'
+import templateReducer from './features/template/templateSlice'
 import { baseApi } from '@/api/baseApi'
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     auth: authReducer,
     inspectionForm: inspectionFormReducer,
     notification: notificationReducer,
+    template: templateReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
   devTools: true,

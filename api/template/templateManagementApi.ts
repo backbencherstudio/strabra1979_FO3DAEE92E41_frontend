@@ -1,4 +1,5 @@
 import { baseApi } from '@/api/baseApi'
+import { EditableSection, setInitialTemplateData } from '@/redux/features/template/templateSlice'
 import type { WithApiStatus } from '@/types'
 import {
   ITemplateActiveStatus,
@@ -34,6 +35,23 @@ const templateManagementApi = baseApi.injectEndpoints({
         url: `/dashboard-templates/${id}`,
       }),
       providesTags: ['Templates'],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const {
+            data: { data },
+          } = await queryFulfilled
+
+          const sections: EditableSection[] = data.sections.map((item) => ({
+            id: item.type,
+            type: item.type,
+            label: item.label,
+            order: item.order,
+            size: 'full',
+          }))
+
+          dispatch(setInitialTemplateData({ sections }))
+        } catch (error) {}
+      },
     }),
     hardDeleteSingleDashboardTemplate: builder.mutation<WithApiStatus<void>, { id: string }>({
       query: ({ id }) => ({
@@ -50,6 +68,6 @@ export const {
   useCreateNewTemplateMutation,
   useGetDashboardTemplateListQuery,
   useHardDeleteSingleDashboardTemplateMutation,
-} =
-  templateManagementApi
+  useGetASingleDashboardTemplateQuery,
+} = templateManagementApi
 export default templateManagementApi

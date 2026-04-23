@@ -1,5 +1,27 @@
 export type ITemplateActiveStatus = 'ACTIVE' | 'INACTIVE' | 'DELETED'
 
+export const EDIT_BOX_SIZES = {
+  full: 'col-span-full',
+  '1/2': 'col-span-6',
+  '1/3': 'col-span-4',
+  '2/3': 'col-span-8',
+} as const
+
+export type EditBoxSize = keyof typeof EDIT_BOX_SIZES
+
+export const TEMPLATE_SECTIONS = [
+  'header_info',
+  'health_snapshot',
+  'media_grid',
+  'aerial_map',
+  'tour_3d',
+  'repair_planning',
+  'roof_health_rating',
+  'additional_info',
+  'documents',
+] as const
+export type ITemplateSection = (typeof TEMPLATE_SECTIONS)[number]
+
 export type IDashboardTemplate = {
   id: string
   name: string
@@ -8,7 +30,7 @@ export type IDashboardTemplate = {
   createdAt: string
   updatedAt: string
   sections: Array<{
-    type: string
+    type: ITemplateSection
     label: string
     order: number
     config: {

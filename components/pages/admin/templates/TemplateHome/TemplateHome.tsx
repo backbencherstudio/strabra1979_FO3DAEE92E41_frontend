@@ -4,6 +4,7 @@ import {
   useGetDashboardTemplateListQuery,
   useHardDeleteSingleDashboardTemplateMutation,
 } from '@/api/template/templateManagementApi'
+import TemplateStatusBadge from '@/components/dashboard/ProgressStatusBadge/TemplateStatusBadge'
 import { Edit } from '@/components/icons/Edit'
 import { Trush } from '@/components/icons/Trush'
 import FullPageSpinner from '@/components/reusable/FullPageSpinner/FullPageSpinner'
@@ -30,19 +31,28 @@ export default function TemplateHome() {
   }
 
   return (
-    <div>
+    <div className="@container">
       <SectionCard>
         <div className="flex items-center justify-between">
           <SectionTitle className="md:text-2xl">Template</SectionTitle>
           <CreateNewTemplateModal />
         </div>
 
-        <section className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <section className="@8xl:grid-cols-4 mt-4 grid gap-5 @2xl:grid-cols-2 @4xl:grid-cols-3">
           {data.map((item) => (
-            <SectionCard key={item.id} className="flex items-start justify-between bg-white py-3">
-              <SectionTitle className="mt-1 text-lg">{item.name}</SectionTitle>
+            <SectionCard key={item.id} className="flex justify-between bg-white px-3 py-3">
+              <div className="flex flex-1 flex-col justify-between gap-1">
+                <SectionTitle className="text-lg">{item.name}</SectionTitle>
 
-              <DropdownMenuIcons id={item.id} />
+                <div className="space-x-1">
+                  <span>Status</span>
+                  <TemplateStatusBadge status={item.status} />
+                </div>
+              </div>
+
+              <div>
+                <DropdownMenuIcons id={item.id} />
+              </div>
             </SectionCard>
           ))}
         </section>
@@ -73,7 +83,7 @@ export function DropdownMenuIcons({ id }: { id: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline">
+        <Button size="icon-sm" variant="outline">
           <EllipsisVertical />
         </Button>
       </DropdownMenuTrigger>
