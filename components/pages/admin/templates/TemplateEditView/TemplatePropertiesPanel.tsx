@@ -14,13 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { EDIT_BOX_SIZES } from '@/types'
+import { selectCurrentBox } from '@/redux/features/template/templateSlice'
+import { useTemplateProperties } from '@/redux/features/template/useTemplateProperties'
 import { useAppSelector } from '@/redux/store'
-import { CurrentSelectedBox, selectCurrentBox } from '@/redux/features/template/templateSlice'
+import { EDIT_BOX_SIZES, EditBoxSize } from '@/types'
 
 export default function TemplatePropertiesPanel() {
-  const currentBox = useAppSelector(selectCurrentBox)
-
   return (
     <div className="full-page bg-normal-25 flex flex-1">
       <section className="flex-1 overflow-y-auto border-r bg-white p-6">
@@ -54,18 +53,19 @@ export default function TemplatePropertiesPanel() {
             </div>
           </div>
 
-          <SizeBox currentBox={currentBox} />
+          <SizeBox />
         </div>
       </section>
     </div>
   )
 }
 
-interface SizeBoxProps {
-  currentBox: CurrentSelectedBox | null
-}
+interface SizeBoxProps {}
 
-export function SizeBox({ currentBox }: SizeBoxProps) {
+export function SizeBox({}: SizeBoxProps) {
+  const currentBox = useAppSelector(selectCurrentBox)
+  const { updateWidth } = useTemplateProperties()
+
   if (!currentBox) return null
 
   return (
@@ -74,9 +74,14 @@ export function SizeBox({ currentBox }: SizeBoxProps) {
       <div className="flex gap-2 *:flex-1">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Width</span>
-          <Select>
+          <Select
+            value={currentBox.data.size}
+            onValueChange={(value) =>
+              updateWidth({ index: currentBox.index, size: value as EditBoxSize })
+            }
+          >
             <SelectTrigger size="sm" className="bg-pressed-100 flex-1">
-              <SelectValue placeholder="Theme" />
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>

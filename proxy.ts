@@ -10,9 +10,17 @@ export function proxy(request: NextRequest) {
 
   // 1. Allow public routes
   if (pathname === '/' || publicRoutes.some((route) => pathname.startsWith(route))) {
-    // Already logged in → redirect to their home page
+    // Already logged in → redirect to their homepage
     if (token && role) {
       const userHomePath = getHomePageByRole(role)
+
+      // Logout the user if invalid role
+      if (!userHomePath) {
+        const response = NextResponse.redirect(new URL(routes.signin, request.url))
+        Object.values(TOKENS).forEach((name) => response.cookies.delete(name))
+        return response
+      }
+
       if (pathname !== userHomePath) {
         return NextResponse.redirect(new URL(userHomePath, request.url))
       }

@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 import {
   CurrentSelectedBox,
   selectCurrentBox,
-  selectTemplateSections,
+  selectTemplateSectionsWithSorted,
   setCurrentBox,
 } from '@/redux/features/template/templateSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/store'
@@ -71,13 +71,7 @@ export default function PropertyTemplagePage({
     }
   }
 
-  // const [selectedBox, setSelectedBox] = useState<EditableBoxType | null>(null)
-  // const handleSelect = (value: EditableBoxType) => {
-  //   console.log({ value })
-  //   setSelectedBox((current) => (current === value ? null : value))
-  // }
-
-  const templateSections = useAppSelector(selectTemplateSections)
+  const templateSections = useAppSelector(selectTemplateSectionsWithSorted)
   const currentBox = useAppSelector(selectCurrentBox)
   const dispatch = useAppDispatch()
   function handleSelectEditBox(value: CurrentSelectedBox) {
@@ -226,7 +220,7 @@ export default function PropertyTemplagePage({
             )
           }
 
-          return null
+          return `${data.type} - `
         })}
 
         {/* Add More btn */}
@@ -234,19 +228,19 @@ export default function PropertyTemplagePage({
           onClick={() => handleCreateFieldOpen('input-media')}
           type="button"
           variant="muted"
-          className="text-gray-black-300 h-23 flex-col"
+          className="text-gray-black-300 col-span-full h-23 flex-col"
         >
           <PlusSignSquare className="size-6" />
           <span className="text-sm whitespace-nowrap">Add More Media fields</span>
         </Button>
 
-        <SectionCard>
+        <SectionCard className="col-span-full">
           <SectionTitle>Priority Repair Planning</SectionTitle>
           {/* // TODO: fix this */}
           {/* <PiorityRepairPlanList /> */}
         </SectionCard>
 
-        <SectionCard className="space-y-4.5">
+        <SectionCard className="col-span-full space-y-4.5">
           <div className="flex items-center justify-between">
             <SectionTitle>Documents</SectionTitle>
 
@@ -282,7 +276,7 @@ export default function PropertyTemplagePage({
         {/*   <PropertyScoreListPreview /> */}
         {/* </SectionCard> */}
 
-        <SectionCard>
+        <SectionCard className="col-span-full">
           <SectionTitle>Additional Information</SectionTitle>
           <div className="mt-4 space-y-3">
             <InfoCard title="NTE (Not-To-Exceed)" description="$7,500" />

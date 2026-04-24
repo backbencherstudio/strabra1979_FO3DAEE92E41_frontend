@@ -1,13 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import {
-  EditableBoxType,
-  EditableSection,
-  updateSectionByIndex,
-} from '@/redux/features/template/templateSlice'
-import { useAppDispatch } from '@/redux/store'
+import { EditableBoxType, EditableSection } from '@/redux/features/template/templateSlice'
+import { useTemplateProperties } from '@/redux/features/template/useTemplateProperties'
 import { EDIT_BOX_SIZES, EditBoxSize } from '@/types'
-import { ArrowDown, ArrowUp, RulerDimensionLine } from 'lucide-react'
+import { ArrowDown, ArrowUp } from 'lucide-react'
 
 interface EditBoxProps extends Omit<React.ComponentProps<'div'>, 'onSelect'> {
   box?: EditableBoxType
@@ -22,6 +18,7 @@ export function EditBox({
   index,
   checked,
   onSelect,
+  data,
   boxSize = 'full',
   children,
   className,
@@ -31,7 +28,7 @@ export function EditBox({
     <div
       onClick={onSelect}
       className={cn(
-        'ring-offset-normal-25 relative col-span-4 flex cursor-pointer items-center gap-2 rounded-2xl ring-2 ring-blue-100 ring-offset-4 hover:ring-blue-300',
+        'ring-offset-normal-25 relative flex cursor-pointer items-center gap-2 rounded-2xl ring-2 ring-blue-100 ring-offset-4 hover:ring-blue-300',
         className,
         EDIT_BOX_SIZES[boxSize],
         {
@@ -40,7 +37,8 @@ export function EditBox({
       )}
       {...props}
     >
-      {checked ? <EditBoxTool index={index} /> : null}
+      {/* <EditBoxTool data={data} index={index} /> */}
+      {checked ? <EditBoxTool data={data} index={index} /> : null}
       <div className="size-full *:size-full">{children}</div>
     </div>
   )
@@ -48,10 +46,11 @@ export function EditBox({
 
 interface EditBoxToolProps {
   index: number
+  data: EditableSection
 }
 
-export function EditBoxTool({ index }: EditBoxToolProps) {
-  const dispatch = useAppDispatch()
+export function EditBoxTool({ index, data }: EditBoxToolProps) {
+  const { moveOrderUp, moveOrderDown } = useTemplateProperties()
 
   return (
     <div className="toolbox absolute -top-1 left-2 -translate-y-full rounded-xs bg-orange-500 px-1 pt-1">
@@ -60,6 +59,10 @@ export function EditBoxTool({ index }: EditBoxToolProps) {
           size="icon-xs"
           className="hover:text-primary bg-transparent hover:bg-transparent"
           type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            moveOrderUp({ order: data.order })
+          }}
         >
           <ArrowUp className="size-4" />
         </Button>
@@ -68,18 +71,15 @@ export function EditBoxTool({ index }: EditBoxToolProps) {
           size="icon-xs"
           className="hover:text-primary bg-transparent hover:bg-transparent"
           type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            moveOrderDown({ order: data.order })
+          }}
         >
           <ArrowDown className="size-4" />
         </Button>
 
-        <Button
-          size="icon-xs"
-          className="hover:text-primary bg-transparent hover:bg-transparent"
-          type="button"
-          onClick={() => dispatch(updateSectionByIndex({ index, section: { size: '1/2' } }))}
-        >
-          <RulerDimensionLine className="size-4" />
-        </Button>
+        {/* <span className="text-xs text-white">{data.order}</span> */}
       </div>
     </div>
   )

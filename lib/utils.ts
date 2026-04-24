@@ -14,3 +14,7 @@ export function isArrayEmpty<T>(value: T[] | null | undefined): value is null | 
 export function mergeConfig<T extends object>(defaultConfig: T, userConfig: Partial<T>): T {
   return { ...defaultConfig, ...userConfig }
 }
+
+export function isDevEnv() {
+  return process.env.NODE_ENV === 'development'
+}
