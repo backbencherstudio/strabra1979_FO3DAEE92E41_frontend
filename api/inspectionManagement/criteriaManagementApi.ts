@@ -28,6 +28,17 @@ const criteriaManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['InspectionCriteria'],
     }),
+    editAHeaderField: builder.mutation<
+      WithApiStatus<void>,
+      { fieldKey: string; criteriaId: string; payload: Partial<ICreateHeaderFieldParams> }
+    >({
+      query: ({ criteriaId, fieldKey, payload }) => ({
+        url: `/inspection-criteria/${criteriaId}/header-fields/${fieldKey}`,
+        method: 'PATCH',
+        body: payload,
+      }),
+      invalidatesTags: ['InspectionCriteria'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -36,5 +47,6 @@ export const {
   useGetAllInspectionCriteriaQuery,
   useCreateNewHeaderFieldMutation,
   useDeleteCustomHeaderFieldMutation,
+  useEditAHeaderFieldMutation
 } = criteriaManagementApi
 export default criteriaManagementApi

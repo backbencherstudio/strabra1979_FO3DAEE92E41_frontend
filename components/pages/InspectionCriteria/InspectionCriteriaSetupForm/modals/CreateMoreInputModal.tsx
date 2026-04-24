@@ -16,7 +16,11 @@ import { cn } from '@/lib/utils'
 import React, { useState } from 'react'
 import { EditInputDialog, InputFieldType } from './EditInputDialog/EditInputDialog'
 
-import { useCreateNewHeaderFieldMutation } from '@/api/inspectionManagement/criteriaManagementApi'
+import {
+  useCreateNewHeaderFieldMutation,
+  useDeleteCustomHeaderFieldMutation,
+  useEditAHeaderFieldMutation,
+} from '@/api/inspectionManagement/criteriaManagementApi'
 import FormInputField from '@/components/form/form-input-field'
 import { getErrorMessage } from '@/lib/farmatters'
 import { useForm } from '@tanstack/react-form'
@@ -24,6 +28,10 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { X } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
+import { IInspectionInputField } from '@/types'
+import { Trush } from '@/components/icons/Trush'
+import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
+import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
 
 export const inspectionCriteriaSchema = z
   .object({
@@ -51,24 +59,51 @@ export type InspectionCriteriaFormValues = z.infer<typeof inspectionCriteriaSche
 export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
   editFieldType?: InputFieldType
   criteriaId: string | undefined
+  mode?: 'edit' | 'create'
+  initialData?: IInspectionInputField
 }
 
 export function CreateMoreInputModal({
   editFieldType,
   criteriaId,
   onOpenChange,
+  mode = 'create',
+  initialData,
   ...props
 }: CreateMoreInputModalProps) {
+  const [deleteCustomHeaderField, { isLoading: isDeleting }] = useDeleteCustomHeaderFieldMutation()
+  async function handDleDelte() {
+    if (!criteriaId || !initialData?.key) {
+      return toast.error('Invalid criteriaId')
+    }
+
+    try {
+      const res = await deleteCustomHeaderField({
+        criteriaId,
+        fieldKey: initialData.key,
+      }).unwrap()
+      onOpenChange?.(false)
+      toast.success(res.message || 'Success message')
+    } catch (err) {
+      toast.error('Error title', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
+
+  const [editHeaderField, { isLoading: isEditing }] = useEditAHeaderFieldMutation()
   const [createNewHeaderField, { isLoading: isCreating }] = useCreateNewHeaderFieldMutation()
   const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
 
+  const isEditMode = mode === 'edit'
+
   const form = useForm({
     defaultValues: {
-      label: '',
-      placeholder: '',
-      required: false,
-      isDropdown: false,
-      dropdownOptions: [] as string[],
+      label: initialData?.label ?? '',
+      placeholder: initialData?.placeholder ?? '',
+      required: initialData?.required ?? false,
+      isDropdown: initialData?.type === 'dropdown' ? true : false,
+      dropdownOptions: initialData?.type === 'dropdown' ? initialData.options : [],
     },
     validators: {
       onSubmit: inspectionCriteriaSchema,
@@ -84,16 +119,27 @@ export function CreateMoreInputModal({
         : undefined
 
       try {
-        const res = await createNewHeaderField({
-          criteriaId,
-          ...value,
-          options,
-        }).unwrap()
-        onOpenChange?.(false)
-        form.reset()
-        toast.success(res?.message ?? 'Header field created successfully')
+        if (mode === 'edit' && initialData?.key) {
+          const res = await editHeaderField({
+            fieldKey: initialData.key,
+            criteriaId,
+            payload: { ...value, options },
+          }).unwrap()
+          onOpenChange?.(false)
+          form.reset()
+          toast.success(res?.message ?? 'Header field updated successfully')
+        } else {
+          const res = await createNewHeaderField({
+            criteriaId,
+            ...value,
+            options,
+          }).unwrap()
+          onOpenChange?.(false)
+          form.reset()
+          toast.success(res?.message ?? 'Header field created successfully')
+        }
       } catch (error) {
-        toast.error('Failed to create header field', {
+        toast.error(`Failed to ${mode === 'edit' ? 'update' : 'create'} header field`, {
           description: getErrorMessage(error),
         })
       }
@@ -102,7 +148,32 @@ export function CreateMoreInputModal({
 
   return (
     <EditInputDialog
-      title="Add More Input fileds"
+      headdingAction={
+        isEditMode ? (
+          <ConfirmDialog
+            iconContainerClass="bg-transparent p-0"
+            trigger={
+              initialData?.isSystem ? null : (
+                <Button type="button" disabled={isDeleting} size="icon" variant="muted">
+                  <Trush className="text-destructive size-5" />
+                </Button>
+              )
+            }
+            title="Delete Input Field"
+            desc="Are you sure you want to delete this input field?"
+          >
+            <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
+            <AlertDialogAction type="button" onClick={handDleDelte} variant="destructive">
+              Delete Field
+            </AlertDialogAction>
+          </ConfirmDialog>
+        ) : null
+      }
+      onOpenChange={(v) => {
+        if (!v) setTimeout(form.reset, 50)
+        onOpenChange?.(v)
+      }}
+      title={mode === 'edit' ? 'Edit Input Field' : 'Add More Input fields'}
       titleClass="text-center w-full"
       dialogContainerClass={cn('', {
         'sm:max-w-235': editFieldType !== 'input-mark',
@@ -115,12 +186,17 @@ export function CreateMoreInputModal({
             </Button>
           </DialogClose>
           <Button className="flex-1" onClick={() => form.handleSubmit()} type="button" size="xl">
-            {isCreating ? <Spinner /> : null}
-            {isCreating ? 'Creating...' : 'Create'}
+            {isEditing || isCreating ? <Spinner /> : null}
+            {isEditing
+              ? 'Updating...'
+              : isCreating
+                ? 'Creating...'
+                : mode === 'edit'
+                  ? 'Update'
+                  : 'Create'}
           </Button>
         </div>
       }
-      onOpenChange={onOpenChange}
       {...props}
     >
       <div className="grid grid-cols-2 divide-x *:first:pr-4 *:last:pl-4">
@@ -211,6 +287,7 @@ export function CreateMoreInputModal({
                       Dropdown
                     </FieldLabel>
                     <Switch
+                      disabled={isEditMode}
                       id={field.name}
                       checked={field.state.value}
                       onClick={() => {

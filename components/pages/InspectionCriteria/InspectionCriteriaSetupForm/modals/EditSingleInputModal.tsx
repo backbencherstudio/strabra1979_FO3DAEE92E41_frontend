@@ -20,6 +20,7 @@ interface EditSingleInputModalProps extends React.ComponentProps<typeof Dialog> 
   initialData: IInspectionInputField | undefined
 }
 
+// TODO: unused
 export function EditSingleInputModal({
   criteriaId,
   editFieldType,

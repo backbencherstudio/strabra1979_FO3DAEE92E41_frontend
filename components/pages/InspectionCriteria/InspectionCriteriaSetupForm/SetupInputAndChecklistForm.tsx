@@ -19,12 +19,7 @@ import { cn } from '@/lib/utils'
 import { IInspectionInputField } from '@/types'
 import { IInspectionCriteria } from '@/types/criteria'
 import React, { useState } from 'react'
-import {
-  CreateMoreInputModal,
-  CreateScoreInputModal,
-  EditSingleInputModal,
-  InputFieldType,
-} from './modals'
+import { CreateMoreInputModal, CreateScoreInputModal, InputFieldType } from './modals'
 
 interface InputAndChecklistSetupFormProps {
   isEditable: boolean
@@ -38,53 +33,49 @@ export default function SetupInputAndChecklistForm({
   currentCriteria,
 }: InputAndChecklistSetupFormProps) {
   const [mark, setMark] = useState(1)
-
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [open, setOpen] = React.useState(false)
 
-  const [openEditFieldsModal, setOpenEditFieldsModal] = React.useState(false)
+  // Edit field data
   const [editFieldType, setEditFieldType] = React.useState<InputFieldType>()
-  const [editFieldData, setEditFieldData] = React.useState<IInspectionInputField>()
+  const [editFieldData, setEditFieldData] = React.useState<IInspectionInputField | undefined>()
+  // create field data
+  const [openCreateMarkInputFieldsModal, setOpenCreateMarkInputFieldsModal] = React.useState(false)
+  const [createInputModalMode, setCreateInputModalMode] = React.useState<'edit' | 'create'>()
 
-  const handleEditFieldClick = (type: InputFieldType, field: IInspectionInputField) => {
+  const handleOpenEditInputModal = (type: InputFieldType, field: IInspectionInputField) => {
     setEditFieldType(type)
     setEditFieldData(field)
-    setOpenEditFieldsModal((v) => !v)
+    setCreateInputModalMode('edit')
   }
-
-  const [openCreateMarkInputFieldsModal, setOpenCreateMarkInputFieldsModal] = React.useState(false)
-  const [openCreateFieldsModal, setOpenCreateFieldsModal] = React.useState(false)
-  const handleCreateFieldOpen = (type: InputFieldType) => {
+  const handleOpenCreateInputModal = (type: InputFieldType) => {
     setEditFieldType(type)
     if (type === 'input-mark') {
-      setOpenCreateMarkInputFieldsModal((v) => !v)
     } else {
-      setOpenCreateFieldsModal((v) => !v)
+      setCreateInputModalMode('create')
     }
   }
 
   return (
     <div>
-      {/* Add More Input fileds */}
+      {/* Add More Input fields */}
       <CreateMoreInputModal
+        mode={createInputModalMode}
+        initialData={createInputModalMode === 'create' ? undefined : editFieldData}
         criteriaId={id}
         editFieldType={editFieldType}
-        open={openCreateFieldsModal}
-        onOpenChange={(v) => setOpenCreateFieldsModal(v)}
+        open={createInputModalMode !== undefined}
+        onOpenChange={(v) => {
+          if (!v) {
+            setCreateInputModalMode(undefined)
+          }
+        }}
       />
 
       <CreateScoreInputModal
         editFieldType={editFieldType}
         open={openCreateMarkInputFieldsModal}
         onOpenChange={(v) => setOpenCreateMarkInputFieldsModal(v)}
-      />
-
-      <EditSingleInputModal
-        initialData={editFieldData}
-        criteriaId={id}
-        editFieldType={editFieldType}
-        open={openEditFieldsModal}
-        onOpenChange={(v) => setOpenEditFieldsModal(v)}
       />
 
       <form className="space-y-3">
@@ -104,7 +95,7 @@ export default function SetupInputAndChecklistForm({
                       <Button
                         type="button"
                         size="icon"
-                        onClick={() => handleEditFieldClick('input-text', item)}
+                        onClick={() => handleOpenEditInputModal('input-text', item)}
                         variant="outline"
                       >
                         <Edit2 />
@@ -147,7 +138,7 @@ export default function SetupInputAndChecklistForm({
             })}
 
           <Button
-            onClick={() => handleCreateFieldOpen('input-text')}
+            onClick={() => handleOpenCreateInputModal('input-text')}
             variant="muted"
             type="button"
             className="col-span-full h-23 flex-col"
@@ -186,7 +177,7 @@ export default function SetupInputAndChecklistForm({
             })}
 
           <Button
-            onClick={() => handleCreateFieldOpen('input-mark')}
+            onClick={() => handleOpenCreateInputModal('input-mark')}
             variant="muted"
             type="button"
             className="col-span-full h-23 flex-col"
@@ -562,7 +553,7 @@ export default function SetupInputAndChecklistForm({
               {isEditable && (
                 <Button
                   size="icon"
-                  onClick={() => handleEditFieldClick('input-textarea')}
+                  onClick={() => handleOpenEditInputModal('input-textarea')}
                   variant="outline"
                 >
                   <Edit2 />
@@ -581,7 +572,7 @@ export default function SetupInputAndChecklistForm({
               {isEditable && (
                 <Button
                   size="icon"
-                  onClick={() => handleEditFieldClick('input-textarea')}
+                  onClick={() => handleOpenEditInputModal('input-textarea')}
                   variant="outline"
                 >
                   <Edit2 />
