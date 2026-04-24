@@ -3,62 +3,64 @@ import { FileInput } from '@/components/reusable/FileInput/FileInput'
 import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose } from '@/components/ui/dialog'
-import { Field, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/components/ui/input-group'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupTextarea,
+} from '@/components/ui/input-group'
 import { Select, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import React, { useState } from 'react'
-import { InputFieldType, EditInputDialog } from './EditInputDialog/EditInputDialog'
+import { EditInputDialog, InputFieldType } from './EditInputDialog/EditInputDialog'
 
-import { z } from 'zod'
-import { useForm } from '@tanstack/react-form'
+import { useCreateNewHeaderFieldMutation } from '@/api/inspectionManagement/criteriaManagementApi'
 import FormInputField from '@/components/form/form-input-field'
-import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/farmatters'
-import { useCreateNewHeaderFieldMutation } from '@/api/inspectionManagement/criteriaManagement'
+import { useForm } from '@tanstack/react-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { X } from 'lucide-react'
+import { Spinner } from '@/components/ui/spinner'
 
 export const inspectionCriteriaSchema = z
   .object({
     label: z.string().min(1, 'Label is required'),
     placeholder: z.string().min(1, 'Placeholder is required'),
-    required: z.boolean().optional(),
-    isDropdown: z.boolean().optional(),
-    options: z.array(z.string()).optional(),
-    mediaType: z.string().optional()
+    required: z.boolean(),
+    isDropdown: z.boolean(),
+    dropdownOptions: z.array(z.string().trim().min(1, "Option can't be empty")),
   })
   .refine(
     (data) => {
       if (data.isDropdown) {
-        return Array.isArray(data.options) && data.options.length > 0
+        return Array.isArray(data.dropdownOptions) && data.dropdownOptions.length > 0
       }
       return true
     },
     {
       message: 'Options are required when isDropdown is true',
-      path: ['options'],
+      path: ['dropdownOptions'],
     },
   )
 
 export type InspectionCriteriaFormValues = z.infer<typeof inspectionCriteriaSchema>
 
-export interface CreateMoreInputModalProps
-  extends React.ComponentProps<typeof Dialog> {
-  editFieldType?: InputFieldType;
-  criteriaId: string | undefined;
+export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
+  editFieldType?: InputFieldType
+  criteriaId: string | undefined
 }
 
 export function CreateMoreInputModal({
   editFieldType,
   criteriaId,
+  onOpenChange,
   ...props
 }: CreateMoreInputModalProps) {
-  const [isInputRequired, setIsInputRequired] = useState(false)
-  const [isInputDropDown, setIsInputDropDown] = useState(false)
-  const [createNewHeaderField] = useCreateNewHeaderFieldMutation();
+  const [createNewHeaderField, { isLoading: isCreating }] = useCreateNewHeaderFieldMutation()
   const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
-  const [options, setOptions] = useState<string[]>([]);
-  const [optionInput, setOptionInput] = useState("");
 
   const form = useForm({
     defaultValues: {
@@ -66,61 +68,83 @@ export function CreateMoreInputModal({
       placeholder: '',
       required: false,
       isDropdown: false,
-      options: [],
+      dropdownOptions: [] as string[],
     },
-
+    validators: {
+      onSubmit: inspectionCriteriaSchema,
+    },
     onSubmit: async ({ value }) => {
       if (!criteriaId) {
-        toast.error("criteriaId not availble");
+        toast.error('criteriaId not availble')
         return
       }
+
+      const options = value.isDropdown
+        ? value.dropdownOptions.map((option) => option.trim()).filter((option) => option !== '')
+        : undefined
 
       try {
         const res = await createNewHeaderField({
           criteriaId,
           ...value,
-        }).unwrap();
-        console.log("criteriaId =>", criteriaId);
-
-
-        toast.success(res?.message ?? "Header field created successfully");
+          options,
+        }).unwrap()
+        onOpenChange?.(false)
+        form.reset()
+        toast.success(res?.message ?? 'Header field created successfully')
       } catch (error) {
-        toast.error("Failed to create header field", {
+        toast.error('Failed to create header field', {
           description: getErrorMessage(error),
-        });
+        })
       }
     },
   })
 
   return (
     <EditInputDialog
-
       title="Add More Input fileds"
       titleClass="text-center w-full"
       dialogContainerClass={cn('', {
         'sm:max-w-235': editFieldType !== 'input-mark',
       })}
       footer={
-        <>
+        <div className="grid grid-cols-2 gap-3">
           <DialogClose asChild>
-            <Button type="button" size="xl" variant="outline">
+            <Button className="flex-1" type="button" size="xl" variant="outline">
               Cancel
             </Button>
           </DialogClose>
-          <Button onClick={() => form.handleSubmit()} type="button" size="xl">
-            Create
+          <Button className="flex-1" onClick={() => form.handleSubmit()} type="button" size="xl">
+            {isCreating ? <Spinner /> : null}
+            {isCreating ? 'Creating...' : 'Create'}
           </Button>
-        </>
+        </div>
       }
+      onOpenChange={onOpenChange}
       {...props}
     >
       <div className="grid grid-cols-2 divide-x *:first:pr-4 *:last:pl-4">
-        <PreviewEditField
-          editFieldType={editFieldType}
-          isInputDropDown={isInputDropDown}
-          isInputRequired={isInputRequired}
-          mediaInputType={mediaInputType}
-        />
+        <form.Subscribe
+          selector={(state) => ({
+            isDropdown: state.values.isDropdown,
+            required: state.values.required,
+            dropdownOptions: state.values.dropdownOptions,
+            label: state.values.label,
+            placeholder: state.values.placeholder,
+          })}
+        >
+          {({ isDropdown, required, dropdownOptions, label, placeholder }) => (
+            <PreviewEditField
+              label={label}
+              placeholder={placeholder}
+              dropdownOptions={dropdownOptions}
+              editFieldType={editFieldType}
+              isInputDropDown={isDropdown}
+              isInputRequired={required}
+              mediaInputType={mediaInputType}
+            />
+          )}
+        </form.Subscribe>
 
         <section className="slim-scrollbar -mr-6 grid max-h-[75svh] gap-4 overflow-y-auto pr-6">
           <span className="text-center font-medium">Input Form</span>
@@ -189,7 +213,11 @@ export function CreateMoreInputModal({
                     <Switch
                       id={field.name}
                       checked={field.state.value}
-                      onClick={() => field.setValue(!field.state.value)}
+                      onClick={() => {
+                        const checked = !field.state.value
+                        field.setValue(checked)
+                        form.setFieldValue('dropdownOptions', checked ? [''] : [])
+                      }}
                     />
                   </Field>
                 )}
@@ -207,35 +235,51 @@ export function CreateMoreInputModal({
                 <div className="space-y-2">
                   <div className="text-sm">Add dropdown options</div>
 
-                  {options.map((opt, index) => (
-                    <InputGroup key={index} className="h-11 mt-2">
-                      <InputGroupInput
-                        value={opt}
-                        onChange={(e) => {
-                          const updated = [...options];
-                          updated[index] = e.target.value;
-                          setOptions(updated);
-                          form.setFieldValue("options", updated);
-                        }}
-                      />
-                    </InputGroup>
-                  ))}
+                  <form.Field name="dropdownOptions" mode="array">
+                    {(field) => (
+                      <div className="space-y-2">
+                        {field.state.value.map((_, index) => (
+                          <Field key={index}>
+                            <form.Field name={`dropdownOptions[${index}]`}>
+                              {(subField) => (
+                                <>
+                                  <InputGroup className="mt-2 h-11">
+                                    <InputGroupInput
+                                      placeholder="Enter option"
+                                      value={subField.state.value}
+                                      onChange={(e) => subField.handleChange(e.target.value)}
+                                    />
+                                    <InputGroupAddon align="inline-end">
+                                      <Button
+                                        variant="outline"
+                                        size="icon-xs"
+                                        onClick={() => field.removeValue(index)}
+                                      >
+                                        <X className="size-4" />
+                                      </Button>
+                                    </InputGroupAddon>
+                                  </InputGroup>
+                                  <FieldError errors={subField.state.meta.errors} />
+                                </>
+                              )}
+                            </form.Field>
+                          </Field>
+                        ))}
 
-                  {/* <InputGroupInput
-                    placeholder="Enter dropdown option"
-                    value={optionInput}
-                    onChange={(e) => setOptionInput(e.target.value)}
-                  /> */}
+                        <FieldError errors={field.state.meta.errors} />
 
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setOptions([...options, ""]);
-                    }}
-                  >
-                    <PlusSignSquare className="size-6" />
-                    Add More
-                  </Button>
+                        <Button
+                          className="w-full"
+                          variant="muted"
+                          type="button"
+                          onClick={() => field.pushValue('')}
+                        >
+                          <PlusSignSquare className="size-5" />
+                          Add More Option
+                        </Button>
+                      </div>
+                    )}
+                  </form.Field>
                 </div>
               ) : null
             }
@@ -251,56 +295,79 @@ interface PreviewEditFieldProps {
   isInputRequired: boolean
   editFieldType: InputFieldType | undefined
   mediaInputType: 'media' | 'embedded'
+  dropdownOptions: string[]
+  label: string
+  placeholder: string
 }
 
 export function PreviewEditField({
+  label,
+  placeholder,
   isInputDropDown,
   isInputRequired,
   editFieldType,
   mediaInputType,
+  dropdownOptions,
 }: PreviewEditFieldProps) {
+  const inputLabel = label.trim() === '' ? 'Input Label' : label
+  const inputPlaceholder = placeholder.trim() === '' ? 'Enter placeholder' : placeholder
   return (
     <section className="relative space-y-3">
+      <div className="text-center font-medium">Previw</div>
+
       {isInputDropDown ? (
         <>
           <Field>
-            <FieldLabel htmlFor="name">
-              Input Label {isInputRequired ? <span className="text-destructive">*</span> : null}
+            <FieldLabel isRequired={isInputRequired} id="previw-field">
+              {inputLabel}
             </FieldLabel>
             <Select disabled>
-              <SelectTrigger className="relative" id="property-type">
-                <SelectValue placeholder="Enter placeholder" />
+              <SelectTrigger id="previw-field" className="relative">
+                <SelectValue placeholder={inputPlaceholder} />
               </SelectTrigger>
             </Select>
           </Field>
 
-          <ul className="border-input rounded-md border bg-white shadow-lg">
-            <li className="p-2.5">Dropdown option 1</li>
-            <li className="p-2.5">Dropdown option 1</li>
+          <ul className="border-input min-h-10 space-y-2.5 rounded-md border bg-white px-2.5 py-2 shadow-lg">
+            {dropdownOptions.map((item, idx) => (
+              <li key={idx} className="text-muted-foreground line-clamp-1 text-sm">
+                {item.trim() === '' ? 'Enter option' : item}
+              </li>
+            ))}
           </ul>
         </>
       ) : editFieldType === 'input-media' ? (
         <Field>
-          <FieldLabel htmlFor="name">
-            Input Label {isInputRequired ? <span className="text-destructive">*</span> : null}
+          <FieldLabel isRequired={isInputRequired} htmlFor="previw-field">
+            {inputLabel}
           </FieldLabel>
           {mediaInputType === 'media' ? (
             <FileInputProvider>
-              <FileInput icon={<FileImage />} placeholder="Upload your file" />
+              <FileInput id="previw-field" icon={<FileImage />} placeholder={inputPlaceholder} />
             </FileInputProvider>
           ) : (
             <InputGroup>
-              <InputGroupTextarea disabled placeholder="Enter placeholder" />
+              <InputGroupTextarea
+                className="disabled:opacity-100"
+                id="previw-field"
+                disabled
+                placeholder={inputPlaceholder}
+              />
             </InputGroup>
           )}
         </Field>
       ) : (
         <Field>
-          <FieldLabel htmlFor="name">
-            Input Label {isInputRequired ? <span className="text-destructive">*</span> : null}
+          <FieldLabel isRequired={isInputRequired} htmlFor="previw-field">
+            {inputLabel}
           </FieldLabel>
           <InputGroup>
-            <InputGroupInput disabled placeholder="Enter placeholder" />
+            <InputGroupInput
+              className="disabled:opacity-100"
+              id="previw-field"
+              disabled
+              placeholder={inputPlaceholder}
+            />
           </InputGroup>
         </Field>
       )}

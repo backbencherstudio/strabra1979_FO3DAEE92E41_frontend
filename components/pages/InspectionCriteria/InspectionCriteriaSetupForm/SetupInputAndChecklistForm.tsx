@@ -14,7 +14,9 @@ import {
 } from '@/components/ui/select'
 
 import { Edit as Edit2 } from '@/components/icons/Edit'
+import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 import { cn } from '@/lib/utils'
+import { IInspectionInputField } from '@/types'
 import { IInspectionCriteria } from '@/types/criteria'
 import React, { useState } from 'react'
 import {
@@ -23,7 +25,6 @@ import {
   EditSingleInputModal,
   InputFieldType,
 } from './modals'
-import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 
 interface InputAndChecklistSetupFormProps {
   isEditable: boolean
@@ -43,8 +44,11 @@ export default function SetupInputAndChecklistForm({
 
   const [openEditFieldsModal, setOpenEditFieldsModal] = React.useState(false)
   const [editFieldType, setEditFieldType] = React.useState<InputFieldType>()
-  const handleEditFieldClick = (type: InputFieldType) => {
+  const [editFieldData, setEditFieldData] = React.useState<IInspectionInputField>()
+
+  const handleEditFieldClick = (type: InputFieldType, field: IInspectionInputField) => {
     setEditFieldType(type)
+    setEditFieldData(field)
     setOpenEditFieldsModal((v) => !v)
   }
 
@@ -65,7 +69,6 @@ export default function SetupInputAndChecklistForm({
       <CreateMoreInputModal
         criteriaId={id}
         editFieldType={editFieldType}
-
         open={openCreateFieldsModal}
         onOpenChange={(v) => setOpenCreateFieldsModal(v)}
       />
@@ -77,6 +80,7 @@ export default function SetupInputAndChecklistForm({
       />
 
       <EditSingleInputModal
+        initialData={editFieldData}
         criteriaId={id}
         editFieldType={editFieldType}
         open={openEditFieldsModal}
@@ -92,12 +96,15 @@ export default function SetupInputAndChecklistForm({
               return (
                 <Field key={item.key}>
                   <div className="flex items-center justify-between">
-                    <FieldLabel htmlFor={item.key}>{item.label}</FieldLabel>
+                    <FieldLabel isRequired={item.required} htmlFor={item.key}>
+                      {item.label}
+                    </FieldLabel>
 
                     {isEditable && (
                       <Button
+                        type="button"
                         size="icon"
-                        onClick={() => handleEditFieldClick('input-text')}
+                        onClick={() => handleEditFieldClick('input-text', item)}
                         variant="outline"
                       >
                         <Edit2 />
@@ -107,7 +114,7 @@ export default function SetupInputAndChecklistForm({
                   {isDropdown ? (
                     <Select
                       required={item.required}
-                    // disabled={!isEditable}
+                      // disabled={!isEditable}
                     >
                       <SelectTrigger id={item.key}>
                         <SelectValue placeholder={item.placeholder} />
@@ -131,7 +138,7 @@ export default function SetupInputAndChecklistForm({
                         required={item.required}
                         id={item.key}
                         placeholder={item.placeholder}
-                      // disabled={!isEditable}
+                        // disabled={!isEditable}
                       />
                     </InputGroup>
                   )}
@@ -160,10 +167,10 @@ export default function SetupInputAndChecklistForm({
                   </FieldLabel>
 
                   <MarkInput
-                    onChange={() => { }}
+                    onChange={() => {}}
                     value={0}
                     maxValue={item.maxPoints}
-                  // disabled={!isEditable}
+                    // disabled={!isEditable}
                   />
 
                   {/* <InputGroup> */}

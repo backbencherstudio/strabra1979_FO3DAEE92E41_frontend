@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetAllInspectionCriteriaQuery } from '@/api/inspectionManagement/criteriaManagement'
+import { useGetAllInspectionCriteriaQuery } from '@/api/inspectionManagement/criteriaManagementApi'
 import { Edit } from '@/components/icons/Edit'
 import PlusIcon from '@/components/icons/PlusIcon'
 import HealthStatusThresholdsSetup from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/HealthStatusThresholdsSetup'
@@ -37,7 +37,6 @@ export function InspectionCriteriaHomeContent() {
 
   const { data: { data } = {}, isLoading } = useGetAllInspectionCriteriaQuery()
   const currentCriteria: IInspectionCriteria | undefined = Array.isArray(data) ? data[0] : undefined
-  console.log(currentCriteria, "0df0d0f0d0f0df")
 
   return (
     <div className="bg-normal-25 border-hover-50 rounded-2xl border px-4.5 py-5">
@@ -50,7 +49,6 @@ export function InspectionCriteriaHomeContent() {
 
           <div className="mt-4">
             <TabSwitcher
-
               selected={isMediaFilesTab ? 1 : 0}
               onSelect={() => {
                 switchTab(currentTab)
@@ -93,7 +91,11 @@ export function InspectionCriteriaHomeContent() {
         style={{ display: !isMediaFilesTab ? 'block' : 'none' }}
         className="@container/form mt-5"
       >
-        <SetupInputAndChecklistForm id={currentCriteria?.id} currentCriteria={currentCriteria} isEditable={editMode} />
+        <SetupInputAndChecklistForm
+          id={currentCriteria?.id}
+          currentCriteria={currentCriteria}
+          isEditable={editMode}
+        />
         <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           <PriorityRepairPlanningSetupForm />
           <HealthStatusThresholdsSetup />

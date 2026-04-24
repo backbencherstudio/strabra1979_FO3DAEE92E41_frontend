@@ -9,13 +9,43 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Plus } from 'lucide-react'
 import React from 'react'
 import { InputFieldType, EditInputDialog } from './EditInputDialog/EditInputDialog'
+import { IInspectionInputField } from '@/types'
+import { useDeleteCustomHeaderFieldMutation } from '@/api/inspectionManagement/criteriaManagementApi'
+import { toast } from 'sonner'
+import { getErrorMessage } from '@/lib/farmatters'
 
 interface EditSingleInputModalProps extends React.ComponentProps<typeof Dialog> {
   editFieldType?: InputFieldType
   criteriaId: string | undefined
+  initialData: IInspectionInputField | undefined
 }
 
-export function EditSingleInputModal({ criteriaId, editFieldType, ...props }: EditSingleInputModalProps) {
+export function EditSingleInputModal({
+  criteriaId,
+  editFieldType,
+  initialData,
+  onOpenChange,
+  ...props
+}: EditSingleInputModalProps) {
+  const [deleteCustomHeaderField, { isLoading: isDeleting }] = useDeleteCustomHeaderFieldMutation()
+  async function handDleDelte() {
+    if (!criteriaId || !initialData?.key) {
+      return toast.error('Invalid criteriaId')
+    }
+
+    try {
+      const res = await deleteCustomHeaderField({
+        criteriaId,
+        fieldKey: initialData.key,
+      }).unwrap()
+      onOpenChange?.(false)
+      toast.success(res.message || 'Success message')
+    } catch (err) {
+      toast.error('Error title', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
 
   return (
     <EditInputDialog
@@ -23,15 +53,19 @@ export function EditSingleInputModal({ criteriaId, editFieldType, ...props }: Ed
         <ConfirmDialog
           iconContainerClass="bg-transparent p-0"
           trigger={
-            <Button size="icon" variant="muted">
-              <Trush className="text-destructive size-5" />
-            </Button>
+            initialData?.isSystem ? null : (
+              <Button type="button" disabled={isDeleting} size="icon" variant="muted">
+                <Trush className="text-destructive size-5" />
+              </Button>
+            )
           }
           title="Delete Input Field"
           desc="Are you sure you want to delete this input field?"
         >
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+          <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
+          <AlertDialogAction type="button" onClick={handDleDelte} variant="destructive">
+            Delete Field
+          </AlertDialogAction>
         </ConfirmDialog>
       }
       title="Edit Input fileds"
@@ -47,28 +81,29 @@ export function EditSingleInputModal({ criteriaId, editFieldType, ...props }: Ed
           </Button>
         </>
       }
+      onOpenChange={onOpenChange}
       {...props}
     >
       {(editFieldType == 'input-text' ||
         editFieldType == 'input-textarea' ||
         editFieldType == 'input-dropdown' ||
         editFieldType == 'input-mark') && (
-          <>
-            <Field>
-              <FieldLabel htmlFor="name">Input Label</FieldLabel>
-              <InputGroup className="rounded-none! border-0 border-b">
-                <InputGroupInput placeholder="Enter input Label" />
-              </InputGroup>
-            </Field>
+        <>
+          <Field>
+            <FieldLabel htmlFor="name">Input Label</FieldLabel>
+            <InputGroup className="rounded-none! border-0 border-b">
+              <InputGroupInput placeholder="Enter input Label" />
+            </InputGroup>
+          </Field>
 
-            <Field>
-              <FieldLabel htmlFor="name">Placeholder</FieldLabel>
-              <InputGroup className="rounded-none! border-0 border-b">
-                <InputGroupInput placeholder="Enter input placeholder" />
-              </InputGroup>
-            </Field>
-          </>
-        )}
+          <Field>
+            <FieldLabel htmlFor="name">Placeholder</FieldLabel>
+            <InputGroup className="rounded-none! border-0 border-b">
+              <InputGroupInput placeholder="Enter input placeholder" />
+            </InputGroup>
+          </Field>
+        </>
+      )}
 
       {editFieldType == 'input-dropdown' && (
         <>
