@@ -14,6 +14,9 @@ import { InputFieldType, EditInputDialog } from './EditInputDialog/EditInputDial
 import { z } from 'zod'
 import { useForm } from '@tanstack/react-form'
 import FormInputField from '@/components/form/form-input-field'
+import { toast } from 'sonner'
+import { getErrorMessage } from '@/lib/farmatters'
+import { useCreateNewHeaderFieldMutation } from '@/api/inspectionManagement/criteriaManagement'
 
 export const inspectionCriteriaSchema = z
   .object({
@@ -22,7 +25,7 @@ export const inspectionCriteriaSchema = z
     required: z.boolean().optional(),
     isDropdown: z.boolean().optional(),
     options: z.array(z.string()).optional(),
-    mediaType: ''
+    mediaType: z.string().optional()
   })
   .refine(
     (data) => {
@@ -39,15 +42,23 @@ export const inspectionCriteriaSchema = z
 
 export type InspectionCriteriaFormValues = z.infer<typeof inspectionCriteriaSchema>
 
-export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
-  editFieldType?: InputFieldType
+export interface CreateMoreInputModalProps
+  extends React.ComponentProps<typeof Dialog> {
+  editFieldType?: InputFieldType;
+  criteriaId: string | undefined;
 }
 
-export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInputModalProps) {
+export function CreateMoreInputModal({
+  editFieldType,
+  criteriaId,
+  ...props
+}: CreateMoreInputModalProps) {
   const [isInputRequired, setIsInputRequired] = useState(false)
   const [isInputDropDown, setIsInputDropDown] = useState(false)
-
+  const [createNewHeaderField] = useCreateNewHeaderFieldMutation();
   const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
+  const [options, setOptions] = useState<string[]>([]);
+  const [optionInput, setOptionInput] = useState("");
 
   const form = useForm({
     defaultValues: {
@@ -59,12 +70,31 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
     },
 
     onSubmit: async ({ value }) => {
-      console.log('VALID DATA', value)
+      if (!criteriaId) {
+        toast.error("criteriaId not availble");
+        return
+      }
+
+      try {
+        const res = await createNewHeaderField({
+          criteriaId,
+          ...value,
+        }).unwrap();
+        console.log("criteriaId =>", criteriaId);
+
+
+        toast.success(res?.message ?? "Header field created successfully");
+      } catch (error) {
+        toast.error("Failed to create header field", {
+          description: getErrorMessage(error),
+        });
+      }
     },
   })
 
   return (
     <EditInputDialog
+
       title="Add More Input fileds"
       titleClass="text-center w-full"
       dialogContainerClass={cn('', {
@@ -77,7 +107,7 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
               Cancel
             </Button>
           </DialogClose>
-          <Button type="button" size="xl">
+          <Button onClick={() => form.handleSubmit()} type="button" size="xl">
             Create
           </Button>
         </>
@@ -177,19 +207,32 @@ export function CreateMoreInputModal({ editFieldType, ...props }: CreateMoreInpu
                 <div className="space-y-2">
                   <div className="text-sm">Add dropdown options</div>
 
-                  <Field>
-                    <InputGroup className="h-11">
-                      <InputGroupInput placeholder="Enter dropdown option" />
+                  {options.map((opt, index) => (
+                    <InputGroup key={index} className="h-11 mt-2">
+                      <InputGroupInput
+                        value={opt}
+                        onChange={(e) => {
+                          const updated = [...options];
+                          updated[index] = e.target.value;
+                          setOptions(updated);
+                          form.setFieldValue("options", updated);
+                        }}
+                      />
                     </InputGroup>
-                  </Field>
+                  ))}
 
-                  <Field>
-                    <InputGroup className="h-11">
-                      <InputGroupInput placeholder="Enter dropdown option" />
-                    </InputGroup>
-                  </Field>
+                  {/* <InputGroupInput
+                    placeholder="Enter dropdown option"
+                    value={optionInput}
+                    onChange={(e) => setOptionInput(e.target.value)}
+                  /> */}
 
-                  <Button variant="muted" type="button" className="w-full">
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setOptions([...options, ""]);
+                    }}
+                  >
                     <PlusSignSquare className="size-6" />
                     Add More
                   </Button>

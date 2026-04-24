@@ -23,3 +23,12 @@ export interface IInspectionCriteria {
   repairPlanningConfig: RepairPlanningConfig
   healthThresholdConfig: IInspectionHealthThresholdConfig
 }
+
+export interface ICreateHeaderFieldParams {
+  label: string
+  placeholder: string
+  required: boolean
+  isDropdown?: boolean
+  options?: string[]
+  criteriaId: string
+}

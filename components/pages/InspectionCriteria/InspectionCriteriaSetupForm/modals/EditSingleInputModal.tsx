@@ -8,13 +8,15 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Plus } from 'lucide-react'
 import React from 'react'
-import { InputFieldType, EditInputDialog  } from './EditInputDialog/EditInputDialog'
+import { InputFieldType, EditInputDialog } from './EditInputDialog/EditInputDialog'
 
 interface EditSingleInputModalProps extends React.ComponentProps<typeof Dialog> {
   editFieldType?: InputFieldType
+  criteriaId: string | undefined
 }
 
-export function EditSingleInputModal({ editFieldType, ...props }: EditSingleInputModalProps) {
+export function EditSingleInputModal({ criteriaId, editFieldType, ...props }: EditSingleInputModalProps) {
+
   return (
     <EditInputDialog
       headdingAction={
@@ -51,22 +53,22 @@ export function EditSingleInputModal({ editFieldType, ...props }: EditSingleInpu
         editFieldType == 'input-textarea' ||
         editFieldType == 'input-dropdown' ||
         editFieldType == 'input-mark') && (
-        <>
-          <Field>
-            <FieldLabel htmlFor="name">Input Label</FieldLabel>
-            <InputGroup className="rounded-none! border-0 border-b">
-              <InputGroupInput placeholder="Enter input Label" />
-            </InputGroup>
-          </Field>
+          <>
+            <Field>
+              <FieldLabel htmlFor="name">Input Label</FieldLabel>
+              <InputGroup className="rounded-none! border-0 border-b">
+                <InputGroupInput placeholder="Enter input Label" />
+              </InputGroup>
+            </Field>
 
-          <Field>
-            <FieldLabel htmlFor="name">Placeholder</FieldLabel>
-            <InputGroup className="rounded-none! border-0 border-b">
-              <InputGroupInput placeholder="Enter input placeholder" />
-            </InputGroup>
-          </Field>
-        </>
-      )}
+            <Field>
+              <FieldLabel htmlFor="name">Placeholder</FieldLabel>
+              <InputGroup className="rounded-none! border-0 border-b">
+                <InputGroupInput placeholder="Enter input placeholder" />
+              </InputGroup>
+            </Field>
+          </>
+        )}
 
       {editFieldType == 'input-dropdown' && (
         <>
