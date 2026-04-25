@@ -1,5 +1,10 @@
 import { baseApi } from '@/api/baseApi'
-import type { IEditTextAreaFieldParams, EditTextAreaFieldType, WithApiStatus } from '@/types'
+import type {
+  IEditTextAreaFieldParams,
+  EditTextAreaFieldType,
+  WithApiStatus,
+  IInspectionHealthThresholdConfig,
+} from '@/types'
 import { ICreateFieldFieldParams, ICreateHeaderFieldParams, IInspectionCriteria } from '@/types'
 
 const criteriaManagementApi = baseApi.injectEndpoints({
@@ -92,6 +97,22 @@ const criteriaManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['InspectionCriteria'],
     }),
+
+    // health threshold config
+    updateHealthThresholdConfig: builder.mutation<
+      WithApiStatus<void>,
+      {
+        criteriaId: string
+        payload: IInspectionHealthThresholdConfig
+      }
+    >({
+      query: ({ criteriaId, payload }) => ({
+        url: `/inspection-criteria/${criteriaId}/health-threshold-config`,
+        method: 'PATCH',
+        body: payload,
+      }),
+      invalidatesTags: ['InspectionCriteria'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -105,5 +126,6 @@ export const {
   useDeleteACustomScoringCategoryMutation,
   useEditAScoringFieldMutation,
   useEditTextAreaInputFieldMutation,
+  useUpdateHealthThresholdConfigMutation,
 } = criteriaManagementApi
 export default criteriaManagementApi

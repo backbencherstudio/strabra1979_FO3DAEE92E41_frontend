@@ -114,6 +114,7 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+  --scale-theme: var(--success);
 }
 
 :root {

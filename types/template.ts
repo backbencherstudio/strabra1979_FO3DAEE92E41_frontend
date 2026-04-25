@@ -1,3 +1,11 @@
+import {
+  AdditionalNotesConfig,
+  IInspectionHealthThresholdConfig,
+  InspectionHealthScoreRange,
+  NteConfig,
+  RepairPlanningConfig,
+} from './inspectinForm'
+
 export type ITemplateActiveStatus = 'ACTIVE' | 'INACTIVE' | 'DELETED'
 
 export const EDIT_BOX_SIZES = {
@@ -87,37 +95,10 @@ export type IDashboardTemplate = {
       isSystem: boolean
       placeholder: string
     }>
-    nteConfig: {
-      label: string
-      placeholder: string
-    }
-    additionalNotesConfig: {
-      label: string
-      placeholder: string
-    }
-    repairPlanningConfig: {
-      statuses: Array<string>
-    }
-    healthThresholdConfig: {
-      fair: {
-        maxScore: number
-        minScore: number
-        remainingLifeMaxYears: number
-        remainingLifeMinYears: number
-      }
-      good: {
-        maxScore: number
-        minScore: number
-        remainingLifeMaxYears: number
-        remainingLifeMinYears: number
-      }
-      poor: {
-        maxScore: number
-        minScore: number
-        remainingLifeMaxYears: number
-        remainingLifeMinYears: number
-      }
-    }
+    nteConfig: NteConfig
+    additionalNotesConfig: AdditionalNotesConfig
+    repairPlanningConfig: RepairPlanningConfig
+    healthThresholdConfig: IInspectionHealthThresholdConfig
   }
   _count: {
     properties: number

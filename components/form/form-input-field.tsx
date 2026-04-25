@@ -35,9 +35,8 @@ export default function FormInputField<T>({
           data-invalid={field.state.meta.isTouched && !field.state.meta.isValid}
         >
           {label ? (
-            <FieldLabel htmlFor={field.name}>
+            <FieldLabel isRequired={required} htmlFor={field.name}>
               {label}
-              {required ? <span className="text-error-red-500">*</span> : null}
             </FieldLabel>
           ) : null}
 

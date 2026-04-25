@@ -98,7 +98,10 @@ export function InspectionCriteriaHomeContent() {
         />
         <div className="mt-5 grid gap-4 @3xl:grid-cols-2 @3xl:gap-6">
           <PriorityRepairPlanningSetupForm />
-          <HealthStatusThresholdsSetup />
+          <HealthStatusThresholdsSetup
+            criteriaId={currentCriteria?.id}
+            healthThresholdConfig={currentCriteria?.healthThresholdConfig}
+          />
         </div>
       </section>
 
@@ -111,20 +114,20 @@ export function InspectionCriteriaHomeContent() {
         />
       </section>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        <Button size="xl" variant="outline">
-          Go Back
-        </Button>
-        <Button
-          onClick={() => {
-            if (!isMediaFilesTab) switchTab(currentTab)
-          }}
-          size="xl"
-          variant="default"
-        >
-          {isMediaFilesTab ? 'Submit' : 'Next'}
-        </Button>
-      </div>
+      {/* <div className="mt-6 grid gap-3 sm:grid-cols-2"> */}
+      {/*   <Button size="xl" variant="outline"> */}
+      {/*     Go Back */}
+      {/*   </Button> */}
+      {/*   <Button */}
+      {/*     onClick={() => { */}
+      {/*       if (!isMediaFilesTab) switchTab(currentTab) */}
+      {/*     }} */}
+      {/*     size="xl" */}
+      {/*     variant="default" */}
+      {/*   > */}
+      {/*     {isMediaFilesTab ? 'Submit' : 'Next'} */}
+      {/*   </Button> */}
+      {/* </div> */}
     </div>
   )
 }
