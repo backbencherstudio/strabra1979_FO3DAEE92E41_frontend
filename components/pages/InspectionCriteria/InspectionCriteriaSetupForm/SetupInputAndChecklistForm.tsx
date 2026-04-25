@@ -16,10 +16,9 @@ import {
 import { Edit as Edit2 } from '@/components/icons/Edit'
 import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 import { cn } from '@/lib/utils'
-import { IInspectionInputField } from '@/types'
-import { IInspectionCriteria } from '@/types/criteria'
+import { IInspectionInputField, ScoringCategory, IInspectionCriteria } from '@/types'
 import React, { useState } from 'react'
-import { CreateMoreInputModal, CreateScoreInputModal, InputFieldType } from './modals'
+import { CreateMoreInputModal, CreateScoringInputModal, InputFieldType } from './modals'
 
 interface InputAndChecklistSetupFormProps {
   isEditable: boolean
@@ -36,14 +35,16 @@ export default function SetupInputAndChecklistForm({
   const [date, setDate] = React.useState<Date | undefined>(undefined)
   const [open, setOpen] = React.useState(false)
 
-  // Edit field data
+  // Edit header field data
   const [editFieldType, setEditFieldType] = React.useState<InputFieldType>()
   const [editFieldData, setEditFieldData] = React.useState<IInspectionInputField | undefined>()
   // create field data
-  const [openCreateMarkInputFieldsModal, setOpenCreateMarkInputFieldsModal] = React.useState(false)
   const [createInputModalMode, setCreateInputModalMode] = React.useState<'edit' | 'create'>()
 
-  const handleOpenEditInputModal = (type: InputFieldType, field: IInspectionInputField) => {
+  const handleOpenEditModalForHeaderFields = (
+    type: InputFieldType,
+    field: IInspectionInputField,
+  ) => {
     setEditFieldType(type)
     setEditFieldData(field)
     setCreateInputModalMode('edit')
@@ -51,14 +52,28 @@ export default function SetupInputAndChecklistForm({
   const handleOpenCreateInputModal = (type: InputFieldType) => {
     setEditFieldType(type)
     if (type === 'input-mark') {
+      setOpenCreateScoringInputModal('create')
     } else {
       setCreateInputModalMode('create')
     }
   }
 
+  // Edit scoring field data
+  const [editScoringFieldData, setEdiScoringtFieldData] = React.useState<
+    ScoringCategory | undefined
+  >()
+  const [openCreateScoringInputModal, setOpenCreateScoringInputModal] = React.useState<
+    'edit' | 'create'
+  >()
+  const handleOpenEditModalForScoringFields = (type: InputFieldType, field: ScoringCategory) => {
+    // setEditFieldType(type)
+    setEdiScoringtFieldData(field)
+    setOpenCreateScoringInputModal('edit')
+  }
+
   return (
     <div>
-      {/* Add More Input fields */}
+      {/* Add More Input fields dialog */}
       <CreateMoreInputModal
         mode={createInputModalMode}
         initialData={createInputModalMode === 'create' ? undefined : editFieldData}
@@ -72,10 +87,17 @@ export default function SetupInputAndChecklistForm({
         }}
       />
 
-      <CreateScoreInputModal
-        editFieldType={editFieldType}
-        open={openCreateMarkInputFieldsModal}
-        onOpenChange={(v) => setOpenCreateMarkInputFieldsModal(v)}
+      {/* Create checklist fields dialog */}
+      <CreateScoringInputModal
+        initialData={openCreateScoringInputModal === 'create' ? undefined : editScoringFieldData}
+        criteriaId={id}
+        mode={openCreateScoringInputModal}
+        open={openCreateScoringInputModal !== undefined}
+        onOpenChange={(v) => {
+          if (!v) {
+            setOpenCreateScoringInputModal(undefined)
+          }
+        }}
       />
 
       <form className="space-y-3">
@@ -94,11 +116,11 @@ export default function SetupInputAndChecklistForm({
                     {isEditable && (
                       <Button
                         type="button"
-                        size="icon"
-                        onClick={() => handleOpenEditInputModal('input-text', item)}
+                        size="icon-sm"
+                        onClick={() => handleOpenEditModalForHeaderFields('input-text', item)}
                         variant="outline"
                       >
-                        <Edit2 />
+                        <Edit2 className="size-4" />
                       </Button>
                     )}
                   </div>
@@ -153,9 +175,23 @@ export default function SetupInputAndChecklistForm({
             currentCriteria?.scoringCategories.map((item) => {
               return (
                 <Field key={item.key}>
-                  <FieldLabel htmlFor={item.key}>
-                    {item.label} ({item.maxPoints} pts)
-                  </FieldLabel>
+                  <div className="flex items-center justify-between">
+                    {/* isRequired={item.required} */}
+                    <FieldLabel htmlFor={item.key}>
+                      {item.label} ({item.maxPoints} pts)
+                    </FieldLabel>
+
+                    {isEditable && (
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        onClick={() => handleOpenEditModalForScoringFields('input-mark', item)}
+                        variant="outline"
+                      >
+                        <Edit2 className="size-4" />
+                      </Button>
+                    )}
+                  </div>
 
                   <MarkInput
                     onChange={() => {}}
@@ -553,7 +589,7 @@ export default function SetupInputAndChecklistForm({
               {isEditable && (
                 <Button
                   size="icon"
-                  onClick={() => handleOpenEditInputModal('input-textarea')}
+                  onClick={() => handleOpenEditModalForHeaderFields('input-textarea')}
                   variant="outline"
                 >
                   <Edit2 />
@@ -572,7 +608,7 @@ export default function SetupInputAndChecklistForm({
               {isEditable && (
                 <Button
                   size="icon"
-                  onClick={() => handleOpenEditInputModal('input-textarea')}
+                  onClick={() => handleOpenEditModalForHeaderFields('input-textarea')}
                   variant="outline"
                 >
                   <Edit2 />

@@ -25,10 +25,16 @@ export interface IInspectionCriteria {
 }
 
 export interface ICreateHeaderFieldParams {
+  criteriaId: string
   label: string
   placeholder: string
   required: boolean
   isDropdown?: boolean
   options?: string[]
+}
+
+export interface ICreateFieldFieldParams {
   criteriaId: string
+  label: string
+  maxPoints: number
 }

@@ -53,7 +53,9 @@ export default function FormInputField<T>({
               placeholder={placeholder}
               value={field.state.value}
               onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
+              onChange={(e) =>
+                field.handleChange(type === 'number' ? Number(e.target.value) : e.target.value)
+              }
             />
 
             {rightElement && <InputGroupAddon align="inline-end">{rightElement}</InputGroupAddon>}
