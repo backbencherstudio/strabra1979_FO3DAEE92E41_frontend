@@ -214,7 +214,7 @@ export default function InspectionReportDetail() {
           setEmbedFields={setEmbedFields}
           files={mediaFields}
           setFiles={setMediaFields}
-          formConfig={formConfig}
+          mediaFields={formConfig?.form.mediaFields}
         />
       </section>
 

@@ -4,12 +4,18 @@ import { FileImage, FileVideo } from '@/components/icons/File'
 import { mbToBytes } from '@/components/reusable/FileInput/FileInput'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import { EmbedFieldsData, IPropertyInspectionFormData, MediaFieldItem } from '@/types'
+import {
+  EmbedFieldsData,
+  IInspectionMediaField,
+  IPropertyInspectionFormData,
+  MediaFieldItem,
+} from '@/types'
 import { Dispatch, SetStateAction } from 'react'
 import { MediaField } from './MediaField'
 
 interface InspectionMediaFormProps {
   formConfig?: IPropertyInspectionFormData
+  mediaFields: IInspectionMediaField[] | undefined
   files: MediaFieldItem[]
   setFiles: Dispatch<SetStateAction<MediaFieldItem[]>>
   embedFields: EmbedFieldsData
@@ -17,7 +23,7 @@ interface InspectionMediaFormProps {
 }
 
 export default function InspectionMediaForm({
-  formConfig,
+  mediaFields,
   files,
   setFiles,
   embedFields,
@@ -29,7 +35,7 @@ export default function InspectionMediaForm({
   return (
     <form>
       <FieldGroup>
-        {formConfig?.form.mediaFields.map((conf) => {
+        {mediaFields?.map((conf) => {
           if (conf.key === 'mediaFiles') {
             return (
               <MediaField

@@ -107,6 +107,8 @@ export function InspectionCriteriaHomeContent() {
 
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <SetupMediaAndDocumentFrom
+          criteriaId={currentCriteria?.id}
+          mediaFields={currentCriteria?.mediaFields}
           createModalOpts={{
             open: openCreateFileAndDocFieldsModal,
             onOpenChange: setOpenCreateFileAndDocFieldsModal,

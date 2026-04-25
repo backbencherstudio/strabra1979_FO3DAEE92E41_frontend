@@ -38,12 +38,7 @@ export default function SetupInputAndChecklistForm({
   isEditable,
   currentCriteria,
 }: InputAndChecklistSetupFormProps) {
-  const [mark, setMark] = useState(1)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
-  const [open, setOpen] = React.useState(false)
-
   // Edit header field data
-  const [editFieldType, setEditFieldType] = React.useState<InputFieldType>()
   const [editFieldData, setEditFieldData] = React.useState<IInspectionInputField | undefined>()
   // create field data
   const [createInputModalMode, setCreateInputModalMode] = React.useState<'edit' | 'create'>()
@@ -52,12 +47,10 @@ export default function SetupInputAndChecklistForm({
     type: InputFieldType,
     field: IInspectionInputField,
   ) => {
-    setEditFieldType(type)
     setEditFieldData(field)
     setCreateInputModalMode('edit')
   }
   const handleOpenCreateInputModal = (type: InputFieldType) => {
-    setEditFieldType(type)
     if (type === 'input-mark') {
       setOpenCreateScoringInputModal('create')
     } else {
@@ -73,7 +66,6 @@ export default function SetupInputAndChecklistForm({
     'edit' | 'create'
   >()
   const handleOpenEditModalForScoringFields = (type: InputFieldType, field: ScoringCategory) => {
-    // setEditFieldType(type)
     setEdiScoringtFieldData(field)
     setOpenCreateScoringInputModal('edit')
   }
@@ -98,7 +90,7 @@ export default function SetupInputAndChecklistForm({
         mode={createInputModalMode}
         initialData={createInputModalMode === 'create' ? undefined : editFieldData}
         criteriaId={id}
-        editFieldType={editFieldType}
+        editFieldType={'input-text'}
         open={createInputModalMode !== undefined}
         onOpenChange={(v) => {
           if (!v) {
