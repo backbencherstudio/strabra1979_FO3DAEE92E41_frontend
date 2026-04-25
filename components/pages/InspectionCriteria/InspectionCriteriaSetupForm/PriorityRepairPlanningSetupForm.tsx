@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select'
 import { PlusIcon } from 'lucide-react'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import PiorityRepairPlanList from '../../InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 
 export default function PriorityRepairPlanningSetupForm() {
   return (
@@ -24,6 +25,8 @@ export default function PriorityRepairPlanningSetupForm() {
           <PlusIcon />
         </Button>
       </div>
+
+      <PiorityRepairPlanList items={[]} />
 
       <form className="mt-4 space-y-1.5">
         <Field>

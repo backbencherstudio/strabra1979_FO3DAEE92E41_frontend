@@ -82,6 +82,7 @@ export default function PropertyTemplagePage({
     <div>
       {/* Add More Input fileds */}
       <CreateTemplateMoreInputModal
+        criteriaId=''
         editFieldType={editFieldType}
         open={openCreateMediaFieldsModal}
         onOpenChange={(v) => setOpenCreateMediaFieldsModal(v)}
