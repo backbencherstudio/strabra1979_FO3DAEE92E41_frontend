@@ -1,5 +1,5 @@
 import { baseApi } from '@/api/baseApi'
-import type { WithApiStatus } from '@/types'
+import type { IEditTextAreaFieldParams, EditTextAreaFieldType, WithApiStatus } from '@/types'
 import { ICreateFieldFieldParams, ICreateHeaderFieldParams, IInspectionCriteria } from '@/types'
 
 const criteriaManagementApi = baseApi.injectEndpoints({
@@ -72,6 +72,26 @@ const criteriaManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['InspectionCriteria'],
     }),
+
+    // NTE & Additional notes config
+    editTextAreaInputField: builder.mutation<
+      WithApiStatus<void>,
+      {
+        criteriaId: string
+        fieldType: EditTextAreaFieldType
+        payload: Partial<IEditTextAreaFieldParams>
+      }
+    >({
+      query: ({ criteriaId, payload, fieldType }) => ({
+        url:
+          fieldType === 'NTE'
+            ? `/inspection-criteria/${criteriaId}/nte-config`
+            : `/inspection-criteria/${criteriaId}/additional-notes-config`,
+        method: 'PATCH',
+        body: payload,
+      }),
+      invalidatesTags: ['InspectionCriteria'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -84,5 +104,6 @@ export const {
   useCreateScoringFieldMutation,
   useDeleteACustomScoringCategoryMutation,
   useEditAScoringFieldMutation,
+  useEditTextAreaInputFieldMutation,
 } = criteriaManagementApi
 export default criteriaManagementApi

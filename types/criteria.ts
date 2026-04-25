@@ -38,3 +38,9 @@ export interface ICreateFieldFieldParams {
   label: string
   maxPoints: number
 }
+
+export type EditTextAreaFieldType = 'NTE' | 'ADDITIONAL_NOTES'
+export interface IEditTextAreaFieldParams {
+  label: string
+  placeholder: string
+}
