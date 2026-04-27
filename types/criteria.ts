@@ -33,7 +33,7 @@ export interface ICreateHeaderFieldParams {
   options?: string[]
 }
 
-export interface ICreateFieldFieldParams {
+export interface ICreateScoringFieldParams {
   criteriaId: string
   label: string
   maxPoints: number

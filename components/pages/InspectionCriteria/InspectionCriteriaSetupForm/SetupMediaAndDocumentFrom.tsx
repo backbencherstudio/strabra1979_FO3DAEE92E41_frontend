@@ -32,7 +32,7 @@ export default function SetupMediaAndDocumentFrom({
       <CreateMoreInputModal
         mode="create"
         criteriaId={criteriaId}
-        editFieldType={'input-media'}
+        modalType="mediafiles"
         {...createModalOpts}
       />
     </div>

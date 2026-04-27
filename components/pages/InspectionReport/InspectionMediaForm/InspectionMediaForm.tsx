@@ -1,6 +1,6 @@
 'use client'
 
-import { FileImage, FileVideo } from '@/components/icons/File'
+import { FileImage } from '@/components/icons/File'
 import { mbToBytes } from '@/components/reusable/FileInput/FileInput'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
@@ -36,7 +36,7 @@ export default function InspectionMediaForm({
     <form>
       <FieldGroup>
         {mediaFields?.map((conf) => {
-          if (conf.key === 'mediaFiles') {
+          if (conf.type === 'file') {
             return (
               <MediaField
                 setFiles={setFiles}
@@ -53,25 +53,7 @@ export default function InspectionMediaForm({
             )
           }
 
-          if (conf.key === 'aerialMap') {
-            return (
-              <MediaField
-                setFiles={setFiles}
-                files={files}
-                multiple={false}
-                key={conf.key}
-                label={conf.label}
-                keyName={conf.key}
-                accept={conf.accept?.join(',')}
-                placeholder={conf.placeholder}
-                icon={<FileVideo />}
-                maxSize={maxVideoSize}
-                inputContainerClassName="h-65"
-              />
-            )
-          }
-
-          if (conf.key === 'tour3d') {
+          if (conf.type === 'embed') {
             const tour3dValue = embedFields['tour3d'] ?? ''
             return (
               <Field key={conf.key}>
@@ -88,7 +70,7 @@ export default function InspectionMediaForm({
             )
           }
 
-          if (conf.key === 'documents') {
+          if (conf.type === 'document') {
             return (
               <MediaField
                 setFiles={setFiles}

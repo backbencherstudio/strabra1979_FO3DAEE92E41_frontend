@@ -81,12 +81,12 @@ export default function PropertyTemplagePage({
   return (
     <div>
       {/* Add More Input fileds */}
-      <CreateTemplateMoreInputModal
-        criteriaId=''
-        editFieldType={editFieldType}
-        open={openCreateMediaFieldsModal}
-        onOpenChange={(v) => setOpenCreateMediaFieldsModal(v)}
-      />
+      {/* <CreateTemplateMoreInputModal */}
+      {/*   criteriaId='' */}
+      {/*   editFieldType={editFieldType} */}
+      {/*   open={openCreateMediaFieldsModal} */}
+      {/*   onOpenChange={(v) => setOpenCreateMediaFieldsModal(v)} */}
+      {/* /> */}
 
       <SectionCard className="grid grid-cols-12 gap-5">
         <div className="col-span-full">

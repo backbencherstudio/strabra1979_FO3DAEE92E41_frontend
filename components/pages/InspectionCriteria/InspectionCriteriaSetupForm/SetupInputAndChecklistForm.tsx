@@ -90,7 +90,7 @@ export default function SetupInputAndChecklistForm({
         mode={createInputModalMode}
         initialData={createInputModalMode === 'create' ? undefined : editFieldData}
         criteriaId={id}
-        editFieldType={'input-text'}
+        modalType="checklist"
         open={createInputModalMode !== undefined}
         onOpenChange={(v) => {
           if (!v) {

@@ -10,10 +10,7 @@ import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
-export function CreateTemplateMoreInputModal({
-  editFieldType,
-  ...props
-}: CreateMoreInputModalProps) {
+export function CreateTemplateMoreInputModal({ ...props }: CreateMoreInputModalProps) {
   const [isInputRequired, setIsInputRequired] = useState(false)
   const [isInputDropDown, setIsInputDropDown] = useState(false)
 
@@ -23,9 +20,7 @@ export function CreateTemplateMoreInputModal({
     <EditInputDialog
       title="Add More Supporting Media & Embedded Contents"
       titleClass="text-center w-full"
-      dialogContainerClass={cn('', {
-        'sm:max-w-235': editFieldType !== 'input-mark',
-      })}
+      dialogContainerClass={cn('sm:max-w-235')}
       footer={
         <>
           <DialogClose asChild>

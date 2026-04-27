@@ -19,6 +19,7 @@ export const CREATE_INPUT_TYPES = [
   'input-mark',
   'input-textarea',
   'input-media',
+  'input-media-embedded',
 ] as const
 
 export type InputFieldType = (typeof CREATE_INPUT_TYPES)[number]

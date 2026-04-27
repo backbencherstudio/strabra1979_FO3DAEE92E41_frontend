@@ -1,11 +1,19 @@
 import { baseApi } from '@/api/baseApi'
 import type {
-  IEditTextAreaFieldParams,
   EditTextAreaFieldType,
-  WithApiStatus,
+  IEditTextAreaFieldParams,
   IInspectionHealthThresholdConfig,
+  WithApiStatus,
 } from '@/types'
-import { ICreateFieldFieldParams, ICreateHeaderFieldParams, IInspectionCriteria } from '@/types'
+import { ICreateHeaderFieldParams, ICreateScoringFieldParams, IInspectionCriteria } from '@/types'
+
+export type ICreateMediaFieldPayload = {
+  label: string
+  placeholder: string
+  isMediaFile: boolean
+  isEmbedded: boolean
+  accept: string[]
+}
 
 const criteriaManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -37,18 +45,32 @@ const criteriaManagementApi = baseApi.injectEndpoints({
     }),
     editAHeaderField: builder.mutation<
       WithApiStatus<void>,
-      { fieldKey: string; criteriaId: string; payload: Partial<ICreateHeaderFieldParams> }
+      { fieldKey: string; criteriaId: string; data: Partial<ICreateHeaderFieldParams> }
     >({
-      query: ({ criteriaId, fieldKey, payload }) => ({
+      query: ({ criteriaId, fieldKey, data }) => ({
         url: `/inspection-criteria/${criteriaId}/header-fields/${fieldKey}`,
         method: 'PATCH',
-        body: payload,
+        body: data,
       }),
       invalidatesTags: ['InspectionCriteria'],
     }),
 
-    // Scoring Filed
-    createScoringField: builder.mutation<WithApiStatus<void>, ICreateFieldFieldParams>({
+    // media-fields
+    createCustomMediaField: builder.mutation<
+      WithApiStatus<void>,
+      { criteriaId: string; data: ICreateMediaFieldPayload }
+    >({
+      query: ({ criteriaId, data }) => ({
+        url: `/inspection-criteria/${criteriaId}/media-fields`,
+        method: 'POST',
+        body: data,
+      }),
+
+      invalidatesTags: ['InspectionCriteria'],
+    }),
+
+    // Scoring Field
+    createScoringField: builder.mutation<WithApiStatus<void>, ICreateScoringFieldParams>({
       query: ({ criteriaId, ...data }) => ({
         url: `/inspection-criteria/${criteriaId}/scoring-categories`,
         method: 'POST',
@@ -68,7 +90,7 @@ const criteriaManagementApi = baseApi.injectEndpoints({
     }),
     editAScoringField: builder.mutation<
       WithApiStatus<void>,
-      { fieldKey: string; criteriaId: string; payload: Partial<ICreateFieldFieldParams> }
+      { fieldKey: string; criteriaId: string; payload: Partial<ICreateScoringFieldParams> }
     >({
       query: ({ criteriaId, fieldKey, payload }) => ({
         url: `/inspection-criteria/${criteriaId}/scoring-categories/${fieldKey}`,
@@ -127,5 +149,6 @@ export const {
   useEditAScoringFieldMutation,
   useEditTextAreaInputFieldMutation,
   useUpdateHealthThresholdConfigMutation,
+  useCreateCustomMediaFieldMutation,
 } = criteriaManagementApi
 export default criteriaManagementApi

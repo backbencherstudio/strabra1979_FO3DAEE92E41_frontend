@@ -1,19 +1,11 @@
-import { FileImage, PlusSignSquare } from '@/components/icons/File'
-import { FileInput } from '@/components/reusable/FileInput/FileInput'
-import { FileInputProvider } from '@/components/reusable/FileInput/FileInputProvider'
+import { PlusSignSquare } from '@/components/icons/File'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose } from '@/components/ui/dialog'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupTextarea,
-} from '@/components/ui/input-group'
-import { Select, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
-import React, { useState } from 'react'
+import React from 'react'
 import {
   CREATE_INPUT_TYPES,
   EditInputDialog,
@@ -21,21 +13,23 @@ import {
 } from './EditInputDialog/EditInputDialog'
 
 import {
+  useCreateCustomMediaFieldMutation,
   useCreateNewHeaderFieldMutation,
   useDeleteCustomHeaderFieldMutation,
   useEditAHeaderFieldMutation,
 } from '@/api/inspectionManagement/criteriaManagementApi'
 import FormInputField from '@/components/form/form-input-field'
-import { getErrorMessage } from '@/lib/farmatters'
-import { useForm } from '@tanstack/react-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { X } from 'lucide-react'
-import { Spinner } from '@/components/ui/spinner'
-import { IInspectionInputField } from '@/types'
 import { Trush } from '@/components/icons/Trush'
 import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
-import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
+import { Spinner } from '@/components/ui/spinner'
+import { getErrorMessage } from '@/lib/farmatters'
+import { IInspectionInputField } from '@/types'
+import { useForm } from '@tanstack/react-form'
+import { X } from 'lucide-react'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { CreateMoreInputModalPreview } from './CreateMoreInputModalPreview'
 
 export const inspectionCriteriaSchema = z
   .object({
@@ -68,14 +62,15 @@ export const inspectionCriteriaSchema = z
 export type InspectionCriteriaFormValues = z.infer<typeof inspectionCriteriaSchema>
 
 export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
-  editFieldType: InputFieldType
-  criteriaId: string | undefined
+  modalType: 'checklist' | 'mediafiles'
   mode?: 'edit' | 'create'
+
+  criteriaId: string | undefined
   initialData?: IInspectionInputField
 }
 
 export function CreateMoreInputModal({
-  editFieldType,
+  modalType,
   criteriaId,
   onOpenChange,
   mode = 'create',
@@ -104,10 +99,19 @@ export function CreateMoreInputModal({
 
   const [editHeaderField, { isLoading: isEditing }] = useEditAHeaderFieldMutation()
   const [createNewHeaderField, { isLoading: isCreating }] = useCreateNewHeaderFieldMutation()
-  const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
+
+  const [createCustomMediaField, { isLoading: isCreatingMediaField }] =
+    useCreateCustomMediaFieldMutation()
 
   const isEditMode = mode === 'edit'
-  const isFieldTypeMedia = editFieldType === 'input-media'
+  const isMediaFieldModal = modalType === 'mediafiles'
+
+  function getDefaultFieldType(): InputFieldType {
+    if (modalType === 'mediafiles') {
+      return 'input-media'
+    }
+    return initialData?.type === 'dropdown' ? 'input-dropdown' : 'input-text'
+  }
 
   const form = useForm({
     defaultValues: {
@@ -115,9 +119,7 @@ export function CreateMoreInputModal({
       placeholder: initialData?.placeholder ?? '',
       required: initialData?.required ?? false,
       dropdownOptions: initialData?.type === 'dropdown' ? initialData.options : [],
-      createFieldType: (initialData?.type === 'dropdown'
-        ? 'input-dropdown'
-        : 'input-text') as InputFieldType,
+      createFieldType: getDefaultFieldType(),
     },
     validators: {
       onSubmit: inspectionCriteriaSchema,
@@ -128,7 +130,11 @@ export function CreateMoreInputModal({
         return
       }
 
-      await handleHeaderFieldCreateOrEdit(criteriaId, value)
+      if (modalType === 'checklist') {
+        await handleHeaderFieldCreateOrEdit(criteriaId, value)
+      } else if (modalType === 'mediafiles') {
+        await handleMediaFieldCreateOrEdit(criteriaId, value)
+      }
     },
   })
 
@@ -147,7 +153,7 @@ export function CreateMoreInputModal({
         const res = await editHeaderField({
           fieldKey: initialData.key,
           criteriaId,
-          payload: {
+          data: {
             label: value.label,
             placeholder: value.placeholder,
             required: value.required,
@@ -173,6 +179,51 @@ export function CreateMoreInputModal({
       }
     } catch (error) {
       toast.error(`Failed to ${mode === 'edit' ? 'update' : 'create'} header field`, {
+        description: getErrorMessage(error),
+      })
+    }
+  }
+
+  async function handleMediaFieldCreateOrEdit(
+    criteriaId: string,
+    value: InspectionCriteriaFormValues,
+  ) {
+    const isMediaFile = value.createFieldType === 'input-media'
+    const isEmbedded = value.createFieldType === 'input-media-embedded'
+
+    try {
+      if (mode === 'edit' && initialData?.key) {
+        // const res = await editHeaderField({
+        //   fieldKey: initialData.key,
+        //   criteriaId,
+        //   data: {
+        //     label: value.label,
+        //     placeholder: value.placeholder,
+        //     required: value.required,
+        //     isDropdown: false,
+        //     options,
+        //   },
+        // }).unwrap()
+        // onOpenChange?.(false)
+        // form.reset()
+        // toast.success(res?.message ?? 'Header field updated successfully')
+      } else {
+        const res = await createCustomMediaField({
+          criteriaId,
+          data: {
+            label: value.label,
+            placeholder: value.placeholder,
+            isEmbedded,
+            isMediaFile,
+            accept: ['image/*', 'video/*'],
+          },
+        }).unwrap()
+        onOpenChange?.(false)
+        form.reset()
+        toast.success(res?.message ?? 'Media field created successfully')
+      }
+    } catch (error) {
+      toast.error(`Failed to ${mode === 'edit' ? 'update' : 'create'} Media field`, {
         description: getErrorMessage(error),
       })
     }
@@ -216,10 +267,10 @@ export function CreateMoreInputModal({
             </Button>
           </DialogClose>
           <Button className="flex-1" onClick={() => form.handleSubmit()} type="button" size="xl">
-            {isEditing || isCreating ? <Spinner /> : null}
+            {isEditing || isCreating || isCreatingMediaField ? <Spinner /> : null}
             {isEditing
               ? 'Updating...'
-              : isCreating
+              : isCreating || isCreatingMediaField
                 ? 'Creating...'
                 : mode === 'edit'
                   ? 'Update'
@@ -240,14 +291,13 @@ export function CreateMoreInputModal({
           })}
         >
           {({ required, dropdownOptions, label, placeholder, createFieldType }) => (
-            <PreviewEditField
+            <CreateMoreInputModalPreview
               createFieldType={createFieldType}
               label={label}
               placeholder={placeholder}
               dropdownOptions={dropdownOptions}
-              editFieldType={editFieldType}
+              modalType={modalType}
               isInputRequired={required}
-              mediaInputType={mediaInputType}
             />
           )}
         </form.Subscribe>
@@ -271,28 +321,42 @@ export function CreateMoreInputModal({
             placeholder="Enter input placeholder"
           />
 
-          {editFieldType == 'input-media' ? (
-            <>
-              <Field className="grid grid-cols-[1fr_3fr]">
-                <FieldLabel className="text-nowrap" htmlFor="name">
-                  Media Files
-                </FieldLabel>
-                <Switch
-                  checked={mediaInputType == 'media'}
-                  onClick={() => setMediaInputType('media')}
-                />
-              </Field>
+          {isMediaFieldModal ? (
+            <form.Field name="createFieldType">
+              {(field) => {
+                const handleOnClick = () => {
+                  const isMediaFiles = field.state.value === 'input-media'
+                  field.setValue(isMediaFiles ? 'input-media-embedded' : 'input-media')
+                }
+                return (
+                  <>
+                    <Field className="grid grid-cols-[1fr_3fr]">
+                      <FieldLabel className="text-nowrap" htmlFor="input-media">
+                        Media Files
+                      </FieldLabel>
+                      <Switch
+                        disabled={isEditMode}
+                        id="input-media"
+                        checked={field.state.value === 'input-media'}
+                        onClick={handleOnClick}
+                      />
+                    </Field>
 
-              <Field className="grid grid-cols-[1fr_3fr]">
-                <FieldLabel className="text-nowrap" htmlFor="name">
-                  Embedded
-                </FieldLabel>
-                <Switch
-                  checked={mediaInputType == 'embedded'}
-                  onClick={() => setMediaInputType('embedded')}
-                />
-              </Field>
-            </>
+                    <Field className="grid grid-cols-[1fr_3fr]">
+                      <FieldLabel className="text-nowrap" htmlFor="input-media-embedded">
+                        Embedded
+                      </FieldLabel>
+                      <Switch
+                        disabled={isEditMode}
+                        id="input-media-embedded"
+                        checked={field.state.value === 'input-media-embedded'}
+                        onClick={handleOnClick}
+                      />
+                    </Field>
+                  </>
+                )
+              }}
+            </form.Field>
           ) : (
             <>
               <form.Field name="required">
@@ -313,12 +377,12 @@ export function CreateMoreInputModal({
               <form.Field name="createFieldType">
                 {(field) => (
                   <Field className="grid grid-cols-[1fr_3fr]">
-                    <FieldLabel className="text-nowrap" htmlFor={field.name}>
+                    <FieldLabel className="text-nowrap" htmlFor="input-dropdown">
                       Dropdown
                     </FieldLabel>
                     <Switch
                       disabled={isEditMode}
-                      id={field.name}
+                      id="input-dropdown"
                       checked={field.state.value === 'input-dropdown'}
                       onClick={() => {
                         const isDropdown = field.state.value === 'input-dropdown'
@@ -394,92 +458,5 @@ export function CreateMoreInputModal({
         </section>
       </div>
     </EditInputDialog>
-  )
-}
-
-interface PreviewEditFieldProps {
-  createFieldType: InputFieldType
-  isInputRequired: boolean
-  editFieldType: InputFieldType | undefined
-  mediaInputType: 'media' | 'embedded'
-  dropdownOptions: string[]
-  label: string
-  placeholder: string
-}
-
-export function PreviewEditField({
-  label,
-  placeholder,
-  createFieldType,
-  isInputRequired,
-  editFieldType,
-  mediaInputType,
-  dropdownOptions,
-}: PreviewEditFieldProps) {
-  const inputLabel = label.trim() === '' ? 'Input Label' : label
-  const inputPlaceholder = placeholder.trim() === '' ? 'Enter placeholder' : placeholder
-
-  const isInputDropDown = createFieldType === 'input-dropdown'
-  return (
-    <section className="relative space-y-3">
-      <div className="text-center font-medium">Previw</div>
-
-      {isInputDropDown ? (
-        <>
-          <Field>
-            <FieldLabel isRequired={isInputRequired} id="previw-field">
-              {inputLabel}
-            </FieldLabel>
-            <Select disabled>
-              <SelectTrigger id="previw-field" className="relative">
-                <SelectValue placeholder={inputPlaceholder} />
-              </SelectTrigger>
-            </Select>
-          </Field>
-
-          <ul className="border-input min-h-10 space-y-2.5 rounded-md border bg-white px-2.5 py-2 shadow-lg">
-            {dropdownOptions.map((item, idx) => (
-              <li key={idx} className="text-muted-foreground line-clamp-1 text-sm">
-                {item.trim() === '' ? 'Enter option' : item}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : editFieldType === 'input-media' ? (
-        <Field>
-          <FieldLabel isRequired={isInputRequired} htmlFor="previw-field">
-            {inputLabel}
-          </FieldLabel>
-          {mediaInputType === 'media' ? (
-            <FileInputProvider>
-              <FileInput id="previw-field" icon={<FileImage />} placeholder={inputPlaceholder} />
-            </FileInputProvider>
-          ) : (
-            <InputGroup>
-              <InputGroupTextarea
-                className="disabled:opacity-100"
-                id="previw-field"
-                disabled
-                placeholder={inputPlaceholder}
-              />
-            </InputGroup>
-          )}
-        </Field>
-      ) : (
-        <Field>
-          <FieldLabel isRequired={isInputRequired} htmlFor="previw-field">
-            {inputLabel}
-          </FieldLabel>
-          <InputGroup>
-            <InputGroupInput
-              className="disabled:opacity-100"
-              id="previw-field"
-              disabled
-              placeholder={inputPlaceholder}
-            />
-          </InputGroup>
-        </Field>
-      )}
-    </section>
   )
 }
