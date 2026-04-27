@@ -12,13 +12,16 @@ import React, { ReactNode } from 'react'
 
 export type DialogProps = React.ComponentProps<typeof Dialog>
 
-export type InputFieldType =
-  | 'input-text'
-  | 'input-dropdown'
-  | 'input-date'
-  | 'input-mark'
-  | 'input-textarea'
-  | 'input-media'
+export const CREATE_INPUT_TYPES = [
+  'input-text',
+  'input-dropdown',
+  'input-date',
+  'input-mark',
+  'input-textarea',
+  'input-media',
+] as const
+
+export type InputFieldType = (typeof CREATE_INPUT_TYPES)[number]
 
 interface EditInputFeildsProps
   extends React.PropsWithChildren, React.ComponentProps<typeof Dialog> {

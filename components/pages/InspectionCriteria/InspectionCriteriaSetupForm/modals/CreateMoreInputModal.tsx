@@ -14,7 +14,11 @@ import { Select, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
 import React, { useState } from 'react'
-import { EditInputDialog, InputFieldType } from './EditInputDialog/EditInputDialog'
+import {
+  CREATE_INPUT_TYPES,
+  EditInputDialog,
+  InputFieldType,
+} from './EditInputDialog/EditInputDialog'
 
 import {
   useCreateNewHeaderFieldMutation,
@@ -35,21 +39,28 @@ import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dial
 
 export const inspectionCriteriaSchema = z
   .object({
+    // Common field
     label: z.string().min(1, 'Label is required'),
     placeholder: z.string().min(1, 'Placeholder is required'),
+
+    // for input field
     required: z.boolean(),
-    isDropdown: z.boolean(),
+
+    // for select field
+    // isDropdown: z.boolean(),
     dropdownOptions: z.array(z.string().trim().min(1, "Option can't be empty")),
+
+    createFieldType: z.enum(CREATE_INPUT_TYPES),
   })
   .refine(
     (data) => {
-      if (data.isDropdown) {
+      if (data.createFieldType === 'input-dropdown') {
         return Array.isArray(data.dropdownOptions) && data.dropdownOptions.length > 0
       }
       return true
     },
     {
-      message: 'Options are required when isDropdown is true',
+      message: 'Options are required when Dropdown is true',
       path: ['dropdownOptions'],
     },
   )
@@ -57,7 +68,7 @@ export const inspectionCriteriaSchema = z
 export type InspectionCriteriaFormValues = z.infer<typeof inspectionCriteriaSchema>
 
 export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
-  editFieldType?: InputFieldType
+  editFieldType: InputFieldType
   criteriaId: string | undefined
   mode?: 'edit' | 'create'
   initialData?: IInspectionInputField
@@ -96,14 +107,17 @@ export function CreateMoreInputModal({
   const [mediaInputType, setMediaInputType] = useState<'media' | 'embedded'>('media')
 
   const isEditMode = mode === 'edit'
+  const isFieldTypeMedia = editFieldType === 'input-media'
 
   const form = useForm({
     defaultValues: {
       label: initialData?.label ?? '',
       placeholder: initialData?.placeholder ?? '',
       required: initialData?.required ?? false,
-      isDropdown: initialData?.type === 'dropdown' ? true : false,
       dropdownOptions: initialData?.type === 'dropdown' ? initialData.options : [],
+      createFieldType: (initialData?.type === 'dropdown'
+        ? 'input-dropdown'
+        : 'input-text') as InputFieldType,
     },
     validators: {
       onSubmit: inspectionCriteriaSchema,
@@ -114,37 +128,55 @@ export function CreateMoreInputModal({
         return
       }
 
-      const options = value.isDropdown
-        ? value.dropdownOptions.map((option) => option.trim()).filter((option) => option !== '')
-        : undefined
-
-      try {
-        if (mode === 'edit' && initialData?.key) {
-          const res = await editHeaderField({
-            fieldKey: initialData.key,
-            criteriaId,
-            payload: { ...value, options },
-          }).unwrap()
-          onOpenChange?.(false)
-          form.reset()
-          toast.success(res?.message ?? 'Header field updated successfully')
-        } else {
-          const res = await createNewHeaderField({
-            criteriaId,
-            ...value,
-            options,
-          }).unwrap()
-          onOpenChange?.(false)
-          form.reset()
-          toast.success(res?.message ?? 'Header field created successfully')
-        }
-      } catch (error) {
-        toast.error(`Failed to ${mode === 'edit' ? 'update' : 'create'} header field`, {
-          description: getErrorMessage(error),
-        })
-      }
+      await handleHeaderFieldCreateOrEdit(criteriaId, value)
     },
   })
+
+  async function handleHeaderFieldCreateOrEdit(
+    criteriaId: string,
+    value: InspectionCriteriaFormValues,
+  ) {
+    const isDropdown = value.createFieldType === 'input-dropdown'
+
+    const options = isDropdown
+      ? value.dropdownOptions.map((option) => option.trim()).filter((option) => option !== '')
+      : undefined
+
+    try {
+      if (mode === 'edit' && initialData?.key) {
+        const res = await editHeaderField({
+          fieldKey: initialData.key,
+          criteriaId,
+          payload: {
+            label: value.label,
+            placeholder: value.placeholder,
+            required: value.required,
+            isDropdown: false,
+            options,
+          },
+        }).unwrap()
+        onOpenChange?.(false)
+        form.reset()
+        toast.success(res?.message ?? 'Header field updated successfully')
+      } else {
+        const res = await createNewHeaderField({
+          criteriaId,
+          label: value.label,
+          placeholder: value.placeholder,
+          required: value.required,
+          isDropdown,
+          options,
+        }).unwrap()
+        onOpenChange?.(false)
+        form.reset()
+        toast.success(res?.message ?? 'Header field created successfully')
+      }
+    } catch (error) {
+      toast.error(`Failed to ${mode === 'edit' ? 'update' : 'create'} header field`, {
+        description: getErrorMessage(error),
+      })
+    }
+  }
 
   return (
     <EditInputDialog
@@ -175,9 +207,7 @@ export function CreateMoreInputModal({
       }}
       title={mode === 'edit' ? 'Edit Input Field' : 'Add More Input fields'}
       titleClass="text-center w-full"
-      dialogContainerClass={cn('', {
-        'sm:max-w-235': editFieldType !== 'input-mark',
-      })}
+      dialogContainerClass={cn('sm:max-w-235')}
       footer={
         <div className="grid grid-cols-2 gap-3">
           <DialogClose asChild>
@@ -202,20 +232,20 @@ export function CreateMoreInputModal({
       <div className="grid grid-cols-2 divide-x *:first:pr-4 *:last:pl-4">
         <form.Subscribe
           selector={(state) => ({
-            isDropdown: state.values.isDropdown,
+            createFieldType: state.values.createFieldType,
             required: state.values.required,
             dropdownOptions: state.values.dropdownOptions,
             label: state.values.label,
             placeholder: state.values.placeholder,
           })}
         >
-          {({ isDropdown, required, dropdownOptions, label, placeholder }) => (
+          {({ required, dropdownOptions, label, placeholder, createFieldType }) => (
             <PreviewEditField
+              createFieldType={createFieldType}
               label={label}
               placeholder={placeholder}
               dropdownOptions={dropdownOptions}
               editFieldType={editFieldType}
-              isInputDropDown={isDropdown}
               isInputRequired={required}
               mediaInputType={mediaInputType}
             />
@@ -280,7 +310,7 @@ export function CreateMoreInputModal({
                 )}
               </form.Field>
 
-              <form.Field name="isDropdown">
+              <form.Field name="createFieldType">
                 {(field) => (
                   <Field className="grid grid-cols-[1fr_3fr]">
                     <FieldLabel className="text-nowrap" htmlFor={field.name}>
@@ -289,11 +319,11 @@ export function CreateMoreInputModal({
                     <Switch
                       disabled={isEditMode}
                       id={field.name}
-                      checked={field.state.value}
+                      checked={field.state.value === 'input-dropdown'}
                       onClick={() => {
-                        const checked = !field.state.value
-                        field.setValue(checked)
-                        form.setFieldValue('dropdownOptions', checked ? [''] : [])
+                        const isDropdown = field.state.value === 'input-dropdown'
+                        field.setValue(isDropdown ? 'input-text' : 'input-dropdown')
+                        form.setFieldValue('dropdownOptions', !isDropdown ? [''] : [])
                       }}
                     />
                   </Field>
@@ -304,7 +334,7 @@ export function CreateMoreInputModal({
 
           <form.Subscribe
             selector={(state) => ({
-              isDropdown: state.values.isDropdown,
+              isDropdown: state.values.createFieldType === 'input-dropdown',
             })}
           >
             {({ isDropdown }) =>
@@ -368,7 +398,7 @@ export function CreateMoreInputModal({
 }
 
 interface PreviewEditFieldProps {
-  isInputDropDown: boolean
+  createFieldType: InputFieldType
   isInputRequired: boolean
   editFieldType: InputFieldType | undefined
   mediaInputType: 'media' | 'embedded'
@@ -380,7 +410,7 @@ interface PreviewEditFieldProps {
 export function PreviewEditField({
   label,
   placeholder,
-  isInputDropDown,
+  createFieldType,
   isInputRequired,
   editFieldType,
   mediaInputType,
@@ -388,6 +418,8 @@ export function PreviewEditField({
 }: PreviewEditFieldProps) {
   const inputLabel = label.trim() === '' ? 'Input Label' : label
   const inputPlaceholder = placeholder.trim() === '' ? 'Enter placeholder' : placeholder
+
+  const isInputDropDown = createFieldType === 'input-dropdown'
   return (
     <section className="relative space-y-3">
       <div className="text-center font-medium">Previw</div>

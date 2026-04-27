@@ -21,6 +21,8 @@ export function SocketProvider({ children }: PropsWithChildren) {
       extraHeaders: {
         authorization: `Bearer ${token}`,
       },
+      auth: { token },
+      transports: ['websocket'],
     })
 
     socket.on('connect', () => {
