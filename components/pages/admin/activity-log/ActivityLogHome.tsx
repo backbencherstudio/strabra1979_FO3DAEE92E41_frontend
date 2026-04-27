@@ -18,6 +18,7 @@ import ActivityLogListItem from './ActivityLogListItem'
 import { ActivityCategory } from '@/types'
 import { useState } from 'react'
 import { isArrayEmpty } from '@/lib/utils'
+import { Spinner } from '@/components/ui/spinner'
 
 export default function ActivityLogHome() {
   return (
@@ -49,13 +50,20 @@ function ActivityLogHomeContent() {
 
   const [category, setCategory] = useState<ActivityCategory>(undefined)
 
-  const { data: { data: allLogs = [], meta } = {}, isLoading } = useGetActivityLogQuery({
-    page,
-    sortOrder,
-    category,
-    dateFrom: dateFrom?.formatted,
-    dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
-  })
+  const {
+    data: { data: allLogs = [], meta } = {},
+    isLoading,
+    isFetching,
+  } = useGetActivityLogQuery(
+    {
+      page,
+      sortOrder,
+      category,
+      dateFrom: dateFrom?.formatted,
+      dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
+    },
+    { refetchOnMountOrArgChange: true },
+  )
 
   usePaginatedQuery({ meta_data: meta })
 
@@ -79,17 +87,21 @@ function ActivityLogHomeContent() {
           setPage(1)
         }}
       >
-        <TabsList className="gap-4 bg-transparent">
-          {tabs.map((item) => (
-            <TabsTrigger
-              key={item.id}
-              value={item.id}
-              className="data-[state=active]:text-medium data-[state=active]:bg-foundation-light-blue rounded-lg data-[state=active]:font-medium data-[state=active]:text-black"
-            >
-              {item.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="flex items-center gap-1">
+          <TabsList className="gap-4 bg-transparent">
+            {tabs.map((item) => (
+              <TabsTrigger
+                key={item.id}
+                value={item.id}
+                className="data-[state=active]:text-medium data-[state=active]:bg-foundation-light-blue rounded-lg data-[state=active]:font-medium data-[state=active]:text-black"
+              >
+                {item.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <div>{isFetching ? <Spinner /> : null}</div>
+        </div>
 
         {tabs.map((item) => (
           <TabsContent
