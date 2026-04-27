@@ -17,6 +17,7 @@ import {
   useCreateNewHeaderFieldMutation,
   useDeleteCustomHeaderFieldMutation,
   useEditAHeaderFieldMutation,
+  useEditCustomMediaFieldMutation,
 } from '@/api/inspectionManagement/criteriaManagementApi'
 import FormInputField from '@/components/form/form-input-field'
 import { Trush } from '@/components/icons/Trush'
@@ -24,7 +25,7 @@ import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Spinner } from '@/components/ui/spinner'
 import { getErrorMessage } from '@/lib/farmatters'
-import { IInspectionInputField } from '@/types'
+import { IInspectionInputField, IInspectionMediaField } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { X } from 'lucide-react'
 import { toast } from 'sonner'
@@ -61,13 +62,22 @@ export const inspectionCriteriaSchema = z
 
 export type InspectionCriteriaFormValues = z.infer<typeof inspectionCriteriaSchema>
 
-export interface CreateMoreInputModalProps extends React.ComponentProps<typeof Dialog> {
-  modalType: 'checklist' | 'mediafiles'
+type BaseProps = React.ComponentProps<typeof Dialog> & {
   mode?: 'edit' | 'create'
-
   criteriaId: string | undefined
+}
+
+type ChecklistModalProps = BaseProps & {
+  modalType: 'checklist'
   initialData?: IInspectionInputField
 }
+
+type MediaFilesModalProps = BaseProps & {
+  modalType: 'mediafiles'
+  initialData?: IInspectionMediaField
+}
+
+export type CreateMoreInputModalProps = ChecklistModalProps | MediaFilesModalProps
 
 export function CreateMoreInputModal({
   modalType,
@@ -102,9 +112,15 @@ export function CreateMoreInputModal({
 
   const [createCustomMediaField, { isLoading: isCreatingMediaField }] =
     useCreateCustomMediaFieldMutation()
+  const [editCustomMediaField, { isLoading: isEditingMediaField }] =
+    useEditCustomMediaFieldMutation()
 
   const isEditMode = mode === 'edit'
   const isMediaFieldModal = modalType === 'mediafiles'
+
+  // loading state
+  const isActionCreating = isCreating || isCreatingMediaField
+  const isActionEditing = isEditing || isEditingMediaField
 
   function getDefaultFieldType(): InputFieldType {
     if (modalType === 'mediafiles') {
@@ -113,14 +129,28 @@ export function CreateMoreInputModal({
     return initialData?.type === 'dropdown' ? 'input-dropdown' : 'input-text'
   }
 
-  const form = useForm({
-    defaultValues: {
+  function getDefaultFormValues(): InspectionCriteriaFormValues {
+    if (modalType === 'checklist') {
+      return {
+        label: initialData?.label ?? '',
+        placeholder: initialData?.placeholder ?? '',
+        required: initialData?.required ?? false,
+        dropdownOptions: initialData?.type === 'dropdown' ? initialData.options : [],
+        createFieldType: getDefaultFieldType(),
+      }
+    }
+
+    return {
       label: initialData?.label ?? '',
       placeholder: initialData?.placeholder ?? '',
-      required: initialData?.required ?? false,
-      dropdownOptions: initialData?.type === 'dropdown' ? initialData.options : [],
+      required: false,
+      dropdownOptions: [],
       createFieldType: getDefaultFieldType(),
-    },
+    }
+  }
+
+  const form = useForm({
+    defaultValues: getDefaultFormValues(),
     validators: {
       onSubmit: inspectionCriteriaSchema,
     },
@@ -193,20 +223,21 @@ export function CreateMoreInputModal({
 
     try {
       if (mode === 'edit' && initialData?.key) {
-        // const res = await editHeaderField({
-        //   fieldKey: initialData.key,
-        //   criteriaId,
-        //   data: {
-        //     label: value.label,
-        //     placeholder: value.placeholder,
-        //     required: value.required,
-        //     isDropdown: false,
-        //     options,
-        //   },
-        // }).unwrap()
-        // onOpenChange?.(false)
-        // form.reset()
-        // toast.success(res?.message ?? 'Header field updated successfully')
+        console.log('yyyyyyyyyyyyyyyyyyyyyyy')
+        const res = await editCustomMediaField({
+          criteriaId,
+          fieldKey: initialData.key,
+          data: {
+            label: value.label,
+            placeholder: value.placeholder,
+            isEmbedded,
+            isMediaFile,
+            accept: ['image/*', 'video/*'],
+          },
+        }).unwrap()
+        onOpenChange?.(false)
+        form.reset()
+        toast.success(res?.message ?? 'Media field updated successfully')
       } else {
         const res = await createCustomMediaField({
           criteriaId,
@@ -267,10 +298,10 @@ export function CreateMoreInputModal({
             </Button>
           </DialogClose>
           <Button className="flex-1" onClick={() => form.handleSubmit()} type="button" size="xl">
-            {isEditing || isCreating || isCreatingMediaField ? <Spinner /> : null}
-            {isEditing
+            {isActionCreating || isActionEditing ? <Spinner /> : null}
+            {isActionEditing
               ? 'Updating...'
-              : isCreating || isCreatingMediaField
+              : isActionCreating
                 ? 'Creating...'
                 : mode === 'edit'
                   ? 'Update'

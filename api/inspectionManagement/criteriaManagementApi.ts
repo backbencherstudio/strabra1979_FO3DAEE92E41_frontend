@@ -68,6 +68,22 @@ const criteriaManagementApi = baseApi.injectEndpoints({
 
       invalidatesTags: ['InspectionCriteria'],
     }),
+    editCustomMediaField: builder.mutation<
+      WithApiStatus<void>,
+      {
+        criteriaId: string
+        fieldKey: string
+        data: Partial<ICreateMediaFieldPayload>
+      }
+    >({
+      query: ({ criteriaId, fieldKey, data }) => ({
+        url: `/inspection-criteria/${criteriaId}/media-fields/${fieldKey}`,
+        method: 'PATCH',
+        body: data,
+      }),
+
+      invalidatesTags: ['InspectionCriteria'],
+    }),
 
     // Scoring Field
     createScoringField: builder.mutation<WithApiStatus<void>, ICreateScoringFieldParams>({
@@ -150,5 +166,6 @@ export const {
   useEditTextAreaInputFieldMutation,
   useUpdateHealthThresholdConfigMutation,
   useCreateCustomMediaFieldMutation,
+  useEditCustomMediaFieldMutation
 } = criteriaManagementApi
 export default criteriaManagementApi

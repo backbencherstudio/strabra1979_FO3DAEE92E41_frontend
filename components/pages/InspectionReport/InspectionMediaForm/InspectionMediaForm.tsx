@@ -1,7 +1,9 @@
 'use client'
 
+import { Edit } from '@/components/icons/Edit'
 import { FileImage } from '@/components/icons/File'
 import { mbToBytes } from '@/components/reusable/FileInput/FileInput'
+import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -20,6 +22,8 @@ interface InspectionMediaFormProps {
   setFiles: Dispatch<SetStateAction<MediaFieldItem[]>>
   embedFields: EmbedFieldsData
   setEmbedFields: Dispatch<SetStateAction<EmbedFieldsData>>
+  isEditMode?: boolean
+  onOpenEditModal: (conf: IInspectionMediaField) => void
 }
 
 export default function InspectionMediaForm({
@@ -28,9 +32,15 @@ export default function InspectionMediaForm({
   setFiles,
   embedFields,
   setEmbedFields,
+  isEditMode = false,
+  onOpenEditModal,
 }: InspectionMediaFormProps) {
   const maxImageSize = mbToBytes(100)
   const maxVideoSize = mbToBytes(1024)
+
+  function testLabel(conf: IInspectionMediaField) {
+    return [conf.label, '|', 'isSystem =', conf.isSystem, '|', 'type =', conf.type].join(' ')
+  }
 
   return (
     <form>
@@ -39,6 +49,18 @@ export default function InspectionMediaForm({
           if (conf.type === 'file') {
             return (
               <MediaField
+                labelAction={
+                  isEditMode ? (
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      onClick={() => onOpenEditModal(conf)}
+                      variant="outline"
+                    >
+                      <Edit className="size-4" />
+                    </Button>
+                  ) : null
+                }
                 setFiles={setFiles}
                 files={files}
                 key={conf.key}
@@ -57,7 +79,20 @@ export default function InspectionMediaForm({
             const tour3dValue = embedFields['tour3d'] ?? ''
             return (
               <Field key={conf.key}>
-                <FieldLabel>{conf.label}</FieldLabel>
+                <FieldLabel className="justify-between">
+                  {conf.label}
+
+                  {isEditMode ? (
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      onClick={() => onOpenEditModal(conf)}
+                      variant="outline"
+                    >
+                      <Edit className="size-4" />
+                    </Button>
+                  ) : null}
+                </FieldLabel>
                 <Textarea
                   placeholder={conf.placeholder}
                   value={tour3dValue}
@@ -73,6 +108,18 @@ export default function InspectionMediaForm({
           if (conf.type === 'document') {
             return (
               <MediaField
+                labelAction={
+                  isEditMode ? (
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      onClick={() => onOpenEditModal(conf)}
+                      variant="outline"
+                    >
+                      <Edit className="size-4" />
+                    </Button>
+                  ) : null
+                }
                 setFiles={setFiles}
                 files={files}
                 key={conf.key}

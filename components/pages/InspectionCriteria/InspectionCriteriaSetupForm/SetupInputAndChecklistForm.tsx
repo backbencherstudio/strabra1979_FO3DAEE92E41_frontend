@@ -13,17 +13,17 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-import { Edit as Edit2 } from '@/components/icons/Edit'
+import { Edit } from '@/components/icons/Edit'
 import MarkInput from '@/components/reusable/MarkInput/MarkInput'
 import { cn } from '@/lib/utils'
 import {
-  IInspectionInputField,
-  ScoringCategory,
-  IInspectionCriteria,
   EditTextAreaFieldType,
   IEditTextAreaFieldParams,
+  IInspectionCriteria,
+  IInspectionInputField,
+  ScoringCategory,
 } from '@/types'
-import React, { useState } from 'react'
+import React from 'react'
 import { CreateMoreInputModal, CreateScoringInputModal, InputFieldType } from './modals'
 import { EditTextAreaInputModal } from './modals/EditTextAreaInputModal'
 
@@ -145,7 +145,7 @@ export default function SetupInputAndChecklistForm({
                         onClick={() => handleOpenEditModalForHeaderFields('input-text', item)}
                         variant="outline"
                       >
-                        <Edit2 className="size-4" />
+                        <Edit className="size-4" />
                       </Button>
                     )}
                   </div>
@@ -213,7 +213,7 @@ export default function SetupInputAndChecklistForm({
                         onClick={() => handleOpenEditModalForScoringFields('input-mark', item)}
                         variant="outline"
                       >
-                        <Edit2 className="size-4" />
+                        <Edit className="size-4" />
                       </Button>
                     )}
                   </div>
@@ -258,7 +258,7 @@ export default function SetupInputAndChecklistForm({
                     onClick={() => handleOpenTextAreaInputModal('NTE', currentCriteria?.nteConfig)}
                     variant="outline"
                   >
-                    <Edit2 />
+                    <Edit />
                   </Button>
                 )}
               </div>
@@ -286,7 +286,7 @@ export default function SetupInputAndChecklistForm({
                     }
                     variant="outline"
                   >
-                    <Edit2 />
+                    <Edit />
                   </Button>
                 )}
               </div>

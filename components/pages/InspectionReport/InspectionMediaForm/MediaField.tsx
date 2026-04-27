@@ -21,6 +21,7 @@ interface MediaFieldProps extends Omit<FileInputProps, 'files' | 'setFiles'> {
   accept?: string
   maxSize: number
   alwaysHideInput?: boolean
+  labelAction?: React.ReactNode
 }
 
 export function MediaField({
@@ -34,6 +35,7 @@ export function MediaField({
   maxSize,
   inputContainerClassName = 'h-35',
   alwaysHideInput = false,
+  labelAction,
   ...props
 }: MediaFieldProps) {
   const fileInputRef = useRef<FileInputRef>(null)
@@ -77,7 +79,9 @@ export function MediaField({
 
   return (
     <Field>
-      <FieldLabel>{label}</FieldLabel>
+      <FieldLabel className="justify-between">
+        {label} {labelAction}
+      </FieldLabel>
       <FileInput
         {...props}
         accept={accept}

@@ -25,9 +25,11 @@ interface DropdownField extends BaseField, BaseInputProps {
 
 export type IInspectionInputField = TextField | DropdownField
 
+export type IInspectionFieldType = 'text' | 'dropdown' | 'file' | 'embed' | 'document'
+
 export interface IInspectionMediaField extends BaseField {
   key: MediaFieldKeyType
-  type: string
+  type: IInspectionFieldType
   accept?: string[]
   placeholder?: string
 }
