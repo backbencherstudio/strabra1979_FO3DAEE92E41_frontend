@@ -75,7 +75,7 @@ export function MediaField({
 
   const triggerInput = () => fileInputRef.current?.triggerInput()
 
-  const inputClassName = alwaysHideInput ? 'hidden' : allFiles.length === 0 ? '' : 'hidden'
+  const inputClassName = alwaysHideInput ? 'hidden' : combinedPreviewFiles.length === 0 ? '' : 'hidden'
 
   return (
     <Field>

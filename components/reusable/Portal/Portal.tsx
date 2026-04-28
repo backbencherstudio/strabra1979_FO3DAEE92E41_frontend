@@ -1,23 +1,23 @@
 'use client'
 
-import { useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 interface PortalProps extends React.PropsWithChildren {
-  containerId: string
+  targetId: string
 }
 
-export function Portal({ children, containerId }: PortalProps) {
-  const [mounted, setMounted] = useState(false)
+export function Portal({ children, targetId }: PortalProps) {
+  if (typeof window === 'undefined') return null
 
-  const updateMounded = useEffectEvent(() => setMounted(true))
-  useEffect(() => updateMounded(), [])
+  const container = document.getElementById(targetId)
 
-  if (!mounted) return null
+  if (!container) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`Portal target "#${targetId}" not found`)
+    }
 
-  const container = document.getElementById(containerId)
-
-  if (!container) return null
+    return null
+  }
 
   return createPortal(children, container)
 }

@@ -34,7 +34,7 @@ export default function SetupMediaAndDocumentFrom({
   return (
     <>
       {isMediaFilesTab ? (
-        <Portal containerId="open-media-modal">
+        <Portal targetId="open-media-modal">
           <Button onClick={handleCreateFieldOpen} variant="outline">
             <PlusIcon />
             Add More Supporting Media & Documents
