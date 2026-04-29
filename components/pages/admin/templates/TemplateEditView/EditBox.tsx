@@ -32,7 +32,7 @@ export function EditBox({
         className,
         EDIT_BOX_SIZES[boxSize],
         {
-          'ring-orange-500 hover:ring-orange-500': checked,
+          'ring-blue-500 hover:ring-blue-500': checked,
         },
       )}
       {...props}
@@ -53,7 +53,7 @@ export function EditBoxTool({ index, data }: EditBoxToolProps) {
   const { moveOrderUp, moveOrderDown } = useTemplateProperties()
 
   return (
-    <div className="toolbox absolute -top-1 left-2 -translate-y-full rounded-xs bg-orange-500 px-1 pt-1">
+    <div className="toolbox absolute -top-1 left-2 -translate-y-full rounded-xs bg-blue-500 px-1 pt-1">
       <div className="space-x-">
         <Button
           size="icon-xs"

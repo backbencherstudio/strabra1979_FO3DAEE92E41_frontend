@@ -52,7 +52,12 @@ export default function DashBoardSidebr({ ...props }: React.ComponentProps<typeo
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="h-12 data-[slot=sidebar-menu-button]:p-1.5!">
               <div>
-                <Image className="size-10 mix-blend-multiply" alt="app logo" src={authLogo} />
+                <Image
+                  loading="eager"
+                  className="size-10 mix-blend-multiply"
+                  alt="app logo"
+                  src={authLogo}
+                />
                 <span className="text-2xl font-medium">Liberty Shield</span>
               </div>
             </SidebarMenuButton>

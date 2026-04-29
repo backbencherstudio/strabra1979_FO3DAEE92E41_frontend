@@ -3,6 +3,7 @@
 import {
   useGetDashboardTemplateListQuery,
   useHardDeleteSingleDashboardTemplateMutation,
+  useToggleTemplateStatusMutation,
 } from '@/api/template/templateManagementApi'
 import TemplateStatusBadge from '@/components/dashboard/ProgressStatusBadge/TemplateStatusBadge'
 import { Edit } from '@/components/icons/Edit'
@@ -22,6 +23,7 @@ import { Check, EllipsisVertical, Eye } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import CreateNewTemplateModal from '../CreateNewTemplateModal/CreateNewTemplateModal'
+import { ITemplateActiveStatus } from '@/types'
 
 export default function TemplateHome() {
   const { data: { data = [] } = {}, isLoading } = useGetDashboardTemplateListQuery()
@@ -51,7 +53,7 @@ export default function TemplateHome() {
               </div>
 
               <div>
-                <DropdownMenuIcons id={item.id} />
+                <DropdownMenuIcons status={item.status} id={item.id} />
               </div>
             </SectionCard>
           ))}
@@ -61,10 +63,23 @@ export default function TemplateHome() {
   )
 }
 
-export function DropdownMenuIcons({ id }: { id: string }) {
+export function DropdownMenuIcons({ id, status }: { id: string; status: ITemplateActiveStatus }) {
   const router = useRouter()
   const [hardDeleteSingleDashboardTemplate, { isLoading: isLoadingDelete }] =
     useHardDeleteSingleDashboardTemplateMutation()
+  const [toggleTemplateStatus, { isLoading: isLoadingToggle }] = useToggleTemplateStatusMutation()
+
+  async function handleToggleStatus(id: string) {
+    try {
+      const res = await toggleTemplateStatus({ id }).unwrap()
+
+      toast.success(res.message || 'Template status updated')
+    } catch (err) {
+      toast.error('Failed to toggle status', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
 
   async function handleDelete(id: string) {
     try {
@@ -72,9 +87,9 @@ export function DropdownMenuIcons({ id }: { id: string }) {
         id,
       }).unwrap()
 
-      toast.success(res.message || 'Success message')
+      toast.success(res.message || 'Template deleted')
     } catch (err) {
-      toast.error('Error title', {
+      toast.error('Failed to delete template', {
         description: getErrorMessage(err),
       })
     }
@@ -95,14 +110,18 @@ export function DropdownMenuIcons({ id }: { id: string }) {
           <Eye />
           View
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Edit />
-          Edit
-        </DropdownMenuItem>
+        {/* <DropdownMenuItem> */}
+        {/*   <Edit /> */}
+        {/*   Edit */}
+        {/* </DropdownMenuItem> */}
 
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          className="capitalize"
+          onClick={() => handleToggleStatus(id)}
+          disabled={isLoadingToggle}
+        >
           <Check />
-          Activate
+          {status.toUpperCase() === 'ACTIVE' ? 'inactive' : 'active'}
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={() => handleDelete(id)} disabled={isLoadingDelete}>

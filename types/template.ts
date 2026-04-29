@@ -41,6 +41,9 @@ export type IDashboardTemplate = {
     type: ITemplateSection
     label: string
     order: number
+    style: {
+      width?: EditBoxSize
+    }
     config: {
       fields?: Array<string>
       showHealthLabel?: boolean
@@ -109,4 +112,10 @@ export type IDashboardTemplateListItem = {
   id: string
   name: string
   status: ITemplateActiveStatus
+}
+
+export type IUpdateSectionStylePayload = {
+  order: number
+  width?: EditBoxSize
+  label?: string
 }

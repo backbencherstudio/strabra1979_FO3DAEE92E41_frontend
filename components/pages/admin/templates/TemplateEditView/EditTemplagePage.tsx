@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 import {
   CurrentSelectedBox,
   selectCurrentBox,
-  selectTemplateSectionsWithSorted,
+  selectTemplateSections,
   setCurrentBox,
 } from '@/redux/features/template/templateSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/store'
@@ -23,7 +23,6 @@ import { ChevronRight } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import React from 'react'
 import { Slide } from 'yet-another-react-lightbox'
-import { CreateTemplateMoreInputModal } from './CreateTemplateMoreInputModal'
 import { EditBox } from './EditBox'
 
 interface PropertyDetailsProps {
@@ -42,7 +41,7 @@ export const demoSlides: Slide[] = [
   { type: 'image', src: '/images/carousel-files/man-on-roof.png' },
 ]
 
-export default function PropertyTemplagePage({
+export default function EditTemplagePage({
   property,
   accessExpiration,
   headerRightContent = null,
@@ -71,11 +70,14 @@ export default function PropertyTemplagePage({
     }
   }
 
-  const templateSections = useAppSelector(selectTemplateSectionsWithSorted)
+  const templateSections = useAppSelector(selectTemplateSections).toSorted(
+    (a, b) => a.order - b.order,
+  )
   const currentBox = useAppSelector(selectCurrentBox)
   const dispatch = useAppDispatch()
+
   function handleSelectEditBox(value: CurrentSelectedBox) {
-    dispatch(setCurrentBox(value?.index === currentBox?.index ? null : value))
+    dispatch(setCurrentBox(value?.data.type === currentBox?.data.type ? null : value))
   }
 
   return (
@@ -92,22 +94,22 @@ export default function PropertyTemplagePage({
         <div className="col-span-full">
           <PropertyHeaderWrapper
             title={property?.property}
-            rightContent={
-              accessExpiration ? (
-                <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
-              ) : (
-                headerRightContent
-              )
-            }
+            //         rightContent={
+            //           accessExpiration ? (
+            //             <InfoList items={[{ label: 'Access expiration', value: accessExpiration }]} />
+            //           ) : (
+            //             headerRightContent
+            //           )
+            //         }
           >
-            <InfoList
-              items={[
-                { label: 'Inspection ID', value: property.id },
-                // { value: property?.title ?? '' },
-                // { label: 'Date', value: property?.date },
-                // { label: 'Inspector', value: property.inspector.name },
-              ]}
-            />
+            {/* <InfoList */}
+            {/*   items={[ */}
+            {/*     { label: 'Inspection ID', value: property.id }, */}
+            {/*     { value: property?.title ?? '' }, */}
+            {/*     // { label: 'Date', value: property?.date }, */}
+            {/*     // { label: 'Inspector', value: property.inspector.name }, */}
+            {/*   ]} */}
+            {/* /> */}
           </PropertyHeaderWrapper>
         </div>
 
@@ -119,10 +121,10 @@ export default function PropertyTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
-                boxSize={data.size}
+                boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
-                onSelect={() => handleSelectEditBox({ data, index: sectionIndex })}
+                onSelect={() => handleSelectEditBox({ data })}
               >
                 <InfoGrid items={rowInfos} />
               </EditBox>
@@ -134,10 +136,10 @@ export default function PropertyTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
-                boxSize={data.size}
+                boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
-                onSelect={() => handleSelectEditBox({ data, index: sectionIndex })}
+                onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className="flex h-full flex-col justify-center bg-white">
                   <SectionTitle className="text-center">Roof Health Snapshot</SectionTitle>
@@ -160,10 +162,10 @@ export default function PropertyTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
-                boxSize={data.size}
+                boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
-                onSelect={() => handleSelectEditBox({ data, index: sectionIndex })}
+                onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className={cn('grid flex-1 gap-2 bg-white sm:grid-cols-2')}>
                   {demoSlides.map((slide, index) => (
@@ -190,10 +192,10 @@ export default function PropertyTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
-                boxSize={data.size}
+                boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
-                onSelect={() => handleSelectEditBox({ data, index: sectionIndex })}
+                onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className="space-y-2 bg-white">
                   <SectionTitle className="text-center">Aerial Map</SectionTitle>
@@ -208,10 +210,10 @@ export default function PropertyTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
-                boxSize={data.size}
+                boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
-                onSelect={() => handleSelectEditBox({ data, index: sectionIndex })}
+                onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className="space-y-2 bg-white">
                   <SectionTitle className="text-center">3D Roof Tour</SectionTitle>

@@ -1,11 +1,24 @@
 import { baseApi } from '@/api/baseApi'
+import { getErrorMessage } from '@/lib/farmatters'
 import { EditableSection, setInitialTemplateData } from '@/redux/features/template/templateSlice'
-import type { WithApiStatus } from '@/types'
+import type { EditBoxSize, ITemplateSection, WithApiStatus } from '@/types'
 import {
-  ITemplateActiveStatus,
   IDashboardTemplate,
   IDashboardTemplateListItem,
+  ITemplateActiveStatus,
 } from '@/types/template'
+import { toast } from 'sonner'
+
+export type ITemplateSectionConfig = {
+  type: ITemplateSection
+  label?: string
+  width?: EditBoxSize
+}
+
+export type IReorderAndUpdateSectionPropertyPayload = {
+  order: ITemplateSection[]
+  sections?: ITemplateSectionConfig[]
+}
 
 const templateManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -46,17 +59,59 @@ const templateManagementApi = baseApi.injectEndpoints({
             type: item.type,
             label: item.label,
             order: item.order,
-            size: 'full',
+            changedFields: [],
+            style: {
+              width: item?.style?.width ?? 'full',
+            },
           }))
 
           dispatch(setInitialTemplateData({ sections }))
-        } catch (error) {}
+        } catch (error) {
+          toast.error('Failed to load Template data', { description: getErrorMessage(error) })
+        }
       },
     }),
     hardDeleteSingleDashboardTemplate: builder.mutation<WithApiStatus<void>, { id: string }>({
       query: ({ id }) => ({
         url: `/dashboard-templates/${id}`,
         method: 'DELETE',
+      }),
+      invalidatesTags: ['Templates'],
+    }),
+    toggleTemplateStatus: builder.mutation<WithApiStatus<void>, { id: string }>({
+      query: ({ id }) => ({
+        url: `/dashboard-templates/${id}/toggle-status`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Templates'],
+    }),
+    // updateSectionLayout: builder.mutation<void, { id: string; data: IUpdateSectionStylePayload }>({
+    //   query: ({ id, data }) => ({
+    //     url: `/dashboard-templates/${id}/sections/layout`,
+    //     method: 'PATCH',
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ['Templates'],
+    // }),
+    // updateSectionOrder: builder.mutation<
+    //   void,
+    //   { id: string; data: { sections: ITemplateSection[] } }
+    // >({
+    //   query: ({ id, data }) => ({
+    //     url: `/dashboard-templates/${id}/sections/reorder`,
+    //     method: 'PATCH',
+    //     body: data,
+    //   }),
+    //   // invalidatesTags: ['Templates'],
+    // }),
+    reorderAndUpdateSectionProperties: builder.mutation<
+      void,
+      { id: string; data: IReorderAndUpdateSectionPropertyPayload }
+    >({
+      query: ({ id, data }) => ({
+        url: `/dashboard-templates/${id}/sections`,
+        method: 'PATCH',
+        body: data,
       }),
       invalidatesTags: ['Templates'],
     }),
@@ -69,5 +124,7 @@ export const {
   useGetDashboardTemplateListQuery,
   useHardDeleteSingleDashboardTemplateMutation,
   useGetASingleDashboardTemplateQuery,
+  useToggleTemplateStatusMutation,
+  useReorderAndUpdateSectionPropertiesMutation,
 } = templateManagementApi
 export default templateManagementApi
