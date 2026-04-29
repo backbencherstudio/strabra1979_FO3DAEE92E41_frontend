@@ -17,6 +17,10 @@ export const EDIT_BOX_SIZES = {
 
 export type EditBoxSize = keyof typeof EDIT_BOX_SIZES
 
+export function getBoxWidth(width: EditBoxSize = 'full') {
+  return EDIT_BOX_SIZES[width]
+}
+
 export const TEMPLATE_SECTIONS = [
   'header_info',
   'health_snapshot',

@@ -8,12 +8,13 @@ import InfoCard from '@/components/reusable/InfoCard/InfoCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
+import { cn } from '@/lib/utils'
 import {
   clearInspectionForm,
   setDefaultInspectionFormData,
 } from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { useAppDispatch } from '@/redux/store'
-import { IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
+import { getBoxWidth, IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useEffectEvent } from 'react'
@@ -79,15 +80,24 @@ export default function PropertyDetails({
         />
       </PropertyHeaderWrapper>
       {/* outline *:outline *:outline-red-500 */}
-      <section className="grid grid-cols-8 gap-6">
+      <section className="grid grid-cols-12 gap-5">
         {data.templateSnapshot?.map((item) => {
           if (item.type === 'header_info') {
-            return <InfoGrid className="col-span-full" key={item.type} items={rowInfos} />
+            return (
+              <InfoGrid
+                className={cn(getBoxWidth(item.style.width))}
+                key={item.type}
+                items={rowInfos}
+              />
+            )
           }
 
           if (item.type === 'health_snapshot') {
             return (
-              <SectionCard key={item.type} className="col-span-2 bg-white">
+              <SectionCard
+                key={item.type}
+                className={cn('bg-white', getBoxWidth(item.style.width))}
+              >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
                 <p className="text-center text-sm">Average Health Score</p>
                 <CircularProgressWithMeta
@@ -105,7 +115,7 @@ export default function PropertyDetails({
               return (
                 <SectionCard
                   key={item.type}
-                  className="col-span-6 grid place-items-center bg-white"
+                  className={cn('grid place-items-center bg-white', getBoxWidth(item.style.width))}
                 >
                   <span className="text-muted-foreground text-sm">
                     No photos or videos available
@@ -134,7 +144,7 @@ export default function PropertyDetails({
               })
 
             return (
-              <div key={item.type} className="col-span-6">
+              <div key={item.type} className={cn(getBoxWidth(item.style.width))}>
                 <MediaFiles className="bg-red-300" slides={slides}>
                   <MediaFilesPreviewGrid slides={slides} />
                 </MediaFiles>
@@ -144,7 +154,10 @@ export default function PropertyDetails({
 
           if (item.type === 'aerial_map') {
             return (
-              <SectionCard key={item.type} className="col-span-4 space-y-2 bg-white">
+              <SectionCard
+                key={item.type}
+                className={cn('space-y-2 bg-white', getBoxWidth(item.style.width))}
+              >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
                 <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
                   <Image
@@ -161,7 +174,10 @@ export default function PropertyDetails({
 
           if (item.type === 'tour_3d') {
             return (
-              <SectionCard key={item.type} className="col-span-4 space-y-2 bg-white">
+              <SectionCard
+                key={item.type}
+                className={cn('space-y-2 bg-white', getBoxWidth(item.style.width))}
+              >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
                 <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
                   <Image
@@ -178,7 +194,7 @@ export default function PropertyDetails({
 
           if (item.type === 'repair_planning') {
             return (
-              <SectionCard className="col-span-full" key={item.type}>
+              <SectionCard className={cn(getBoxWidth(item.style.width))} key={item.type}>
                 <SectionTitle>Priority Repair Planning</SectionTitle>
                 <PiorityRepairPlanList items={inspectinData?.repairItems ?? []} />
               </SectionCard>
@@ -187,7 +203,7 @@ export default function PropertyDetails({
 
           if (item.type === 'roof_health_rating') {
             return (
-              <SectionCard className="col-span-full" key={item.type}>
+              <SectionCard className={cn(getBoxWidth(item.style.width))} key={item.type}>
                 <PropertyCheckListPreview
                   label={item.label}
                   formConfig={formConfig}
@@ -199,7 +215,7 @@ export default function PropertyDetails({
 
           if (item.type === 'additional_info') {
             return (
-              <SectionCard className="col-span-full" key={item.type}>
+              <SectionCard className={cn(getBoxWidth(item.style.width))} key={item.type}>
                 <SectionTitle>{item.label}</SectionTitle>
                 <div className="mt-4 space-y-3">
                   <InfoCard
@@ -225,7 +241,10 @@ export default function PropertyDetails({
             )
 
             return (
-              <SectionCard className="col-span-full space-y-4.5" key={item.type}>
+              <SectionCard
+                className={cn('space-y-4.5', getBoxWidth(item.style.width))}
+                key={item.type}
+              >
                 <div className="flex items-center justify-between">
                   <SectionTitle>Documents</SectionTitle>
 
@@ -254,11 +273,11 @@ export default function PropertyDetails({
             )
           }
 
-          //          return (
-          //            <div key={item.type} className="bg-blue-300">
-          //              {item.type}
-          //          )
-          //            </div>
+          return (
+            <div key={item.type} className="bg-blue-300">
+              {item.type}
+            </div>
+          )
         })}
       </section>
     </SectionCard>

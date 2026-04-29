@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { EditableBoxType, EditableSection } from '@/redux/features/template/templateSlice'
 import { useTemplateProperties } from '@/redux/features/template/useTemplateProperties'
-import { EDIT_BOX_SIZES, EditBoxSize } from '@/types'
+import { EditBoxSize, getBoxWidth } from '@/types'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 
 interface EditBoxProps extends Omit<React.ComponentProps<'div'>, 'onSelect'> {
@@ -30,7 +30,7 @@ export function EditBox({
       className={cn(
         'ring-offset-normal-25 relative flex cursor-pointer items-center gap-2 rounded-2xl ring-2 ring-blue-100 ring-offset-4 hover:ring-blue-300',
         className,
-        EDIT_BOX_SIZES[boxSize],
+        getBoxWidth(boxSize),
         {
           'ring-blue-500 hover:ring-blue-500': checked,
         },

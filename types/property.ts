@@ -1,6 +1,7 @@
 import { IAuthUserRole } from './auth'
 import { IPropertyInspectionFolderItem } from './folder'
 import { IDashboardInspectionListItem } from './inspection'
+import { EditBoxSize, ITemplateSection } from './template'
 import { IPropertyManager } from './user'
 
 export const PropertyTypeObj = {
@@ -108,21 +109,14 @@ export interface IScheduleInspectionResponse {
   createdAt: string
   updatedAt: string
 }
-type ITemplateSnapshotType =
-  | 'header_info'
-  | 'health_snapshot'
-  | 'media_grid'
-  | 'aerial_map'
-  | 'tour_3d'
-  | 'repair_planning'
-  | 'roof_health_rating'
-  | 'additional_info'
-  | 'documents'
 
 export type ITemplateSnapshotItem = {
-  type: ITemplateSnapshotType
+  type: ITemplateSection
   label: string
   order: number
+  style: {
+    width?: EditBoxSize
+  }
   config: {
     fields?: Array<string>
     showHealthLabel?: boolean
