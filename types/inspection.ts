@@ -12,7 +12,7 @@ export type InspectionProgressStatus =
   | 'PUBLISHED'
 
 export type IPiorityRepairPlanItem = {
-  id: string
+  id?: string
   title: string
   status: IRepairProgressStatus
   description: string

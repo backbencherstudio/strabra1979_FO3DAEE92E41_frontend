@@ -142,7 +142,7 @@ export default function EditTemplagePage({
                 onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className="flex h-full flex-col justify-center bg-white">
-                  <SectionTitle className="text-center">Roof Health Snapshot</SectionTitle>
+                  <SectionTitle className="text-center">{data.label}</SectionTitle>
                   <p className="text-center text-sm">Average Health Score</p>
                   <CircularProgressWithMeta
                     conf={{}}
@@ -198,7 +198,7 @@ export default function EditTemplagePage({
                 onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className="space-y-2 bg-white">
-                  <SectionTitle className="text-center">Aerial Map</SectionTitle>
+                  <SectionTitle className="text-center">{data.label}</SectionTitle>
                   <div className="aspect-video overflow-hidden rounded-md bg-gray-100"></div>
                 </SectionCard>
               </EditBox>
@@ -216,8 +216,113 @@ export default function EditTemplagePage({
                 onSelect={() => handleSelectEditBox({ data })}
               >
                 <SectionCard className="space-y-2 bg-white">
-                  <SectionTitle className="text-center">3D Roof Tour</SectionTitle>
+                  <SectionTitle className="text-center">{data.label}</SectionTitle>
                   <div className="aspect-video overflow-hidden rounded-md bg-gray-100"></div>
+                </SectionCard>
+              </EditBox>
+            )
+          }
+
+          if (data.type === 'repair_planning') {
+            return (
+              <EditBox
+                key={data.id}
+                data={data}
+                boxSize={data.style.width}
+                index={sectionIndex}
+                checked={checked}
+                onSelect={() => handleSelectEditBox({ data })}
+              >
+                <SectionCard>
+                  <SectionTitle>{data.label}</SectionTitle>
+                  {/* // TODO: fix this */}
+                  {/* <PiorityRepairPlanList /> */}
+                </SectionCard>
+              </EditBox>
+            )
+          }
+
+          if (data.type === 'additional_info') {
+            return (
+              <EditBox
+                key={data.id}
+                data={data}
+                boxSize={data.style.width}
+                index={sectionIndex}
+                checked={checked}
+                onSelect={() => handleSelectEditBox({ data })}
+              >
+                <SectionCard>
+                  <SectionTitle>{data.label}</SectionTitle>
+                  <div className="mt-4 space-y-3">
+                    <InfoCard title="NTE (Not-To-Exceed)" description="$7,500" />
+                    <InfoCard
+                      title="Additional Comments"
+                      description="The roofing surface shows signs of normal wear consistent with age. Minor cracks, surface aging, and localized deterioration were observed in selected areas. No active leaks were observed at the time of inspection. However, moisture stains / vulnerable joints were noted, indicating potential leak risks if left unaddressed."
+                    />
+                  </div>
+                </SectionCard>
+              </EditBox>
+            )
+          }
+
+          if (data.type === 'documents') {
+            return (
+              <EditBox
+                key={data.id}
+                data={data}
+                boxSize={data.style.width}
+                index={sectionIndex}
+                checked={checked}
+                onSelect={() => handleSelectEditBox({ data })}
+              >
+                <SectionCard className="col-span-full space-y-4.5">
+                  <div className="flex items-center justify-between">
+                    <SectionTitle>{data.label}</SectionTitle>
+
+                    <Button variant="link" theme="text">
+                      View All <ChevronRight />
+                    </Button>
+                  </div>
+                  <div>
+                    {/* <CustomTable */}
+                    {/*   columns={DocumentsTableColumns} */}
+                    {/*   data={demoDocumentsData.slice(0, 1)} */}
+                    {/*   //   currentPage={currentPage} */}
+                    {/*   //   itemsPerPage={itemsPerPage} */}
+                    {/*   //   onPageChange={setCurrentPage} */}
+                    {/*   //   sortConfig={sortConfig} */}
+                    {/*   //   onSort={handleSort} */}
+                    {/*   minWidth={1000} */}
+                    {/*   headerStyles={{ */}
+                    {/*     backgroundColor: '#eceff3', */}
+                    {/*     textColor: '#4a4c56', */}
+                    {/*     fontSize: '14px', */}
+                    {/*     fontWeight: '400', */}
+                    {/*     padding: '12px 16px', */}
+                    {/*   }} */}
+                    {/*   cellBorderColor="#eceff3" */}
+                    {/*   hasWrapperBorder={false} */}
+                    {/*   roundedClass="rounded-lg" */}
+                    {/* /> */}
+                  </div>
+                </SectionCard>
+              </EditBox>
+            )
+          }
+
+          if (data.type === 'roof_health_rating') {
+            return (
+              <EditBox
+                key={data.id}
+                data={data}
+                boxSize={data.style.width}
+                index={sectionIndex}
+                checked={checked}
+                onSelect={() => handleSelectEditBox({ data })}
+              >
+                <SectionCard className="col-span-full space-y-4.5">
+                  <SectionTitle>{data.label}</SectionTitle>
                 </SectionCard>
               </EditBox>
             )
@@ -227,68 +332,19 @@ export default function EditTemplagePage({
         })}
 
         {/* Add More btn */}
-        <Button
-          onClick={() => handleCreateFieldOpen('input-media')}
-          type="button"
-          variant="muted"
-          className="text-gray-black-300 col-span-full h-23 flex-col"
-        >
-          <PlusSignSquare className="size-6" />
-          <span className="text-sm whitespace-nowrap">Add More Media fields</span>
-        </Button>
-
-        <SectionCard className="col-span-full">
-          <SectionTitle>Priority Repair Planning</SectionTitle>
-          {/* // TODO: fix this */}
-          {/* <PiorityRepairPlanList /> */}
-        </SectionCard>
-
-        <SectionCard className="col-span-full space-y-4.5">
-          <div className="flex items-center justify-between">
-            <SectionTitle>Documents</SectionTitle>
-
-            <Button variant="link" theme="text">
-              View All <ChevronRight />
-            </Button>
-          </div>
-          <div>
-            {/* <CustomTable */}
-            {/*   columns={DocumentsTableColumns} */}
-            {/*   data={demoDocumentsData.slice(0, 1)} */}
-            {/*   //   currentPage={currentPage} */}
-            {/*   //   itemsPerPage={itemsPerPage} */}
-            {/*   //   onPageChange={setCurrentPage} */}
-            {/*   //   sortConfig={sortConfig} */}
-            {/*   //   onSort={handleSort} */}
-            {/*   minWidth={1000} */}
-            {/*   headerStyles={{ */}
-            {/*     backgroundColor: '#eceff3', */}
-            {/*     textColor: '#4a4c56', */}
-            {/*     fontSize: '14px', */}
-            {/*     fontWeight: '400', */}
-            {/*     padding: '12px 16px', */}
-            {/*   }} */}
-            {/*   cellBorderColor="#eceff3" */}
-            {/*   hasWrapperBorder={false} */}
-            {/*   roundedClass="rounded-lg" */}
-            {/* /> */}
-          </div>
-        </SectionCard>
+        {/* <Button */}
+        {/*   onClick={() => handleCreateFieldOpen('input-media')} */}
+        {/*   type="button" */}
+        {/*   variant="muted" */}
+        {/*   className="text-gray-black-300 col-span-full h-23 flex-col" */}
+        {/* > */}
+        {/*   <PlusSignSquare className="size-6" /> */}
+        {/*   <span className="text-sm whitespace-nowrap">Add More Media fields</span> */}
+        {/* </Button> */}
 
         {/* <SectionCard> */}
         {/*   <PropertyScoreListPreview /> */}
         {/* </SectionCard> */}
-
-        <SectionCard className="col-span-full">
-          <SectionTitle>Additional Information</SectionTitle>
-          <div className="mt-4 space-y-3">
-            <InfoCard title="NTE (Not-To-Exceed)" description="$7,500" />
-            <InfoCard
-              title="Additional Comments"
-              description="The roofing surface shows signs of normal wear consistent with age. Minor cracks, surface aging, and localized deterioration were observed in selected areas. No active leaks were observed at the time of inspection. However, moisture stains / vulnerable joints were noted, indicating potential leak risks if left unaddressed."
-            />
-          </div>
-        </SectionCard>
       </SectionCard>
     </div>
   )

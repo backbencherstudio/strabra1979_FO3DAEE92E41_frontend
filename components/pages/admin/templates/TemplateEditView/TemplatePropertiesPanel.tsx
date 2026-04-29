@@ -7,6 +7,8 @@ import { mockPropertyDetails } from '@/constant/mock'
 import EditTemplagePage from './EditTemplagePage'
 
 import { useReorderAndUpdateSectionPropertiesMutation } from '@/api/template/templateManagementApi'
+import { Edit } from '@/components/icons/Edit'
+import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
 import {
   Select,
   SelectContent,
@@ -21,7 +23,9 @@ import { selectCurrentBox } from '@/redux/features/template/templateSlice'
 import { useTemplateProperties } from '@/redux/features/template/useTemplateProperties'
 import { store, useAppSelector } from '@/redux/store'
 import { EDIT_BOX_SIZES, EditBoxSize } from '@/types'
+import { Save } from 'lucide-react'
 import { useParams } from 'next/navigation'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 export default function TemplatePropertiesPanel() {
@@ -99,17 +103,77 @@ export default function TemplatePropertiesPanel() {
 }
 
 export function LabelBox() {
+  const { updateLabel } = useTemplateProperties()
+
+  const currentBox = useAppSelector(selectCurrentBox)
+  const [isEditMode, setIsEditMode] = useState(false)
+
+  const [input, setInput] = useState('')
+
+  function syncLabel(value: string) {
+    value = value.trim()
+    if (!value) return
+
+    if (!currentBox) return
+
+    updateLabel({ currentBox, newLablel: value })
+  }
+
+  function handleSave() {
+    if (!currentBox) return
+
+    if (!isEditMode) {
+      setIsEditMode(true)
+      setInput(currentBox?.data.label ?? '')
+      return
+    }
+
+    const value = input.trim()
+    if (!value) return
+
+    updateLabel({ currentBox, newLablel: value })
+    setIsEditMode(false)
+  }
+
+  if (!currentBox) return null
+
   return (
-    <div className="bg-hover-50 space-y-3 rounded-md p-3">
-      <SectionTitle className="text-base">Add Quick Style</SectionTitle>
-      <div className="flex gap-2 *:flex-1">
-        <Button className="bg-pressed-100" variant="outline">
-          Text
-        </Button>
-        <Button className="bg-pressed-100" variant="outline">
-          Media
+    <div className="bg-hover-50 grid gap-3 rounded-md p-3">
+      <div className="flex items-center justify-between">
+        <SectionTitle className="text-base">Edit Label</SectionTitle>
+
+        <Button
+          onClick={handleSave}
+          size="icon-sm"
+          className="bg-pressed-100 rounded-full"
+          variant="outline"
+        >
+          {isEditMode ? <Save /> : <Edit className="size-4" />}
         </Button>
       </div>
+
+      {isEditMode ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSave()
+          }}
+        >
+          <div>
+            <InputGroup className="bg-pressed-100 h-9">
+              <InputGroupInput
+                autoFocus
+                onBlur={() => setTimeout(() => setIsEditMode(false), 300)}
+                value={input}
+                onChange={(e) => {
+                  syncLabel(e.target.value)
+                  setInput(e.target.value)
+                }}
+              />
+            </InputGroup>
+          </div>
+        </form>
+      ) : null}
     </div>
   )
 }

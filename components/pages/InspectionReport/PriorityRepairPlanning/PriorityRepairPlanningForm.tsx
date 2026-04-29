@@ -63,7 +63,6 @@ export default function PriorityRepairPlanningForm({
       try {
         dispatch(
           addRepairItem({
-            // id: crypto.randomUUID(),
             title: value.title,
             status: value.status,
             description: value.description,

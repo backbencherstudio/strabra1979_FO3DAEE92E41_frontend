@@ -42,6 +42,30 @@ export function useTemplateProperties() {
     )
   }
 
+  async function updateLabel({
+    currentBox,
+    newLablel,
+  }: {
+    currentBox: CurrentSelectedBox
+    newLablel: string
+  }) {
+    if (!newLablel || newLablel.trim() === '' || newLablel === currentBox.data.label) return
+
+    const isPropertyMarkedAsChange = currentBox.data.changedFields.includes('label')
+    let changedFields: EditableField[] = [...currentBox.data.changedFields]
+
+    if (!isPropertyMarkedAsChange) {
+      changedFields = [...new Set([...currentBox.data.changedFields, 'label' as EditableField])]
+    }
+
+    dispatch(
+      updateSectionStyles({
+        type: currentBox.data.type,
+        section: { changedFields, label: newLablel },
+      }),
+    )
+  }
+
   function moveOrderUp({ order }: { order: number }) {
     dispatch(moveOrderUpAction({ order }))
   }
@@ -51,6 +75,7 @@ export function useTemplateProperties() {
   }
 
   return {
+    updateLabel,
     updateWidth,
     moveOrderUp,
     moveOrderDown,

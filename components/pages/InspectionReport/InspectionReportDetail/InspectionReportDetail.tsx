@@ -210,6 +210,7 @@ export default function InspectionReportDetail() {
       {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <InspectionMediaForm
+          onOpenEditModal={() => {}}
           embedFields={embedFields}
           setEmbedFields={setEmbedFields}
           files={mediaFields}
