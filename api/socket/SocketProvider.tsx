@@ -6,6 +6,7 @@ import { useAppDispatch } from '@/redux/store'
 import { PropsWithChildren, useEffect, useRef } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { initSocket } from './socketListeners'
+import { isDevEnv } from '@/lib/utils'
 
 export function SocketProvider({ children }: PropsWithChildren) {
   const { token, isAuthenticated } = useAuth()
@@ -25,23 +26,22 @@ export function SocketProvider({ children }: PropsWithChildren) {
       transports: ['websocket'],
     })
 
-    socket.on('connect', () => {
-      console.log('Socket connected:', socket.id)
-    })
-
-    socket.on('disconnect', () => {
-      console.log('Socket disconnected')
-    })
+    if (isDevEnv()) {
+      socket.on('connect', () => {
+        console.info('Socket connected:', socket.id)
+      })
+      socket.on('disconnect', () => {
+        console.info('Socket disconnected')
+      })
+      socket.onAny((event, data) => {
+        console.info('=============== Event:', event, '====================')
+        console.info('Payload:', data)
+      })
+    }
 
     socket.on('connect_error', (err) => {
       console.error('Socket error:', err.message)
     })
-
-    socket.onAny((event, data) => {
-      console.log('=============== Event:', event, '====================')
-      console.log('Payload:', data)
-    })
-
     socket.on('error', (err) => {
       console.error(err.message)
     })

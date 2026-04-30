@@ -9,7 +9,6 @@ import type {
   WithPaginationAndStatus,
 } from '@/types'
 
-
 export type IInspectionFormData = {
   headerData: {
     [key: string]: string
@@ -73,8 +72,6 @@ const operationalInspectionApi = baseApi.injectEndpoints({
         files.forEach((file) => {
           formData.append('files', file)
         })
-
-        console.log(formData)
 
         return {
           url: `/inspections/property/${dashboardId}/submit/${scheduledInspectionId}`,

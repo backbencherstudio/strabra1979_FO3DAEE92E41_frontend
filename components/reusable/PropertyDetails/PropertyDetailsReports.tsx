@@ -5,6 +5,7 @@ import {
   useGetinspectionPropertyQuery,
   useLazyGetSingleFolderInfoQuery,
 } from '@/api/inspectionManagement/folderManagementApi'
+import { ReportsTableColumns } from '@/components/columns/ReportsTable'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
@@ -25,8 +26,6 @@ import { InfoGrid } from '../InfoGrid/InfoGrid'
 import { InfoList, PropertyHeaderWrapper } from '../InfoList/InfoList'
 import PaginationControls from '../Pagination/Pagination'
 import CustomTable from '../table/CustomTable'
-import { ReportsTableColumns } from '@/components/columns/ReportsTable'
-import { usePaginatedQuery, usePaginationPage } from '../Pagination/PaginationPageProvider'
 
 interface PropertyDetailsReportsProps {
   dashboardId: string
@@ -78,7 +77,9 @@ export default function PropertyDetailsReports({
 
   const isAdmin = RoleUtils.isAdmin(role)
 
-  const { data: inspectionData, isLoading: isLoadingReportTable } = useGetinspectionPropertyQuery({ dashboardId })
+  const { data: inspectionData, isLoading: isLoadingReportTable } = useGetinspectionPropertyQuery({
+    dashboardId,
+  })
   const inspections = inspectionData?.data || []
 
   const tableData: TableRow[] = inspections.map((item) => ({
@@ -154,8 +155,6 @@ export default function PropertyDetailsReports({
                   setCreateFolderDialogMode('rename')
                   setSelectedFolderToRename(f)
                   setOpenFolderCreateDialog(true)
-
-                  console.log('onEdit')
                 }}
                 dashboardId={f.dashboardId}
                 folderId={f.id}

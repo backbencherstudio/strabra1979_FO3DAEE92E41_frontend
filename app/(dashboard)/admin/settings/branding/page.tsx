@@ -30,7 +30,6 @@ export type BrandingSettingsFormValues = z.infer<typeof brandingSettingsSceme>
 export default function BrandingPageSettings() {
   const { data, isLoading } = useGetAdminBrandingSettingsQuery()
   const [updateBranding, { isLoading: updating }] = useUpdateBrandingMutation()
-  console.table(data)
 
   const form = useForm({
     defaultValues: {

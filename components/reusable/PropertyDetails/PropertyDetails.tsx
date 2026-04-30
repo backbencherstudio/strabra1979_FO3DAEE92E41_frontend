@@ -162,14 +162,15 @@ export default function PropertyDetails({
                 className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
-                <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
-                  <Image
-                    className="h-full w-full object-cover"
-                    width={800}
-                    height={450}
-                    alt=""
-                    src={'/images/inspectin-list/aerial-map.png'}
-                  />
+                <div className="grid aspect-video place-items-center overflow-hidden rounded-md bg-gray-100">
+                  <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
+                  {/* <Image */}
+                  {/*   className="h-full w-full object-cover" */}
+                  {/*   width={800} */}
+                  {/*   height={450} */}
+                  {/*   alt="" */}
+                  {/*   src={'/images/inspectin-list/aerial-map.png'} */}
+                  {/* /> */}
                 </div>
               </SectionCard>
             )
@@ -182,14 +183,15 @@ export default function PropertyDetails({
                 className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
-                <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
-                  <Image
-                    className="h-full w-full object-cover"
-                    width={800}
-                    height={450}
-                    alt=""
-                    src={'/images/inspectin-list/3d-roof-tour.png'}
-                  />
+                <div className="grid aspect-video place-items-center overflow-hidden rounded-md bg-gray-100">
+                  <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
+                  {/* <Image */}
+                  {/*   className="h-full w-full object-cover" */}
+                  {/*   width={800} */}
+                  {/*   height={450} */}
+                  {/*   alt="" */}
+                  {/*   src={'/images/inspectin-list/3d-roof-tour.png'} */}
+                  {/* /> */}
                 </div>
               </SectionCard>
             )

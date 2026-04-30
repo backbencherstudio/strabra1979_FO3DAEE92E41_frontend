@@ -29,7 +29,6 @@ interface ChartProps {
 }
 
 export default function Chart({ isLoading, data: chartData }: ChartProps) {
-  console.log(chartData?.data)
   const chartDisplayData =
     chartData?.data?.map((item) => ({
       month: item.label,

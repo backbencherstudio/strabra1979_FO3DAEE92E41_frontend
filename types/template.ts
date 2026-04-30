@@ -10,9 +10,9 @@ export type ITemplateActiveStatus = 'ACTIVE' | 'INACTIVE' | 'DELETED'
 
 export const EDIT_BOX_SIZES = {
   full: 'col-span-full',
-  '1/2': 'col-span-6',
-  '1/3': 'col-span-4',
-  '2/3': 'col-span-8',
+  '1/2': 'col-span-full xl:col-span-6',
+  '1/3': 'col-span-full xl:col-span-4',
+  '2/3': 'col-span-full xl:col-span-8',
 } as const
 
 export type EditBoxSize = keyof typeof EDIT_BOX_SIZES

@@ -200,7 +200,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans overflow-y-scroll;
   }
 
   button:not(:disabled),
@@ -276,7 +276,7 @@
   }
 }
 
-label[data-required="true"]::after {
+label[data-required='true']::after {
   content: ' *';
   color: var(--destructive);
 }

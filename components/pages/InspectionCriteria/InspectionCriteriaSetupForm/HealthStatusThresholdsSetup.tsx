@@ -97,7 +97,6 @@ export default function HealthStatusThresholdsSetup({
       onSubmit: inspectionHealthThresholdConfigSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log({ value })
       if (!criteriaId) {
         toast.error('criteriaId not availble')
         return

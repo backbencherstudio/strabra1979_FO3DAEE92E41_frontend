@@ -54,7 +54,6 @@ const templateSlice = createSlice({
     ) => {
       const { type } = action.payload
       const index = state.sections.findIndex((item) => item.type === type)
-      console.log(index)
       if (index < 0 || index >= state.sections.length) return
 
       state.sections[index] = {

@@ -136,8 +136,8 @@ export type INotificationEventPayload = {
 // export function handleNotification(n: NotificationEventPayload) {
 //   switch (n.type) {
 //     case 'dashboard_assigned': {
-//       console.log(n.metadata.dashboardId)
-//       console.log(n.metadata.link.href)
+//     n.metadata.dashboardId
+//     n.metadata.link.href
 //       break
 //     }
 //

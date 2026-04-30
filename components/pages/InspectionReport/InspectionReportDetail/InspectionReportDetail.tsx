@@ -61,7 +61,6 @@ export default function InspectionReportDetail() {
     useGetSingleInspectionWithIdQuery(inspectionId!, { skip: !inspectionId })
   const { data: { data: propertyInfo } = {}, isLoading: isPropertyInfoLoading } =
     useGetInspectionPropertyDetailQuery({ dashboardId }, { skip: !dashboardId })
-  console.log({ propertyInfo })
 
   // Media inputs
   const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
@@ -219,7 +218,7 @@ export default function InspectionReportDetail() {
         />
       </section>
 
-      <div className="mt-6 grid gap-3 ">
+      <div className="mt-6 grid gap-3">
         {/* <Button type="button" size="xl" variant="outline"> */}
         {/*   Save */}
         {/* </Button> */}

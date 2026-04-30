@@ -24,8 +24,6 @@ export default function SetupMediaAndDocumentFrom({
   const [mediaFieldsData, setMediaFieldsData] = useState<MediaFieldItem[]>([])
   const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
 
-  console.log('criteriaId', criteriaId)
-
   // CreateMoreInputModal state
   const [editFieldData, setEditFieldData] = React.useState<IInspectionMediaField | undefined>()
   const [createInputModalMode, setCreateInputModalMode] = React.useState<'edit' | 'create'>()

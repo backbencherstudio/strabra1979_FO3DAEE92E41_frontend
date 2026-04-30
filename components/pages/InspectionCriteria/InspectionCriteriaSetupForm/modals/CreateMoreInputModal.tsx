@@ -223,7 +223,6 @@ export function CreateMoreInputModal({
 
     try {
       if (mode === 'edit' && initialData?.key) {
-        console.log('yyyyyyyyyyyyyyyyyyyyyyy')
         const res = await editCustomMediaField({
           criteriaId,
           fieldKey: initialData.key,

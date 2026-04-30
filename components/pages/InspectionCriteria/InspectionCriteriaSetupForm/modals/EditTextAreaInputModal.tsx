@@ -35,8 +35,6 @@ export function EditTextAreaInputModal({
 
   const isNteField = fieldType === 'NTE'
 
-  console.log({ initialData })
-
   const form = useForm({
     defaultValues: {
       label: initialData?.label ?? '',

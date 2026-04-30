@@ -95,7 +95,6 @@ export function ScheduleInspectionDialog({
       setAssignUserDialogOpen(false)
       toast.success('Inspection scheduled successfully!')
     } catch (error) {
-      console.error(error)
       toast.error('Failed to create inspection!', {
         description: getErrorMessage(error),
       })

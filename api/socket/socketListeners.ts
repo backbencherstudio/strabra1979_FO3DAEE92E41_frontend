@@ -1,20 +1,17 @@
+import { increment, setUnreadCount } from '@/redux/features/notification/notificationSlice'
 import { AppDispatch, store } from '@/redux/store'
-import { INotificationEventPayload, NOTIFICATION_EVENTS, NotificationType } from '@/types'
+import { INotificationEventPayload, NOTIFICATION_EVENTS } from '@/types'
 import { Socket } from 'socket.io-client'
 import notificationApi from '../notification/notificationApi'
-import { setUnreadCount, increment } from '@/redux/features/notification/notificationSlice'
 
 export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
   // Unread count
   socket.on('notification:unread_count', (data) => {
-    console.warn('notification:unread_count ======================', data)
     dispatch(setUnreadCount(data.count))
   })
 
   Object.keys(NOTIFICATION_EVENTS).map((eventName) => {
     socket.on(`notification:${eventName}`, (data: INotificationEventPayload) => {
-      console.warn('=============== Event fired:', eventName, ' ======================')
-
       dispatch(increment())
       store.dispatch(
         notificationApi.util.updateQueryData('getNotifications', {}, (draft) => {
