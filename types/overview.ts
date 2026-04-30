@@ -23,7 +23,7 @@ export type IOverviewAdmin = {
   chart: {
     year: number
     data: Array<{
-      month: string
+      label: string
       count: number
     }>
   }
