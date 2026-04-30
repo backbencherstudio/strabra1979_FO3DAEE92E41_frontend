@@ -5,6 +5,7 @@ import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/in
 import {
   useGetInspectionPropertyDetailQuery,
   useSubmitAllInspectionFormDataMutation,
+  useUpdateAllInspectionFormDataFromAdminMutation,
 } from '@/api/inspectionManagement/operationalInspectionApi'
 import InspectionMediaForm from '@/components/pages/InspectionReport/InspectionMediaForm/InspectionMediaForm'
 import InspectionReportFinalScoreCard from '@/components/pages/InspectionReport/InspectionReportFinalScoreCard/InspectionReportFinalScoreCard'
@@ -106,6 +107,8 @@ export default function InspectionReportDetail() {
 
   const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
     useSubmitAllInspectionFormDataMutation()
+  const [updateAllInspectionFormDataFromAdmin, { isLoading: isLoadingInspectionUpdate }] =
+    useUpdateAllInspectionFormDataFromAdminMutation()
   async function handleSubmitInspectionData() {
     const state = store.getState()
     const headerData = selectInspectionHeaderData(state)
@@ -133,28 +136,45 @@ export default function InspectionReportDetail() {
     )
 
     try {
-      const res = await submitAllInspectionFormData({
-        dashboardId: dashboardId!,
-        scheduledInspectionId: scheduledInspectionId!,
-        data: {
-          headerData,
-          scores,
-          repairItems,
-          nteValue,
-          additionalComments,
-          inspectedAt: inspectedAt,
-          mediaFieldKeys: fileKeyList,
-          embedFields: embedFields,
-        },
-        files: fileList,
-      }).unwrap()
-
-      toast.success(res.message || 'Inspection submitted successfully', {})
-
       if (RoleUtils.isOperational(role)) {
+        const res = await submitAllInspectionFormData({
+          dashboardId: dashboardId!,
+          scheduledInspectionId: scheduledInspectionId!,
+          data: {
+            headerData,
+            scores,
+            repairItems,
+            nteValue,
+            additionalComments,
+            inspectedAt: inspectedAt,
+            mediaFieldKeys: fileKeyList,
+            embedFields: embedFields,
+          },
+          files: fileList,
+        }).unwrap()
+
         router.push(routes.operational.inspectionList)
+        toast.success(res.message || 'Inspection submitted successfully', {})
       } else if (RoleUtils.isAdmin(role)) {
+        const res = await updateAllInspectionFormDataFromAdmin({
+          inspectionId: inspectionId!,
+          dashboardId: dashboardId!,
+          scheduledInspectionId: scheduledInspectionId!,
+          data: {
+            headerData,
+            scores,
+            repairItems,
+            nteValue,
+            additionalComments,
+            inspectedAt: inspectedAt,
+            mediaFieldKeys: fileKeyList,
+            embedFields: embedFields,
+          },
+          files: fileList,
+        }).unwrap()
+
         router.push(routes.admin.inspectionList)
+        toast.success(res.message || 'Inspection updated successfully', {})
       }
     } catch (err) {
       toast.error('Failed to submit inspection', {

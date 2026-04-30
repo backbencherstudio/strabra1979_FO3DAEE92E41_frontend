@@ -219,11 +219,10 @@ function InspectinListItemAction({
                 return
               }
 
-              // TODO: add edit option
               router.push(
                 routes.admin.inspectionListItemDetail.build(
                   { dashboardId },
-                  { edit: 'true', inspectionId },
+                  { edit: 'true', inspectionId, scheduledInspectionId: id },
                 ),
               )
             }}

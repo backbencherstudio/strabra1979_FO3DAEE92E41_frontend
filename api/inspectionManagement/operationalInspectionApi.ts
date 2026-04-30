@@ -32,6 +32,7 @@ export type IInspectionFormData = {
 interface ISubmitInspectionDataPayload {
   scheduledInspectionId: string
   dashboardId: string
+  inspectionId?: string
   data: IInspectionFormData
   files: File[]
 }
@@ -81,6 +82,29 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['Overview', 'InspectionManagement'],
     }),
+    updateAllInspectionFormDataFromAdmin: builder.mutation<
+      WithApiStatus<void>,
+      ISubmitInspectionDataPayload
+    >({
+      query: ({ dashboardId, scheduledInspectionId, inspectionId, data, files }) => {
+        const jsonData = JSON.stringify(data)
+
+        // Prepare FormData for sending
+        const formData = new FormData()
+        formData.append('data', jsonData)
+
+        files.forEach((file) => {
+          formData.append('files', file)
+        })
+
+        return {
+          url: `/inspections/${inspectionId}`,
+          method: 'PATCH',
+          body: formData,
+        }
+      },
+      invalidatesTags: ['Overview', 'InspectionManagement'],
+    }),
     getInspectionPropertyDetail: builder.query<
       WithApiStatus<IInspectionPropertyDetail>,
       { dashboardId: string }
@@ -98,5 +122,6 @@ export const {
   useGetAllSheduledInspectionsAssignedToMeQuery,
   useStartAScheduledInspectionToChangeStatusMutation,
   useSubmitAllInspectionFormDataMutation,
+  useUpdateAllInspectionFormDataFromAdminMutation,
 } = operationalInspectionApi
 export default operationalInspectionApi
