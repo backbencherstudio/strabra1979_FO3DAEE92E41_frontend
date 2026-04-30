@@ -54,7 +54,7 @@ const templateManagementApi = baseApi.injectEndpoints({
             data: { data },
           } = await queryFulfilled
 
-          const sections: EditableSection[] = data.sections.map((item) => ({
+          const sections: EditableSection[] = data?.sections?.map((item) => ({
             id: item.type,
             type: item.type,
             label: item.label,

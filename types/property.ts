@@ -201,3 +201,23 @@ export type INOAccessReason = 'NO_ACCESS' | 'REVOKED' | 'EXPIRED'
 export type ICheckPropertyAccessResponse =
   | { hasAccess: true }
   | { hasAccess: false; reason: INOAccessReason }
+
+export interface SetAccessExpirationPayload {
+  dashboardId: string
+  userId: string
+  accessExpiresAt: string
+}
+
+export interface SetAccessExpirationResponse {
+  id: string
+  dashboardId: string
+  userId: string
+  accessExpiresAt: string
+  updatedAt: string
+}
+
+export interface IShareDashboardParams {
+  dashboardId: string
+  emailOrUserId: string
+  expiresAt?: string
+}

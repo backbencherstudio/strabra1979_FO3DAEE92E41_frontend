@@ -57,8 +57,6 @@ export function ViewAccessDialog({ open, onOpenChange, dashboardId }: ViewAccess
     skip: !dashboardId || !isOpen,
   })
   const accessList = dashboardAccessData?.accessList
-  // console.log(dashboardId)
-  // console.table(dashboardAccessData)
 
   // TODO: work on accessList
   const [revokeDashboardAccess, { isLoading: isRevokeDashboardAccessLoading }] =

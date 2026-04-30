@@ -10,23 +10,12 @@ import type {
   IPropertyDashboardDetails,
   IPropertyListItem,
   IRevokeDashboardAccessPayload,
+  IShareDashboardParams,
+  SetAccessExpirationPayload,
+  SetAccessExpirationResponse,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
-
-export interface SetAccessExpirationPayload {
-  dashboardId: string
-  userId: string
-  accessExpiresAt: string
-}
-
-export interface SetAccessExpirationResponse {
-  id: string
-  dashboardId: string
-  userId: string
-  accessExpiresAt: string
-  updatedAt: string
-}
 
 const propertiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -53,6 +42,15 @@ const propertiesApi = baseApi.injectEndpoints({
       query: (dashboardId) => ({
         url: `/properties/dashboard/${dashboardId}/access/check`,
       }),
+    }),
+
+    shareDashboardWithEmail: builder.mutation<WithApiStatus<void>, IShareDashboardParams>({
+      query: ({ dashboardId, ...body }) => ({
+        url: `/properties/dashboard/${dashboardId}/access/share`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['AccessList'],
     }),
 
     //property id request
@@ -153,5 +151,7 @@ export const {
 
   useCreateDashboardAccessRequestMutation,
   useLazyGetCheckPropertyAccessQuery,
+
+  useShareDashboardWithEmailMutation,
 } = propertiesApi
 export default propertiesApi

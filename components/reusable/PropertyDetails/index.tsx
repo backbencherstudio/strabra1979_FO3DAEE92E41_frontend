@@ -25,7 +25,7 @@ export function PropertyDashboardDetailTab() {
       dashboardId={dashboardId}
       headerRightContent={
         RoleUtils.hasRole(role, ['ADMIN', 'PROPERTY_MANAGER']) ? (
-          <PropertySharePopover />
+          <PropertySharePopover dashboardId={dashboardId} dashboradDetails={data} />
         ) : RoleUtils.isAuthorizedViewer(role) ? (
           <AccessExpirationInfo accessExpiresAt={data?.property?.accessExpiresAt} />
         ) : null

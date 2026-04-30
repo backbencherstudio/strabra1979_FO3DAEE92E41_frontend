@@ -10,7 +10,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '@/components/ui/chart'
-import { Spinner } from '@/components/ui/spinner'
 
 const chartConfig = {
   sales: {
