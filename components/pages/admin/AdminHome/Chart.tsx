@@ -23,16 +23,17 @@ interface ChartProps {
   data?: {
     year: number
     data: {
-      month: string
+      label: string
       count: number
     }[]
   }
 }
 
 export default function Chart({ isLoading, data: chartData }: ChartProps) {
+  console.log(chartData?.data)
   const chartDisplayData =
     chartData?.data?.map((item) => ({
-      month: item.month,
+      month: item.label,
       sales: item.count,
     })) ?? []
 
@@ -92,7 +93,13 @@ export default function Chart({ isLoading, data: chartData }: ChartProps) {
                 content={
                   <ChartTooltipContent
                     className="min-w-40"
-                    labelFormatter={(v, p) => `${v} , ${chartData?.year}`}
+                    labelFormatter={(label, payload) => {
+                      if (label) {
+                        return `${label} , ${chartData?.year}`
+                      }
+
+                      return `${chartData?.year}`
+                    }}
                     indicator="dot"
                   />
                 }

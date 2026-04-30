@@ -8,7 +8,7 @@ import InfoCard from '@/components/reusable/InfoCard/InfoCard'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { formatDate, naIfEmpty, withNA } from '@/lib/farmatters'
-import { cn } from '@/lib/utils'
+import { cn, isArrayEmpty } from '@/lib/utils'
 import {
   clearInspectionForm,
   setDefaultInspectionFormData,
@@ -111,11 +111,14 @@ export default function PropertyDetails({
           }
 
           if (item.type === 'media_grid') {
-            if (!Array.isArray(inspectinData?.mediaFiles)) {
+            if (isArrayEmpty(inspectinData?.mediaFiles)) {
               return (
                 <SectionCard
                   key={item.type}
-                  className={cn('grid place-items-center bg-white', getBoxWidth(item?.style?.width))}
+                  className={cn(
+                    'grid place-items-center bg-white',
+                    getBoxWidth(item?.style?.width),
+                  )}
                 >
                   <span className="text-muted-foreground text-sm">
                     No photos or videos available
