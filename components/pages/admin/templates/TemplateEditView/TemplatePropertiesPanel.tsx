@@ -3,7 +3,6 @@
 import { ShareIcon } from '@/components/icons/ShareIcon'
 import { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
-import { mockPropertyDetails } from '@/constant/mock'
 import EditTemplagePage from './EditTemplagePage'
 
 import { useReorderAndUpdateSectionPropertiesMutation } from '@/api/template/templateManagementApi'
@@ -24,12 +23,15 @@ import { useTemplateProperties } from '@/redux/features/template/useTemplateProp
 import { store, useAppSelector } from '@/redux/store'
 import { EDIT_BOX_SIZES, EditBoxSize } from '@/types'
 import { Save } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { MOCK_PROPERTY_DETAILS } from './mock'
 
 export default function TemplatePropertiesPanel() {
   const params = useParams<{ templateId: string }>()
+  const searchParams = useSearchParams()
+  const isEditMode = searchParams.get('edit') === 'true'
 
   const [syncChangesWithServer, { isLoading: isLoadingSync }] =
     useReorderAndUpdateSectionPropertiesMutation()
@@ -67,7 +69,8 @@ export default function TemplatePropertiesPanel() {
         {/* <div className="mb-3 h-100 bg-green-300"></div> */}
         {/* <div className="mb-3 h-100 bg-green-300"></div> */}
         <EditTemplagePage
-          property={mockPropertyDetails}
+          isEditMode={isEditMode}
+          property={MOCK_PROPERTY_DETAILS}
           headerRightContent={
             <Button variant="outline">
               <ShareIcon />
@@ -77,27 +80,29 @@ export default function TemplatePropertiesPanel() {
         />
       </section>
 
-      <section className="sticky top-(--dashboard-header-height) h-full w-66 rounded-none border-0">
-        <div className="flex items-center justify-between border-b p-4.5">
-          <SectionTitle className="">Template</SectionTitle>
-        </div>
+      {isEditMode ? (
+        <section className="sticky top-(--dashboard-header-height) h-full w-66 rounded-none border-0">
+          <div className="flex items-center justify-between border-b p-4.5">
+            <SectionTitle className="">Template</SectionTitle>
+          </div>
 
-        <section className="space-y-3 p-4.5">
-          <LabelBox />
+          <section className="space-y-3 p-4.5">
+            <LabelBox />
 
-          <SizeBox />
+            <SizeBox />
 
-          <Button
-            disabled={isLoadingSync}
-            onClick={onSave}
-            className="w-full rounded-full bg-blue-500 px-6 hover:bg-blue-600"
-            variant="default"
-          >
-            {isLoadingSync ? <Spinner /> : null}
-            {isLoadingSync ? 'Saving...' : 'Save Changes'}
-          </Button>
+            <Button
+              disabled={isLoadingSync}
+              onClick={onSave}
+              className="w-full rounded-full bg-blue-500 px-6 hover:bg-blue-600"
+              variant="default"
+            >
+              {isLoadingSync ? <Spinner /> : null}
+              {isLoadingSync ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </section>
         </section>
-      </section>
+      ) : null}
     </div>
   )
 }

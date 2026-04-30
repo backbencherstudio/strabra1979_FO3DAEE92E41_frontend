@@ -12,6 +12,7 @@ interface EditBoxProps extends Omit<React.ComponentProps<'div'>, 'onSelect'> {
   index: number
   onSelect: () => void
   data: EditableSection
+  isEditMode?: boolean
 }
 
 export function EditBox({
@@ -22,23 +23,25 @@ export function EditBox({
   boxSize = 'full',
   children,
   className,
+  isEditMode,
   ...props
 }: EditBoxProps) {
   return (
     <div
-      onClick={onSelect}
+      onClick={isEditMode ? onSelect : undefined}
       className={cn(
-        'ring-offset-normal-25 relative flex cursor-pointer items-center gap-2 rounded-2xl ring-2 ring-blue-100 ring-offset-4 hover:ring-blue-300',
+        'relative flex items-center gap-2 rounded-2xl',
         className,
         getBoxWidth(boxSize),
         {
-          'ring-blue-500 hover:ring-blue-500': checked,
+          'ring-offset-normal-25 cursor-pointer ring-2 ring-blue-100 ring-offset-4 hover:ring-blue-300': isEditMode,
+          'ring-blue-500 hover:ring-blue-500': checked && isEditMode,
         },
       )}
       {...props}
     >
       {/* <EditBoxTool data={data} index={index} /> */}
-      {checked ? <EditBoxTool data={data} index={index} /> : null}
+      {isEditMode && checked ? <EditBoxTool data={data} index={index} /> : null}
       <div className="size-full *:size-full">{children}</div>
     </div>
   )

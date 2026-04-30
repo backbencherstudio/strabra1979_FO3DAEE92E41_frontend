@@ -110,10 +110,15 @@ export function DropdownMenuIcons({ id, status }: { id: string; status: ITemplat
           <Eye />
           View
         </DropdownMenuItem>
-        {/* <DropdownMenuItem> */}
-        {/*   <Edit /> */}
-        {/*   Edit */}
-        {/* </DropdownMenuItem> */}
+
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(routes.admin.templatesDetial.build({ templateId: id }, { edit: 'true' }))
+          }
+        >
+          <Edit />
+          Edit
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           className="capitalize"

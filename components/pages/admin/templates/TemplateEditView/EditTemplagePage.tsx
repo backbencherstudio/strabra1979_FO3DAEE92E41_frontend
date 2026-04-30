@@ -1,15 +1,18 @@
 'use client'
 
 import { useGetASingleDashboardTemplateQuery } from '@/api/template/templateManagementApi'
-import { FileImage, PlusSignSquare } from '@/components/icons/File'
+import { DocumentsTableColumns } from '@/components/columns/DocumentsTable'
+import { FileImage } from '@/components/icons/File'
 import { PlayCircle } from '@/components/icons/PlayIcon'
-import { InputFieldType } from '@/components/pages/InspectionCriteria/InspectionCriteriaSetupForm/modals'
+import PiorityRepairPlanList from '@/components/pages/InspectionReport/PiorityRepairPlan/PiorityRepairPlanList'
 import { CircularProgressWithMeta } from '@/components/reusable/CircularProgress/CircularProgress'
 import InfoCard from '@/components/reusable/InfoCard/InfoCard'
 import { InfoGrid } from '@/components/reusable/InfoGrid/InfoGrid'
-import { InfoList, PropertyHeaderWrapper } from '@/components/reusable/InfoList/InfoList'
+import { PropertyHeaderWrapper } from '@/components/reusable/InfoList/InfoList'
 import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
+import PropertyCheckListPreview from '@/components/reusable/PropertyDetails/PropertyCheckListPreview'
 import SectionCard, { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
+import CustomTable from '@/components/reusable/table/CustomTable'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
@@ -24,11 +27,13 @@ import { useParams } from 'next/navigation'
 import React from 'react'
 import { Slide } from 'yet-another-react-lightbox'
 import { EditBox } from './EditBox'
+import { DEMO_FROM_CONFIG, DEMO_INSPECTIN_DATA } from './mock'
 
 interface PropertyDetailsProps {
   property: Property
   accessExpiration?: string
   headerRightContent?: React.ReactNode
+  isEditMode: boolean
 }
 
 export const demoSlides: Slide[] = [
@@ -44,9 +49,11 @@ export const demoSlides: Slide[] = [
 export default function EditTemplagePage({
   property,
   accessExpiration,
-  headerRightContent = null,
+  headerRightContent,
+  isEditMode,
 }: PropertyDetailsProps) {
   const params = useParams<{ templateId: string }>()
+
   const { data: { data: templateData } = {} } = useGetASingleDashboardTemplateQuery({
     id: params.templateId,
   })
@@ -56,19 +63,6 @@ export default function EditTemplagePage({
     { label: 'Address', value: property.address },
     { label: 'Next Inspection', value: property.nextInspection ?? '' },
   ]
-
-  const [editFieldType, setEditFieldType] = React.useState<InputFieldType>()
-  const [openCreateFieldsModal, setOpenCreateFieldsModal] = React.useState(false)
-  const [openCreateMediaFieldsModal, setOpenCreateMediaFieldsModal] = React.useState(false)
-
-  const handleCreateFieldOpen = (type: InputFieldType) => {
-    setEditFieldType(type)
-    if (type === 'input-media') {
-      setOpenCreateMediaFieldsModal((v) => !v)
-    } else {
-      setOpenCreateFieldsModal((v) => !v)
-    }
-  }
 
   const templateSections = useAppSelector(selectTemplateSections).toSorted(
     (a, b) => a.order - b.order,
@@ -121,6 +115,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -136,6 +131,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -162,6 +158,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -192,6 +189,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -210,6 +208,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -228,6 +227,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -235,8 +235,7 @@ export default function EditTemplagePage({
               >
                 <SectionCard>
                   <SectionTitle>{data.label}</SectionTitle>
-                  {/* // TODO: fix this */}
-                  {/* <PiorityRepairPlanList /> */}
+                  <PiorityRepairPlanList items={DEMO_INSPECTIN_DATA?.repairItems ?? []} />
                 </SectionCard>
               </EditBox>
             )
@@ -247,6 +246,7 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
@@ -271,12 +271,13 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
                 onSelect={() => handleSelectEditBox({ data })}
               >
-                <SectionCard className="col-span-full space-y-4.5">
+                <SectionCard className={cn('space-y-4.5')}>
                   <div className="flex items-center justify-between">
                     <SectionTitle>{data.label}</SectionTitle>
 
@@ -285,26 +286,21 @@ export default function EditTemplagePage({
                     </Button>
                   </div>
                   <div>
-                    {/* <CustomTable */}
-                    {/*   columns={DocumentsTableColumns} */}
-                    {/*   data={demoDocumentsData.slice(0, 1)} */}
-                    {/*   //   currentPage={currentPage} */}
-                    {/*   //   itemsPerPage={itemsPerPage} */}
-                    {/*   //   onPageChange={setCurrentPage} */}
-                    {/*   //   sortConfig={sortConfig} */}
-                    {/*   //   onSort={handleSort} */}
-                    {/*   minWidth={1000} */}
-                    {/*   headerStyles={{ */}
-                    {/*     backgroundColor: '#eceff3', */}
-                    {/*     textColor: '#4a4c56', */}
-                    {/*     fontSize: '14px', */}
-                    {/*     fontWeight: '400', */}
-                    {/*     padding: '12px 16px', */}
-                    {/*   }} */}
-                    {/*   cellBorderColor="#eceff3" */}
-                    {/*   hasWrapperBorder={false} */}
-                    {/*   roundedClass="rounded-lg" */}
-                    {/* /> */}
+                    <CustomTable
+                      columns={DocumentsTableColumns}
+                      data={[]}
+                      minWidth={1000}
+                      headerStyles={{
+                        backgroundColor: '#eceff3',
+                        textColor: '#4a4c56',
+                        fontSize: '14px',
+                        fontWeight: '400',
+                        padding: '12px 16px',
+                      }}
+                      cellBorderColor="#eceff3"
+                      hasWrapperBorder={false}
+                      roundedClass="rounded-lg"
+                    />
                   </div>
                 </SectionCard>
               </EditBox>
@@ -316,13 +312,21 @@ export default function EditTemplagePage({
               <EditBox
                 key={data.id}
                 data={data}
+                isEditMode={isEditMode}
                 boxSize={data.style.width}
                 index={sectionIndex}
                 checked={checked}
                 onSelect={() => handleSelectEditBox({ data })}
               >
-                <SectionCard className="col-span-full space-y-4.5">
-                  <SectionTitle>{data.label}</SectionTitle>
+                <SectionCard
+                // className={cn(getBoxWidth(item?.style?.width))}
+                // key={item.type}
+                >
+                  <PropertyCheckListPreview
+                    label={data.label}
+                    formConfig={DEMO_FROM_CONFIG}
+                    inspectionData={DEMO_INSPECTIN_DATA}
+                  />
                 </SectionCard>
               </EditBox>
             )
@@ -330,21 +334,6 @@ export default function EditTemplagePage({
 
           return `${data.type} - `
         })}
-
-        {/* Add More btn */}
-        {/* <Button */}
-        {/*   onClick={() => handleCreateFieldOpen('input-media')} */}
-        {/*   type="button" */}
-        {/*   variant="muted" */}
-        {/*   className="text-gray-black-300 col-span-full h-23 flex-col" */}
-        {/* > */}
-        {/*   <PlusSignSquare className="size-6" /> */}
-        {/*   <span className="text-sm whitespace-nowrap">Add More Media fields</span> */}
-        {/* </Button> */}
-
-        {/* <SectionCard> */}
-        {/*   <PropertyScoreListPreview /> */}
-        {/* </SectionCard> */}
       </SectionCard>
     </div>
   )

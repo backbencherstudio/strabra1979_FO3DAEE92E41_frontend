@@ -219,10 +219,10 @@ export default function InspectionReportDetail() {
         />
       </section>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        <Button type="button" size="xl" variant="outline">
-          Save
-        </Button>
+      <div className="mt-6 grid gap-3 ">
+        {/* <Button type="button" size="xl" variant="outline"> */}
+        {/*   Save */}
+        {/* </Button> */}
         <Button
           disabled={isLoadingInspectionFormData}
           type="button"

@@ -85,7 +85,7 @@ export default function PropertyDetails({
           if (item.type === 'header_info') {
             return (
               <InfoGrid
-                className={cn(getBoxWidth(item.style.width))}
+                className={cn(getBoxWidth(item?.style?.width))}
                 key={item.type}
                 items={rowInfos}
               />
@@ -96,7 +96,7 @@ export default function PropertyDetails({
             return (
               <SectionCard
                 key={item.type}
-                className={cn('bg-white', getBoxWidth(item.style.width))}
+                className={cn('bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
                 <p className="text-center text-sm">Average Health Score</p>
@@ -115,7 +115,7 @@ export default function PropertyDetails({
               return (
                 <SectionCard
                   key={item.type}
-                  className={cn('grid place-items-center bg-white', getBoxWidth(item.style.width))}
+                  className={cn('grid place-items-center bg-white', getBoxWidth(item?.style?.width))}
                 >
                   <span className="text-muted-foreground text-sm">
                     No photos or videos available
@@ -144,7 +144,7 @@ export default function PropertyDetails({
               })
 
             return (
-              <div key={item.type} className={cn(getBoxWidth(item.style.width))}>
+              <div key={item.type} className={cn(getBoxWidth(item?.style?.width))}>
                 <MediaFiles className="bg-red-300" slides={slides}>
                   <MediaFilesPreviewGrid slides={slides} />
                 </MediaFiles>
@@ -156,7 +156,7 @@ export default function PropertyDetails({
             return (
               <SectionCard
                 key={item.type}
-                className={cn('space-y-2 bg-white', getBoxWidth(item.style.width))}
+                className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
                 <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
@@ -176,7 +176,7 @@ export default function PropertyDetails({
             return (
               <SectionCard
                 key={item.type}
-                className={cn('space-y-2 bg-white', getBoxWidth(item.style.width))}
+                className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
                 <div className="aspect-video overflow-hidden rounded-md bg-gray-100">
@@ -194,8 +194,8 @@ export default function PropertyDetails({
 
           if (item.type === 'repair_planning') {
             return (
-              <SectionCard className={cn(getBoxWidth(item.style.width))} key={item.type}>
-                <SectionTitle>Priority Repair Planning</SectionTitle>
+              <SectionCard className={cn(getBoxWidth(item?.style?.width))} key={item.type}>
+                <SectionTitle>{item.label}</SectionTitle>
                 <PiorityRepairPlanList items={inspectinData?.repairItems ?? []} />
               </SectionCard>
             )
@@ -203,7 +203,7 @@ export default function PropertyDetails({
 
           if (item.type === 'roof_health_rating') {
             return (
-              <SectionCard className={cn(getBoxWidth(item.style.width))} key={item.type}>
+              <SectionCard className={cn(getBoxWidth(item?.style?.width))} key={item.type}>
                 <PropertyCheckListPreview
                   label={item.label}
                   formConfig={formConfig}
@@ -215,7 +215,7 @@ export default function PropertyDetails({
 
           if (item.type === 'additional_info') {
             return (
-              <SectionCard className={cn(getBoxWidth(item.style.width))} key={item.type}>
+              <SectionCard className={cn(getBoxWidth(item?.style?.width))} key={item.type}>
                 <SectionTitle>{item.label}</SectionTitle>
                 <div className="mt-4 space-y-3">
                   <InfoCard
@@ -242,11 +242,11 @@ export default function PropertyDetails({
 
             return (
               <SectionCard
-                className={cn('space-y-4.5', getBoxWidth(item.style.width))}
+                className={cn('space-y-4.5', getBoxWidth(item?.style?.width))}
                 key={item.type}
               >
                 <div className="flex items-center justify-between">
-                  <SectionTitle>Documents</SectionTitle>
+                  <SectionTitle>{item.label}</SectionTitle>
 
                   <Button variant="link" theme="text">
                     View All <ChevronRight />

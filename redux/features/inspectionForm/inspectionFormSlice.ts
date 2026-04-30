@@ -139,7 +139,7 @@ const inspectionFormSlice = createSlice({
       state.headerData = action.payload.headerData ?? {}
       state.scores = action.payload.scores ?? {}
       state.repairItems = action.payload.repairItems ?? []
-      state.nteValue = action.payload.nteValue ?? ''
+      state.nteValue = action.payload.nteValue ?? 0
       state.additionalComments = action.payload.additionalComments ?? ''
       state.mediaFiles = []
     },
