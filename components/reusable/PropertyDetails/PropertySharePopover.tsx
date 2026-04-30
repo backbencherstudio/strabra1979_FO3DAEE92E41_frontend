@@ -8,7 +8,9 @@ import {
 import FormInputField from '@/components/form/form-input-field'
 import { LinkIcon } from '@/components/icons/LinkIcon'
 import { ShareIcon } from '@/components/icons/ShareIcon'
+import { Trush } from '@/components/icons/Trush'
 import { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -18,17 +20,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Popover, PopoverContent, PopoverHeader, PopoverTrigger } from '@/components/ui/popover'
+import { routes } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
 import { isArrayEmpty } from '@/lib/utils'
 import { IAccessUser, IPropertyDashboardDetails } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { EllipsisVerticalIcon } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import z from 'zod'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
-import { Trush } from '@/components/icons/Trush'
-import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
 
 type PropertyViewAccess = 'authorized-viewer' | 'only-me'
 
@@ -104,6 +105,32 @@ export default function PropertySharePopover({
     }
   }
 
+  async function copyText(text: string) {
+    try {
+      await navigator.clipboard.writeText(text)
+      toast.success('Link copied to clipboard.')
+    } catch (err) {
+      toast.error('We couldn’t copy the link. Please try again or copy it manually.', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
+
+  function handleOnCopy() {
+    try {
+      const baseUrl = window.location.origin
+      if (!baseUrl) {
+        throw new Error('Unable to determine the website URL.')
+      }
+
+      copyText(`${baseUrl}${routes.redirects.propertyDetail.build({ dashboardId: dashboardId })}`)
+    } catch (err) {
+      toast.error('Copy failed', {
+        description: getErrorMessage(err),
+      })
+    }
+  }
+
   if (!dashboardId) return
 
   return (
@@ -143,7 +170,12 @@ export default function PropertySharePopover({
           <div className="space-y-3">
             <section className="flex items-center justify-between">
               <span className="text-base font-medium">Share the dashboard</span>
-              <Button size="default" className="text-[#4988C4]" variant="link">
+              <Button
+                onClick={handleOnCopy}
+                size="default"
+                className="text-[#4988C4]"
+                variant="link"
+              >
                 <LinkIcon />
                 Copy Link
               </Button>

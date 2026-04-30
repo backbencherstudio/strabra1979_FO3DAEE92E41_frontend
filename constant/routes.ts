@@ -4,6 +4,10 @@ export const routes = {
   signin: '/signin',
   signup: '/signup',
 
+  redirects: {
+    propertyDetail: createRoute('/r/properties-list/[dashboardId]'),
+  },
+
   admin: {
     home: '/admin',
 
