@@ -21,7 +21,8 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import UserAvatar from '../UserAvatar'
-import { NotificationPanelItem, NotificationText, RenderFooter } from './NotificationPanelItem'
+import { NotificationPanelItem, NotificationText } from './NotificationPanelItem'
+import { NotificationActionFooter } from './NotificationActionFooter'
 
 const showUserInfoFor = new Set<NotificationType>([
   'access_request',
@@ -129,7 +130,7 @@ export default function NotificationPanel() {
                 title={title}
                 subtitle={subtitle}
                 time={formatTimeAgo(n.created_at)}
-                footer={<RenderFooter {...n} />}
+                footer={<NotificationActionFooter {...n} />}
                 avatar={
                   <UserAvatar
                     src={n?.sender?.avatar ?? undefined}

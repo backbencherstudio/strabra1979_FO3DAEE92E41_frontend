@@ -2,21 +2,21 @@ import { IUserBasicInfo } from './user'
 
 export const NOTIFICATION_EVENTS = {
   // Property Manager / Authorized Viewer
-  access_request: 'Access Request',
+  access_request: 'Access Request', // action
   access_approved: 'Access Approved',
   access_declined: 'Access Declined',
-  dashboard_assigned: 'Dashboard Assigned',
-  dashboard_shared: 'Dashboard Shared',
-  dashboard_updated: 'Dashboard Updated',
+  dashboard_assigned: 'Dashboard Assigned', // link
+  dashboard_shared: 'Dashboard Shared', // link
+  dashboard_updated: 'Dashboard Updated', // link
 
   // Operational Team
-  due_inspection: 'Due Inspection',
-  new_inspection_assigned: 'New Inspection Assigned',
+  due_inspection: 'Due Inspection', // link
+  new_inspection_assigned: 'New Inspection Assigned', // link
 
   // Admin
   new_user_registration: 'New User Registration',
-  new_user_approval_request: 'New User Approval Request',
-  inspection_report_update: 'Inspection Report Update',
+  new_user_approval_request: 'New User Approval Request', // action
+  inspection_report_update: 'Inspection Report Update', // link
 
   // User receives after admin decision
   account_approved: 'Account Approved',
@@ -48,6 +48,7 @@ export type INotificationItem = {
   receiver_id: string
   notification_event_id: string
   entity_id: string
+  metadata: any
   notification_event: {
     id: string
     created_at: string
