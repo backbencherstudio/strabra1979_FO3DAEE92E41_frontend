@@ -1,18 +1,17 @@
+import { baseApi } from '@/api/baseApi'
+import { getErrorMessage } from '@/lib/farmatters'
+import { setCredentials } from '@/redux/features/auth/authSlice'
 import type {
   IAuthChangePasswordParams,
   IAuthRegisterParams,
   IAuthRegisterResponse,
-  IAuthUpdateUserParams,
+  IAuthResetPasswordParams,
   IAuthUser,
   IAuthUserRole,
-  IAuthVerifyEmailParams,
   ILoginParams,
   ILoginPayload,
   WithApiStatus,
 } from '@/types'
-import { baseApi } from '@/api/baseApi'
-import { getErrorMessage } from '@/lib/farmatters'
-import { setCredentials } from '@/redux/features/auth/authSlice'
 import { toast } from 'sonner'
 
 const authApi = baseApi.injectEndpoints({
@@ -46,13 +45,6 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    verifyEmail: builder.mutation<IAuthRegisterResponse, IAuthVerifyEmailParams>({
-      query: (body) => ({
-        url: '/auth/verify-email',
-        method: 'POST',
-        body,
-      }),
-    }),
     getMe: builder.query<IAuthUser, void>({
       query: () => `/auth/me`,
       providesTags: ['Me'] as const,
@@ -67,6 +59,32 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    // Forget Password API
+    forgotPassword: builder.mutation<WithApiStatus<void>, { email: string }>({
+      query: (body) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+    verifyEmailWithOTP: builder.mutation<
+      WithApiStatus<{ reset_token?: string }>,
+      { email: string; otp: string }
+    >({
+      query: (body) => ({
+        url: '/auth/verify-email',
+        method: 'POST',
+        body,
+      }),
+    }),
+    resetPassword: builder.mutation<WithApiStatus<void>, IAuthResetPasswordParams>({
+      query: (body) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -75,7 +93,10 @@ export const {
   useLoginMutation,
   useGetMeQuery,
   useRegisterUserMutation,
-  useVerifyEmailMutation,
   useChangePasswordMutation,
+
+  useForgotPasswordMutation,
+  useVerifyEmailWithOTPMutation,
+  useResetPasswordMutation,
 } = authApi
 export default authApi

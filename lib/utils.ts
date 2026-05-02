@@ -18,3 +18,18 @@ export function mergeConfig<T extends object>(defaultConfig: T, userConfig: Part
 export function isDevEnv() {
   return process.env.NODE_ENV === 'development'
 }
+
+export function maskEmail(email: string) {
+  const [name, domain] = email.split('@')
+
+  if (!name || !domain) return email
+
+  if (name.length <= 2) {
+    return `${name[0]}*@${domain}`
+  }
+
+  const visible = name.slice(0, 3)
+  const masked = '*'.repeat(name.length - 3)
+
+  return `${visible}${masked}@${domain}`
+}

@@ -104,7 +104,6 @@ export default function OperationHome() {
           </Button>
         </div>
 
-        {/* // TODO: view is not working */}
         <div>
           <CustomTable
             isLoading={isLoading}

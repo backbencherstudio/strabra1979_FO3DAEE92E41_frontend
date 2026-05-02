@@ -1,4 +1,3 @@
-import ForgetPasswordForm from '@/components/auth/ForgetPasswordForm'
 import SetNewPasswordForm from '@/components/auth/SetNewPasswordForm'
 import authLogo from '@/public/auth/auth-logo.png'
 import Image from 'next/image'
@@ -16,7 +15,7 @@ export default function page() {
         <h1 className="text-gray-black-500 mt-4 text-center text-lg font-semibold md:text-2xl">
           Set New Password
         </h1>
-        <p className="mt-2 text-center">
+        <p className="tex-sm text-muted-foreground mt-2 text-center">
           Make sure it’s strong and unique to keep your account secure.
         </p>
 

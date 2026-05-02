@@ -12,7 +12,6 @@ import type {
 
 const inspectionManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // TODO: use invalidatesTags in scheduleInspection
     scheduleInspection: builder.mutation<
       WithApiStatus<IScheduleInspectionResponse>,
       IScheduleInspectionParams

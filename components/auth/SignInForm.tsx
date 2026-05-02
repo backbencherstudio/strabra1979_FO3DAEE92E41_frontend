@@ -74,6 +74,12 @@ const SignInForm = () => {
           }
         />
 
+        <div className="-mt-3 flex justify-end">
+          <Button asChild size="sm" variant="link" className="text-muted-foreground px-0">
+            <Link href={routes.forgotPassword}>Forget Password?</Link>
+          </Button>
+        </div>
+
         <Button disabled={isLoginLoading} size="xl" className="w-full">
           {isLoginLoading ? (
             <>

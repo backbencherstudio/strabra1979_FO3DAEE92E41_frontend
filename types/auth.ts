@@ -66,11 +66,6 @@ export interface IAuthRegisterResponse {
   status: string
 }
 
-export interface IAuthVerifyEmailParams {
-  email: string
-  token: string
-}
-
 export interface IAuthChangePasswordParams {
   current_password: string
   new_password: string
@@ -99,4 +94,10 @@ export type IAuthUpdateUserParams = {
   address: string
   gender: string
   date_of_birth: string
+}
+
+export type IAuthResetPasswordParams = {
+  email: string
+  reset_token: string
+  new_password: string
 }

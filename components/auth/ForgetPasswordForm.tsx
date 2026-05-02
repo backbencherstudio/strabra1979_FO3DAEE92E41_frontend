@@ -1,56 +1,81 @@
 'use client'
 
+import { useForgotPasswordMutation } from '@/api/auth/authApi'
+import { routes } from '@/constant'
+import { createQueryParams, getErrorMessage } from '@/lib/farmatters'
+import { useForm } from '@tanstack/react-form'
 import { MailIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React from 'react'
+import { toast } from 'sonner'
+import z from 'zod'
+import FormInputField from '../form/form-input-field'
 import { Button } from '../ui/button'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import { Spinner } from '../ui/spinner'
 
-interface DynamicFormProps {
-  values?: {
-    email?: string
-  }
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
+interface DynamicFormProps {}
 
-const DEFAULT_VALUES = {
-  email: '',
-}
+const forgetPasswordSchema = z.object({
+  email: z.email('Enter a valid email address'),
+})
 
-const DEFAULT_ONCHANGE = () => {}
+export type ForgetPasswordFormValues = z.infer<typeof forgetPasswordSchema>
 
-const ForgetPasswordForm: React.FC<DynamicFormProps> = ({
-  values = DEFAULT_VALUES,
-  onChange = DEFAULT_ONCHANGE,
-}) => {
+const ForgetPasswordForm: React.FC<DynamicFormProps> = ({}) => {
+  const router = useRouter()
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation()
+
+  const form = useForm({
+    defaultValues: {
+      email: '',
+    },
+    validators: {
+      onSubmit: forgetPasswordSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const res = await forgotPassword({
+          email: value.email,
+        }).unwrap()
+
+        router.push(`${routes.varifyEmail}${createQueryParams({ email: value.email })}`)
+        toast.success(res.message || 'Success message')
+      } catch (err) {
+        toast.error('Error title', {
+          description: getErrorMessage(err),
+        })
+      }
+    },
+  })
+
   return (
-    <div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <div className="space-y-5">
         <div className="flex flex-col">
-          <label htmlFor="email" className="mb-2 text-base text-[#4a4c56]">
-            Email
-          </label>
-          <div className="relative">
-            <InputGroup>
-              <InputGroupAddon>
-                <MailIcon className="size-4" />
-              </InputGroupAddon>
-              <InputGroupInput
-                type="text"
-                name="email"
-                id="email"
-                placeholder="Email"
-                // value={values.email ?? ''}
-                // onChange={onChange}
-              />
-            </InputGroup>
-          </div>
+          <FormInputField<ForgetPasswordFormValues>
+            form={form}
+            name="email"
+            label="Email"
+            placeholder="Email"
+            icon={<MailIcon className="size-4" />}
+          />
         </div>
 
-        <Button size="xl" className="w-full">
-          Send
-        </Button>
+        <form.Subscribe selector={(state) => ({ email: state.values.email })}>
+          {({ email }) => (
+            <Button disabled={isLoading || !email} type="submit" size="xl" className="w-full">
+              {isLoading ? <Spinner /> : null}
+              {isLoading ? 'Sending...' : 'Send'}
+            </Button>
+          )}
+        </form.Subscribe>
       </div>
-    </div>
+    </form>
   )
 }
 

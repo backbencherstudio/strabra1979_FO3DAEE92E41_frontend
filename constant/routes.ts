@@ -3,6 +3,10 @@ import { createRoute } from '@/lib/createRoute'
 export const routes = {
   signin: '/signin',
   signup: '/signup',
+  forgotPassword: '/forgot-password',
+  varifyEmail: '/varify-email',
+  setNewPassword: '/set-new-password',
+  signUpSuccess: '/sign-up-success',
 
   redirects: {
     propertyDetail: createRoute('/r/properties-list/[dashboardId]'),
@@ -55,4 +59,11 @@ export const routes = {
   },
 } as const
 
-export const publicRoutes = [routes.signin, routes.signup]
+export const publicRoutes = [
+  routes.signin,
+  routes.signup,
+  routes.forgotPassword,
+  routes.varifyEmail,
+  routes.setNewPassword,
+  routes.signUpSuccess,
+]

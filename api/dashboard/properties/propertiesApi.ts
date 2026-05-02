@@ -90,7 +90,6 @@ const propertiesApi = baseApi.injectEndpoints({
         providesTags: ['PropertyDashboard'] as const,
       }),
     }),
-    // TODO: use invalidatesTags in assignUserToProperty
     assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
       query: ({ dashboardId, userId, expiresAt }) => ({
         url: `/properties/dashboard/${dashboardId}/assign-user`,
@@ -115,7 +114,6 @@ const propertiesApi = baseApi.injectEndpoints({
       }),
       providesTags: ['AccessList'] as const,
     }),
-    // TODO: use with Revoke User Access dialog
     revokeDashboardAccess: builder.mutation<WithApiStatus<void>, IRevokeDashboardAccessPayload>({
       query: ({ dashboardId, targetUserId }) => ({
         url: `/properties/dashboard/${dashboardId}/access/users/${targetUserId}`,

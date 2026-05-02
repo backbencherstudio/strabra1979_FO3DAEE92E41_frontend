@@ -103,7 +103,7 @@ export function ScheduleInspectionDialog({
 
   return (
     <div>
-      {/* Assign propery manager Dialog */}
+      {/* Assign property manager Dialog */}
       <AssignUserDialog
         isLoading={isLoadingScheduleInspection}
         // TODO: show previous selected user with selectedUserId

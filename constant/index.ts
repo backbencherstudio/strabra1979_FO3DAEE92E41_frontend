@@ -14,6 +14,7 @@ if (!API_URL) throw new Error('NEXT_PUBLIC_API_URL is not defined')
 if (!SOCKET_URL) throw new Error('NEXT_PUBLIC_SOCKET_URL is not defined')
 
 export const config = {
+  otpDiginLenght: 6,
   apiBaseUrl: API_URL,
   socketUrl: SOCKET_URL,
 }

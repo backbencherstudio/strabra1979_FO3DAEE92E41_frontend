@@ -15,7 +15,9 @@ export default function page() {
         <h1 className="text-gray-black-500 mt-4 text-center text-lg font-semibold md:text-2xl">
           Set New Password
         </h1>
-        <p className="mt-2 text-center">Enter your email address to get OTP.</p>
+        <p className="text-muted-foreground mt-2 text-center text-sm">
+          Enter your email address to get OTP.
+        </p>
 
         <div className="mt-4 w-full">
           <ForgetPasswordForm />

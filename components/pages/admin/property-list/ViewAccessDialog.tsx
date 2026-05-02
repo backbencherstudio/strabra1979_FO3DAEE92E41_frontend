@@ -58,7 +58,7 @@ export function ViewAccessDialog({ open, onOpenChange, dashboardId }: ViewAccess
   })
   const accessList = dashboardAccessData?.accessList
 
-  // TODO: work on accessList
+  // TODO: work on "Set access expiration date"
   const [revokeDashboardAccess, { isLoading: isRevokeDashboardAccessLoading }] =
     useRevokeDashboardAccessMutation()
 
