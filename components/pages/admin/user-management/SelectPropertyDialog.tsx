@@ -22,13 +22,13 @@ import {
 } from '@/components/ui/dialog'
 import { routes } from '@/constant'
 import { addDaysBy, naIfEmpty } from '@/lib/farmatters'
+import { IPropertyListItem } from '@/types'
 import { useEffect, useEffectEvent, useState } from 'react'
 import SharedPropertyCardListActions from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
 import {
   SharedPropertyCardListContextProvider,
   useSharedPropertyCardListContext,
 } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
-import { IPropertyListItem } from '@/types'
 
 interface SelectPropertyDialogProps extends React.ComponentProps<typeof Dialog> {
   onAssignConfirm?: (dashboardId: string, property: IPropertyListItem) => void
@@ -53,12 +53,12 @@ function SelectPropertyDialogContent({
   onOpenChange,
   ...props
 }: SelectPropertyDialogProps) {
-  const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
+  const { sortOrder, dateFrom, debouncedSearch, search } = useSharedPropertyCardListContext()
   const { page } = usePaginationPage()
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
     page,
     sortOrder,
-    search,
+    search: debouncedSearch,
     dateFrom: dateFrom?.formatted,
     dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
   })

@@ -49,14 +49,14 @@ export default function ViewerHome() {
 }
 
 function ViewerHomeContent() {
-  const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
+  const { sortOrder, dateFrom, debouncedSearch } = useSharedPropertyCardListContext()
 
   const { page } = usePaginationPage()
 
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
     page,
     sortOrder,
-    search,
+    search: debouncedSearch,
     limit: 9,
     dateFrom: dateFrom?.formatted,
     dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,

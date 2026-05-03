@@ -3,7 +3,10 @@
 import { useGetAllSheduledInspectionsAssignedToMeQuery } from '@/api/inspectionManagement/operationalInspectionApi'
 import { OPERATIONAL_INSPECTION_LIST_MANAGEMENT_COLUMS } from '@/components/columns/InspectionListManagement'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
-import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import {
+  SharedPropertyCardListContextProvider,
+  useSharedPropertyCardListContext,
+} from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
 import {
   PaginationPageProvider,
@@ -25,9 +28,11 @@ export default function AdminInspectionTable() {
 
 function AdminInspectionTableContent() {
   const { page } = usePaginationPage()
+  const { debouncedSearch } = useSharedPropertyCardListContext()
   const { data: { data: sheduledInspections = [], meta } = {}, isLoading } =
     useGetAllSheduledInspectionsAssignedToMeQuery({
       page,
+      search: debouncedSearch,
     })
   usePaginatedQuery({ meta_data: meta })
 
@@ -37,12 +42,7 @@ function AdminInspectionTableContent() {
         <SharedPropertyCardListActions
           title="Inspection List"
           titleClassName="text-forground"
-          // actionButtonText={
-          //   <>
-          //     <CalenderIcon03 />
-          //     Schedule New Inspection
-          //   </>
-          // }
+          showSearch={false}
         />
 
         <CustomTable

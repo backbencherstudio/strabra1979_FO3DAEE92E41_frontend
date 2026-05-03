@@ -36,7 +36,7 @@ function UserManagementTableContent() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
   const [status, setStatus] = useState<IUserStatus | undefined>(undefined)
-  const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
+  const { sortOrder, dateFrom, debouncedSearch } = useSharedPropertyCardListContext()
   const { page, setPage } = usePaginationPage()
 
   const { data: { data: users = [], meta } = {}, isLoading } = useGetUserListQuery({
@@ -45,7 +45,7 @@ function UserManagementTableContent() {
     dateFrom: dateFrom?.formatted,
     dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
     status: status,
-    search: search,
+    search: debouncedSearch,
   })
   usePaginatedQuery({ meta_data: meta })
 

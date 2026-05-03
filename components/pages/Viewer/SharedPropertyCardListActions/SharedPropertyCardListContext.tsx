@@ -1,4 +1,5 @@
 'use client'
+import { useDebounce } from '@/hooks/use-debounce'
 import { formatDate } from 'date-fns'
 import {
   Dispatch,
@@ -23,12 +24,14 @@ type SharedPropertyCardListContextState = {
   sortOrder: 'asc' | 'desc'
   setSortOrder: Dispatch<SetStateAction<'asc' | 'desc'>>
   search: string | undefined
+  debouncedSearch: string | undefined
   setSearch: Dispatch<SetStateAction<string>>
 }
 
 const SharedPropertyCardListContext = createContext<SharedPropertyCardListContextState | null>(null)
 export const SharedPropertyCardListContextProvider = (props: PropsWithChildren) => {
   const [search, setSearch] = useState<string>('')
+  const debouncedSearch = useDebounce(search, 500)
 
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
@@ -52,6 +55,7 @@ export const SharedPropertyCardListContextProvider = (props: PropsWithChildren) 
         sortOrder,
         setSortOrder,
         search,
+        debouncedSearch,
         setSearch,
       }}
     >

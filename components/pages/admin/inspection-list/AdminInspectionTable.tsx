@@ -6,7 +6,10 @@ import { CalenderIcon03 } from '@/components/icons/CalenderIcon'
 import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list/ScheduleInspectionDialog'
 import SelectPropertyDialog from '@/components/pages/admin/user-management/SelectPropertyDialog'
 import SharedPropertyCardListActions from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListActions'
-import { SharedPropertyCardListContextProvider } from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import {
+  SharedPropertyCardListContextProvider,
+  useSharedPropertyCardListContext,
+} from '@/components/pages/Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
 import PaginationControls from '@/components/reusable/Pagination/Pagination'
 import {
   PaginationPageProvider,
@@ -15,22 +18,27 @@ import {
 } from '@/components/reusable/Pagination/PaginationPageProvider'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import CustomTable from '@/components/reusable/table/CustomTable'
+import { Button } from '@/components/ui/button'
 import { IPropertyListItem } from '@/types'
 import { useState } from 'react'
 
 export default function AdminInspectionTable() {
   return (
-    <PaginationPageProvider>
-      <AdminInspectionTableContent />
-    </PaginationPageProvider>
+    <SharedPropertyCardListContextProvider>
+      <PaginationPageProvider>
+        <AdminInspectionTableContent />
+      </PaginationPageProvider>
+    </SharedPropertyCardListContextProvider>
   )
 }
 
 function AdminInspectionTableContent() {
   const { page } = usePaginationPage()
+  const { debouncedSearch } = useSharedPropertyCardListContext()
   const { data: { data: sheduledInspections = [], meta } = {}, isLoading } =
     useGetAllSheduledInspectionsQuery({
       page,
+      search: debouncedSearch,
     })
   usePaginatedQuery({ meta_data: meta })
 
@@ -61,20 +69,16 @@ function AdminInspectionTableContent() {
       />
 
       <SectionCard className="space-y-4.5">
-        <SharedPropertyCardListContextProvider>
-          <SharedPropertyCardListActions
-            title="Inspection List"
-            titleClassName="text-forground"
-            onActionButtonClick={() => setOpenAssignDialog((v) => !v)}
-            showActionButton
-            actionButtonText={
-              <>
-                <CalenderIcon03 />
-                Schedule New Inspection
-              </>
-            }
-          />
-        </SharedPropertyCardListContextProvider>
+        <SharedPropertyCardListActions
+          showSearch
+          title="Inspection List"
+          titleClassName="text-forground"
+        >
+          <Button size="lg" onClick={() => setOpenAssignDialog((v) => !v)}>
+            <CalenderIcon03 />
+            Schedule New Inspection
+          </Button>
+        </SharedPropertyCardListActions>
 
         <div>
           <CustomTable

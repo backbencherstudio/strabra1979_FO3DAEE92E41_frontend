@@ -27,12 +27,12 @@ export default function ManagerReportTable() {
 }
 
 function ManagerReportTableContent() {
-  const { sortOrder, dateFrom, search } = useSharedPropertyCardListContext()
+  const { sortOrder, dateFrom, debouncedSearch } = useSharedPropertyCardListContext()
   const { page } = usePaginationPage()
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetReportsQuery({
     page,
     sortOrder,
-    search,
+    search: debouncedSearch,
     limit: 9,
     dateFrom: dateFrom?.formatted,
     dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
