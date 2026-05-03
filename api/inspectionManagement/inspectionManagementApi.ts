@@ -28,7 +28,7 @@ const inspectionManagementApi = baseApi.injectEndpoints({
     }),
     getAllSheduledInspections: builder.query<
       WithPaginationAndStatus<IAdminScheduledInspectinTableItem[]>,
-      (IPaginationPayload & IFilterPayload) | void
+      (IPaginationPayload & IFilterPayload & { assignedTo?: string }) | void
     >({
       query: (args) => ({
         url: `/inspections/scheduled/all`,

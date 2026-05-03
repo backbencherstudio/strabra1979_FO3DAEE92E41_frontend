@@ -7,7 +7,7 @@ export type IRepairProgressStatus = (typeof REPAIR_PROGRESS_STATUSES)[number]
 export type InspectionProgressStatus =
   | 'ASSIGNED'
   | 'IN_PROGRESS'
-  | 'COMPLETED'
+  | 'COMPLETE'
   | 'DUE'
   | 'PUBLISHED'
 

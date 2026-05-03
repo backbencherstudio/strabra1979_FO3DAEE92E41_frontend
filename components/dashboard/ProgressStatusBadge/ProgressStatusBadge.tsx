@@ -16,7 +16,7 @@ export const inspectionStatusSystem = createStatusSystem<InspectionProgressStatu
       label: 'Assigned',
       variant: 'info',
     },
-    COMPLETED: {
+    COMPLETE: {
       label: 'Completed',
       variant: 'success',
     },
