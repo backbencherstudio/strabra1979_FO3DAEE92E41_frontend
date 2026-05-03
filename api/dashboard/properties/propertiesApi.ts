@@ -27,14 +27,14 @@ const propertiesApi = baseApi.injectEndpoints({
         url: `/properties`,
         params: arg ?? undefined,
       }),
-      providesTags: ['Property'] as const,
+      providesTags: ['PropertyList'],
     }),
 
     getPropertyDashboarIdCheck: builder.query<WithApiStatus<IPropertyDashboardDetails>, string>({
       query: (dashboardId) => ({
         url: `/properties/dashboard/${dashboardId}/access/check`,
-        providesTags: ['PropertyDashboard'] as const,
       }),
+      providesTags: ['PropertyDashboard'] as const,
     }),
 
     //property check
@@ -73,7 +73,7 @@ const propertiesApi = baseApi.injectEndpoints({
         url: `/properties`,
         params: arg ?? undefined,
       }),
-      providesTags: ['Property'] as const,
+      providesTags: ['PropertyList'] as const,
     }),
 
     createProperty: builder.mutation<WithApiStatus<void>, ICreatePropertyPayload>({
@@ -82,24 +82,24 @@ const propertiesApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Property'],
+      invalidatesTags: ['PropertyList'],
     }),
     getPropertyDashboardDetails: builder.query<WithApiStatus<IPropertyDashboardDetails>, string>({
       query: (dashboardId) => ({
         url: `/properties/dashboard/${dashboardId}`,
-        providesTags: ['PropertyDashboard'] as const,
       }),
+      providesTags: ['PropertyDashboard'] as const,
     }),
     assignUserToProperty: builder.mutation<WithApiStatus<AssignUserResponse>, IAssignUserParams>({
       query: ({ dashboardId, userId, expiresAt }) => ({
         url: `/properties/dashboard/${dashboardId}/assign-user`,
         method: 'POST',
-        invalidatesTags: ['AccessList', 'Property'],
         body: {
           userId,
           expiresAt,
         },
       }),
+      invalidatesTags: ['AccessList', 'PropertyList', 'Overview'],
     }),
 
     // AccessList

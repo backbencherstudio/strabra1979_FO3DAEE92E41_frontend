@@ -53,7 +53,7 @@ export const baseApi = createApi({
 
     'UserManagement',
     'ActivityLog',
-    'Property',
+    'PropertyList',
     'PropertyDashboard',
 
     'InspectionManagement',

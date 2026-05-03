@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import { InfoItem } from '../InfoGrid/InfoGrid'
 import PropertyCardAdminActions from './PropertyCardAdminActions'
+import authImgMobile from '@/public/auth/auth-img-mobile.png'
 
 export interface Property {
   id: string
@@ -99,7 +100,7 @@ export default function PropertyCard({
         />
       )}
 
-      <div className="relative aspect-video bg-gray-400 max-sm:h-50">
+      <div className="relative aspect-video bg-gray-400">
         {previewImageUrl && (
           <Image
             className="h-full w-full object-cover"

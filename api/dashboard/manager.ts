@@ -16,7 +16,7 @@ const manager = baseApi.injectEndpoints({
         url: `/properties`,
         params: arg ?? undefined,
       }),
-      providesTags: ['Property'] as const,
+      providesTags: ['PropertyList'] as const,
     }),
   }),
   overrideExisting: false,

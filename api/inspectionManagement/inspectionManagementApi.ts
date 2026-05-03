@@ -19,12 +19,12 @@ const inspectionManagementApi = baseApi.injectEndpoints({
       query: ({ dashboardId, scheduledAt, assignedTo }) => ({
         url: `/properties/dashboard/${dashboardId}/schedule-inspection`,
         method: 'POST',
-        invalidatesTags: ['AccessList', 'Property', 'InspectionManagement'],
         body: {
           scheduledAt,
           assignedTo,
         },
       }),
+      invalidatesTags: ['AccessList', 'PropertyList', 'InspectionManagement'],
     }),
     getAllSheduledInspections: builder.query<
       WithPaginationAndStatus<IAdminScheduledInspectinTableItem[]>,
