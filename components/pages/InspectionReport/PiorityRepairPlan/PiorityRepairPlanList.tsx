@@ -2,6 +2,9 @@ import { TabFilterButtons } from '@/components/reusable/TabFilterButtons/TabFilt
 import { IPiorityRepairPlanItem, IRepairProgressStatus } from '@/types'
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react'
 import { PiorityRepairPlanItem } from './PiorityRepairPlanItem'
+import { Button } from '@/components/ui/button'
+import { Edit } from '@/components/icons/Edit'
+import { PiorityRepairPlanEditDialog } from './PiorityRepairPlanEditDialog'
 
 export const tabs = ['All', 'Urgent', 'Maintenance', 'Replacement Planning'] as const
 export type RepairTab = (typeof tabs)[number]
@@ -16,50 +19,82 @@ export interface PiorityRepairPlanListRef {
   scrollToBottom: () => void
 }
 
-const PiorityRepairPlanList = forwardRef<
-  PiorityRepairPlanListRef,
-  { items?: IPiorityRepairPlanItem[] }
->(({ items }, ref) => {
-  const [currentTab, setCurrentTab] = useState('All')
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+export type PiorityRepairPlanListProps = {
+  items?: IPiorityRepairPlanItem[]
+  isEditable?: boolean
+}
 
-  useImperativeHandle(ref, () => ({
-    scrollToBottom: () => {
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
-      }
-    },
-  }))
+const PiorityRepairPlanList = forwardRef<PiorityRepairPlanListRef, PiorityRepairPlanListProps>(
+  ({ items, isEditable }, ref) => {
+    const [currentTab, setCurrentTab] = useState('All')
+    const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  const filteredItems =
-    currentTab === 'All'
-      ? items
-      : items?.filter((item) => item?.status === STATUS_MAP[currentTab as RepairTab])
+    useImperativeHandle(ref, () => ({
+      scrollToBottom: () => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight
+        }
+      },
+    }))
 
-  const tabCounts: Record<string, number> = {
-    All: items?.length ?? 0,
-    Urgent: items?.filter((i) => i?.status === 'Urgent').length ?? 0,
-    Maintenance: items?.filter((i) => i?.status === 'Maintenance').length ?? 0,
-    'Replacement Planning': items?.filter((i) => i?.status === 'Replacement Planning').length ?? 0,
-  }
+    const filteredItems =
+      currentTab === 'All'
+        ? items
+        : items?.filter((item) => item?.status === STATUS_MAP[currentTab as RepairTab])
 
-  return (
-    <div>
-      <TabFilterButtons tabs={tabCounts} currentTab={currentTab} onTabChange={setCurrentTab} />
+    const tabCounts: Record<string, number> = {
+      All: items?.length ?? 0,
+      Urgent: items?.filter((i) => i?.status === 'Urgent').length ?? 0,
+      Maintenance: items?.filter((i) => i?.status === 'Maintenance').length ?? 0,
+      'Replacement Planning':
+        items?.filter((i) => i?.status === 'Replacement Planning').length ?? 0,
+    }
 
-      <div ref={scrollContainerRef} className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
-        {filteredItems?.map((item) => (
-          <PiorityRepairPlanItem
-            key={item.id}
-            title={item.title}
-            status={item.status}
-            description={item.description}
-          />
-        ))}
+    const [openEditDialog, setOpenEditDialog] = useState(false)
+    const [editDialogData, setEditDialogData] = useState<IPiorityRepairPlanItem | undefined>(
+      undefined,
+    )
+
+    return (
+      <div>
+        <PiorityRepairPlanEditDialog
+          open={openEditDialog && isEditable}
+          initialData={editDialogData}
+          onOpenChange={setOpenEditDialog}
+        />
+
+        <TabFilterButtons tabs={tabCounts} currentTab={currentTab} onTabChange={setCurrentTab} />
+
+        <div ref={scrollContainerRef} className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
+          {filteredItems?.map((item) => (
+            // FIXME: overflow-x issue
+            <PiorityRepairPlanItem
+              key={item.id}
+              title={item.title}
+              status={item.status}
+              description={item.description}
+            >
+              {isEditable ? (
+                <Button
+                  onClick={() => {
+                    setEditDialogData(item)
+                    setOpenEditDialog(true)
+                  }}
+                  type="button"
+                  size="icon-xs"
+                  className="bg-transparent"
+                  variant="muted"
+                >
+                  <Edit className="size-4" />
+                </Button>
+              ) : null}
+            </PiorityRepairPlanItem>
+          ))}
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  },
+)
 
 PiorityRepairPlanList.displayName = 'PiorityRepairPlanList'
 

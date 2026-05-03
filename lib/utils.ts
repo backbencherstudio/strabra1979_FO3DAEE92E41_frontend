@@ -33,3 +33,7 @@ export function maskEmail(email: string) {
 
   return `${visible}${masked}@${domain}`
 }
+
+export function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}

@@ -1,26 +1,11 @@
 'use client'
 
-import { useRef } from 'react'
+import RepairPlanStatusBadge from '@/components/dashboard/ProgressStatusBadge/RepairPlanStatusBadge'
+import FormInputField from '@/components/form/form-input-field'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
 import { InputGroup, InputGroupTextarea } from '@/components/ui/input-group'
-import { REPAIR_PROGRESS_STATUSES } from '@/types'
-import PiorityRepairPlanList, {
-  PiorityRepairPlanListRef,
-} from '../PiorityRepairPlan/PiorityRepairPlanList'
-import { useSelector } from 'react-redux'
-import {
-  addRepairItem,
-  selectInspectionRepairItems,
-} from '@/redux/features/inspectionForm/inspectionFormSlice'
-import { useAppDispatch } from '@/redux/store'
-import z from 'zod'
-import { getErrorMessage } from '@/lib/farmatters'
-import { useForm } from '@tanstack/react-form'
-import { toast } from 'sonner'
-import FormInputField from '@/components/form/form-input-field'
-import { PlusIcon } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -29,7 +14,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import RepairPlanStatusBadge from '@/components/dashboard/ProgressStatusBadge/RepairPlanStatusBadge'
+import { getErrorMessage } from '@/lib/farmatters'
+import { generateId } from '@/lib/utils'
+import {
+  addRepairItem,
+  selectInspectionRepairItems,
+} from '@/redux/features/inspectionForm/inspectionFormSlice'
+import { useAppDispatch } from '@/redux/store'
+import { REPAIR_PROGRESS_STATUSES } from '@/types'
+import { useForm } from '@tanstack/react-form'
+import { PlusIcon } from 'lucide-react'
+import { useRef } from 'react'
+import { useSelector } from 'react-redux'
+import { toast } from 'sonner'
+import z from 'zod'
+import PiorityRepairPlanList, {
+  PiorityRepairPlanListRef,
+} from '../PiorityRepairPlan/PiorityRepairPlanList'
 
 interface PriorityRepairPlanningFormProps {
   isEditable?: boolean
@@ -63,6 +64,7 @@ export default function PriorityRepairPlanningForm({
       try {
         dispatch(
           addRepairItem({
+            id: generateId(),
             title: value.title,
             status: value.status,
             description: value.description,
@@ -80,22 +82,23 @@ export default function PriorityRepairPlanningForm({
 
   return (
     <SectionCard>
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-medium">Add Priority Repair Planning</h3>
+        {isEditable ? (
+          <Button onClick={() => form.handleSubmit()} className="rounded-full" size="icon-md">
+            <PlusIcon />
+          </Button>
+        ) : null}
+      </div>
+
+      <PiorityRepairPlanList isEditable={isEditable} ref={listRef} items={items} />
+
       <form
         onSubmit={(e) => {
           e.preventDefault()
           form.handleSubmit()
         }}
       >
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-medium">Add Priority Repair Planning</h3>
-
-          <Button type="submit" className="rounded-full" size="icon-md">
-            <PlusIcon />
-          </Button>
-        </div>
-
-        <PiorityRepairPlanList ref={listRef} items={items} />
-
         {isEditable ? (
           <section className="mt-4 space-y-1.5">
             <FormInputField<RepairItemFormValues>
