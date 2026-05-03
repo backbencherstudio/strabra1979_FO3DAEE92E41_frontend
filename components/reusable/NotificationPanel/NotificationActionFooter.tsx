@@ -2,14 +2,7 @@ import { useReviewAccessRequestMutation } from '@/api/notification/notificationA
 import { useUpdateUserStatusMutation } from '@/api/userManagement/userManagementApi'
 import { Button } from '@/components/ui/button'
 import { getErrorMessage } from '@/lib/farmatters'
-import {
-  INotificationItem,
-  NotificationType,
-  INotificationActionItem,
-  IReviewAccessRequestBody,
-  IUserStatus,
-} from '@/types'
-import dayjs from 'dayjs'
+import { INotificationItem, IUserStatus, NotificationType } from '@/types'
 import { toast } from 'sonner'
 
 type NotificationAction = {
@@ -19,6 +12,24 @@ type NotificationAction = {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'muted' | 'ghost' | 'link'
 }
 type NotificationActionMap = Partial<Record<NotificationType, NotificationAction[]>>
+
+export type INotificationMeta = {
+  access_request: {
+    requestId: string
+    hasActions: boolean
+    dashboardId: string
+    requesterId: string
+    propertyName: string
+    requesterName: string
+    requesterEmail: string
+  }
+  new_user_approval_request: {
+    hasActions: boolean
+    userId: string
+    userName: string
+    userRole: string
+  }
+}
 
 export const NotificationActionFooter = (item: INotificationItem) => {
   const { notification_event, metadata } = item
@@ -46,33 +57,55 @@ export const NotificationActionFooter = (item: INotificationItem) => {
         label: 'Approve',
         variant: 'destructive',
         async action() {
-          // const body: IReviewAccessRequestBody = {
-          //   action,
-          //   ...(action === 'DECLINED' && {
-          //     declineReason: 'Access is only available after contract signing.',
-          //   }),
-          //   ...(action === 'APPROVED' && { expiresAt }),
-          // }
+          const metadata = item.metadata as INotificationMeta['access_request']
 
-          // reviewAccessRequest({
-          //   dashboardId: item.actions. ?? '',
-          //   requestId: payload.requestId ?? '',
-          //   ...body,
-          // })
+          // console.table(item.metadata.dashboardId)
+          // alert('viewer access_request')
+          // // const body: IReviewAccessRequestBody = {
+          // //   action,
+          // //   ...(action === 'DECLINED' && {
+          // //     declineReason: 'Access is only available after contract signing.',
+          // //   }),
+          // //   ...(action === 'APPROVED' && { expiresAt }),
+          // // }
+          //
+          // try {
+          //   const res = await reviewAccessRequest({
+          //     dashboardId: metadata.dashboardId,
+          //     requestId: metadata.requestId,
+          //     action: 'APPROVED',
+          //   }).unwrap()
+          //
+          //   toast.success(res.message || 'Success message')
+          // } catch (err) {
+          //   toast.error('Error title', {
+          //     description: getErrorMessage(err),
+          //   })
+          // }
         },
       },
       {
         label: 'Decline',
         variant: 'outline',
-        action() {},
+        action() {
+          const metadata = item.metadata as INotificationMeta['access_request']
+          reviewAccessRequest({
+            dashboardId: metadata.dashboardId,
+            requestId: metadata.requestId,
+            action: 'DECLINED',
+            declineReason: 'Access is only available after contract signing.',
+          })
+        },
       },
-    ], // action
+    ],
     new_user_approval_request: [
       {
-        label: 'Approve',
+        label: 'Approve User',
         variant: 'default',
         action() {
-          onConfirmTogleDeactivateStatus(item.metadata.userId, 'ACTIVE')
+          const metadata = item.metadata as INotificationMeta['new_user_approval_request']
+
+          onConfirmTogleDeactivateStatus(metadata.userId, 'ACTIVE')
         },
       },
       {
@@ -80,24 +113,8 @@ export const NotificationActionFooter = (item: INotificationItem) => {
         variant: 'outline',
         action() {},
       },
-    ], // link
+    ],
   }
-
-  // onClick={() => {
-  //   if (notification_event.type === 'access_request') {
-  //     handlePropertyAccessRequest(
-  //       action.action === 'approve' ? 'APPROVED' : 'DECLINED',
-  //       action,
-  //     )
-  //   }
-
-  //   if (notification_event.type === 'new_user_approval_request') {
-  //     handlePropertyAccessRequest(
-  //       action.action === 'approve' ? 'APPROVED' : 'DECLINED',
-  //       action,
-  //     )
-  //   }
-  // }}
 
   const actions = ACTION_EVENTS[notification_event.type]
   if (!actions) return null

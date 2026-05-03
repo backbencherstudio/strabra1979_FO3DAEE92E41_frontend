@@ -22,12 +22,12 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
 
           draft.data.unshift({
             id: data.notificationId,
+            sender_id: data.sender.id,
+            receiver_id: '',
             created_at: data.createdAt,
             updated_at: data.createdAt,
             entity_id: data.entityId,
             status: data.isRead ? 0 : 1,
-            sender_id: data.sender.id,
-            receiver_id: '',
             notification_event_id: data.notificationId,
             actions: data.actions,
             notification_event: {
@@ -38,6 +38,7 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
               updated_at: data.createdAt,
             },
             sender: data.sender,
+            metadata: data.metadata,
           })
 
           if (draft.meta) {

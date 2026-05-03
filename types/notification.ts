@@ -48,7 +48,7 @@ export type INotificationItem = {
   receiver_id: string
   notification_event_id: string
   entity_id: string
-  metadata: any
+  metadata: unknown
   notification_event: {
     id: string
     created_at: string

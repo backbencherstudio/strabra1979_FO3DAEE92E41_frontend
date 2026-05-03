@@ -119,13 +119,16 @@ export default function NotificationPanel() {
         <section className="slim-scrollbar max-h-100 divide-y overflow-y-auto md:max-h-120">
           {notifications.map((n) => {
             const { title, subtitle } = resolveNotificationUI(n)
-            // if (n.notification_event.type === 'access_request') {
-            // }
+            const isUnread = !n.read_at
 
             return (
               <NotificationPanelItem
-                onClick={() => handleMarkSingleAsRead(n?.id)}
-                isUnread={!n.read_at}
+                onClick={() => {
+                  if (isUnread) {
+                    handleMarkSingleAsRead(n?.id)
+                  }
+                }}
+                isUnread={isUnread}
                 key={n.id}
                 title={title}
                 subtitle={subtitle}

@@ -1,9 +1,5 @@
-import { INotificationItem, INotificationActionItem, IReviewAccessRequestBody } from '@/types'
-import { memo, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { useReviewAccessRequestMutation } from '@/api/notification/notificationApi'
-import dayjs from 'dayjs'
+import { memo } from 'react'
 
 interface NotificationPanelItemProps extends React.ComponentProps<'div'> {
   time: string
