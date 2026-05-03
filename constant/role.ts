@@ -1,4 +1,5 @@
 import { IAuthUserRole } from '@/types'
+import { routes } from './routes'
 
 export const TOKENS = {
   token: 'auth-token',
@@ -27,4 +28,25 @@ export const roleHomePage: Record<IAuthUserRole, string> = {
 
 export const getHomePageByRole = (role: IAuthUserRole): string => {
   return roleHomePage[role]
+}
+
+export function getDashboardPathWithRole(role: IAuthUserRole, dashboardId: string) {
+  const userHomePath = getHomePageByRole(role)
+
+  switch (role) {
+    case 'ADMIN':
+      return routes.admin.propertyDetail.build({ dashboardId })
+
+    case 'PROPERTY_MANAGER':
+      return routes.manager.propertyDetail.build({ dashboardId })
+
+    case 'OPERATIONAL':
+      return routes.operational.inspectionListItemDetail.build({ dashboardId })
+
+    case 'AUTHORIZED_VIEWER':
+      return routes.viewer.propertyDetail.build({ dashboardId })
+
+    default:
+      return userHomePath ?? routes.signin
+  }
 }

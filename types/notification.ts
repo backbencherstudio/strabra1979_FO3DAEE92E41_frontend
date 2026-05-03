@@ -5,17 +5,17 @@ export const NOTIFICATION_EVENTS = {
   access_request: 'Access Request', // action
   access_approved: 'Access Approved',
   access_declined: 'Access Declined',
-  dashboard_assigned: 'Dashboard Assigned', // link
-  dashboard_shared: 'Dashboard Shared', // link
-  dashboard_updated: 'Dashboard Updated', // link
+  dashboard_assigned: 'Dashboard Assigned', // link done
+  dashboard_shared: 'Dashboard Shared', // link done
+  dashboard_updated: 'Dashboard Updated', // link done
 
   // Operational Team
-  due_inspection: 'Due Inspection', // link
-  new_inspection_assigned: 'New Inspection Assigned', // link
+  due_inspection: 'Due Inspection', // link done
+  new_inspection_assigned: 'New Inspection Assigned', // link done
 
   // Admin
   new_user_registration: 'New User Registration',
-  new_user_approval_request: 'New User Approval Request', // action
+  new_user_approval_request: 'New User Approval Request', // action done
   inspection_report_update: 'Inspection Report Update', // link
 
   // User receives after admin decision

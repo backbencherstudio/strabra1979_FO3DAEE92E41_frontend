@@ -24,7 +24,7 @@ export function NotificationPanelItem({
   return (
     <div
       {...props}
-      className={cn('flex gap-3 px-6 py-4', className, { 'bg-disabled-0': isUnread })}
+      className={cn('flex gap-3 px-4 py-4', className, { 'bg-disabled-0': isUnread })}
     >
       <div className="shrink-0">{avatar}</div>
 

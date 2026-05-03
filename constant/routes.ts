@@ -1,4 +1,5 @@
 import { createRoute } from '@/lib/createRoute'
+import { getHomePageByRole } from './role'
 
 export const routes = {
   signin: '/signin',

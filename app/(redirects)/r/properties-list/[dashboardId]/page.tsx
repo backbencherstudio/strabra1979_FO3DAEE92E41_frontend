@@ -1,4 +1,4 @@
-import { getHomePageByRole, routes } from '@/constant'
+import { getDashboardPathWithRole, routes } from '@/constant'
 import { getAuthCookies } from '@/lib/actions/auth'
 import { redirect } from 'next/navigation'
 
@@ -15,22 +15,5 @@ export default async function Page({ params }: PageProps) {
     redirect(routes.signin)
   }
 
-  const userHomePath = getHomePageByRole(role)
-
-  switch (role) {
-    case 'ADMIN':
-      redirect(routes.admin.propertyDetail.build({ dashboardId }))
-
-    case 'PROPERTY_MANAGER':
-      redirect(routes.manager.propertyDetail.build({ dashboardId }))
-
-    case 'OPERATIONAL':
-      redirect(routes.operational.inspectionListItemDetail.build({ dashboardId }))
-
-    case 'AUTHORIZED_VIEWER':
-      redirect(routes.viewer.propertyDetail.build({ dashboardId }))
-
-    default:
-      redirect(userHomePath ?? routes.signin)
-  }
+  redirect(getDashboardPathWithRole(role, dashboardId))
 }

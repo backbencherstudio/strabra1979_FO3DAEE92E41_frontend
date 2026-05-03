@@ -1,8 +1,13 @@
+'use client'
+
 import { useReviewAccessRequestMutation } from '@/api/notification/notificationApi'
 import { useUpdateUserStatusMutation } from '@/api/userManagement/userManagementApi'
 import { Button } from '@/components/ui/button'
+import { getDashboardPathWithRole } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
+import { useAuth } from '@/redux/features/auth/useAuth'
 import { INotificationItem, IUserStatus, NotificationType } from '@/types'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 type NotificationAction = {
@@ -29,10 +34,24 @@ export type INotificationMeta = {
     userName: string
     userRole: string
   }
+  common: {
+    link: string
+    propertyId: string
+    dashboardId: string
+    propertyName: string
+  }
 }
 
-export const NotificationActionFooter = (item: INotificationItem) => {
-  const { notification_event, metadata } = item
+interface NotificationActionFooterProps {
+  item: INotificationItem
+  closePanel: () => void
+}
+
+export const NotificationActionFooter = ({ item, closePanel }: NotificationActionFooterProps) => {
+  const router = useRouter()
+  const { role } = useAuth()
+
+  const { notification_event } = item
   const [reviewAccessRequest, { isLoading }] = useReviewAccessRequestMutation()
   const [updateUserStatus, { isLoading: updatingUserStatus }] = useUpdateUserStatusMutation()
 
@@ -51,11 +70,25 @@ export const NotificationActionFooter = (item: INotificationItem) => {
     }
   }
 
+  const navigateToDashboardAction: NotificationAction = {
+    label: 'View Property',
+    variant: 'outline',
+    action() {
+      const metadata = item.metadata as INotificationMeta['common']
+      if (!role || !metadata?.dashboardId) {
+        return
+      }
+
+      router.push(getDashboardPathWithRole(role, metadata.dashboardId))
+      setTimeout(closePanel, 100)
+    },
+  }
+
   const ACTION_EVENTS: NotificationActionMap = {
     access_request: [
       {
-        label: 'Approve',
-        variant: 'destructive',
+        label: 'Approve Dashboard',
+        variant: 'default',
         async action() {
           const metadata = item.metadata as INotificationMeta['access_request']
 
@@ -112,6 +145,39 @@ export const NotificationActionFooter = (item: INotificationItem) => {
         label: 'Decline',
         variant: 'outline',
         action() {},
+      },
+    ],
+    dashboard_assigned: [navigateToDashboardAction],
+    dashboard_updated: [navigateToDashboardAction],
+    dashboard_shared: [navigateToDashboardAction],
+
+    new_inspection_assigned: [{ ...navigateToDashboardAction, label: 'View Inspectin' }],
+    due_inspection: [{ ...navigateToDashboardAction, label: 'View Inspectin' }],
+
+    inspection_report_update: [
+      {
+        label: 'View Report',
+        variant: 'outline',
+        action() {
+          const metadata = item.metadata as INotificationMeta['common']
+          console.log({ item })
+
+          if (role !== 'ADMIN') {
+            return
+          }
+          alert('need dashboardId')
+          // TODO: need dashboardId
+
+          // if (!role || !metadata?.dashboardId) {
+          //   return
+          // }
+
+          // const path = routes.admin.inspectionListItemDetail.build({
+          //   dashboardId: metadata.dashboardId,
+          // })
+          // router.push(path)
+          // setTimeout(closePanel, 100)
+        },
       },
     ],
   }
