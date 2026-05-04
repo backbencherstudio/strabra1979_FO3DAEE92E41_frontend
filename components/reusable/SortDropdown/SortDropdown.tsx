@@ -1,6 +1,7 @@
 import { SortingIcon } from '@/components/icons/SortIcon'
 import FilterDropdown from '../FilterDropdown/FilterDropdown'
 import { InspectionProgressStatus } from '@/types'
+import { ListFilter } from 'lucide-react'
 
 type Props = {
   sortOrder: 'asc' | 'desc'
@@ -35,7 +36,7 @@ export function InspectionProgressFilterDropdown({
     <FilterDropdown
       value={value}
       onChange={onChange}
-      icon={<SortingIcon className="size-5" />}
+      icon={<ListFilter className="size-4" />}
       placeholder="Filter"
       options={[
         { label: 'All', value: undefined },

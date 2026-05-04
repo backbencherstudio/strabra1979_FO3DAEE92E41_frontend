@@ -21,7 +21,7 @@ const propertiesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProperties: builder.query<
       WithPaginationAndStatus<IPropertyListItem[]>,
-      (IPaginationPayload & IFilterPayload) | void
+      (IPaginationPayload & IFilterPayload & { view?: 'all' | 'assigned' }) | void
     >({
       query: (arg) => ({
         url: `/properties`,

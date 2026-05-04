@@ -24,19 +24,19 @@ import {
   usePaginationPage,
 } from '@/components/reusable/Pagination/PaginationPageProvider'
 
-import { PropertyCardAdminInfoList } from '@/components/reusable/PropertyCard/PropertyCardAdminInfoList'
-import { routes } from '@/constant'
-import { addDaysBy, formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
-import { INOAccessReason, IPropertyListItem } from '@/types'
 import { NoEntryIcon } from '@/components/icons/NoEntryIcon'
 import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
-import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
+import EmptyMessage from '@/components/reusable/EmptyMessage/EmptyMessage'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Spinner } from '@/components/ui/spinner'
-import { property } from 'zod'
+import { routes } from '@/constant'
+import { addDaysBy, formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
+import { isArrayEmpty } from '@/lib/utils'
+import { INOAccessReason, IPropertyListItem } from '@/types'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function ViewerHome() {
   return (
@@ -54,10 +54,11 @@ function ViewerHomeContent() {
   const { page } = usePaginationPage()
 
   const { data: { data: properties = [], meta } = {}, isLoading } = useGetPropertiesQuery({
+    view: 'assigned',
     page,
     sortOrder,
     search: debouncedSearch,
-    limit: 9,
+    limit: 12,
     dateFrom: dateFrom?.formatted,
     dateTo: dateFrom?.raw ? addDaysBy(dateFrom.raw, 1) : undefined,
   })
@@ -75,9 +76,15 @@ function ViewerHomeContent() {
         />
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
-            : properties.map((p) => <PropertyCardWrapper key={p.id} p={p} />)}
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
+          ) : isArrayEmpty(properties) ? (
+            <EmptyMessage className="col-span-full">
+              You’re not assigned to any properties yet. Once assigned, they will appear here.
+            </EmptyMessage>
+          ) : (
+            properties.map((p) => <PropertyCardWrapper key={p.id} p={p} />)
+          )}
         </div>
       </SectionCard>
 
