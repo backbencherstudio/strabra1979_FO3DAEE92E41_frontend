@@ -26,7 +26,8 @@ export interface IOperationalInspectionTableItem {
   status: string
   scheduledAt: string
   dashboardId: string
-  inspectionId: string
+  inspectionId?: string
+  scheduledInspectionId?: string
   propertyName: string
   address: string
   propertyType: string

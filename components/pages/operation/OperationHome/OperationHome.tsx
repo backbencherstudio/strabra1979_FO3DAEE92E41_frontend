@@ -14,7 +14,7 @@ import CustomTable from '@/components/reusable/table/CustomTable'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
 import { getErrorMessage, withNAf } from '@/lib/farmatters'
-import { IScheduledInspectionTableItem } from '@/types'
+import { InspectionProgressStatus, IScheduledInspectionTableItem } from '@/types'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -52,16 +52,23 @@ export default function OperationHome() {
   const [startAScheduledInspectionToChangeStatus] =
     useStartAScheduledInspectionToChangeStatusMutation()
   async function handleStartInspection({
-    id,
+    scheduledInspectionId,
     inspectionId,
     dashboardId,
     status,
-  }: IScheduledInspectionTableItem) {
+  }: {
+    scheduledInspectionId: string
+    dashboardId: string
+    inspectionId?: string
+    status: InspectionProgressStatus
+  }) {
     if (!dashboardId) return
 
     if (status === 'ASSIGNED') {
       try {
-        await startAScheduledInspectionToChangeStatus({ scheduledInspectionId: id }).unwrap()
+        await startAScheduledInspectionToChangeStatus({
+          scheduledInspectionId: scheduledInspectionId,
+        }).unwrap()
       } catch (error) {
         return toast.error(getErrorMessage(error))
       }
@@ -70,7 +77,7 @@ export default function OperationHome() {
     const qp = {
       edit: 'true',
       ...(inspectionId && { inspectionId }),
-      ...(id && { scheduledInspectionId: id }),
+      ...(scheduledInspectionId && { scheduledInspectionId }),
     }
     router.push(routes.operational.inspectionListItemDetail.build({ dashboardId }, qp))
   }
@@ -85,7 +92,9 @@ export default function OperationHome() {
         actionButton={(inspection) => (
           <Button
             disabled={!['ASSIGNED', 'IN_PROGRESS'].includes(inspection.status)}
-            onClick={() => handleStartInspection(inspection)}
+            onClick={() =>
+              handleStartInspection({ ...inspection, scheduledInspectionId: inspection.id })
+            }
             variant="outline"
           >
             Start Inspection

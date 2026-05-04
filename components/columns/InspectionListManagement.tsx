@@ -3,7 +3,7 @@
 import { useDeleteSingleInspectionWithIdMutation } from '@/api/inspectionManagement/inspectionManagementApi'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
-import { formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
+import { createQueryParams, formatDate, getErrorMessage, naIfEmpty } from '@/lib/farmatters'
 import { useAuth } from '@/redux/features/auth/useAuth'
 import {
   IAdminScheduledInspectinTableItem,
@@ -21,16 +21,7 @@ import { Trush } from '../icons/Trush'
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
-
-// ==================== DATE FORMATTER ====================
-const formatUserDate = (dateString: string) => {
-  const date = new Date(dateString)
-  const day = date.getDate()
-  const month = date.toLocaleString('default', { month: 'short' })
-  const year = date.getFullYear()
-
-  return `${day} ${month}, ${year}`
-}
+import { useStartAScheduledInspectionToChangeStatusMutation } from '@/api/inspectionManagement/operationalInspectionApi'
 
 // ==================== Report COLUMNS CONFIGURATION ====================
 export const OPERATIONAL_RECENT_INSPECTION_LIST_MANAGEMENT_COLUMS =
@@ -159,11 +150,9 @@ function InspectinListItemAction({
   id,
   inspectionId,
   dashboardId,
-}: {
-  id?: string
-  inspectionId?: string
-  dashboardId?: string
-}) {
+  scheduledInspectionId,
+  status,
+}: IOperationalInspectionTableItem) {
   const [deleteSingleInspectinWithId, { isLoading }] = useDeleteSingleInspectionWithIdMutation()
   const { role } = useAuth()
 
@@ -181,6 +170,37 @@ function InspectinListItemAction({
     }
   }
   const router = useRouter()
+
+  // Start inspection
+  const [startAScheduledInspectionToChangeStatus, { isLoading: isLoadingSchedule }] =
+    useStartAScheduledInspectionToChangeStatusMutation()
+  async function handleStartInspection(info: {
+    scheduledInspectionId?: string
+    dashboardId: string
+    inspectionId?: string
+    status: InspectionProgressStatus
+  }) {
+    if (!info.dashboardId || !info.scheduledInspectionId) {
+      return
+    }
+
+    if (info.status === 'ASSIGNED') {
+      try {
+        await startAScheduledInspectionToChangeStatus({
+          scheduledInspectionId: info.scheduledInspectionId,
+        }).unwrap()
+      } catch (error) {
+        return toast.error(getErrorMessage(error))
+      }
+    }
+
+    const queryParams = createQueryParams({
+      edit: true,
+      scheduledInspectionId: info.scheduledInspectionId,
+    })
+    const path = routes.operational.inspectionListItemDetail.build({ dashboardId })
+    router.push(`${path}${queryParams}`)
+  }
 
   return (
     <div className="flex gap-2">
@@ -209,6 +229,18 @@ function InspectinListItemAction({
       >
         <EyeIcon />
       </Button>
+
+      {RoleUtils.isOperational(role) ? (
+        <Button
+          onClick={() =>
+            handleStartInspection({ scheduledInspectionId, dashboardId, inspectionId, status })
+          }
+          disabled={['COMPLETE', 'COMPLETED', 'DUE'].includes(status) || isLoadingSchedule}
+          variant="outline"
+        >
+          Start Inspection
+        </Button>
+      ) : null}
 
       {/* Show edit & delete only for admin */}
       {RoleUtils.isAdmin(role) ? (

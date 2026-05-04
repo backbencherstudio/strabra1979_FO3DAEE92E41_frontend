@@ -2,8 +2,15 @@ export * from './number'
 export * from './error'
 export * from './date'
 
-import qs from 'qs'
+import qs, { BooleanOptional, IStringifyOptions } from 'qs'
 
-export function createQueryParams<T>(params: T): string {
-  return qs.stringify(params, { addQueryPrefix: true }) // Automatically adds `?` at the beginning
+const DEFAULT_QUERY_OPTIONS: IStringifyOptions<BooleanOptional> = {
+  addQueryPrefix: true, // Automatically adds `?` at the beginning
+}
+
+export function createQueryParams<T>(
+  params: T,
+  options: IStringifyOptions<BooleanOptional> = DEFAULT_QUERY_OPTIONS,
+): string {
+  return qs.stringify(params, options)
 }
