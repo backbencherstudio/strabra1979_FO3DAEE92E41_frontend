@@ -1,14 +1,13 @@
 'use client'
 
-import { useVerifyEmailWithOTPMutation } from '@/api/auth/authApi'
+import { useRequestNewOtpMutation, useVerifyEmailWithOTPMutation } from '@/api/auth/authApi'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { config, routes } from '@/constant'
 import { createQueryParams, getErrorMessage } from '@/lib/farmatters'
 import { useForm } from '@tanstack/react-form'
-import { REGEXP_ONLY_DIGITS, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
-import Link from 'next/link'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
 import { useRouter, useSearchParams } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import z from 'zod'
 import { Button } from '../ui/button'
@@ -27,10 +26,51 @@ export type OTPFormValues = z.infer<typeof OTPSchema>
 
 const OTPForm: React.FC<DynamicFormProps> = ({}) => {
   const router = useRouter()
-  const [verifyEmailWithOTP, { isLoading }] = useVerifyEmailWithOTPMutation()
-
   const searchParams = useSearchParams()
   const email = searchParams.get('email')
+
+  const [verifyEmailWithOTP, { isLoading }] = useVerifyEmailWithOTPMutation()
+  const [requestNewOtp, { isLoading: isLoadingRequestNewOtp }] = useRequestNewOtpMutation()
+  const [countdown, setCountdown] = useState(0)
+  const isCountdownRunning = countdown > 0
+
+  useEffect(() => {
+    if (countdown <= 0) return
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [countdown])
+
+  async function onRequestNewOtp() {
+    if (!email) {
+      toast.error('Session expired', {
+        description: 'Your session has expired. Please start the password reset process again.',
+      })
+      router.push(routes.forgotPassword)
+      return
+    }
+
+    try {
+      await requestNewOtp({ email }).unwrap()
+
+      setCountdown(120)
+      toast.success('Verification code sent', {
+        description: 'A new OTP has been sent to your email. Please check your inbox.',
+      })
+    } catch (err) {
+      toast.error('Failed to resend code', {
+        description:
+          getErrorMessage(err) || 'Something went wrong while sending the OTP. Please try again.',
+      })
+    }
+  }
 
   const form = useForm({
     defaultValues: {
@@ -115,11 +155,19 @@ const OTPForm: React.FC<DynamicFormProps> = ({}) => {
           )}
         </form.Subscribe>
 
-        <p className="text-center">
-          Didn’t receive code?{' '}
-          <Link href="#" className="font-medium text-[#0b2a3b] hover:underline">
-            Resend Code
-          </Link>
+        <p className="text-center text-base">
+          Didn't receive code?{' '}
+          <Button
+            disabled={isLoadingRequestNewOtp || isCountdownRunning}
+            type="button"
+            onClick={onRequestNewOtp}
+            variant="link"
+            className="px-0 text-base font-medium text-[#0b2a3b] hover:underline"
+          >
+            {isCountdownRunning
+              ? `Resend in ${Math.floor(countdown / 60)}:${(countdown % 60).toString().padStart(2, '0')}`
+              : 'Resend Code'}
+          </Button>
         </p>
       </div>
     </form>

@@ -39,10 +39,16 @@ const ForgetPasswordForm: React.FC<DynamicFormProps> = ({}) => {
         }).unwrap()
 
         router.push(`${routes.varifyEmail}${createQueryParams({ email: value.email })}`)
-        toast.success(res.message || 'Success message')
+        toast.success('Check your email', {
+          description:
+            res.message ||
+            'If an account with this email exists, a verification code has been sent.',
+        })
       } catch (err) {
-        toast.error('Error title', {
-          description: getErrorMessage(err),
+        toast.error('Request failed', {
+          description:
+            getErrorMessage(err) ||
+            'We couldn’t process your request. Please try again in a moment.',
         })
       }
     },

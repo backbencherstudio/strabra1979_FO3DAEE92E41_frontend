@@ -78,6 +78,13 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    requestNewOtp: builder.mutation<WithApiStatus<void>, { email: string }>({
+      query: (body) => ({
+        url: '/auth/resend-verification-email',
+        method: 'POST',
+        body,
+      }),
+    }),
     resetPassword: builder.mutation<WithApiStatus<void>, IAuthResetPasswordParams>({
       query: (body) => ({
         url: '/auth/reset-password',
@@ -97,6 +104,7 @@ export const {
 
   useForgotPasswordMutation,
   useVerifyEmailWithOTPMutation,
+  useRequestNewOtpMutation,
   useResetPasswordMutation,
 } = authApi
 export default authApi
