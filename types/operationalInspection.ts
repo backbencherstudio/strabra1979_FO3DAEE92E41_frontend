@@ -1,7 +1,9 @@
+import { InspectionProgressStatus, IScheduledInspectionTableItem } from './inspection'
+
 export interface IOperationalDashboardOverview {
   role: 'OPERATIONAL'
   stats: IOperationalOverviewStats
-  todaysInspections: any[]
+  todaysInspections: IScheduledInspectionTableItem[]
   recentInspections: IOperationalRecentInspectionTableItem[]
 }
 
@@ -23,7 +25,7 @@ export interface IOperationalRecentInspectionTableItem {
 
 export interface IOperationalInspectionTableItem {
   id: string
-  status: string
+  status: InspectionProgressStatus
   scheduledAt: string
   dashboardId: string
   inspectionId?: string

@@ -1,9 +1,9 @@
 import { baseApi } from '@/api/baseApi'
 import type {
+  IAdminScheduledInspectinTableItem,
   IDashboardInspectionListItem,
   IFilterPayload,
   IPaginationPayload,
-  IAdminScheduledInspectinTableItem,
   IScheduleInspectionParams,
   IScheduleInspectionResponse,
   WithApiStatus,

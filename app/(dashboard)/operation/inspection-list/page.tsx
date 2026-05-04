@@ -14,7 +14,10 @@ import {
   usePaginationPage,
 } from '@/components/reusable/Pagination/PaginationPageProvider'
 import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import { InspectionProgressFilterDropdown } from '@/components/reusable/SortDropdown/SortDropdown'
 import CustomTable from '@/components/reusable/table/CustomTable'
+import { InspectionProgressStatus } from '@/types'
+import { useState } from 'react'
 
 export default function AdminInspectionTable() {
   return (
@@ -29,10 +32,15 @@ export default function AdminInspectionTable() {
 function AdminInspectionTableContent() {
   const { page } = usePaginationPage()
   const { debouncedSearch } = useSharedPropertyCardListContext()
+  const [inspectionStatusFilter, setInspectionStatusFilter] = useState<
+    InspectionProgressStatus | undefined
+  >(undefined)
+
   const { data: { data: sheduledInspections = [], meta } = {}, isLoading } =
     useGetAllSheduledInspectionsAssignedToMeQuery({
       page,
       search: debouncedSearch,
+      status: inspectionStatusFilter,
     })
   usePaginatedQuery({ meta_data: meta })
 
@@ -42,8 +50,13 @@ function AdminInspectionTableContent() {
         <SharedPropertyCardListActions
           title="Inspection List"
           titleClassName="text-forground"
-          showSearch={false}
-        />
+          showSearch
+        >
+          <InspectionProgressFilterDropdown
+            value={inspectionStatusFilter}
+            onChange={setInspectionStatusFilter}
+          />
+        </SharedPropertyCardListActions>
 
         <CustomTable
           isLoading={isLoading}

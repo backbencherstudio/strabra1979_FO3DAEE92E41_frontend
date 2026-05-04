@@ -3,6 +3,7 @@ import type {
   IFilterPayload,
   IInspectionPropertyDetail,
   IInspectionScoreCheckboxValue,
+  InspectionProgressStatus,
   IOperationalInspectionTableItem,
   IPaginationPayload,
   WithApiStatus,
@@ -41,7 +42,7 @@ const operationalInspectionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllSheduledInspectionsAssignedToMe: builder.query<
       WithPaginationAndStatus<IOperationalInspectionTableItem[]>,
-      (IPaginationPayload & IFilterPayload<undefined>) | void
+      (IPaginationPayload & IFilterPayload<InspectionProgressStatus>) | void
     >({
       query: (args) => ({
         url: `/inspections/scheduled/my`,

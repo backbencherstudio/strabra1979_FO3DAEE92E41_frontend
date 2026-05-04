@@ -3,12 +3,19 @@
 import { useReviewAccessRequestMutation } from '@/api/notification/notificationApi'
 import { useUpdateUserStatusMutation } from '@/api/userManagement/userManagementApi'
 import { Button } from '@/components/ui/button'
-import { getDashboardPathWithRole } from '@/constant'
+import { getDashboardPathWithRole, routes } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
 import { useAuth } from '@/redux/features/auth/useAuth'
-import { INotificationItem, IUserStatus, NotificationType } from '@/types'
+import { INotificationItem, IUserStatus, NotificationType, RoleUtils } from '@/types'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import {
+  handleInvalidNotificationMeta,
+  hasDashboardAndInspectionId,
+  hasDashboardId,
+  hasRequestId,
+  hasUserId,
+} from './utils'
 
 type NotificationAction = {
   label: string
@@ -37,6 +44,7 @@ export type INotificationMeta = {
   common: {
     link: string
     propertyId: string
+    inspectionId: string
     dashboardId: string
     propertyName: string
   }
@@ -50,36 +58,47 @@ interface NotificationActionFooterProps {
 export const NotificationActionFooter = ({ item, closePanel }: NotificationActionFooterProps) => {
   const router = useRouter()
   const { role } = useAuth()
+  const isOperationalRole = RoleUtils.isOperational(role)
 
   const { notification_event } = item
-  const [reviewAccessRequest, { isLoading }] = useReviewAccessRequestMutation()
+  const [reviewAccessRequest, { isLoading: isLoadingReviewAccessRequest }] =
+    useReviewAccessRequestMutation()
   const [updateUserStatus, { isLoading: updatingUserStatus }] = useUpdateUserStatusMutation()
 
   async function onConfirmTogleDeactivateStatus(userId: string, status: IUserStatus) {
+    if (updatingUserStatus) return
+
     try {
       await updateUserStatus({
         id: userId,
         status,
       }).unwrap()
 
-      toast.message('User approved successfully')
+      toast.message('New user approved successfully')
     } catch (error) {
-      toast.error('Failed to update user status', {
+      toast.error('Failed to approved user', {
         description: getErrorMessage(error),
       })
     }
   }
 
   const navigateToDashboardAction: NotificationAction = {
-    label: 'View Property',
+    label: isOperationalRole ? 'View Inspectins' : 'View Property',
     variant: 'outline',
     action() {
-      const metadata = item.metadata as INotificationMeta['common']
-      if (!role || !metadata?.dashboardId) {
+      if (!hasDashboardId(item.metadata) || !role) {
+        handleInvalidNotificationMeta(item.metadata)
         return
       }
 
-      router.push(getDashboardPathWithRole(role, metadata.dashboardId))
+      const { dashboardId } = item.metadata
+
+      if (isOperationalRole) {
+        router.push(routes.operational.inspectionList)
+      } else {
+        router.push(getDashboardPathWithRole(role, dashboardId))
+      }
+
       setTimeout(closePanel, 100)
     },
   }
@@ -90,44 +109,53 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
         label: 'Approve Dashboard',
         variant: 'default',
         async action() {
-          const metadata = item.metadata as INotificationMeta['access_request']
+          if (!hasDashboardId(item.metadata) || !hasRequestId(item.metadata)) {
+            handleInvalidNotificationMeta(item.metadata)
+            return
+          }
 
-          // console.table(item.metadata.dashboardId)
-          // alert('viewer access_request')
-          // // const body: IReviewAccessRequestBody = {
-          // //   action,
-          // //   ...(action === 'DECLINED' && {
-          // //     declineReason: 'Access is only available after contract signing.',
-          // //   }),
-          // //   ...(action === 'APPROVED' && { expiresAt }),
-          // // }
-          //
-          // try {
-          //   const res = await reviewAccessRequest({
-          //     dashboardId: metadata.dashboardId,
-          //     requestId: metadata.requestId,
-          //     action: 'APPROVED',
-          //   }).unwrap()
-          //
-          //   toast.success(res.message || 'Success message')
-          // } catch (err) {
-          //   toast.error('Error title', {
-          //     description: getErrorMessage(err),
-          //   })
-          // }
+          const { dashboardId, requestId } = item.metadata
+
+          try {
+            await reviewAccessRequest({
+              dashboardId: dashboardId,
+              requestId: requestId,
+              action: 'APPROVED',
+            }).unwrap()
+
+            toast.success('Access request approved successfully')
+          } catch (error) {
+            toast.error('Failed to approve access request', {
+              description: getErrorMessage(error),
+            })
+          }
         },
       },
       {
         label: 'Decline',
         variant: 'outline',
-        action() {
-          const metadata = item.metadata as INotificationMeta['access_request']
-          reviewAccessRequest({
-            dashboardId: metadata.dashboardId,
-            requestId: metadata.requestId,
-            action: 'DECLINED',
-            declineReason: 'Access is only available after contract signing.',
-          })
+        async action() {
+          if (!hasDashboardId(item.metadata) || !hasRequestId(item.metadata)) {
+            handleInvalidNotificationMeta(item.metadata)
+            return
+          }
+
+          const { dashboardId, requestId } = item.metadata
+
+          try {
+            await reviewAccessRequest({
+              dashboardId: dashboardId,
+              requestId: requestId,
+              action: 'DECLINED',
+              declineReason: 'Access is only available after contract signing.',
+            }).unwrap()
+
+            toast.success('Access request declined successfully')
+          } catch (error) {
+            toast.error('Failed to decline access request', {
+              description: getErrorMessage(error),
+            })
+          }
         },
       },
     ],
@@ -136,47 +164,51 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
         label: 'Approve User',
         variant: 'default',
         action() {
-          const metadata = item.metadata as INotificationMeta['new_user_approval_request']
+          if (!hasUserId(item.metadata)) {
+            handleInvalidNotificationMeta(item.metadata)
+            return
+          }
 
-          onConfirmTogleDeactivateStatus(metadata.userId, 'ACTIVE')
+          const { userId } = item.metadata
+
+          onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
         },
       },
       {
-        label: 'Decline',
+        label: 'Decline Request',
         variant: 'outline',
         action() {},
       },
     ],
+
     dashboard_assigned: [navigateToDashboardAction],
     dashboard_updated: [navigateToDashboardAction],
     dashboard_shared: [navigateToDashboardAction],
-
-    new_inspection_assigned: [{ ...navigateToDashboardAction, label: 'View Inspectin' }],
-    due_inspection: [{ ...navigateToDashboardAction, label: 'View Inspectin' }],
+    new_inspection_assigned: [navigateToDashboardAction],
+    due_inspection: [navigateToDashboardAction],
 
     inspection_report_update: [
       {
         label: 'View Report',
         variant: 'outline',
         action() {
-          const metadata = item.metadata as INotificationMeta['common']
-          console.log({ item })
-
-          if (role !== 'ADMIN') {
+          if (!RoleUtils.isAdmin(role)) {
+            toast.error('Invalid User role')
             return
           }
-          alert('need dashboardId')
-          // TODO: need dashboardId
+          if (!hasDashboardAndInspectionId(item.metadata)) {
+            handleInvalidNotificationMeta(item.metadata)
+            return
+          }
 
-          // if (!role || !metadata?.dashboardId) {
-          //   return
-          // }
+          const { dashboardId, inspectionId } = item.metadata
 
-          // const path = routes.admin.inspectionListItemDetail.build({
-          //   dashboardId: metadata.dashboardId,
-          // })
-          // router.push(path)
-          // setTimeout(closePanel, 100)
+          const path = routes.admin.inspectionListItemDetail.build(
+            { dashboardId: dashboardId },
+            { inspectionId: inspectionId },
+          )
+          router.push(path)
+          setTimeout(closePanel, 100)
         },
       },
     ],
@@ -191,7 +223,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
         <Button
           key={action.label}
           variant={action.variant}
-          disabled={isLoading}
+          disabled={isLoadingReviewAccessRequest || updatingUserStatus}
           onClick={action.action}
         >
           {action.label}
