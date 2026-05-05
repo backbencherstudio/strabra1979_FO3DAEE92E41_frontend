@@ -10,7 +10,10 @@ import {
 } from '@/components/ui/dialog'
 import { getErrorMessage } from '@/lib/farmatters'
 import { cn } from '@/lib/utils'
-import { updateRepairItem } from '@/redux/features/inspectionForm/inspectionFormSlice'
+import {
+  removeRepairItem,
+  updateRepairItem,
+} from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { useAppDispatch } from '@/redux/store'
 import { IPiorityRepairPlanItem } from '@/types'
 import { useForm } from '@tanstack/react-form'
@@ -32,6 +35,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Field, FieldGroup } from '@/components/ui/field'
+import { Trush } from '@/components/icons/Trush'
+import ConfirmDialog from '@/components/reusable/ConfirmDialog/ConfirmDialog'
+import { AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog'
 
 export type DialogProps = React.ComponentProps<typeof Dialog>
 
@@ -84,14 +90,41 @@ export function PiorityRepairPlanEditDialog({
     },
   })
 
+  function handDleDelte(item: IPiorityRepairPlanItem | undefined) {
+    if (!item || !item?.id) return
+
+    dispatch(removeRepairItem(item.id))
+    onOpenChange?.(false)
+  }
+
   return (
     <Dialog {...props} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-156')} showCloseButton={true}>
+      <DialogContent className={cn('sm:max-w-156')} showCloseButton={false}>
         <DialogHeader className="">
           <div className="flex items-center justify-between">
             <DialogTitle className={cn('text-foreground text-left text-xl font-medium')}>
               Edit Priority Repair Plan
             </DialogTitle>
+
+            <ConfirmDialog
+              iconContainerClass="bg-transparent p-0"
+              trigger={
+                <Button type="button" size="icon" variant="muted">
+                  <Trush className="text-destructive size-5" />
+                </Button>
+              }
+              title="Delete Repair Planning Item"
+              desc="Are you sure you want to delete this priority repair planning item?"
+            >
+              <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                type="button"
+                onClick={() => handDleDelte(initialData)}
+                variant="destructive"
+              >
+                Confirm Delete
+              </AlertDialogAction>
+            </ConfirmDialog>
           </div>
           <DialogDescription className="sr-only">Edit Priority Repair Plan</DialogDescription>
         </DialogHeader>

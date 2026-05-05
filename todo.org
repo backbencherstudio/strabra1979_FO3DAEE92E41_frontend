@@ -1,23 +1,57 @@
+PHASE 1 CHECKLIST – CORE FUNCTIONALITY & BUG FIXES ($500–$600)
+Please confirm the following items will be completed and working:
 
-* Settings
-** General Settings
-- [X] General Settings
-- [x] Change password
-- [x] Time zone
+* User Access & Login
+- [X] Forgot password is working
+- [ ] New user registration sends notification to Admin
+- [-] Deleted users can re-register or receive proper contact message
+- [ ] Login/logout system is stable
 
-** Notification Settings
-- [X] autorized_viewer, property_manager, operation_team
-- [X] admin own Notifications
-- [X] admin user level Notification
-- [X] Branding Settings
+* Admin Control
+- [ ] Admin can edit all dashboard data fields
+- [ ] Admin can add/remove users
+- [ ] Admin can change user roles/permissions
+- [ ] Admin can assign/remove property access
+- [ ] Admin can see which users have access to each property
 
-* Admin
-** Dashboard
-** Properties List
-** Templates
-** User Management
-** Activity Log
-** Inspection Criteria
-** Inspection List
+* Property & Access Logic
+- [X] Users only see properties assigned to them
+- [ ] Property Manager reassignment removes previous access immediately
+- [ ] Sharing a property works (no “no user found” error)
 
+* Media & File Uploads
+- [ ] Images upload successfully
+- [ ] Videos upload successfully
+- [ ] Files attach properly to inspections
+- [ ] Files display correctly in dashboard
+- [ ] No “FAILED TO FETCH” errors
 
+* Inspection System
+- [ ] Inspections can be submitted with attachments
+- [ ] Safety & Structure category is added
+- [ ] Inspection scoring calculates correctly
+- [ ] Inspection process completes without errors
+
+* Notifications (Basic Functionality)
+- [ ] Notification bell links to actionable items
+- [ ] Admin can view and approve user requests
+- [ ] Share/invite function sends notifications properly
+
+* Property Management (Admin Functions)
+- [ ] Admin can delete properties
+- [ ] Admin can upload media to aerial/drone section
+- [ ] Admin can add links to 3D Roof Tour section
+- [-] Admin can edit:
+  - [X] Priority Repair Planning
+  - [ ] Roof Health Rating
+  - [X] Additional Information
+  - [X] Comments
+
+* System Stability
+No errors during normal use
+No failed submissions
+Platform operates consistently across workflows
+
+* Acceptance Condition
+All items above must be fully functional and tested before Phase 1 is considered
+complete

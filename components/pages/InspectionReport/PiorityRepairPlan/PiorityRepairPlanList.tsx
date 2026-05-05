@@ -67,7 +67,6 @@ const PiorityRepairPlanList = forwardRef<PiorityRepairPlanListRef, PiorityRepair
 
         <div ref={scrollContainerRef} className="mt-3 max-h-120 space-y-4 overflow-y-scroll">
           {filteredItems?.map((item) => (
-            // FIXME: overflow-x issue
             <PiorityRepairPlanItem
               key={item.id}
               title={item.title}

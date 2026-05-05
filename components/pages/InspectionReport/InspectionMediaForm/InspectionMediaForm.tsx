@@ -99,7 +99,7 @@ export default function InspectionMediaForm({
                   onChange={(e) => {
                     setEmbedFields({ ...embedFields, [conf.key]: e.target.value })
                   }}
-                  className="squircle h-65 resize-none bg-white md:h-full"
+                  className="squircle min-h-65 bg-white md:h-full"
                 />
               </Field>
             )
