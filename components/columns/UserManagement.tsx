@@ -21,6 +21,7 @@ import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
 import { EditUserInfoDialog } from './EditUserInfoDialog'
+import { ViewAccessDialog } from '../pages/admin/property-list/ViewAccessDialog'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
@@ -125,6 +126,9 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
   // User Role Dialog
   const [openUserRoleDialog, setUserRoleDialog] = useState(false)
 
+  // User AccessList Dialog
+  const [viewAccessDialogOpen, setViewAccessDialogOpen] = useState(false)
+
   return (
     <>
       <ConfirmDialog
@@ -155,6 +159,13 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
           {isDeleteDialog ? 'Delete' : 'Deactivate'}
         </AlertDialogAction>
       </ConfirmDialog>
+
+      <ViewAccessDialog
+        mode="user"
+        userId={rowData.id}
+        open={viewAccessDialogOpen}
+        onOpenChange={setViewAccessDialogOpen}
+      />
 
       <EditUserInfoDialog
         initialData={{ userId: rowData.id, role: rowData.role }}
@@ -213,6 +224,10 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
 
             <DropdownMenuItem onSelect={() => setUserRoleDialog(true)}>
               Change User role
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => setViewAccessDialogOpen(true)}>
+              View Access Details
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

@@ -4,10 +4,12 @@ import type {
   IFilterPayload,
   IPaginationPayload,
   IUserListItem,
+  IUserPropertyAccessListItem,
   IUserStatus,
   WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
+import { string } from 'zod'
 
 const userManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -37,10 +39,25 @@ const userManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['UserManagement'],
     }),
+
+    getPropertiesAccessList: builder.query<
+      WithPaginationAndStatus<IUserPropertyAccessListItem[]>,
+      { userId?: string } & IPaginationPayload & IFilterPayload
+    >({
+      query: ({ userId, ...args }) => ({
+        url: `/user-management/${userId}/assigned-properties`,
+        params: args ?? undefined,
+      }),
+      providesTags: ['AccessList'] as const,
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetUserListQuery, useUpdateUserStatusMutation, useUpdateUserRoleMutation } =
-  userManagementApi
+export const {
+  useGetUserListQuery,
+  useUpdateUserStatusMutation,
+  useUpdateUserRoleMutation,
+  useGetPropertiesAccessListQuery,
+} = userManagementApi
 export default userManagementApi

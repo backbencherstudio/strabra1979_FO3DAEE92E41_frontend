@@ -111,10 +111,10 @@ export default function PropertyCardAdminActions({
       />
 
       <ViewAccessDialog
+        mode='dashboard'
         open={viewAccessDialogOpen}
         onOpenChange={setViewAccessDialogOpen}
         dashboardId={dashboardId}
-        propertyId={propertyId}
       />
     </>
   )

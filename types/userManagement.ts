@@ -16,3 +16,17 @@ export type IUserListItem = {
 }
 
 export type IUserStatus = 'ACTIVE' | 'DEACTIVATED' | 'DELETED'
+
+export type IUserPropertyAccessListItem = {
+  accessId: string
+  grantedAt: string
+  expiresAt?: string
+  role: IAuthUserRole
+  property: {
+    propertyId: string
+    name: string
+    address: string
+    propertyType: string
+    dashboardId: string
+  }
+}

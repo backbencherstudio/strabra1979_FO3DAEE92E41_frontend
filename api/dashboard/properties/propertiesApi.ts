@@ -105,7 +105,7 @@ const propertiesApi = baseApi.injectEndpoints({
     // AccessList
     //==================================================================
     getPropertyDashboardAccessList: builder.query<
-      WithApiStatus<IPropertyDashboardAccessResponse>,
+      WithPaginationAndStatus<IPropertyDashboardAccessResponse>,
       string
     >({
       query: (dashboardId) => ({
