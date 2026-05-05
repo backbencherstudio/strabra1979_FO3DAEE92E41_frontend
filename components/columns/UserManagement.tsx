@@ -20,6 +20,7 @@ import SelectPropertyDialog from '../pages/admin/user-management/SelectPropertyD
 import ConfirmDialog from '../reusable/ConfirmDialog/ConfirmDialog'
 import { defineColumns } from '../reusable/table/CustomTable'
 import { AlertDialogAction, AlertDialogCancel } from '../ui/alert-dialog'
+import { EditUserInfoDialog } from './EditUserInfoDialog'
 
 // ==================== USER STATUS BADGE COMPONENT ====================
 const UserStatusBadge = ({ status }: { status: string }) => {
@@ -121,6 +122,9 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
   // Assign Dialog
   const [openAssignDialog, setOpenAssignDialog] = useState(false)
 
+  // User Role Dialog
+  const [openUserRoleDialog, setUserRoleDialog] = useState(false)
+
   return (
     <>
       <ConfirmDialog
@@ -151,6 +155,12 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
           {isDeleteDialog ? 'Delete' : 'Deactivate'}
         </AlertDialogAction>
       </ConfirmDialog>
+
+      <EditUserInfoDialog
+        initialData={{ userId: rowData.id, role: rowData.role }}
+        open={openUserRoleDialog}
+        onOpenChange={setUserRoleDialog}
+      />
 
       <SelectPropertyDialog
         title="Assign User to a Property"
@@ -199,6 +209,10 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
 
             <DropdownMenuItem onSelect={() => setOpenAssignDialog(true)} disabled={isUserDeleted}>
               Assign to a property
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => setUserRoleDialog(true)}>
+              Change User role
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

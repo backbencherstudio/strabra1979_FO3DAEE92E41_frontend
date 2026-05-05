@@ -1,3 +1,5 @@
+import { IAuthUserRole } from './auth'
+
 export type IUserListItem = {
   id: string
   email: string
@@ -5,7 +7,7 @@ export type IUserListItem = {
   first_name?: string
   last_name?: string
   avatar?: string
-  role: string
+  role: IAuthUserRole
   status?: IUserStatus
   approved_at?: string
   access_expires_at?: string

@@ -1,9 +1,11 @@
 import { baseApi } from '@/api/baseApi'
 import type {
+  IAuthUserRole,
   IFilterPayload,
   IPaginationPayload,
   IUserListItem,
   IUserStatus,
+  WithApiStatus,
   WithPaginationAndStatus,
 } from '@/types'
 
@@ -27,9 +29,18 @@ const userManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['UserManagement'],
     }),
+    updateUserRole: builder.mutation<WithApiStatus<void>, { id: string; role: IAuthUserRole }>({
+      query: ({ id, role }) => ({
+        url: `/user-management/${id}/role`,
+        method: 'PATCH',
+        body: { role },
+      }),
+      invalidatesTags: ['UserManagement'],
+    }),
   }),
   overrideExisting: false,
 })
 
-export const { useGetUserListQuery, useUpdateUserStatusMutation } = userManagementApi
+export const { useGetUserListQuery, useUpdateUserStatusMutation, useUpdateUserRoleMutation } =
+  userManagementApi
 export default userManagementApi
