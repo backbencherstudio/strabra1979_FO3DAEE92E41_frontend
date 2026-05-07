@@ -8,17 +8,21 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   EmbedFieldsData,
   IInspectionMediaField,
+  IInspectionMediaFileItem,
   IPropertyInspectionFormData,
   MediaFieldItem,
 } from '@/types'
 import { Dispatch, SetStateAction } from 'react'
 import { MediaField } from './MediaField'
+import SectionCard from '@/components/reusable/SectionCard/SectionCard'
+import { cn } from '@/lib/utils'
 
 interface InspectionMediaFormProps {
   formConfig?: IPropertyInspectionFormData
   mediaFields: IInspectionMediaField[] | undefined
   files: MediaFieldItem[]
   setFiles: Dispatch<SetStateAction<MediaFieldItem[]>>
+  onRemoveFile: (file: File | IInspectionMediaFileItem) => void
   embedFields: EmbedFieldsData
   setEmbedFields: Dispatch<SetStateAction<EmbedFieldsData>>
   isEditMode?: boolean
@@ -29,6 +33,7 @@ export default function InspectionMediaForm({
   mediaFields,
   files,
   setFiles,
+  onRemoveFile,
   embedFields,
   setEmbedFields,
   isEditMode = false,
@@ -48,6 +53,7 @@ export default function InspectionMediaForm({
           if (conf.type === 'file') {
             return (
               <MediaField
+                onRemoveFile={onRemoveFile}
                 labelAction={
                   isEditMode ? (
                     <Button
@@ -92,6 +98,7 @@ export default function InspectionMediaForm({
                     </Button>
                   ) : null}
                 </FieldLabel>
+
                 <Textarea
                   placeholder={conf.placeholder}
                   value={embededFieldValue}
@@ -100,6 +107,18 @@ export default function InspectionMediaForm({
                   }}
                   className="squircle min-h-65 bg-white md:h-full"
                 />
+                {/* <SectionCard */}
+                {/*   className="flex justify-center overflow-hidden bg-white py-0" */}
+                {/*   key={conf.key} */}
+                {/* > */}
+                {/*   <div */}
+                {/*     className={cn( */}
+                {/*       'max-w-full', */}
+                {/*       // '[&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:w-full [&_iframe]:max-w-full', */}
+                {/*     )} */}
+                {/*     dangerouslySetInnerHTML={{ __html: embededFieldValue }} */}
+                {/*   /> */}
+                {/* </SectionCard> */}
               </Field>
             )
           }
@@ -107,6 +126,7 @@ export default function InspectionMediaForm({
           if (conf.type === 'document') {
             return (
               <MediaField
+                onRemoveFile={onRemoveFile}
                 labelAction={
                   isEditMode ? (
                     <Button

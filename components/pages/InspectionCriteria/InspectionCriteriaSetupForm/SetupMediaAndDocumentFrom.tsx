@@ -54,6 +54,7 @@ export default function SetupMediaAndDocumentFrom({
       />
 
       <InspectionMediaForm
+        onRemoveFile={() => {}}
         onOpenEditModal={(conf) => {
           setEditFieldData(conf)
           setCreateInputModalMode('edit')

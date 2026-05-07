@@ -38,6 +38,12 @@ interface ISubmitInspectionDataPayload {
   files: File[]
 }
 
+interface ISubmitInspectionDataUpdatePayload {
+  inspectionId: string
+  data: IInspectionFormData & { removeMediaFileIds?: string[] }
+  files: File[]
+}
+
 const operationalInspectionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllSheduledInspectionsAssignedToMe: builder.query<
@@ -85,9 +91,9 @@ const operationalInspectionApi = baseApi.injectEndpoints({
     }),
     updateAllInspectionFormDataFromAdmin: builder.mutation<
       WithApiStatus<void>,
-      ISubmitInspectionDataPayload
+      ISubmitInspectionDataUpdatePayload
     >({
-      query: ({ dashboardId, scheduledInspectionId, inspectionId, data, files }) => {
+      query: ({ inspectionId, data, files }) => {
         const jsonData = JSON.stringify(data)
 
         // Prepare FormData for sending

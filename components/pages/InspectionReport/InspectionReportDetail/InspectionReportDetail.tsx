@@ -31,12 +31,13 @@ import { store, useAppDispatch } from '@/redux/store'
 import {
   EmbedFieldsData,
   IDashboardInspectionListItem,
+  IInspectionMediaFileItem,
   MediaFieldItem,
   MediaFieldKeyType,
   RoleUtils,
 } from '@/types'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
@@ -64,8 +65,15 @@ export default function InspectionReportDetail() {
     useGetInspectionPropertyDetailQuery({ dashboardId }, { skip: !dashboardId })
 
   // Media inputs
-  const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
   const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
+  const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
+  const removedMediaFields = useRef<string[]>([])
+  async function handleRemoveMediaFile(file: File | IInspectionMediaFileItem) {
+    if (!(file instanceof File)) {
+      removedMediaFields.current.push(file.id)
+    }
+  }
+  // console.table(inspectinData?.mediaFiles)
 
   const handleInspectinDataChangeFromServer = useEffectEvent(
     (data: IDashboardInspectionListItem) => {
@@ -80,7 +88,7 @@ export default function InspectionReportDetail() {
             embedFieldsData[file.mediaFieldKey] = file.url
           } else {
             mediaFieldData.push({
-              kind: 'remote' as const,
+              kind: 'remote',
               key: file.mediaFieldKey,
               file,
             })
@@ -119,19 +127,18 @@ export default function InspectionReportDetail() {
 
     const inspectedAt = new Date().toISOString()
 
-    const { fileKeyList, fileList } = mediaFields.reduce(
+    const { onlyLocalfileKeyList, onlyLocalfileList } = mediaFields.reduce(
       (acc, item) => {
-        acc.fileKeyList.push(item.key)
-
         if ('file' in item && item.kind === 'local') {
-          acc.fileList.push(item.file)
+          acc.onlyLocalfileKeyList.push(item.key)
+          acc.onlyLocalfileList.push(item.file)
         }
 
         return acc
       },
       {
-        fileKeyList: [] as MediaFieldKeyType[],
-        fileList: [] as File[],
+        onlyLocalfileKeyList: [] as MediaFieldKeyType[],
+        onlyLocalfileList: [] as File[],
       },
     )
 
@@ -147,10 +154,10 @@ export default function InspectionReportDetail() {
             nteValue,
             additionalComments,
             inspectedAt: inspectedAt,
-            mediaFieldKeys: fileKeyList,
+            mediaFieldKeys: onlyLocalfileKeyList,
             embedFields: embedFields,
           },
-          files: fileList,
+          files: onlyLocalfileList,
         }).unwrap()
 
         router.push(routes.operational.inspectionList)
@@ -158,22 +165,23 @@ export default function InspectionReportDetail() {
       } else if (RoleUtils.isAdmin(role)) {
         const res = await updateAllInspectionFormDataFromAdmin({
           inspectionId: inspectionId!,
-          dashboardId: dashboardId!,
-          scheduledInspectionId: scheduledInspectionId!,
           data: {
+            removeMediaFileIds: Array.isArray(removedMediaFields.current)
+              ? removedMediaFields.current
+              : undefined,
             headerData,
             scores,
             repairItems,
             nteValue,
             additionalComments,
             inspectedAt: inspectedAt,
-            mediaFieldKeys: fileKeyList,
+            mediaFieldKeys: onlyLocalfileKeyList,
             embedFields: embedFields,
           },
-          files: fileList,
+          files: onlyLocalfileList,
         }).unwrap()
 
-        router.push(routes.admin.inspectionList)
+        // router.push(routes.admin.inspectionList)
         toast.success(res.message || 'Inspection updated successfully', {})
       }
     } catch (err) {
@@ -182,6 +190,15 @@ export default function InspectionReportDetail() {
       })
     }
   }
+
+  const submitButtonText = (() => {
+    if (isLoadingInspectionFormData) return 'Submitting...'
+    if (isLoadingInspectionUpdate) return 'Updating...'
+    if (isEditable) return 'Update'
+    if (isMediaFilesTab) return 'Submit'
+
+    return 'Next'
+  })()
 
   if (isFormConfigLoading || isInspectinLoading) {
     return <FullPageSpinner />
@@ -229,6 +246,7 @@ export default function InspectionReportDetail() {
       {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <InspectionMediaForm
+          onRemoveFile={handleRemoveMediaFile}
           onOpenEditModal={() => {}}
           embedFields={embedFields}
           setEmbedFields={setEmbedFields}
@@ -243,7 +261,7 @@ export default function InspectionReportDetail() {
         {/*   Save */}
         {/* </Button> */}
         <Button
-          disabled={isLoadingInspectionFormData}
+          disabled={isLoadingInspectionFormData || isLoadingInspectionUpdate}
           type="button"
           onClick={() => {
             if (!isMediaFilesTab) {
@@ -255,8 +273,8 @@ export default function InspectionReportDetail() {
           size="xl"
           variant="default"
         >
-          {isLoadingInspectionFormData ? <Spinner /> : null}
-          {isLoadingInspectionFormData ? 'Submitting...' : isMediaFilesTab ? 'Submit' : 'Next'}
+          {isLoadingInspectionFormData || isLoadingInspectionUpdate ? <Spinner /> : null}
+          {submitButtonText}
         </Button>
       </div>
     </div>

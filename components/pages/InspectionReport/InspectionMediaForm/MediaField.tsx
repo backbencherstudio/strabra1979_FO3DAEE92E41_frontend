@@ -18,6 +18,7 @@ interface MediaFieldProps extends Omit<FileInputProps, 'files' | 'setFiles'> {
   keyName: MediaFieldKeyType
   files: (LocalMediaFile | RemoteMediaFile)[]
   setFiles: Dispatch<SetStateAction<(LocalMediaFile | RemoteMediaFile)[]>>
+  onRemoveFile: (file: File | IInspectionMediaFileItem) => void
   accept?: string
   maxSize?: number
   alwaysHideInput?: boolean
@@ -29,6 +30,7 @@ export function MediaField({
   keyName,
   files: allFiles,
   setFiles,
+  onRemoveFile,
   accept,
   multiple = true,
   placeholder,
@@ -51,8 +53,7 @@ export function MediaField({
 
   const combinedPreviewFiles = [...localFiles, ...remoteFiles]
 
-  const handleRemoveFile = (index: number) => {
-    const fileToRemove = combinedPreviewFiles[index]
+  const handleRemoveFile = (fileToRemove: File | IInspectionMediaFileItem) => {
     setFiles((prev) =>
       prev.filter((f) => {
         if (f.kind === 'local') {
@@ -62,6 +63,7 @@ export function MediaField({
         }
       }),
     )
+    onRemoveFile?.(fileToRemove)
   }
 
   const handleFilesChange = (newFiles: File[]) => {
@@ -75,7 +77,11 @@ export function MediaField({
 
   const triggerInput = () => fileInputRef.current?.triggerInput()
 
-  const inputClassName = alwaysHideInput ? 'hidden' : combinedPreviewFiles.length === 0 ? '' : 'hidden'
+  const inputClassName = alwaysHideInput
+    ? 'hidden'
+    : combinedPreviewFiles.length === 0
+      ? ''
+      : 'hidden'
 
   return (
     <Field>
@@ -94,7 +100,13 @@ export function MediaField({
         maxSize={maxSize}
         inputContainerClassName={inputContainerClassName}
       />
-      <FileInputPreview removeFile={handleRemoveFile} files={combinedPreviewFiles} className="" />
+      <FileInputPreview
+        removeFile={(index) => {
+          const file = combinedPreviewFiles?.[index]
+          if (file !== undefined) handleRemoveFile(file)
+        }}
+        files={combinedPreviewFiles}
+      />
       {multiple ? (
         <Button
           variant="outline"
