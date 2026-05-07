@@ -19,7 +19,7 @@ interface MediaFieldProps extends Omit<FileInputProps, 'files' | 'setFiles'> {
   files: (LocalMediaFile | RemoteMediaFile)[]
   setFiles: Dispatch<SetStateAction<(LocalMediaFile | RemoteMediaFile)[]>>
   accept?: string
-  maxSize: number
+  maxSize?: number
   alwaysHideInput?: boolean
   labelAction?: React.ReactNode
 }

@@ -2,7 +2,6 @@
 
 import { Edit } from '@/components/icons/Edit'
 import { FileImage } from '@/components/icons/File'
-import { mbToBytes } from '@/components/reusable/FileInput/FileInput'
 import { Button } from '@/components/ui/button'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
@@ -35,12 +34,12 @@ export default function InspectionMediaForm({
   isEditMode = false,
   onOpenEditModal,
 }: InspectionMediaFormProps) {
-  const maxImageSize = mbToBytes(100)
-  const maxVideoSize = mbToBytes(1024)
+  // const maxImageSize = mbToBytes(100)
+  // const maxVideoSize = mbToBytes(1024)
 
-  function testLabel(conf: IInspectionMediaField) {
-    return [conf.label, '|', 'isSystem =', conf.isSystem, '|', 'type =', conf.type].join(' ')
-  }
+  // function testLabel(conf: IInspectionMediaField) {
+  //   return [conf.label, '|', 'isSystem =', conf.isSystem, '|', 'type =', conf.type].join(' ')
+  // }
 
   return (
     <form>
@@ -69,14 +68,14 @@ export default function InspectionMediaForm({
                 accept={conf.accept?.join(',')}
                 placeholder={conf.placeholder}
                 icon={<FileImage />}
-                maxSize={maxImageSize}
+                // maxSize={maxImageSize}
                 inputContainerClassName="h-35"
               />
             )
           }
 
           if (conf.type === 'embed') {
-            const tour3dValue = embedFields['tour3d'] ?? ''
+            const embededFieldValue = embedFields[conf.key] ?? ''
             return (
               <Field key={conf.key}>
                 <FieldLabel className="justify-between">
@@ -95,7 +94,7 @@ export default function InspectionMediaForm({
                 </FieldLabel>
                 <Textarea
                   placeholder={conf.placeholder}
-                  value={tour3dValue}
+                  value={embededFieldValue}
                   onChange={(e) => {
                     setEmbedFields({ ...embedFields, [conf.key]: e.target.value })
                   }}
@@ -127,7 +126,7 @@ export default function InspectionMediaForm({
                 keyName={conf.key}
                 accept={conf.accept?.join(',')}
                 placeholder={conf.placeholder}
-                maxSize={maxImageSize}
+                // maxSize={maxImageSize}
                 inputContainerClassName="h-35"
                 alwaysHideInput={true}
               />
