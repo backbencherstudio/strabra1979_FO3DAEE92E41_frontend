@@ -183,11 +183,11 @@ export default function PropertyDetails({
                 className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
-                <div className="flex aspect-video justify-center overflow-hidden bg-gray-100">
+                <div className="grid aspect-video place-items-center bg-gray-100">
                   {hasUrl ? (
                     <div
                       className={cn(
-                        'max-w-full flex-1',
+                        'grid h-full w-full max-w-full place-items-center',
                         '[&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:w-full [&_iframe]:max-w-full',
                       )}
                       dangerouslySetInnerHTML={{ __html: foundItem.url }}
