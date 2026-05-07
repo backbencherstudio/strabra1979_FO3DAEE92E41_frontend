@@ -258,10 +258,17 @@ function ViewAccessDialogContent({
                   key={item.accessId}
                   leading={<UserAvatar src={item?.avatar ?? undefined} name={item?.title} />}
                   title={item?.title}
-                  subtitle={[
-                    item?.subtitle,
-                    ...(item.expiresAt ? ['|', formatDate(item.expiresAt)] : []),
-                  ].join(' ')}
+                  subTitle={
+                    <div className="flex justify-between">
+                      <span>{item?.subtitle}</span>
+                      {item.expiresAt ? (
+                        <span>
+                          <span className="font-medium">Access expires: </span>
+                          <span>{item.expiresAt ? formatDate(item.expiresAt) : null}</span>
+                        </span>
+                      ) : null}
+                    </div>
+                  }
                   tailing={
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
