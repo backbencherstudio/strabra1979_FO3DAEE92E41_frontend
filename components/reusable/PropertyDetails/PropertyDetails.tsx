@@ -16,7 +16,6 @@ import {
 import { useAppDispatch } from '@/redux/store'
 import { getBoxWidth, IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
 import { ChevronRight } from 'lucide-react'
-import Image from 'next/image'
 import { useEffect, useEffectEvent } from 'react'
 import { Slide } from 'yet-another-react-lightbox'
 import FullPageSpinner from '../FullPageSpinner/FullPageSpinner'
@@ -79,7 +78,7 @@ export default function PropertyDetails({
           ]}
         />
       </PropertyHeaderWrapper>
-      {/* outline *:outline *:outline-red-500 */}
+
       <section className="grid grid-cols-12 gap-5">
         {data.templateSnapshot?.map((item) => {
           if (item.type === 'header_info') {
@@ -116,7 +115,7 @@ export default function PropertyDetails({
                 <SectionCard
                   key={item.type}
                   className={cn(
-                    'grid place-items-center bg-white',
+                    'grid min-h-40 place-items-center bg-white',
                     getBoxWidth(item?.style?.width),
                   )}
                 >
@@ -148,43 +147,54 @@ export default function PropertyDetails({
 
             return (
               <div key={item.type} className={cn(getBoxWidth(item?.style?.width))}>
-                <MediaFiles className="bg-red-300" slides={slides}>
-                  <MediaFilesPreviewGrid slides={slides} />
+                <MediaFiles slides={slides}>
+                  <MediaFilesPreviewGrid slides={slides} className="h-full" />
                 </MediaFiles>
               </div>
             )
           }
 
           if (item.type === 'aerial_map') {
+            const foundItem = inspectinData.mediaFiles.find((m) => m.mediaFieldKey === 'aerialMap')
+            const hasUrl = !!foundItem?.url
             return (
               <SectionCard
                 key={item.type}
                 className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
-                <div className="grid aspect-video place-items-center overflow-hidden rounded-md bg-gray-100">
-                  <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
-                  {/* <Image */}
-                  {/*   className="h-full w-full object-cover" */}
-                  {/*   width={800} */}
-                  {/*   height={450} */}
-                  {/*   alt="" */}
-                  {/*   src={'/images/inspectin-list/aerial-map.png'} */}
-                  {/* /> */}
+                <div className="grid aspect-video place-items-center bg-gray-100">
+                  {hasUrl ? (
+                    <video src={foundItem.url} controls className="h-full w-full object-cover" />
+                  ) : (
+                    <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
+                  )}
                 </div>
               </SectionCard>
             )
           }
 
           if (item.type === 'tour_3d') {
+            const foundItem = inspectinData.mediaFiles.find((m) => m.mediaFieldKey === 'tour3d')
+            const hasUrl = !!foundItem?.url
             return (
               <SectionCard
                 key={item.type}
                 className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
               >
                 <SectionTitle className="text-center">{item.label}</SectionTitle>
-                <div className="grid aspect-video place-items-center overflow-hidden rounded-md bg-gray-100">
-                  <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
+                <div className="flex aspect-video justify-center overflow-hidden bg-gray-100">
+                  {hasUrl ? (
+                    <div
+                      className={cn(
+                        'max-w-full flex-1',
+                        '[&_iframe]:aspect-video [&_iframe]:h-auto [&_iframe]:w-full [&_iframe]:max-w-full',
+                      )}
+                      dangerouslySetInnerHTML={{ __html: foundItem.url }}
+                    />
+                  ) : (
+                    <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
+                  )}
                   {/* <Image */}
                   {/*   className="h-full w-full object-cover" */}
                   {/*   width={800} */}

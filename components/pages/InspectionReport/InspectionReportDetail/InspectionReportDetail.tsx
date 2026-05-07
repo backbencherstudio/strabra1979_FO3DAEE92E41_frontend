@@ -194,7 +194,6 @@ export default function InspectionReportDetail() {
   const submitButtonText = (() => {
     if (isLoadingInspectionFormData) return 'Submitting...'
     if (isLoadingInspectionUpdate) return 'Updating...'
-    if (isEditable) return 'Update'
     if (isMediaFilesTab) return 'Submit'
 
     return 'Next'
