@@ -16,6 +16,7 @@ import {
   useCreateCustomMediaFieldMutation,
   useCreateNewHeaderFieldMutation,
   useDeleteCustomHeaderFieldMutation,
+  useDeleteCustomMediaFieldMutation,
   useEditAHeaderFieldMutation,
   useEditCustomMediaFieldMutation,
 } from '@/api/inspectionManagement/criteriaManagementApi'
@@ -87,21 +88,36 @@ export function CreateMoreInputModal({
   initialData,
   ...props
 }: CreateMoreInputModalProps) {
-  const [deleteCustomHeaderField, { isLoading: isDeleting }] = useDeleteCustomHeaderFieldMutation()
-  async function handDleDelte() {
+  const [deleteCustomHeaderField, { isLoading: isDeletingHeaderField }] =
+    useDeleteCustomHeaderFieldMutation()
+  const [deleteCustomMediaField, { isLoading: isDeletingMediaField }] =
+    useDeleteCustomMediaFieldMutation()
+
+  async function handleDelete() {
     if (!criteriaId || !initialData?.key) {
-      return toast.error('Invalid criteriaId')
+      return toast.error('Invalid criteria ID')
     }
 
     try {
-      const res = await deleteCustomHeaderField({
-        criteriaId,
-        fieldKey: initialData.key,
-      }).unwrap()
+      let res
+
+      if (modalType === 'checklist') {
+        res = await deleteCustomHeaderField({
+          criteriaId,
+          fieldKey: initialData.key,
+        }).unwrap()
+      } else {
+        res = await deleteCustomMediaField({
+          criteriaId,
+          fieldKey: initialData.key,
+        }).unwrap()
+      }
+
       onOpenChange?.(false)
-      toast.success(res.message || 'Success message')
+
+      toast.success(res?.message || `Field deleted successfully.`)
     } catch (err) {
-      toast.error('Error title', {
+      toast.error('Failed to delete field', {
         description: getErrorMessage(err),
       })
     }
@@ -267,7 +283,12 @@ export function CreateMoreInputModal({
             iconContainerClass="bg-transparent p-0"
             trigger={
               initialData?.isSystem ? null : (
-                <Button type="button" disabled={isDeleting} size="icon" variant="muted">
+                <Button
+                  type="button"
+                  disabled={isDeletingHeaderField || isDeletingMediaField}
+                  size="icon"
+                  variant="muted"
+                >
                   <Trush className="text-destructive size-5" />
                 </Button>
               )
@@ -276,7 +297,7 @@ export function CreateMoreInputModal({
             desc="Are you sure you want to delete this input field?"
           >
             <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
-            <AlertDialogAction type="button" onClick={handDleDelte} variant="destructive">
+            <AlertDialogAction type="button" onClick={handleDelete} variant="destructive">
               Delete Field
             </AlertDialogAction>
           </ConfirmDialog>

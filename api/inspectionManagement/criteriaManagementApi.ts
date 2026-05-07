@@ -43,6 +43,16 @@ const criteriaManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['InspectionCriteria'],
     }),
+    deleteCustomMediaField: builder.mutation<
+      WithApiStatus<void>,
+      { fieldKey: string; criteriaId: string }
+    >({
+      query: ({ criteriaId, fieldKey }) => ({
+        url: `/inspection-criteria/${criteriaId}/media-fields/${fieldKey}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['InspectionCriteria'],
+    }),
     editAHeaderField: builder.mutation<
       WithApiStatus<void>,
       { fieldKey: string; criteriaId: string; data: Partial<ICreateHeaderFieldParams> }
@@ -159,6 +169,7 @@ export const {
   useGetAllInspectionCriteriaQuery,
   useCreateNewHeaderFieldMutation,
   useDeleteCustomHeaderFieldMutation,
+  useDeleteCustomMediaFieldMutation,
   useEditAHeaderFieldMutation,
   useCreateScoringFieldMutation,
   useDeleteACustomScoringCategoryMutation,
@@ -166,6 +177,6 @@ export const {
   useEditTextAreaInputFieldMutation,
   useUpdateHealthThresholdConfigMutation,
   useCreateCustomMediaFieldMutation,
-  useEditCustomMediaFieldMutation
+  useEditCustomMediaFieldMutation,
 } = criteriaManagementApi
 export default criteriaManagementApi
