@@ -14,9 +14,16 @@ import { ScheduleInspectionDialog } from '@/components/pages/admin/property-list
 import { AssignUserDialog } from '@/components/pages/admin/property-list/AssignUserDialog'
 import { ViewAccessDialog } from '@/components/pages/admin/property-list/ViewAccessDialog'
 
-import { useAssignUserToPropertyMutation } from '@/api/dashboard/properties/propertiesApi'
+import {
+  useAssignUserToPropertyMutation,
+  useDeletePropertyDashboardAndAllRelatedDataMutation,
+} from '@/api/dashboard/properties/propertiesApi'
 import { toast } from 'sonner'
 import { getErrorMessage } from '@/lib/farmatters'
+import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
+import { Trush } from '@/components/icons/Trush'
+import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
+import { cn } from '@/lib/utils'
 
 interface Props {
   dashboardId?: string
@@ -59,6 +66,34 @@ export default function PropertyCardAdminActions({
     }
   }
 
+  const [deletePropertyDashboardAndAllRelatedData, { isLoading: isDeleting }] =
+    useDeletePropertyDashboardAndAllRelatedDataMutation()
+
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false)
+
+  const handleDelete = async (dashboardId?: string) => {
+    if (!dashboardId) {
+      toast.error('Unable to delete property', {
+        description: 'Missing property dashboard ID.',
+      })
+      return
+    }
+
+    try {
+      const res = await deletePropertyDashboardAndAllRelatedData({
+        dashboardId,
+      }).unwrap()
+
+      toast.success('Property deleted successfully', {
+        description: res.message ?? 'The property and all related data have been removed.',
+      })
+    } catch (error) {
+      toast.error('Failed to delete property', {
+        description: getErrorMessage(error),
+      })
+    }
+  }
+
   return (
     <>
       {/* Dropdown */}
@@ -86,6 +121,14 @@ export default function PropertyCardAdminActions({
             <DropdownMenuItem onSelect={() => setViewAccessDialogOpen(true)}>
               View Access Details
             </DropdownMenuItem>
+
+            <DropdownMenuItem
+              disabled={isDeleting}
+              variant="destructive"
+              onSelect={() => setOpenConfirmDialog(true)}
+            >
+              Delete Property
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -111,11 +154,29 @@ export default function PropertyCardAdminActions({
       />
 
       <ViewAccessDialog
-        mode='dashboard'
+        mode="dashboard"
         open={viewAccessDialogOpen}
         onOpenChange={setViewAccessDialogOpen}
         dashboardId={dashboardId}
       />
+
+      <ConfirmDialog
+        open={openConfirmDialog}
+        iconContainerClass="bg-destructive"
+        descriptionClass={cn('max-w-100')}
+        icon={<Trush />}
+        onOpenChange={(v) => {
+          setOpenConfirmDialog(v)
+        }}
+        title="Delete Property"
+        desc="Are you sure you want to delete this property? This action will permanently remove the property, its inspections, and all related data."
+      >
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+        <AlertDialogAction onClick={() => handleDelete(dashboardId)} variant="destructive">
+          {isDeleting ? 'Deleting...' : 'Delete Property'}
+        </AlertDialogAction>
+      </ConfirmDialog>
     </>
   )
 }

@@ -30,6 +30,23 @@ const propertiesApi = baseApi.injectEndpoints({
       providesTags: ['PropertyList'],
     }),
 
+    deletePropertyDashboardAndAllRelatedData: builder.mutation<
+      WithApiStatus<{ propertyId: string; propertyName: string; dashboardId: string }>,
+      { dashboardId: string }
+    >({
+      query: ({ dashboardId }) => ({
+        url: `/properties/dashboard/${dashboardId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [
+        'PropertyList',
+        'Folders',
+        'ActivityLog',
+        'Overview',
+        'InspectionManagement'
+      ],
+    }),
+
     getPropertyDashboarIdCheck: builder.query<WithApiStatus<IPropertyDashboardDetails>, string>({
       query: (dashboardId) => ({
         url: `/properties/dashboard/${dashboardId}/access/check`,
@@ -138,6 +155,7 @@ const propertiesApi = baseApi.injectEndpoints({
 
 export const {
   useGetPropertiesQuery,
+  useDeletePropertyDashboardAndAllRelatedDataMutation,
   useGetPropertiesIdQuery,
   useCreatePropertyMutation,
   useGetPropertyDashboardAccessListQuery,

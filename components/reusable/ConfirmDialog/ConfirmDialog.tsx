@@ -14,6 +14,8 @@ interface ConfirmDialog extends React.ComponentProps<typeof AlertDialog> {
   title: string
   desc: string
   iconContainerClass?: string
+  titleClass?: string
+  descriptionClass?: string
   trigger?: ReactNode
   icon?: ReactNode
 }
@@ -24,6 +26,8 @@ export default function ConfirmDialog({
   icon,
   trigger,
   iconContainerClass,
+  descriptionClass,
+  titleClass,
   children,
   ...props
 }: ConfirmDialog) {
@@ -31,7 +35,7 @@ export default function ConfirmDialog({
     <AlertDialog {...props}>
       {trigger ? <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger> : null}
       <AlertDialogContent>
-        <AlertDialogHeader>
+        <AlertDialogHeader className="justify-center">
           {icon ? (
             <div className="mb-2 flex w-full items-center justify-center">
               <div className={cn('bg-primary rounded-xl p-3 text-white', iconContainerClass)}>
@@ -39,8 +43,10 @@ export default function ConfirmDialog({
               </div>
             </div>
           ) : null}
-          <AlertDialogTitle className="w-full">{title}</AlertDialogTitle>
-          <AlertDialogDescription className="w-full">{desc}</AlertDialogDescription>
+          <AlertDialogTitle className={cn('w-full', titleClass)}>{title}</AlertDialogTitle>
+          <AlertDialogDescription className={cn('w-full', descriptionClass)}>
+            {desc}
+          </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter className="sm:*:flex-1">{children}</AlertDialogFooter>
