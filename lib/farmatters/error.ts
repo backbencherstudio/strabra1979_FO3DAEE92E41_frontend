@@ -1,4 +1,17 @@
+import { routes } from '@/constant'
 import React from 'react'
+import { toast } from 'sonner'
+
+export function handleContactAdminRedirect(router: { push: (url: string) => void }) {
+  toast.error('Access restricted', {
+    description: 'Your account requires administrator approval. Please contact your administrator.',
+  })
+  router.push(routes.contactAdmin)
+}
+
+export function shouldRedirectToContactAdmin(msg: string) {
+  return msg === 'CONTACT_ADMIN'
+}
 
 export function getErrorMessage(
   error: unknown,

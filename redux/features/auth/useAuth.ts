@@ -1,11 +1,15 @@
 import { useLoginMutation } from '@/api/auth/authApi'
-import { getErrorMessage } from '@/lib/farmatters'
+import {
+  getErrorMessage,
+  handleContactAdminRedirect,
+  shouldRedirectToContactAdmin,
+} from '@/lib/farmatters'
 import { useAppDispatch } from '@/redux/store'
 import { ILoginParams } from '@/types'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 import { toast } from 'sonner'
-import { invalidToken, clearToken, selectCurrentRole, selectCurrentToken } from './authSlice'
+import { clearToken, selectCurrentRole, selectCurrentToken } from './authSlice'
 
 // Validate redirect URL
 const isValidRedirect = (url: string) => {
@@ -32,7 +36,17 @@ export function useAuth() {
       await logInMutatin(params).unwrap()
       router.replace('/') // proxy.ts will redirect the user in correct path
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Failed to SignIn. Please try again.'))
+      const msg = getErrorMessage(
+        error,
+        'Unable to sign in. Please check your credentials and try again.',
+      )
+
+      if (shouldRedirectToContactAdmin(msg)) {
+        handleContactAdminRedirect(router)
+        return
+      }
+
+      toast.error('Sign in failed', { description: msg })
     }
   }
 

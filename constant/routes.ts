@@ -1,5 +1,4 @@
 import { createRoute } from '@/lib/createRoute'
-import { getHomePageByRole } from './role'
 
 export const routes = {
   signin: '/signin',
@@ -8,6 +7,7 @@ export const routes = {
   varifyEmail: '/varify-email',
   setNewPassword: '/set-new-password',
   signUpSuccess: '/sign-up-success',
+  contactAdmin: '/contact-admin',
 
   redirects: {
     propertyDetail: createRoute('/r/properties-list/[dashboardId]'),
@@ -67,4 +67,8 @@ export const publicRoutes = [
   routes.varifyEmail,
   routes.setNewPassword,
   routes.signUpSuccess,
+]
+
+export const openRoutes = [
+  routes.contactAdmin,
 ]

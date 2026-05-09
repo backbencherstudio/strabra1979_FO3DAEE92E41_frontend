@@ -1,5 +1,5 @@
 'use client'
-import { publicRoutes, routes } from '@/constant'
+import { openRoutes, publicRoutes, routes } from '@/constant'
 import { AuthCredential, AuthToken } from '@/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useEffectEvent } from 'react'
@@ -33,7 +33,9 @@ export default function AuthReduxRehydrate({ credentials }: Props) {
   const redirectToAuthPage = useEffectEvent(async (token: AuthToken) => {
     if (token === null) {
       const inPublicRoute = publicRoutes.some((route) => path.startsWith(route))
-      if (!inPublicRoute) {
+      const isOpenRoute = openRoutes.some((route) => path.startsWith(route))
+
+      if (!inPublicRoute && !isOpenRoute) {
         await deleteAuthCookies()
         router.push(routes.signin)
         dispatch(baseApi.util.resetApiState())

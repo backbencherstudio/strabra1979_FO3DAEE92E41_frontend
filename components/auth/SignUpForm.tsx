@@ -2,7 +2,11 @@
 
 import { useRegisterUserMutation } from '@/api/auth/authApi'
 import { routes } from '@/constant'
-import { getErrorMessage } from '@/lib/farmatters'
+import {
+  getErrorMessage,
+  handleContactAdminRedirect,
+  shouldRedirectToContactAdmin,
+} from '@/lib/farmatters'
 import { IAuthRegisterResponse, IAuthUserRole, USER_ROLES, WithApiStatus } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon, UserIcon } from 'lucide-react'
@@ -13,7 +17,7 @@ import z from 'zod'
 import FormInputField from '../form/form-input-field'
 import { Button } from '../ui/button'
 import { Spinner } from '../ui/spinner'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export const signupSchema = z
   .object({
@@ -43,6 +47,7 @@ interface RegerterUserFormOptions {
 }
 
 export function useRegerterUserForm({ role, onSubmit }: RegerterUserFormOptions) {
+  const router = useRouter()
   const [registerUser, { isLoading: registerUserIsLoading }] = useRegisterUserMutation()
 
   const searchParams = useSearchParams()
@@ -76,6 +81,13 @@ export function useRegerterUserForm({ role, onSubmit }: RegerterUserFormOptions)
         toast.message(data.message ?? 'Sugnn up succefuull')
         form.reset()
       } catch (error) {
+        const msg = getErrorMessage(error)
+
+        if (shouldRedirectToContactAdmin(msg)) {
+          handleContactAdminRedirect(router)
+          return
+        }
+
         toast.error('Signup Failed — please try again.', {
           description: getErrorMessage(error),
         })

@@ -1,5 +1,4 @@
 import { baseApi } from '@/api/baseApi'
-import { getErrorMessage } from '@/lib/farmatters'
 import { setCredentials } from '@/redux/features/auth/authSlice'
 import type {
   IAuthChangePasswordParams,
@@ -12,7 +11,6 @@ import type {
   ILoginPayload,
   WithApiStatus,
 } from '@/types'
-import { toast } from 'sonner'
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -34,7 +32,7 @@ const authApi = baseApi.injectEndpoints({
 
           dispatch(setCredentials({ token, role, refreshToken }))
         } catch (error) {
-          toast.error(getErrorMessage(error, 'Login failed. Please try again.'))
+          throw error
         }
       },
     }),
