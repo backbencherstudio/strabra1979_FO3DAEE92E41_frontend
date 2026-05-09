@@ -13,6 +13,7 @@ import z from 'zod'
 import FormInputField from '../form/form-input-field'
 import { Button } from '../ui/button'
 import { Spinner } from '../ui/spinner'
+import { useSearchParams } from 'next/navigation'
 
 export const signupSchema = z
   .object({
@@ -44,10 +45,14 @@ interface RegerterUserFormOptions {
 export function useRegerterUserForm({ role, onSubmit }: RegerterUserFormOptions) {
   const [registerUser, { isLoading: registerUserIsLoading }] = useRegisterUserMutation()
 
+  const searchParams = useSearchParams()
+  const rawEmail = searchParams.get('email')
+  const defaultEmail = rawEmail && z.email().safeParse(rawEmail).success ? rawEmail : ''
+
   const form = useForm({
     defaultValues: {
       username: '',
-      email: '',
+      email: defaultEmail,
       password: '',
       confirmPassword: '',
       role: role ?? '',

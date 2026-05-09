@@ -7,14 +7,14 @@ import SignUpForm from './SignUpForm'
 
 const tabs = [
   {
-    lable: 'Property Manager',
-    value: 'property-manager',
-    icon: Property,
-  },
-  {
     lable: 'Authorized Viewer',
     value: 'authorized-viewer',
     icon: LineChartIcon,
+  },
+  {
+    lable: 'Property Manager',
+    value: 'property-manager',
+    icon: Property,
   },
   {
     lable: 'Operational',
@@ -25,7 +25,7 @@ const tabs = [
 
 export function AccountTypeTabs() {
   return (
-    <Tabs defaultValue="property-manager" className="mt-4.5 w-full">
+    <Tabs defaultValue="authorized-viewer" className="mt-4.5 w-full">
       {/* Responsive TabsList - stacks vertically on mobile, row on desktop */}
       <TabsList className="grid h-fit! w-full grid-cols-1 gap-3 md:grid-cols-3">
         {tabs.map((item) => (

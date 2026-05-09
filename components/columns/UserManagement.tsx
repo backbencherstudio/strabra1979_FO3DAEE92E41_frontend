@@ -8,6 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { formatDate, getErrorMessage } from '@/lib/farmatters'
@@ -182,12 +183,28 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 p-0 hover:bg-[#f6f8fa]">
+          <Button variant="ghost" size="icon" className="hover:bg-normal-25 h-8 w-8 p-0">
             <Dot className={`h-4 w-4 ${isUserDeleted ? 'text-gray-600' : 'text-gray-500'}`} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-[167px] bg-[#f6f8fa] p-3 shadow-xl">
+        <DropdownMenuContent align="end" className="bg-normal-25 min-w-41.75 shadow-xl">
           <DropdownMenuGroup>
+            <DropdownMenuItem onSelect={() => setOpenAssignDialog(true)} disabled={isUserDeleted}>
+              Assign to a property
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => setViewAccessDialogOpen(true)}>
+              View Access Details
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuGroup>
+            <DropdownMenuItem onSelect={() => setUserRoleDialog(true)}>
+              Change User role
+            </DropdownMenuItem>
+
             {isUserDeleted ? null : (
               <DropdownMenuItem
                 onSelect={() => {
@@ -205,6 +222,7 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
             )}
 
             <DropdownMenuItem
+              variant="destructive"
               onSelect={() => {
                 if (isUserDeleted) {
                   onConfirmToggleDeleteUser()
@@ -216,18 +234,6 @@ const UserActionButton = ({ rowData }: { rowData: IUserListItem }) => {
               disabled={isLoading}
             >
               {isUserDeleted ? 'Active User' : 'Delete User'}
-            </DropdownMenuItem>
-
-            <DropdownMenuItem onSelect={() => setOpenAssignDialog(true)} disabled={isUserDeleted}>
-              Assign to a property
-            </DropdownMenuItem>
-
-            <DropdownMenuItem onSelect={() => setUserRoleDialog(true)}>
-              Change User role
-            </DropdownMenuItem>
-
-            <DropdownMenuItem onSelect={() => setViewAccessDialogOpen(true)}>
-              View Access Details
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
