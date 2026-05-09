@@ -9,7 +9,7 @@ import { useAuth } from './useAuth'
 import { baseApi } from '@/api/baseApi'
 import { deleteAuthCookies } from '@/lib/actions/auth'
 
-interface Props {
+interface Props extends React.PropsWithChildren {
   credentials: AuthCredential
 }
 
