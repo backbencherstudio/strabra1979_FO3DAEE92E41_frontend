@@ -3,47 +3,47 @@ Please confirm the following items will be completed and working:
 
 * User Access & Login
 - [X] Forgot password is working
-- [ ] New user registration sends notification to Admin
-- [-] Deleted users can re-register or receive proper contact message
-- [ ] Login/logout system is stable
+- [X] New user registration sends notification to Admin
+- [X] Deleted users can re-register or receive proper contact message
+- [X] Login/logout system is stable
 
 * Admin Control
-- [ ] Admin can edit all dashboard data fields
-- [ ] Admin can add/remove users
-- [ ] Admin can change user roles/permissions
-- [ ] Admin can assign/remove property access
-- [ ] Admin can see which users have access to each property
+- [X] Admin can edit all dashboard data fields
+- [X] Admin can add/remove users
+- [X] Admin can change user roles/permissions
+- [X] Admin can assign/remove property access
+- [X] Admin can see which users have access to each property
 
 * Property & Access Logic
 - [X] Users only see properties assigned to them
-- [ ] Property Manager reassignment removes previous access immediately
-- [ ] Sharing a property works (no “no user found” error)
+- [X] Property Manager reassignment removes previous access immediately
+- [X] Sharing a property works (no “no user found” error)
 
 * Media & File Uploads
-- [ ] Images upload successfully
-- [ ] Videos upload successfully
-- [ ] Files attach properly to inspections
-- [ ] Files display correctly in dashboard
+- [X] Images upload successfully
+- [X] Videos upload successfully
+- [X] Files attach properly to inspections
+- [X] Files display correctly in dashboard
 - [ ] No “FAILED TO FETCH” errors
 
 * Inspection System
-- [ ] Inspections can be submitted with attachments
+- [X] Inspections can be submitted with attachments
 - [ ] Safety & Structure category is added
 - [ ] Inspection scoring calculates correctly
 - [ ] Inspection process completes without errors
 
 * Notifications (Basic Functionality)
-- [ ] Notification bell links to actionable items
-- [ ] Admin can view and approve user requests
-- [ ] Share/invite function sends notifications properly
+- [X] Notification bell links to actionable items
+- [X] Admin can view and approve user requests
+- [X] Share/invite function sends notifications properly
 
 * Property Management (Admin Functions)
-- [ ] Admin can delete properties
-- [ ] Admin can upload media to aerial/drone section
-- [ ] Admin can add links to 3D Roof Tour section
-- [-] Admin can edit:
+- [X] Admin can delete properties
+- [X] Admin can upload media to aerial/drone section
+- [X] Admin can add links to 3D Roof Tour section
+- [X] Admin can edit:
   - [X] Priority Repair Planning
-  - [ ] Roof Health Rating
+  - [X] Roof Health Rating
   - [X] Additional Information
   - [X] Comments
 

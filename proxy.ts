@@ -17,6 +17,7 @@ export function proxy(request: NextRequest) {
    *  - Known role → redirected to their role-specific homepage unless already there.
    */
   if (
+    pathname == '/' ||
     publicRoutes.some((route) => pathname.startsWith(route)) ||
     openRoutes.some((route) => pathname.startsWith(route))
   ) {

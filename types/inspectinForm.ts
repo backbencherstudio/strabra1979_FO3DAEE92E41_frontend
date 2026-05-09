@@ -70,7 +70,13 @@ export interface AdditionalNotesConfig {
 // -------------------- Form & Main Interface --------------------
 export type EmbedFieldsData = { [key: string]: string }
 
-export const MEDIA_FIELD_KEY_TYPES = ['mediaFiles', 'aerialMap', 'tour3d', 'documents'] as const
+export const MEDIA_FIELD_KEY_TYPES = [
+  'mediaFiles',
+  'aerialMap',
+  'droneAerial',
+  'tour3d',
+  'documents',
+] as const
 export type MediaFieldKeyType = (typeof MEDIA_FIELD_KEY_TYPES)[number]
 export type MediaFieldItem = LocalMediaFile | RemoteMediaFile
 

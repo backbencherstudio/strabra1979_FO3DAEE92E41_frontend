@@ -26,6 +26,7 @@ export const TEMPLATE_SECTIONS = [
   'health_snapshot',
   'media_grid',
   'aerial_map',
+  'drone_aerial',
   'tour_3d',
   'repair_planning',
   'roof_health_rating',

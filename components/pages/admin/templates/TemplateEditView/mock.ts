@@ -117,7 +117,7 @@ export const DEMO_FROM_CONFIG: IPropertyInspectionFormData = {
       {
         key: 'aerialMap',
         type: 'file',
-        label: 'Aerial Map!!',
+        label: 'Drone Arial Overview',
         order: 2,
         accept: ['image/*', 'video/*'],
         isSystem: true,

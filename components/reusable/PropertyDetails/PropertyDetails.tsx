@@ -154,9 +154,12 @@ export default function PropertyDetails({
             )
           }
 
-          if (item.type === 'aerial_map') {
-            const foundItem = inspectinData.mediaFiles.find((m) => m.mediaFieldKey === 'aerialMap')
+          if (item.type === 'aerial_map' || item.type === 'drone_aerial') {
+            const foundItem = inspectinData?.mediaFiles?.find(
+              (m) => m.mediaFieldKey === 'aerialMap' || m.mediaFieldKey === 'droneAerial',
+            )
             const hasUrl = !!foundItem?.url
+
             return (
               <SectionCard
                 key={item.type}
@@ -175,7 +178,7 @@ export default function PropertyDetails({
           }
 
           if (item.type === 'tour_3d') {
-            const foundItem = inspectinData.mediaFiles.find((m) => m.mediaFieldKey === 'tour3d')
+            const foundItem = inspectinData?.mediaFiles?.find((m) => m.mediaFieldKey === 'tour3d')
             const hasUrl = !!foundItem?.url
             return (
               <SectionCard

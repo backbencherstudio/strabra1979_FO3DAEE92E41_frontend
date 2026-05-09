@@ -184,7 +184,7 @@ export default function EditTemplagePage({
             )
           }
 
-          if (data.type === 'aerial_map') {
+          if (data.type === 'aerial_map' || data.type === 'drone_aerial') {
             return (
               <EditBox
                 key={data.id}
