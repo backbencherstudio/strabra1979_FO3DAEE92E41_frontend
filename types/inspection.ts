@@ -77,7 +77,7 @@ export type IScheduledInspectionTableItem = {
 
 export type IAdminScheduledInspectinTableItem = {
   id: string
-  status: string
+  status: InspectionProgressStatus
   scheduledAt: string
   dashboardId: string
   inspectionId?: string

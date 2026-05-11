@@ -54,7 +54,7 @@ export const OPERATIONAL_RECENT_INSPECTION_LIST_MANAGEMENT_COLUMS =
     {
       label: '',
       accessor: 'id',
-      formatter: (_, row) => <InspectinListItemAction {...row} />,
+      formatter: (_, row) => <InspectinListItemAction {...row} scheduledInspectionId={row.id} />,
     },
   ])
 
@@ -95,7 +95,7 @@ export const OPERATIONAL_INSPECTION_LIST_MANAGEMENT_COLUMS =
     {
       label: '',
       accessor: 'id',
-      formatter: (_, row) => <InspectinListItemAction {...row} />,
+      formatter: (_, row) => <InspectinListItemAction {...row} scheduledInspectionId={row.id} />,
     },
   ])
 
@@ -142,17 +142,23 @@ export const ADMIN_INSPECTION_LIST_MANAGEMENT_COLUMS =
     {
       label: '',
       accessor: 'id',
-      formatter: (_, row) => <InspectinListItemAction {...row} />,
+      formatter: (_, row) => <InspectinListItemAction {...row} scheduledInspectionId={row.id} />,
     },
   ])
 
+interface InspectinListItemActionProps {
+  status: InspectionProgressStatus
+  dashboardId: string
+  inspectionId?: string
+  scheduledInspectionId: string
+}
+
 function InspectinListItemAction({
-  id,
   inspectionId,
   dashboardId,
   scheduledInspectionId,
   status,
-}: IOperationalInspectionTableItem) {
+}: InspectinListItemActionProps) {
   const [deleteSingleInspectinWithId, { isLoading }] = useDeleteSingleInspectionWithIdMutation()
   const { role } = useAuth()
 
@@ -254,7 +260,7 @@ function InspectinListItemAction({
               router.push(
                 routes.admin.inspectionListItemDetail.build(
                   { dashboardId },
-                  { edit: 'true', inspectionId, scheduledInspectionId: id },
+                  { edit: 'true', inspectionId, scheduledInspectionId },
                 ),
               )
             }}
@@ -278,7 +284,7 @@ function InspectinListItemAction({
             <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               disabled={isLoading}
-              onClick={() => handleDelete(id)}
+              onClick={() => handleDelete(scheduledInspectionId)}
               variant="destructive"
             >
               {isLoading ? 'Deleting...' : 'Delete'}
