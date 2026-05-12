@@ -40,8 +40,28 @@ interface ISubmitInspectionDataPayload {
 
 interface ISubmitInspectionDataUpdatePayload {
   inspectionId: string
-  data: IInspectionFormData & { removeMediaFileIds?: string[] }
-  files: File[]
+  data: {
+    headerData: { [key: string]: string }
+    scores: { [key: string]: IInspectionScoreCheckboxValue }
+    embedFields: { [key: string]: string }
+    repairItems?: Array<{ title: string; status: string; description: string }>
+    nteValue: number
+    additionalComments: string
+    inspectedAt: string
+    removeMediaFileIds?: string[]
+
+    // new
+    mediaSessions: {
+      sessionId: string
+      mediaFieldKey: string
+    }[]
+
+    // old
+    mediaFieldKeys: Array<string>
+  }
+
+  // old
+  // files: File[]
 }
 
 const operationalInspectionApi = baseApi.injectEndpoints({
@@ -93,21 +113,11 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       WithApiStatus<void>,
       ISubmitInspectionDataUpdatePayload
     >({
-      query: ({ inspectionId, data, files }) => {
-        const jsonData = JSON.stringify(data)
-
-        // Prepare FormData for sending
-        const formData = new FormData()
-        formData.append('data', jsonData)
-
-        files.forEach((file) => {
-          formData.append('files', file)
-        })
-
+      query: ({ inspectionId, data }) => {
         return {
           url: `/inspections/${inspectionId}`,
           method: 'PATCH',
-          body: formData,
+          body: data,
         }
       },
       invalidatesTags: ['Overview', 'InspectionManagement'],

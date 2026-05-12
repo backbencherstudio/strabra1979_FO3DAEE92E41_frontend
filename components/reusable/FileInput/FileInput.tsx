@@ -1,5 +1,6 @@
 'use client'
 
+import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 import { AlertCircleIcon, Upload } from 'lucide-react'
 import React, {
@@ -32,6 +33,8 @@ export interface FileInputProps
   inputContainerClassName?: string
   placeholderExtra?: ReactNode
   icon?: ReactNode
+  isLoading?: boolean
+  loaderComp?: ReactNode
 }
 
 // Forward ref to allow parent to access triggerInput function
@@ -56,6 +59,8 @@ export const FileInput = forwardRef<FileInputRef, FileInputProps>((props, ref) =
     placeholderExtra,
     files: _files,
     setFiles: _setFiles,
+    isLoading = false,
+    loaderComp,
     ...otherProps
   } = props
 
@@ -98,7 +103,7 @@ export const FileInput = forwardRef<FileInputRef, FileInputProps>((props, ref) =
   }
 
   const containerStyles = {
-    default: 'border-2 bg-white border-dashed border-border/50 py-4 px-2',
+    default: 'input-dashed-border h-35',
     compact: 'border border-border rounded-lg p-4',
     minimal: 'border-0 bg-secondary/50 p-4',
   }[variant]
@@ -141,12 +146,19 @@ export const FileInput = forwardRef<FileInputRef, FileInputProps>((props, ref) =
           ) : (
             <Upload className={cn('size-8 transition', isDragActive && 'text-primary')} />
           )}
-          {placeholder && (
-            <p
-              className={cn('text-foreground text-sm font-medium', isDragActive && 'text-primary')}
-            >
-              {placeholder}
-            </p>
+          {isLoading && loaderComp ? (
+            <div className="grid h-5 w-full place-items-center">{loaderComp}</div>
+          ) : (
+            placeholder && (
+              <p
+                className={cn(
+                  'text-foreground text-sm font-medium',
+                  isDragActive && 'text-primary',
+                )}
+              >
+                {placeholder}
+              </p>
+            )
           )}
           {placeholderExtra && (
             <div className="text-text-secondary flex flex-col items-center justify-center gap-1 text-center text-xs">

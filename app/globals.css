@@ -280,3 +280,7 @@ label[data-required='true']::after {
   content: ' *';
   color: var(--destructive);
 }
+
+.input-dashed-border {
+  @apply border-border/50 rounded-lg border-2 border-dashed bg-white p-2;
+}

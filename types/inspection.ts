@@ -1,15 +1,10 @@
-import { IInspectionMediaFileItem } from './inspectinForm'
+import { IInspectionMediaFile2, IInspectionMediaFileItem } from './inspectinForm'
 import { IUserBasicInfo } from './user'
 
 export const REPAIR_PROGRESS_STATUSES = ['Urgent', 'Maintenance', 'Replacement Planning'] as const
 export type IRepairProgressStatus = (typeof REPAIR_PROGRESS_STATUSES)[number]
 
-export type InspectionProgressStatus =
-  | 'ASSIGNED'
-  | 'IN_PROGRESS'
-  | 'COMPLETE'
-  | 'DUE'
-  | 'PUBLISHED'
+export type InspectionProgressStatus = 'ASSIGNED' | 'IN_PROGRESS' | 'COMPLETE' | 'DUE' | 'PUBLISHED'
 
 export type IPiorityRepairPlanItem = {
   id?: string
@@ -61,7 +56,7 @@ export type IDashboardInspectionListItem = {
   nteValue: number
   additionalComments: string
 
-  mediaFiles: Array<IInspectionMediaFileItem>
+  mediaFiles: Array<IInspectionMediaFile2>
 }
 
 export type IScheduledInspectionTableItem = {

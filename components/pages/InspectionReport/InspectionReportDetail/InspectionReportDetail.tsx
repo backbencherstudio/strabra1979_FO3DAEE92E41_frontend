@@ -39,6 +39,7 @@ import {
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { MediaUploadResponse, PreviewFile } from '../InspectionMediaForm/MultipartUpload'
 
 const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
 
@@ -67,13 +68,15 @@ export default function InspectionReportDetail() {
   // Media inputs
   const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
   const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
+  const [mediaFields2, setMediaFields2] = useState<
+    { data: MediaUploadResponse; fieldKey: MediaFieldKeyType }[]
+  >([])
   const removedMediaFields = useRef<string[]>([])
-  async function handleRemoveMediaFile(file: File | IInspectionMediaFileItem) {
-    if (!(file instanceof File)) {
+  async function handleRemoveMediaFile(file: PreviewFile) {
+    if (file.id) {
       removedMediaFields.current.push(file.id)
     }
   }
-  // console.table(inspectinData?.mediaFiles)
 
   const handleInspectinDataChangeFromServer = useEffectEvent(
     (data: IDashboardInspectionListItem) => {
@@ -166,6 +169,10 @@ export default function InspectionReportDetail() {
         const res = await updateAllInspectionFormDataFromAdmin({
           inspectionId: inspectionId!,
           data: {
+            mediaSessions: mediaFields2.map((item) => ({
+              sessionId: item.data.sessionId,
+              mediaFieldKey: item.fieldKey,
+            })),
             removeMediaFileIds: Array.isArray(removedMediaFields.current)
               ? removedMediaFields.current
               : undefined,
@@ -178,7 +185,6 @@ export default function InspectionReportDetail() {
             mediaFieldKeys: onlyLocalfileKeyList,
             embedFields: embedFields,
           },
-          files: onlyLocalfileList,
         }).unwrap()
 
         // router.push(routes.admin.inspectionList)
@@ -245,12 +251,17 @@ export default function InspectionReportDetail() {
       {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <InspectionMediaForm
-          onRemoveFile={handleRemoveMediaFile}
+          serverMediaFiles={inspectinData?.mediaFiles ?? []}
+          onMediaUpload={(data, fieldKey) => {
+            setMediaFields2((prev) => {
+              if (!prev) return [{ data, fieldKey }]
+              return [...prev, { data, fieldKey }]
+            })
+          }}
+          onDelete={handleRemoveMediaFile}
           onOpenEditModal={() => {}}
           embedFields={embedFields}
           setEmbedFields={setEmbedFields}
-          files={mediaFields}
-          setFiles={setMediaFields}
           mediaFields={formConfig?.form.mediaFields}
         />
       </section>

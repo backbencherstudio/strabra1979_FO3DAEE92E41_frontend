@@ -105,6 +105,20 @@ export type IInspectionMediaFileItem = {
   category?: string
   uploadedAt: string
 }
+export interface IInspectionMediaFile2 {
+  id: string
+  inspectionId: string
+
+  fileType: MediaFileType
+  mediaFieldKey: MediaFieldKeyType
+
+  fileName: string
+  url: string
+  size: number | null
+  fileSize: number | null
+  category: string | null
+  uploadedAt: string
+}
 
 export type TableRow = {
   name: string
