@@ -33,7 +33,7 @@ export interface MediaUploadResponse extends ICompleteMultipartUploadResponse {
   sessionId: string
 }
 
-export interface MultipartUploadProps extends React.ComponentProps<'input'> {
+export interface MultipartUploadProps extends Omit<React.ComponentProps<'input'>, 'onError'> {
   mediaFieldKey: MediaFieldKeyType
   showLog?: boolean
   label: string
@@ -53,6 +53,8 @@ export default function MultipartUpload({
   previewFiles,
   onDelete,
   onSuccess,
+  className,
+  ...props
 }: MultipartUploadProps) {
   const [logs, setLogs] = useState<ILog[]>([])
   const [logView, setLogView] = useState<'hidden' | 'show' | 'disabled'>(() =>
@@ -285,6 +287,7 @@ export default function MultipartUpload({
           <FileInputPreview removeFile={handOnDelete} files={currentSessionFiles} />
 
           <FileInput
+            {...props}
             ref={fileInputRef}
             // isLoading={true}
             // isLoading={isUploading}
@@ -304,7 +307,7 @@ export default function MultipartUpload({
             // {...props}
             // accept={accept}
             // placeholder={placeholder}
-            className={cn({ hidden: hasServerUrl })}
+            className={cn(className, { hidden: hasServerUrl })}
             // files={file === undefined ? undefined : [file]}
             onChange={(files) => {
               const f = files?.[0] ?? undefined

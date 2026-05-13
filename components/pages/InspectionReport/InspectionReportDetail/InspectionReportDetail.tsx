@@ -31,7 +31,6 @@ import { store, useAppDispatch } from '@/redux/store'
 import {
   EmbedFieldsData,
   IDashboardInspectionListItem,
-  IInspectionMediaFileItem,
   MediaFieldItem,
   MediaFieldKeyType,
   RoleUtils,
@@ -82,25 +81,25 @@ export default function InspectionReportDetail() {
     (data: IDashboardInspectionListItem) => {
       dispatch(setDefaultInspectionFormData(data))
 
-      if (data?.mediaFiles) {
-        const mediaFieldData: MediaFieldItem[] = []
-        const embedFieldsData: EmbedFieldsData = {}
-
-        data.mediaFiles.forEach((file) => {
-          if (file.fileType === 'EMBED') {
-            embedFieldsData[file.mediaFieldKey] = file.url
-          } else {
-            mediaFieldData.push({
-              kind: 'remote',
-              key: file.mediaFieldKey,
-              file,
-            })
-          }
-        })
-
-        setMediaFields(mediaFieldData)
-        setEmbedFields(embedFieldsData)
-      }
+      // if (data?.mediaFiles) {
+      //   const mediaFieldData: MediaFieldItem[] = []
+      //   const embedFieldsData: EmbedFieldsData = {}
+      //
+      //   data.mediaFiles.forEach((file) => {
+      //     if (file.fileType === 'EMBED') {
+      //       embedFieldsData[file.mediaFieldKey] = file.url
+      //     } else {
+      //       mediaFieldData.push({
+      //         kind: 'remote',
+      //         key: file.mediaFieldKey,
+      //         file,
+      //       })
+      //     }
+      //   })
+      //
+      //   setMediaFields(mediaFieldData)
+      //   setEmbedFields(embedFieldsData)
+      // }
     },
   )
 

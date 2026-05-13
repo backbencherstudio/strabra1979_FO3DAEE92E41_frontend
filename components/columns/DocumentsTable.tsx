@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { defineColumns } from '../reusable/table/CustomTable'
-import { IInspectionMediaFileItem } from '@/types'
+import { IInspectionMediaFile2, IInspectionMediaFileItem } from '@/types'
 import { formatDate, withNA } from '@/lib/farmatters'
 import { formatFileSize } from '../reusable/FileInput/FileInput'
 
@@ -28,7 +28,7 @@ type DocumentsTableItem = {
 }
 
 // ==================== Report COLUMNS CONFIGURATION ====================
-export const DocumentsTableColumns = defineColumns<IInspectionMediaFileItem>([
+export const DocumentsTableColumns = defineColumns<IInspectionMediaFile2>([
   {
     label: 'Name',
     accessor: 'fileName',
@@ -41,7 +41,7 @@ export const DocumentsTableColumns = defineColumns<IInspectionMediaFileItem>([
   {
     label: 'File Size',
     accessor: 'size',
-    formatter: (value) => withNA(value, formatFileSize),
+    formatter: (_, { fileSize, size }) => withNA(fileSize ?? size ?? 0, formatFileSize),
   },
   {
     label: '',

@@ -24,6 +24,7 @@ interface InspectionMediaFormProps {
   onMediaUpload?: (data: MediaUploadResponse, fieldKey: MediaFieldKeyType) => void
   serverMediaFiles: IInspectionMediaFile2[]
   onDelete: MultipartUploadProps['onDelete']
+  disabled?: boolean
 }
 
 export default function InspectionMediaForm({
@@ -35,6 +36,7 @@ export default function InspectionMediaForm({
   isEditMode = false,
   onOpenEditModal,
   onMediaUpload,
+  disabled,
 }: InspectionMediaFormProps) {
   // const maxImageSize = mbToBytes(100)
   // const maxVideoSize = mbToBytes(1024)
@@ -50,8 +52,21 @@ export default function InspectionMediaForm({
           if (conf.type === 'file') {
             return (
               <MultipartUpload
+                disabled={disabled}
                 onDelete={onDelete}
                 mediaFieldKey={conf.key}
+                labelAction={
+                  isEditMode ? (
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      onClick={() => onOpenEditModal(conf)}
+                      variant="outline"
+                    >
+                      <Edit className="size-4" />
+                    </Button>
+                  ) : null
+                }
                 // previewFiles={serverMediaFiles}
                 previewFiles={serverMediaFiles}
                 onSuccess={(data) => onMediaUpload?.(data, conf.key)}
@@ -61,18 +76,6 @@ export default function InspectionMediaForm({
               ></MultipartUpload>
               //              <MediaField
               //                onRemoveFile={onRemoveFile}
-              //                labelAction={
-              //                  isEditMode ? (
-              //                    <Button
-              //                      type="button"
-              //                      size="icon-sm"
-              //                      onClick={() => onOpenEditModal(conf)}
-              //                      variant="outline"
-              //                    >
-              //                      <Edit className="size-4" />
-              //                    </Button>
-              //                  ) : null
-              //                }
               //                setFiles={setFiles}
               //                files={files}
               //                key={conf.key}
@@ -107,6 +110,7 @@ export default function InspectionMediaForm({
                 </FieldLabel>
 
                 <Textarea
+                  disabled={disabled}
                   placeholder={conf.placeholder}
                   value={embededFieldValue}
                   onChange={(e) => {
@@ -133,6 +137,7 @@ export default function InspectionMediaForm({
           if (conf.type === 'document') {
             return (
               <MultipartUpload
+                disabled={disabled}
                 onDelete={onDelete}
                 mediaFieldKey={conf.key}
                 // previewFiles={serverMediaFiles}
