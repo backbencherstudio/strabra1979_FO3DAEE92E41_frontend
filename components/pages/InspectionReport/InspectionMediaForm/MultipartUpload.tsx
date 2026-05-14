@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import {
   ICompleteMultipartUploadResponse,
@@ -13,13 +13,13 @@ import {
   useUploadMediaChunkMutation,
 } from '@/api/inspectionManagement/uploadApi'
 import { PlusSignSquare } from '@/components/icons/File'
+import { Trush } from '@/components/icons/Trush'
 import { FileInput, FileInputRef, formatFileSize } from '@/components/reusable/FileInput/FileInput'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { getErrorMessage } from '@/lib/farmatters'
 import { cn, isArrayEmpty } from '@/lib/utils'
 import { MediaFieldKeyType } from '@/types'
-import { Trush } from '@/components/icons/Trush'
 
 type TLogType = 'info' | 'success' | 'error' | 'warn'
 
@@ -46,6 +46,7 @@ export interface MultipartUploadProps extends Omit<React.ComponentProps<'input'>
 
 export default function MultipartUpload({
   mediaFieldKey,
+  disabled,
   showLog = false,
   label,
   labelAction,
@@ -76,7 +77,11 @@ export default function MultipartUpload({
 
   const [isUploading, setIsUploading] = useState(false)
 
-  const [currentSessionFiles, setCurrentSessionFiles] = useState<PreviewFile[]>([])
+  const [currentSessionFiles, setCurrentSessionFiles] = useState<PreviewFile[]>(() =>
+    isArrayEmpty(previewFiles)
+      ? []
+      : previewFiles.filter((item) => item.mediaFieldKey === mediaFieldKey),
+  )
   function addNewSessionFile(
     newSessionFile: ICompleteMultipartUploadResponse | undefined,
     sessionId: string,
@@ -115,9 +120,9 @@ export default function MultipartUpload({
   }
   const hasServerUrl = !isArrayEmpty(currentSessionFiles)
 
-  useEffect(() => {
-    setCurrentSessionFiles(previewFiles.filter((item) => item.mediaFieldKey === mediaFieldKey))
-  }, [previewFiles, mediaFieldKey])
+  // useEffect(() => {
+  //   setCurrentSessionFiles(previewFiles.filter((item) => item.mediaFieldKey === mediaFieldKey))
+  // }, [previewFiles, mediaFieldKey])
 
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
 
@@ -288,6 +293,7 @@ export default function MultipartUpload({
 
           <FileInput
             {...props}
+            disabled={disabled}
             ref={fileInputRef}
             // isLoading={true}
             // isLoading={isUploading}

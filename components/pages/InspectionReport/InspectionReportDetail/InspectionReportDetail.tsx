@@ -31,7 +31,6 @@ import { store, useAppDispatch } from '@/redux/store'
 import {
   EmbedFieldsData,
   IDashboardInspectionListItem,
-  MediaFieldItem,
   MediaFieldKeyType,
   RoleUtils,
 } from '@/types'
@@ -66,8 +65,8 @@ export default function InspectionReportDetail() {
 
   // Media inputs
   const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
-  const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
-  const [mediaFields2, setMediaFields2] = useState<
+  // const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
+  const [newlyAddedMediaFields, setNewlyAddedMediaFields] = useState<
     { data: MediaUploadResponse; fieldKey: MediaFieldKeyType }[]
   >([])
   const removedMediaFields = useRef<string[]>([])
@@ -81,25 +80,18 @@ export default function InspectionReportDetail() {
     (data: IDashboardInspectionListItem) => {
       dispatch(setDefaultInspectionFormData(data))
 
-      // if (data?.mediaFiles) {
-      //   const mediaFieldData: MediaFieldItem[] = []
-      //   const embedFieldsData: EmbedFieldsData = {}
-      //
-      //   data.mediaFiles.forEach((file) => {
-      //     if (file.fileType === 'EMBED') {
-      //       embedFieldsData[file.mediaFieldKey] = file.url
-      //     } else {
-      //       mediaFieldData.push({
-      //         kind: 'remote',
-      //         key: file.mediaFieldKey,
-      //         file,
-      //       })
-      //     }
-      //   })
-      //
-      //   setMediaFields(mediaFieldData)
-      //   setEmbedFields(embedFieldsData)
-      // }
+      if (data?.mediaFiles) {
+        // const mediaFieldData: MediaFieldItem[] = []
+        const embedFieldsData: EmbedFieldsData = {}
+
+        data.mediaFiles.forEach((file) => {
+          if (file.fileType === 'EMBED') {
+            embedFieldsData[file.mediaFieldKey] = file.url
+          }
+        })
+
+        setEmbedFields(embedFieldsData)
+      }
     },
   )
 
@@ -119,6 +111,7 @@ export default function InspectionReportDetail() {
     useSubmitAllInspectionFormDataMutation()
   const [updateAllInspectionFormDataFromAdmin, { isLoading: isLoadingInspectionUpdate }] =
     useUpdateAllInspectionFormDataFromAdminMutation()
+
   async function handleSubmitInspectionData() {
     const state = store.getState()
     const headerData = selectInspectionHeaderData(state)
@@ -128,21 +121,6 @@ export default function InspectionReportDetail() {
     const additionalComments = selectInspectionAdditionalComments(state)
 
     const inspectedAt = new Date().toISOString()
-
-    const { onlyLocalfileKeyList, onlyLocalfileList } = mediaFields.reduce(
-      (acc, item) => {
-        if ('file' in item && item.kind === 'local') {
-          acc.onlyLocalfileKeyList.push(item.key)
-          acc.onlyLocalfileList.push(item.file)
-        }
-
-        return acc
-      },
-      {
-        onlyLocalfileKeyList: [] as MediaFieldKeyType[],
-        onlyLocalfileList: [] as File[],
-      },
-    )
 
     try {
       if (RoleUtils.isOperational(role)) {
@@ -156,10 +134,12 @@ export default function InspectionReportDetail() {
             nteValue,
             additionalComments,
             inspectedAt: inspectedAt,
-            mediaFieldKeys: onlyLocalfileKeyList,
             embedFields: embedFields,
+            mediaSessions: newlyAddedMediaFields.map((item) => ({
+              sessionId: item.data.sessionId,
+              mediaFieldKey: item.fieldKey,
+            })),
           },
-          files: onlyLocalfileList,
         }).unwrap()
 
         router.push(routes.operational.inspectionList)
@@ -168,7 +148,7 @@ export default function InspectionReportDetail() {
         const res = await updateAllInspectionFormDataFromAdmin({
           inspectionId: inspectionId!,
           data: {
-            mediaSessions: mediaFields2.map((item) => ({
+            mediaSessions: newlyAddedMediaFields.map((item) => ({
               sessionId: item.data.sessionId,
               mediaFieldKey: item.fieldKey,
             })),
@@ -181,12 +161,12 @@ export default function InspectionReportDetail() {
             nteValue,
             additionalComments,
             inspectedAt: inspectedAt,
-            mediaFieldKeys: onlyLocalfileKeyList,
+            // mediaFieldKeys: onlyLocalfileKeyList,
             embedFields: embedFields,
           },
         }).unwrap()
 
-        // router.push(routes.admin.inspectionList)
+        router.push(routes.admin.inspectionList)
         toast.success(res.message || 'Inspection updated successfully', {})
       }
     } catch (err) {
@@ -250,9 +230,10 @@ export default function InspectionReportDetail() {
       {/* media form view */}
       <section style={{ display: isMediaFilesTab ? 'block' : 'none' }} className="mt-5">
         <InspectionMediaForm
+          disabled={!isEditable}
           serverMediaFiles={inspectinData?.mediaFiles ?? []}
           onMediaUpload={(data, fieldKey) => {
-            setMediaFields2((prev) => {
+            setNewlyAddedMediaFields((prev) => {
               if (!prev) return [{ data, fieldKey }]
               return [...prev, { data, fieldKey }]
             })

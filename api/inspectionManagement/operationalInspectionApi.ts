@@ -11,31 +11,20 @@ import type {
 } from '@/types'
 
 export type IInspectionFormData = {
-  headerData: {
-    [key: string]: string
-  }
-  scores: {
-    [key: string]: IInspectionScoreCheckboxValue
-  }
-  embedFields: {
-    [key: string]: string
-  }
-  repairItems?: Array<{
-    title: string
-    status: string
-    description: string
-  }>
+  headerData: { [key: string]: string }
+  scores: { [key: string]: IInspectionScoreCheckboxValue }
+  embedFields: { [key: string]: string }
+  repairItems?: Array<{ title: string; status: string; description: string }>
   nteValue: number
   additionalComments: string
   inspectedAt: string
-  mediaFieldKeys: Array<string>
+  mediaSessions?: { sessionId: string; mediaFieldKey: string }[]
 }
 interface ISubmitInspectionDataPayload {
   scheduledInspectionId: string
   dashboardId: string
   inspectionId?: string
   data: IInspectionFormData
-  files: File[]
 }
 
 interface ISubmitInspectionDataUpdatePayload {
@@ -49,15 +38,7 @@ interface ISubmitInspectionDataUpdatePayload {
     additionalComments: string
     inspectedAt: string
     removeMediaFileIds?: string[]
-
-    // new
-    mediaSessions: {
-      sessionId: string
-      mediaFieldKey: string
-    }[]
-
-    // old
-    mediaFieldKeys: Array<string>
+    mediaSessions: { sessionId: string; mediaFieldKey: string }[]
   }
 
   // old
@@ -90,23 +71,11 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       WithApiStatus<void>,
       ISubmitInspectionDataPayload
     >({
-      query: ({ dashboardId, scheduledInspectionId, data, files }) => {
-        const jsonData = JSON.stringify(data)
-
-        // Prepare FormData for sending
-        const formData = new FormData()
-        formData.append('data', jsonData)
-
-        files.forEach((file) => {
-          formData.append('files', file)
-        })
-
-        return {
-          url: `/inspections/property/${dashboardId}/submit/${scheduledInspectionId}`,
-          method: 'POST',
-          body: formData,
-        }
-      },
+      query: ({ dashboardId, scheduledInspectionId, data }) => ({
+        url: `/inspections/property/${dashboardId}/submit/${scheduledInspectionId}`,
+        method: 'POST',
+        body: data,
+      }),
       invalidatesTags: ['Overview', 'InspectionManagement'],
     }),
     updateAllInspectionFormDataFromAdmin: builder.mutation<

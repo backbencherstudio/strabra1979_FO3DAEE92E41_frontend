@@ -25,6 +25,7 @@ interface InspectionMediaFormProps {
   serverMediaFiles: IInspectionMediaFile2[]
   onDelete: MultipartUploadProps['onDelete']
   disabled?: boolean
+  isEditable?: boolean
 }
 
 export default function InspectionMediaForm({
@@ -67,7 +68,6 @@ export default function InspectionMediaForm({
                     </Button>
                   ) : null
                 }
-                // previewFiles={serverMediaFiles}
                 previewFiles={serverMediaFiles}
                 onSuccess={(data) => onMediaUpload?.(data, conf.key)}
                 key={conf.key}
@@ -140,12 +140,23 @@ export default function InspectionMediaForm({
                 disabled={disabled}
                 onDelete={onDelete}
                 mediaFieldKey={conf.key}
-                // previewFiles={serverMediaFiles}
                 previewFiles={serverMediaFiles}
                 onSuccess={(data) => onMediaUpload?.(data, conf.key)}
                 key={conf.key}
                 label={conf.label}
                 placeholder={conf.placeholder}
+                labelAction={
+                  isEditMode ? (
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      onClick={() => onOpenEditModal(conf)}
+                      variant="outline"
+                    >
+                      <Edit className="size-4" />
+                    </Button>
+                  ) : null
+                }
               ></MultipartUpload>
               //  <MediaField
               //    onRemoveFile={onRemoveFile}
