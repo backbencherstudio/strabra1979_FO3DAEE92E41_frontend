@@ -32,7 +32,7 @@ export default function InspectionReportFinalScoreCard({
         <CircularProgressWithMeta
           conf={{}}
           healthLabel={healthLabel}
-          placeholder={`Remaining Life: ${remainingLife}`}
+          placeholder={remainingLife ? `Remaining Life: ${remainingLife}` : undefined}
           value={score}
         />
         <section className="p-4.5 pt-0 @sm:pt-4.5">

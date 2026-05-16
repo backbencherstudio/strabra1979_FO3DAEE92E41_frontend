@@ -102,7 +102,11 @@ export default function PropertyDetails({
                 <CircularProgressWithMeta
                   conf={item.config}
                   healthLabel={inspectinData?.healthLabel}
-                  placeholder={`Remaining Life: ${inspectinData?.remainingLife}`}
+                  placeholder={
+                    inspectinData?.remainingLife
+                      ? `Remaining Life: ${inspectinData?.remainingLife}`
+                      : undefined
+                  }
                   value={inspectinData?.overallScore}
                 />
               </SectionCard>

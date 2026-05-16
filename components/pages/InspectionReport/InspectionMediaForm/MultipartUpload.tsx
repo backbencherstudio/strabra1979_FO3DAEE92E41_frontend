@@ -19,7 +19,7 @@ import { Trush } from '@/components/icons/Trush'
 import { FileInput, FileInputRef, formatFileSize } from '@/components/reusable/FileInput/FileInput'
 import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
-import { getErrorMessage } from '@/lib/farmatters'
+import { getChunkSize, getErrorMessage } from '@/lib/farmatters'
 import { cn, isArrayEmpty } from '@/lib/utils'
 import { MediaFieldKeyType } from '@/types'
 
@@ -152,7 +152,7 @@ export default function MultipartUpload({
       setIsUploading(true)
       setProgress(0)
 
-      const chunkSizeBytes = chunkSizeMb * 1024 * 1024
+      const chunkSizeBytes = getChunkSize(file.size)
       const totalParts = Math.ceil(file.size / chunkSizeBytes)
 
       addLog(`Starting upload with ${totalParts} parts`)
