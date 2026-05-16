@@ -76,10 +76,8 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
         id: userId,
         status,
       }).unwrap()
-
-      toast.message('New user approved successfully')
     } catch (error) {
-      toast.error('Failed to approved user', {
+      toast.error('Failed to update user status', {
         description: getErrorMessage(error),
       })
     }
@@ -128,7 +126,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
               action: 'APPROVED',
             }).unwrap()
 
-            await updateNotificatinoActinStatus({ id: item.id })
+            await updateNotificatinoActinStatus({ id: item.id, action: 'ACCEPT' })
             toast.success('Access request approved successfully')
           } catch (error) {
             toast.error('Failed to approve access request', {
@@ -156,7 +154,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
               declineReason: 'Access is only available after contract signing.',
             }).unwrap()
 
-            await updateNotificatinoActinStatus({ id: item.id })
+            await updateNotificatinoActinStatus({ id: item.id, action: 'DECLINE' })
             toast.success('Access request declined successfully')
           } catch (error) {
             toast.error('Failed to decline access request', {
@@ -179,14 +177,21 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
           const { userId } = item.metadata
 
           await onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
-          await updateNotificatinoActinStatus({ id: item.id })
+          await updateNotificatinoActinStatus({ id: item.id, action: 'ACCEPT' })
         },
       },
       {
         label: 'Decline Request',
         variant: 'outline',
         async action() {
-          await updateNotificatinoActinStatus({ id: item.id })
+          if (!hasUserId(item.metadata)) {
+            handleInvalidNotificationMeta(item.metadata)
+            return
+          }
+
+          const { userId } = item.metadata
+          await onConfirmTogleDeactivateStatus(userId, 'DELETED')
+          await updateNotificatinoActinStatus({ id: item.id, action: 'DECLINE' })
         },
       },
     ],

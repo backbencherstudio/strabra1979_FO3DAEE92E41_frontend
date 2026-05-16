@@ -11,13 +11,14 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
     dispatch(setUnreadCount(data.count))
   })
 
-  socket.on('notification:action_taken', (data: { notificationId: string }) => {
+  socket.on('notification:action_taken', (data: { notificationId: string; message: string }) => {
     store.dispatch(
       notificationApi.util.updateQueryData('getNotifications', {}, (draft) => {
         if (!draft?.data) return
         const notification = draft.data.find((n) => n.id === data.notificationId)
         if (notification) {
           notification.isActionTaken = true
+          notification.notification_event.text = data.message
         }
       }),
     )

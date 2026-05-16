@@ -140,11 +140,14 @@ const notificationApi = baseApi.injectEndpoints({
     }),
     updateNotificatinoActinStatus: builder.mutation<
       WithApiStatus<{ isActionTaken: boolean }>,
-      { id: string }
+      { id: string; action: 'ACCEPT' | 'DECLINE' }
     >({
-      query: ({ id }) => ({
+      query: ({ id, action }) => ({
         url: `/notifications/${id}/action`,
         method: 'POST',
+        body: {
+          action,
+        },
       }),
       // invalidatesTags: ['Tag'],
     }),
