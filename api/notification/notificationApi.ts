@@ -138,6 +138,16 @@ const notificationApi = baseApi.injectEndpoints({
       //   { type: 'AccessRequest', id: requestId },
       // ],
     }),
+    updateNotificatinoActinStatus: builder.mutation<
+      WithApiStatus<{ isActionTaken: boolean }>,
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `/notifications/${id}/action`,
+        method: 'POST',
+      }),
+      // invalidatesTags: ['Tag'],
+    }),
   }),
   overrideExisting: false,
 })
@@ -148,5 +158,6 @@ export const {
   useMarkAllNotificationsAsReadMutation,
   useDynamicActionMutation,
   useReviewAccessRequestMutation,
+  useUpdateNotificatinoActinStatusMutation,
 } = notificationApi
 export default notificationApi

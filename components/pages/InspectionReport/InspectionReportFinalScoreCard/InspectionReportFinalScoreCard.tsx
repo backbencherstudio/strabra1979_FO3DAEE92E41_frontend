@@ -48,7 +48,7 @@ export default function InspectionReportFinalScoreCard({
                       style={{ backgroundColor: conf.color }}
                     />
                     <span className="capitalize">
-                      {conf.key} ({item.minScore}-{item.maxScore})
+                      {conf.key} ({item?.minScore}-{item?.maxScore})
                     </span>
                   </div>
                 )

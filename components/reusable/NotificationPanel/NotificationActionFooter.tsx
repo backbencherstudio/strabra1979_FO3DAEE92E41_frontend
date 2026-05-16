@@ -1,6 +1,9 @@
 'use client'
 
-import { useReviewAccessRequestMutation } from '@/api/notification/notificationApi'
+import {
+  useReviewAccessRequestMutation,
+  useUpdateNotificatinoActinStatusMutation,
+} from '@/api/notification/notificationApi'
 import { useUpdateUserStatusMutation } from '@/api/userManagement/userManagementApi'
 import { Button } from '@/components/ui/button'
 import { getDashboardPathWithRole, routes } from '@/constant'
@@ -82,6 +85,8 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
     }
   }
 
+  const [updateNotificatinoActinStatus] = useUpdateNotificatinoActinStatusMutation()
+
   const navigateToDashboardAction: NotificationAction = {
     label: isOperationalRole ? 'View Inspectins' : 'View Property',
     variant: 'outline',
@@ -123,6 +128,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
               action: 'APPROVED',
             }).unwrap()
 
+            await updateNotificatinoActinStatus({ id: item.id })
             toast.success('Access request approved successfully')
           } catch (error) {
             toast.error('Failed to approve access request', {
@@ -150,6 +156,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
               declineReason: 'Access is only available after contract signing.',
             }).unwrap()
 
+            await updateNotificatinoActinStatus({ id: item.id })
             toast.success('Access request declined successfully')
           } catch (error) {
             toast.error('Failed to decline access request', {
@@ -163,7 +170,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
       {
         label: 'Approve User',
         variant: 'default',
-        action() {
+        async action() {
           if (!hasUserId(item.metadata)) {
             handleInvalidNotificationMeta(item.metadata)
             return
@@ -171,36 +178,43 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
 
           const { userId } = item.metadata
 
-          onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
+          await onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
+          await updateNotificatinoActinStatus({ id: item.id })
         },
       },
       {
         label: 'Decline Request',
         variant: 'outline',
-        action() {},
-      },
-    ],
-    new_user_registration: [
-      {
-        label: 'Approve User',
-        variant: 'default',
-        action() {
-          if (!hasUserId(item.metadata)) {
-            handleInvalidNotificationMeta(item.metadata)
-            return
-          }
-
-          const { userId } = item.metadata
-
-          onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
+        async action() {
+          await updateNotificatinoActinStatus({ id: item.id })
         },
       },
-      {
-        label: 'Decline Request',
-        variant: 'outline',
-        action() {},
-      },
     ],
+    // new_user_registration: [
+    //   {
+    //     label: 'Approve User sdf',
+    //     variant: 'default',
+    //     async action() {
+    //       if (!hasUserId(item.metadata)) {
+    //         handleInvalidNotificationMeta(item.metadata)
+    //         return
+    //       }
+    //
+    //       const { userId } = item.metadata
+    //
+    //       onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
+    //
+    //       await updateNotificatinoActinStatus({ id: item.id })
+    //     },
+    //   },
+    //   {
+    //     label: 'Decline Request',
+    //     variant: 'outline',
+    //     async action() {
+    //       await updateNotificatinoActinStatus({ id: item.id })
+    //     },
+    //   },
+    // ],
 
     dashboard_assigned: [navigateToDashboardAction],
     dashboard_updated: [navigateToDashboardAction],
@@ -237,6 +251,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
 
   const actions = ACTION_EVENTS[notification_event.type]
   if (!actions) return null
+  if (item?.isActionTaken) return null
 
   return (
     <div className="flex gap-3 *:flex-1">

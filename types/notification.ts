@@ -43,6 +43,7 @@ export type INotificationItem = {
   created_at: string
   updated_at: string
   read_at?: string
+  isActionTaken: boolean
   status: number
   sender_id: string
   receiver_id: string
@@ -94,6 +95,7 @@ export type IReviewAccessRequestParams = {
 // ==============================
 export type BaseNotificationEvent<TType extends string, TMeta> = {
   notificationId: string
+  isActionTaken?: boolean
   type: TType
   text: string
   entityId: string

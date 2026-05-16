@@ -11,6 +11,18 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
     dispatch(setUnreadCount(data.count))
   })
 
+  socket.on('notification:action_taken', (data: { notificationId: string }) => {
+    store.dispatch(
+      notificationApi.util.updateQueryData('getNotifications', {}, (draft) => {
+        if (!draft?.data) return
+        const notification = draft.data.find((n) => n.id === data.notificationId)
+        if (notification) {
+          notification.isActionTaken = true
+        }
+      }),
+    )
+  })
+
   Object.keys(NOTIFICATION_EVENTS).map((eventName) => {
     socket.on(`notification:${eventName}`, (data: INotificationEventPayload) => {
       switch (eventName) {
@@ -30,6 +42,7 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
           draft.data.unshift({
             id: data.notificationId,
             sender_id: data.sender.id,
+            isActionTaken: data?.isActionTaken ?? false,
             receiver_id: '',
             created_at: data.createdAt,
             updated_at: data.createdAt,
