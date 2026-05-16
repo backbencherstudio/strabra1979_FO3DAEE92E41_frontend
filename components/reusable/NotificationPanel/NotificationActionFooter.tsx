@@ -180,6 +180,27 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
         action() {},
       },
     ],
+    new_user_registration: [
+      {
+        label: 'Approve User',
+        variant: 'default',
+        action() {
+          if (!hasUserId(item.metadata)) {
+            handleInvalidNotificationMeta(item.metadata)
+            return
+          }
+
+          const { userId } = item.metadata
+
+          onConfirmTogleDeactivateStatus(userId, 'ACTIVE')
+        },
+      },
+      {
+        label: 'Decline Request',
+        variant: 'outline',
+        action() {},
+      },
+    ],
 
     dashboard_assigned: [navigateToDashboardAction],
     dashboard_updated: [navigateToDashboardAction],

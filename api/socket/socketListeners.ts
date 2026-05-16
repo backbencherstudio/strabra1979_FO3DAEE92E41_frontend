@@ -3,6 +3,7 @@ import { AppDispatch, store } from '@/redux/store'
 import { INotificationEventPayload, NOTIFICATION_EVENTS } from '@/types'
 import { Socket } from 'socket.io-client'
 import notificationApi from '../notification/notificationApi'
+import { baseApi } from '../baseApi'
 
 export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
   // Unread count
@@ -12,6 +13,12 @@ export const initSocket = (socket: Socket, dispatch: AppDispatch) => {
 
   Object.keys(NOTIFICATION_EVENTS).map((eventName) => {
     socket.on(`notification:${eventName}`, (data: INotificationEventPayload) => {
+      switch (eventName) {
+        case 'dashboard_shared':
+          store.dispatch(baseApi.util.invalidateTags(['Overview', 'PropertyList']))
+          break
+      }
+
       dispatch(increment())
       store.dispatch(
         notificationApi.util.updateQueryData('getNotifications', {}, (draft) => {
