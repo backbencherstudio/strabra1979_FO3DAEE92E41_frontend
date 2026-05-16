@@ -75,6 +75,7 @@ function AdminPropertyListContend() {
                   isAdmin={isAdmin}
                   propertyName={p.name}
                   dashboardId={p?.dashboard?.id}
+                  latestInspectionId={p?.dashboard?.latestInspection?.id}
                   address={naIfEmpty(p.address)}
                   score={p?.dashboard?.latestInspection?.overallScore}
                 >

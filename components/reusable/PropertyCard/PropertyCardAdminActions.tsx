@@ -4,6 +4,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
@@ -24,15 +25,19 @@ import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
 import { Trush } from '@/components/icons/Trush'
 import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
+import { routes } from '@/constant'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   dashboardId?: string
+  latestInspectionId?: string
   propertyId: string
   propertyName: string
   propertyAddress: string
 }
 
 export default function PropertyCardAdminActions({
+  latestInspectionId,
   dashboardId,
   propertyId,
   propertyName,
@@ -43,6 +48,20 @@ export default function PropertyCardAdminActions({
   const [viewAccessDialogOpen, setViewAccessDialogOpen] = useState(false)
 
   const [assignUser] = useAssignUserToPropertyMutation()
+  const router = useRouter()
+
+  function openLatestInspection() {
+    if (!dashboardId || !latestInspectionId) {
+      toast.error('Unable to open the latest inspection. Missing required data.')
+      return
+    }
+
+    const path = routes.admin.inspectionListItemDetail.build(
+      { dashboardId },
+      { edit: 'true', inspectionId: latestInspectionId },
+    )
+    router.push(path)
+  }
 
   const handleAssign = async (userId?: string) => {
     setAssignDialogOpen(false)
@@ -120,6 +139,10 @@ export default function PropertyCardAdminActions({
 
             <DropdownMenuItem onSelect={() => setViewAccessDialogOpen(true)}>
               View Access Details
+            </DropdownMenuItem>
+
+            <DropdownMenuItem disabled={!latestInspectionId} onSelect={openLatestInspection}>
+              Edit Latest Inspection
             </DropdownMenuItem>
 
             <DropdownMenuItem

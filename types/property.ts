@@ -48,7 +48,8 @@ export type IPropertyListItem = {
     id: string
     updatedAt: string
     propertyId: string
-    latestInspection: {
+    latestInspection?: {
+      id?: string
       overallScore: number
       healthLabel: string
     }

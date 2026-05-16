@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react'
 import { CircularProgressWithMeta } from '../CircularProgress/CircularProgress'
 import { InfoItem } from '../InfoGrid/InfoGrid'
 import PropertyCardAdminActions from './PropertyCardAdminActions'
-import authImgMobile from '@/public/auth/auth-img-mobile.png'
 
 export interface Property {
   id: string
@@ -23,9 +22,10 @@ export interface Property {
   score?: number
   scoreTitle?: string
   previewImageUrl?: string
-  dashboardId?: string
   type?: string
   date?: string
+  dashboardId?: string
+  latestInspectionId?: string
 }
 
 export interface PropertyCardProps extends Property, React.PropsWithChildren {
@@ -57,6 +57,7 @@ export default function PropertyCard({
   defaultSelected = false,
   id,
   dashboardId,
+  latestInspectionId,
   isAdmin = false,
 }: PropertyCardProps) {
   const [isSelected, setIsSelected] = useState(defaultSelected)
@@ -93,6 +94,7 @@ export default function PropertyCard({
 
       {isAdmin && (
         <PropertyCardAdminActions
+          latestInspectionId={latestInspectionId}
           dashboardId={dashboardId}
           propertyId={id}
           propertyName={propertyName!}
