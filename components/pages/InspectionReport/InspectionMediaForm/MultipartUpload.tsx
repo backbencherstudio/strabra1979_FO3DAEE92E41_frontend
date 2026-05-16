@@ -1,5 +1,7 @@
 'use client'
 
+import { File } from 'lucide-react'
+import Image from 'next/image'
 import { useRef, useState } from 'react'
 
 import {
@@ -12,7 +14,7 @@ import {
   useSaveUploadedPartMutation,
   useUploadMediaChunkMutation,
 } from '@/api/inspectionManagement/uploadApi'
-import { PlusSignSquare } from '@/components/icons/File'
+import { FilePdf, PlusSignSquare } from '@/components/icons/File'
 import { Trush } from '@/components/icons/Trush'
 import { FileInput, FileInputRef, formatFileSize } from '@/components/reusable/FileInput/FileInput'
 import { Button } from '@/components/ui/button'
@@ -92,6 +94,7 @@ export default function MultipartUpload({
       if (!prev)
         return [
           {
+            fileType: newSessionFile.fileType,
             mediaFieldKey: mediaFieldKey,
             fileSize: newSessionFile.fileSize,
             sessionId: sessionId,
@@ -104,6 +107,7 @@ export default function MultipartUpload({
       return [
         ...prev,
         {
+          fileType: newSessionFile.fileType,
           mediaFieldKey: mediaFieldKey,
           fileSize: newSessionFile.fileSize,
           sessionId: sessionId,
@@ -214,6 +218,7 @@ export default function MultipartUpload({
       const completeRes = await completeMultipartUpload({
         sessionId,
       }).unwrap()
+      console.log({ completeRes })
       addNewSessionFile(completeRes, sessionId)
       onSuccess?.({ ...completeRes, sessionId })
 
@@ -289,7 +294,11 @@ export default function MultipartUpload({
         </FieldLabel>
 
         <div>
-          <FileInputPreview removeFile={handOnDelete} files={currentSessionFiles} />
+          <FileInputPreview
+            disabled={disabled}
+            removeFile={handOnDelete}
+            files={currentSessionFiles}
+          />
 
           <FileInput
             {...props}
@@ -422,6 +431,7 @@ export interface PreviewFile {
   id?: string
   mediaFieldKey: MediaFieldKeyType
   sessionId?: string
+  fileType: 'PHOTO' | 'VIDEO' | 'EMBED' | 'PDF'
   url: string
   fileName: string
   fileSize: number | null
@@ -431,9 +441,16 @@ export interface PreviewFile {
 interface FileInputPreviewProps extends React.ComponentProps<'div'> {
   files?: PreviewFile[]
   removeFile: (index: number, file: PreviewFile) => void
+  disabled?: boolean
 }
 
-function FileInputPreview({ className, files, removeFile, ...props }: FileInputPreviewProps) {
+function FileInputPreview({
+  className,
+  files,
+  disabled,
+  removeFile,
+  ...props
+}: FileInputPreviewProps) {
   // const fileMeta = useMemo(() => {
   //   return files.map((file) => {
   //     const isRemote = 'url' in file
@@ -466,46 +483,66 @@ function FileInputPreview({ className, files, removeFile, ...props }: FileInputP
             { 'last:col-span-full': isOdd },
           )}
         >
-          <video src={f.url} controls className="aspect-video h-full object-cover" />
-          <Button
-            size="icon"
-            type="button"
-            variant="secondary"
-            onClick={(e) => {
-              e.stopPropagation()
-              removeFile(index, f)
-            }}
-            className="absolute top-2 right-2"
-          >
-            <Trush className="text-destructive size-5" />
-          </Button>
+          {/* <pre>{JSON.stringify(f, null, 2)}</pre> */}
+          <MediaPreviewView file={f} />
 
-          {/* {f.isImage ? ( */}
-          {/*   <div className="bg-normal-25 flex aspect-video items-center justify-center rounded-md p-1"> */}
-          {/*     <Image */}
-          {/*       className="size-full object-cover" */}
-          {/*       width={120} */}
-          {/*       height={120} */}
-          {/*       alt=" " */}
-          {/*       src={f.url} */}
-          {/*     /> */}
-          {/*   </div> */}
-          {/* ) : ( */}
-          {/*   <div className="grid place-items-center"> */}
-          {/*     <div className="bg-normal-25 flex size-12 items-center justify-center rounded-md"> */}
-          {/*       {f.isPdf ? <FilePdf /> : f.isVideo ? <FileVideo /> : <File />} */}
-          {/*     </div> */}
-          {/*   </div> */}
-          {/* )} */}
+          {disabled ? null : (
+            <Button
+              size="icon"
+              type="button"
+              variant="secondary"
+              onClick={(e) => {
+                e.stopPropagation()
+                removeFile(index, f)
+              }}
+              className="absolute top-2 right-2"
+            >
+              <Trush className="text-destructive size-5" />
+            </Button>
+          )}
 
           <div className="flex min-w-0 flex-1 flex-col justify-center pt-2">
             <p className="text-foreground truncate text-sm font-medium">{f.fileName}</p>
-            {f.size !== null ? (
-              <p className="text-muted-foreground text-xs">{formatFileSize(f.size)}</p>
+            {f.size !== null || f.fileSize !== null ? (
+              <p className="text-muted-foreground text-xs">
+                {formatFileSize(f.size ?? f.fileSize ?? 0)}
+              </p>
             ) : null}
           </div>
         </div>
       ))}
     </div>
   )
+}
+
+interface MediaPreviewViewProps {
+  file: PreviewFile
+}
+
+function MediaPreviewView({ file }: MediaPreviewViewProps) {
+  switch (file.fileType) {
+    case 'PHOTO':
+      return (
+        <div className="bg-normal-25 flex aspect-video items-center justify-center rounded-md p-1">
+          <Image
+            className="size-full object-cover"
+            width={120}
+            height={120}
+            alt=" "
+            src={file.url}
+          />
+        </div>
+      )
+    case 'VIDEO':
+      return <video src={file.url} controls className="aspect-video h-full object-cover" />
+
+    default:
+      return (
+        <div className="grid place-items-center">
+          <div className="bg-normal-25 flex size-12 items-center justify-center rounded-md">
+            {file.fileType === 'PDF' ? <FilePdf /> : <File />}
+          </div>
+        </div>
+      )
+  }
 }

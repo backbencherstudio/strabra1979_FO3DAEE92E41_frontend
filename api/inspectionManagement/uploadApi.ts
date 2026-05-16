@@ -59,6 +59,7 @@ export interface ICompleteMultipartUploadResponse {
   success: boolean
   url: string
   fileSize: number
+  fileType: 'PHOTO' | 'VIDEO' | 'EMBED' | 'PDF'
 }
 
 export interface IAbortMultipartUploadPayload {
