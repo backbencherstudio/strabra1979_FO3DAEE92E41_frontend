@@ -22,7 +22,6 @@ import {
 
 type NotificationAction = {
   label: string
-  // label: 'Approve' | 'Decline'
   action: () => void
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'muted' | 'ghost' | 'link'
 }
@@ -86,7 +85,7 @@ export const NotificationActionFooter = ({ item, closePanel }: NotificationActio
   const [updateNotificatinoActinStatus] = useUpdateNotificatinoActinStatusMutation()
 
   const navigateToDashboardAction: NotificationAction = {
-    label: isOperationalRole ? 'View Inspectins' : 'View Property',
+    label: isOperationalRole ? 'View Inspections' : 'View Property',
     variant: 'outline',
     action() {
       if (!hasDashboardId(item.metadata) || !role) {
