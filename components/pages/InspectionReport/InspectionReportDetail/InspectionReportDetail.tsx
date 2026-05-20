@@ -3,6 +3,7 @@
 import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/inspectionFormApi'
 import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/inspectionManagementApi'
 import {
+  IInspectionFormData2,
   useGetInspectionPropertyDetailQuery,
   useSaveAllInspectionFormDataAsDraftMutation,
   useSubmitAllInspectionFormDataMutation,
@@ -38,7 +39,7 @@ import {
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { MediaUploadResponse, PreviewFile } from '../InspectionMediaForm/MultipartUpload'
+import { PreviewFile } from '../InspectionMediaForm/MultipartUpload'
 
 const DEFAULT_INSPECTION_DATA = { data: {} as IDashboardInspectionListItem | undefined }
 
@@ -82,7 +83,11 @@ export default function InspectionReportDetail() {
   const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
   // const [mediaFields, setMediaFields] = useState<MediaFieldItem[]>([])
   const [newlyAddedMediaFields, setNewlyAddedMediaFields] = useState<
-    { data: MediaUploadResponse; fieldKey: MediaFieldKeyType }[]
+    {
+      // data: MediaUploadResponse;
+      sessionId: string
+      mediaFieldKey: MediaFieldKeyType
+    }[]
   >([])
   const removedMediaFields = useRef<string[]>([])
   async function handleRemoveMediaFile(file: PreviewFile) {
@@ -98,14 +103,22 @@ export default function InspectionReportDetail() {
       if (data?.mediaFiles) {
         // const mediaFieldData: MediaFieldItem[] = []
         const embedFieldsData: EmbedFieldsData = {}
+        const otherMedia: { sessionId: string; mediaFieldKey: MediaFieldKeyType }[] = []
 
         data.mediaFiles.forEach((file) => {
           if (file.fileType === 'EMBED') {
             embedFieldsData[file.mediaFieldKey] = file.url
+          } else {
+            otherMedia.push({ sessionId: file.id, mediaFieldKey: file.mediaFieldKey })
           }
         })
 
         setEmbedFields(embedFieldsData)
+
+        // Set previous mediaFiles becuase ot submit mediaFiles are required
+        // if (data.isDraft) {
+        //   // setNewlyAddedMediaFields(otherMedia)
+        // }
       }
     },
   )
@@ -146,10 +159,7 @@ export default function InspectionReportDetail() {
       additionalComments: selectInspectionAdditionalComments(state),
       inspectedAt: new Date().toISOString(),
       embedFields,
-      mediaSessions: newlyAddedMediaFields.map((item) => ({
-        sessionId: item.data.sessionId,
-        mediaFieldKey: item.fieldKey,
-      })),
+      mediaSessions: newlyAddedMediaFields,
     }
 
     try {
@@ -247,10 +257,10 @@ export default function InspectionReportDetail() {
         <InspectionMediaForm
           disabled={!isEditable}
           serverMediaFiles={inspectinData?.mediaFiles ?? []}
-          onMediaUpload={(data, fieldKey) => {
+          onMediaUpload={(data, mediaFieldKey) => {
             setNewlyAddedMediaFields((prev) => {
-              if (!prev) return [{ data, fieldKey }]
-              return [...prev, { data, fieldKey }]
+              if (!prev) return [{ sessionId: data.sessionId, mediaFieldKey }]
+              return [...prev, { sessionId: data.sessionId, mediaFieldKey }]
             })
           }}
           onDelete={handleRemoveMediaFile}

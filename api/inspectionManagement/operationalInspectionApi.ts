@@ -10,7 +10,7 @@ import type {
   WithPaginationAndStatus,
 } from '@/types'
 
-export type IInspectionFormData = {
+export type IInspectionFormData2 = {
   headerData: { [key: string]: string }
   scores: { [key: string]: IInspectionScoreCheckboxValue }
   embedFields: { [key: string]: string }
@@ -24,7 +24,7 @@ interface ISubmitInspectionDataPayload {
   scheduledInspectionId: string
   dashboardId: string
   inspectionId?: string
-  data: IInspectionFormData
+  data: IInspectionFormData2
 }
 
 interface ISubmitInspectionDataUpdatePayload {

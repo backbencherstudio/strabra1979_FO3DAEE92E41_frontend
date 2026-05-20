@@ -1,6 +1,5 @@
 import { IDashboardInspectionListItem, IPropertyInspectionFormData } from '@/types'
 import { Property } from '@/components/reusable/PropertyCard/PropertyCard'
-import { number } from 'zod'
 
 export const MOCK_PROPERTY_DETAILS: Property = {
   title: '2024 Annual Roof Inspection',
@@ -178,6 +177,7 @@ export const DEMO_FROM_CONFIG: IPropertyInspectionFormData = {
 }
 
 export const DEMO_INSPECTIN_DATA: IDashboardInspectionListItem = {
+  isDraft: false,
   id: 'cmnwklhso0003ygu8jre9wxk2',
   dashboardId: 'cmne1xe9p0001s4u8ua22cmm9',
   inspectorId: 'cmmlnbk3900030ou81inxlhw6',
