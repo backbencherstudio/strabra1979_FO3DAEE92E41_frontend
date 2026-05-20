@@ -4,6 +4,7 @@ import { useGetPropertyInspectionFormQuery } from '@/api/inspectionManagement/in
 import { useGetSingleInspectionWithIdQuery } from '@/api/inspectionManagement/inspectionManagementApi'
 import {
   useGetInspectionPropertyDetailQuery,
+  useSaveAllInspectionFormDataAsDraftMutation,
   useSubmitAllInspectionFormDataMutation,
   useUpdateAllInspectionFormDataFromAdminMutation,
 } from '@/api/inspectionManagement/operationalInspectionApi'
@@ -35,7 +36,7 @@ import {
   RoleUtils,
 } from '@/types'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useEffectEvent, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { MediaUploadResponse, PreviewFile } from '../InspectionMediaForm/MultipartUpload'
 
@@ -49,6 +50,10 @@ export default function InspectionReportDetail() {
   const params = useParams<{ dashboardId: string }>()
   const router = useRouter()
 
+  const { role } = useAuth()
+  const isUserOperational = RoleUtils.isOperational(role)
+  const isUserAdmin = RoleUtils.isAdmin(role)
+
   // Get ids from parameters
   const dashboardId = params.dashboardId
   const isEditable = searchParams.get('edit') === 'true'
@@ -58,10 +63,20 @@ export default function InspectionReportDetail() {
   // Fetch data
   const { data: { data: formConfig } = {}, isLoading: isFormConfigLoading } =
     useGetPropertyInspectionFormQuery(dashboardId, { skip: !dashboardId })
-  const { data: { data: inspectinData } = DEFAULT_INSPECTION_DATA, isLoading: isInspectinLoading } =
-    useGetSingleInspectionWithIdQuery(inspectionId!, { skip: !inspectionId })
+
   const { data: { data: propertyInfo } = {}, isLoading: isPropertyInfoLoading } =
     useGetInspectionPropertyDetailQuery({ dashboardId }, { skip: !dashboardId })
+
+  const { data: inspectionResponse, isLoading: isInspectinLoading } =
+    useGetSingleInspectionWithIdQuery({
+      inspectionId: inspectionId!,
+      scheduledInspectionId: scheduledInspectionId!,
+    })
+
+  const inspectinData = useMemo<IDashboardInspectionListItem>(
+    () => inspectionResponse?.data ?? ({} as IDashboardInspectionListItem),
+    [inspectionResponse],
+  )
 
   // Media inputs
   const [embedFields, setEmbedFields] = useState<EmbedFieldsData>({})
@@ -105,72 +120,72 @@ export default function InspectionReportDetail() {
     }
   }, [inspectinData, formConfig, dispatch])
 
-  const { role } = useAuth()
-
   const [submitAllInspectionFormData, { isLoading: isLoadingInspectionFormData }] =
     useSubmitAllInspectionFormDataMutation()
+  const [saveAllInspectionFormDataAsDraft, { isLoading: isLoadingSaveInspectionFormDataAsDraft }] =
+    useSaveAllInspectionFormDataAsDraftMutation()
   const [updateAllInspectionFormDataFromAdmin, { isLoading: isLoadingInspectionUpdate }] =
     useUpdateAllInspectionFormDataFromAdminMutation()
 
-  async function handleSubmitInspectionData() {
-    const state = store.getState()
-    const headerData = selectInspectionHeaderData(state)
-    const scores = selectInspectionScores(state)
-    const repairItems = selectInspectionRepairItems(state)
-    const nteValue = selectInspectionNteValue(state)
-    const additionalComments = selectInspectionAdditionalComments(state)
+  async function handleSubmitInspectionData(type: 'draft' | 'submit') {
+    if (
+      isLoadingSaveInspectionFormDataAsDraft ||
+      isLoadingInspectionFormData ||
+      isLoadingInspectionUpdate
+    ) {
+      return
+    }
 
-    const inspectedAt = new Date().toISOString()
+    const state = store.getState()
+
+    const payload = {
+      headerData: selectInspectionHeaderData(state),
+      scores: selectInspectionScores(state),
+      repairItems: selectInspectionRepairItems(state),
+      nteValue: selectInspectionNteValue(state),
+      additionalComments: selectInspectionAdditionalComments(state),
+      inspectedAt: new Date().toISOString(),
+      embedFields,
+      mediaSessions: newlyAddedMediaFields.map((item) => ({
+        sessionId: item.data.sessionId,
+        mediaFieldKey: item.fieldKey,
+      })),
+    }
 
     try {
-      if (RoleUtils.isOperational(role)) {
-        const res = await submitAllInspectionFormData({
+      if (isUserOperational) {
+        const mutation =
+          type === 'draft' ? saveAllInspectionFormDataAsDraft : submitAllInspectionFormData
+
+        const res = await mutation({
           dashboardId: dashboardId!,
           scheduledInspectionId: scheduledInspectionId!,
-          data: {
-            headerData,
-            scores,
-            repairItems,
-            nteValue,
-            additionalComments,
-            inspectedAt: inspectedAt,
-            embedFields: embedFields,
-            mediaSessions: newlyAddedMediaFields.map((item) => ({
-              sessionId: item.data.sessionId,
-              mediaFieldKey: item.fieldKey,
-            })),
-          },
+          data: payload,
         }).unwrap()
 
         router.push(routes.operational.inspectionList)
-        toast.success(res.message || 'Inspection submitted successfully', {})
-      } else if (RoleUtils.isAdmin(role)) {
+
+        toast.success(
+          res.message ||
+            (type === 'draft' ? 'Draft saved successfully' : 'Inspection submitted successfully'),
+        )
+      } else if (isUserAdmin) {
         const res = await updateAllInspectionFormDataFromAdmin({
           inspectionId: inspectionId!,
           data: {
-            mediaSessions: newlyAddedMediaFields.map((item) => ({
-              sessionId: item.data.sessionId,
-              mediaFieldKey: item.fieldKey,
-            })),
+            ...payload,
             removeMediaFileIds: Array.isArray(removedMediaFields.current)
               ? removedMediaFields.current
               : undefined,
-            headerData,
-            scores,
-            repairItems,
-            nteValue,
-            additionalComments,
-            inspectedAt: inspectedAt,
-            // mediaFieldKeys: onlyLocalfileKeyList,
-            embedFields: embedFields,
           },
         }).unwrap()
 
         router.push(routes.admin.inspectionList)
-        toast.success(res.message || 'Inspection updated successfully', {})
+
+        toast.success(res.message || 'Inspection updated successfully')
       }
     } catch (err) {
-      toast.error('Failed to submit inspection', {
+      toast.error(type === 'draft' ? 'Failed to save draft' : 'Failed to submit inspection', {
         description: getErrorMessage(err),
       })
     }
@@ -246,10 +261,18 @@ export default function InspectionReportDetail() {
         />
       </section>
 
-      <div className="mt-6 grid gap-3">
-        {/* <Button type="button" size="xl" variant="outline"> */}
-        {/*   Save */}
-        {/* </Button> */}
+      <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row *:sm:flex-1">
+        {isUserOperational ? (
+          <Button
+            disabled={isLoadingSaveInspectionFormDataAsDraft}
+            onClick={() => handleSubmitInspectionData('draft')}
+            type="button"
+            size="xl"
+            variant="outline"
+          >
+            {isLoadingSaveInspectionFormDataAsDraft ? 'Saving...' : 'Save Draft'}
+          </Button>
+        ) : null}
         <Button
           disabled={isLoadingInspectionFormData || isLoadingInspectionUpdate}
           type="button"
@@ -257,7 +280,7 @@ export default function InspectionReportDetail() {
             if (!isMediaFilesTab) {
               switchTab(currentTab)
             } else {
-              handleSubmitInspectionData()
+              handleSubmitInspectionData('submit')
             }
           }}
           size="xl"

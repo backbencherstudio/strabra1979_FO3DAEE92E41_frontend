@@ -57,6 +57,8 @@ export type IDashboardInspectionListItem = {
   additionalComments: string
 
   mediaFiles: Array<IInspectionMediaFile2>
+
+  isDraft: boolean
 }
 
 export type IScheduledInspectionTableItem = {

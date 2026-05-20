@@ -43,9 +43,25 @@ const inspectionManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['InspectionManagement'],
     }),
-    getSingleInspectionWithId: builder.query<WithApiStatus<IDashboardInspectionListItem>, string>({
-      query: (id) => ({
-        url: `/inspections/${id}`,
+    getSingleInspectionWithId: builder.query<
+      WithApiStatus<IDashboardInspectionListItem>,
+      { inspectionId?: string; scheduledInspectionId?: string }
+    >({
+      query: ({ inspectionId, scheduledInspectionId }) => ({
+        url: `/inspections`,
+        params: {
+          inspectionId: inspectionId ?? undefined,
+          scheduledInspectionId: scheduledInspectionId ?? undefined,
+        },
+      }),
+      providesTags: ['InspectionManagement'] as const,
+    }),
+    getSavedDraftForAScheduledInspection: builder.query<
+      WithApiStatus<IDashboardInspectionListItem>,
+      { dashboardId: string; scheduledInspectionId: string }
+    >({
+      query: ({ dashboardId, scheduledInspectionId }) => ({
+        url: `/inspections/property/${dashboardId}/draft/${scheduledInspectionId}`,
       }),
       providesTags: ['InspectionManagement'] as const,
     }),
@@ -69,5 +85,6 @@ export const {
   useGetAllSheduledInspectionsQuery,
   useDeleteSingleInspectionWithIdMutation,
   useGetSingleInspectionWithIdQuery,
+  useGetSavedDraftForAScheduledInspectionQuery,
 } = inspectionManagementApi
 export default inspectionManagementApi

@@ -78,6 +78,17 @@ const operationalInspectionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Overview', 'InspectionManagement'],
     }),
+    saveAllInspectionFormDataAsDraft: builder.mutation<
+      WithApiStatus<void>,
+      ISubmitInspectionDataPayload
+    >({
+      query: ({ dashboardId, scheduledInspectionId, data }) => ({
+        url: `/inspections/property/${dashboardId}/draft/${scheduledInspectionId}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Overview', 'InspectionManagement'],
+    }),
     updateAllInspectionFormDataFromAdmin: builder.mutation<
       WithApiStatus<void>,
       ISubmitInspectionDataUpdatePayload
@@ -109,5 +120,6 @@ export const {
   useStartAScheduledInspectionToChangeStatusMutation,
   useSubmitAllInspectionFormDataMutation,
   useUpdateAllInspectionFormDataFromAdminMutation,
+  useSaveAllInspectionFormDataAsDraftMutation,
 } = operationalInspectionApi
 export default operationalInspectionApi
