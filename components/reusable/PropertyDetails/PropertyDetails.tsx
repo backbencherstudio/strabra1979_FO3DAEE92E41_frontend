@@ -14,7 +14,13 @@ import {
   setDefaultInspectionFormData,
 } from '@/redux/features/inspectionForm/inspectionFormSlice'
 import { useAppDispatch } from '@/redux/store'
-import { getBoxWidth, IDashboardInspectionListItem, IPropertyDashboardDetails } from '@/types'
+import {
+  getBoxWidth,
+  IDashboardInspectionListItem,
+  IPropertyDashboardDetails,
+  ITemplateSection,
+  MediaFieldKeyType,
+} from '@/types'
 import { ChevronRight } from 'lucide-react'
 import { useEffect, useEffectEvent } from 'react'
 import { Slide } from 'yet-another-react-lightbox'
@@ -181,8 +187,15 @@ export default function PropertyDetails({
           //   )
           // }
 
-          if (item.config.embedType === 'iframe') {
-            const foundItem = inspectinData?.mediaFiles?.find((m) => m.mediaFieldKey === 'tour3d')
+          if (item?.config?.embedType === 'iframe') {
+            const mediaFieldKeysForTemplageSection: Partial<Record<ITemplateSection, MediaFieldKeyType>> = {
+              drone_aerial: 'droneAerial',
+              tour_3d: 'tour3d',
+            }
+            const mediaFieldKeyValue = mediaFieldKeysForTemplageSection[item.type]
+            const foundItem = inspectinData?.mediaFiles?.find(
+              (m) => m.mediaFieldKey === mediaFieldKeyValue,
+            )
             const hasUrl = !!foundItem?.url
             return (
               <SectionCard
