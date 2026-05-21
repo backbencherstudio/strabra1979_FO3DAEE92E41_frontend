@@ -158,30 +158,30 @@ export default function PropertyDetails({
             )
           }
 
-          if (item.type === 'aerial_map' || item.type === 'drone_aerial') {
-            const foundItem = inspectinData?.mediaFiles?.find(
-              (m) => m.mediaFieldKey === 'aerialMap' || m.mediaFieldKey === 'droneAerial',
-            )
-            const hasUrl = !!foundItem?.url
+          // if (item.type === 'aerial_map' || item.type === 'drone_aerial') {
+          //   const foundItem = inspectinData?.mediaFiles?.find(
+          //     (m) => m.mediaFieldKey === 'aerialMap' || m.mediaFieldKey === 'droneAerial',
+          //   )
+          //   const hasUrl = !!foundItem?.url
+          //   console.table(item.config.embedType)
+          //   return (
+          //     <SectionCard
+          //       key={item.type}
+          //       className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
+          //     >
+          //       <SectionTitle className="text-center">{item.label}</SectionTitle>
+          //       <div className="grid aspect-video place-items-center bg-gray-100">
+          //         {hasUrl ? (
+          //           <video src={foundItem.url} controls className="h-full w-full object-cover" />
+          //         ) : (
+          //           <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
+          //         )}
+          //       </div>
+          //     </SectionCard>
+          //   )
+          // }
 
-            return (
-              <SectionCard
-                key={item.type}
-                className={cn('space-y-2 bg-white', getBoxWidth(item?.style?.width))}
-              >
-                <SectionTitle className="text-center">{item.label}</SectionTitle>
-                <div className="grid aspect-video place-items-center bg-gray-100">
-                  {hasUrl ? (
-                    <video src={foundItem.url} controls className="h-full w-full object-cover" />
-                  ) : (
-                    <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
-                  )}
-                </div>
-              </SectionCard>
-            )
-          }
-
-          if (item.type === 'tour_3d') {
+          if (item.config.embedType === 'iframe') {
             const foundItem = inspectinData?.mediaFiles?.find((m) => m.mediaFieldKey === 'tour3d')
             const hasUrl = !!foundItem?.url
             return (
@@ -202,13 +202,6 @@ export default function PropertyDetails({
                   ) : (
                     <p className="text-muted-foreground text-sm">{item.config.placeholder}</p>
                   )}
-                  {/* <Image */}
-                  {/*   className="h-full w-full object-cover" */}
-                  {/*   width={800} */}
-                  {/*   height={450} */}
-                  {/*   alt="" */}
-                  {/*   src={'/images/inspectin-list/3d-roof-tour.png'} */}
-                  {/* /> */}
                 </div>
               </SectionCard>
             )
