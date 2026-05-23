@@ -276,9 +276,9 @@ export default function PropertyDetails({
                 <div className="flex items-center justify-between">
                   <SectionTitle>{item.label}</SectionTitle>
 
-                  <Button variant="link" theme="text">
-                    View All <ChevronRight />
-                  </Button>
+                  {/* <Button variant="link" theme="text"> */}
+                  {/*   View All <ChevronRight /> */}
+                  {/* </Button> */}
                 </div>
                 <div>
                   <CustomTable
