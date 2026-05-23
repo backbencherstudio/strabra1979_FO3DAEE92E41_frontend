@@ -1,10 +1,10 @@
 import { cn } from '@/lib/utils'
 
 interface ListTileProps extends Omit<React.ComponentProps<'li'>, 'title'> {
-  leading: React.ReactNode
   title: React.ReactNode
-  subTitle: React.ReactNode
-  tailing: React.ReactNode
+  leading?: React.ReactNode
+  subTitle?: React.ReactNode
+  tailing?: React.ReactNode
   contentWrapperClassName?: string
   titleClassName?: string
   subTitleClassName?: string

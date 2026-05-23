@@ -2,35 +2,29 @@
 
 import {
   useGetPropertyDashboardAccessListQuery,
-  useRevokeDashboardAccessMutation,
   useShareDashboardWithEmailMutation,
 } from '@/api/dashboard/properties/propertiesApi'
 import FormInputField from '@/components/form/form-input-field'
 import { LinkIcon } from '@/components/icons/LinkIcon'
 import { ShareIcon } from '@/components/icons/ShareIcon'
-import { Trush } from '@/components/icons/Trush'
-import { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
-import { AlertDialogAction, AlertDialogCancel } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+  AccessListTileActions,
+  AccessListTileActionsProps,
+} from '@/components/pages/admin/property-list/AccessListTileActions'
+import { SectionTitle } from '@/components/reusable/SectionCard/SectionCard'
+import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverHeader, PopoverTrigger } from '@/components/ui/popover'
 import { routes } from '@/constant'
-import { getErrorMessage } from '@/lib/farmatters'
+import { formatDate, getErrorMessage } from '@/lib/farmatters'
 import { isArrayEmpty } from '@/lib/utils'
+import { useAuth } from '@/redux/features/auth/useAuth'
 import { IAccessUser, IAuthUserRole, IPropertyDashboardDetails, RoleUtils } from '@/types'
 import { useForm } from '@tanstack/react-form'
-import { EllipsisVerticalIcon } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import z from 'zod'
-import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
-import { useAuth } from '@/redux/features/auth/useAuth'
+import { ListTile } from '../ListTile/ListTile'
+import UserAvatar from '../UserAvatar'
 
 type PropertyViewAccess = 'authorized-viewer' | 'only-me'
 
@@ -88,26 +82,6 @@ export default function PropertySharePopover({
     }
   }
 
-  const [revokeDashboardAccess, { isLoading: isRevokeDashboardAccessLoading }] =
-    useRevokeDashboardAccessMutation()
-
-  const onRevokeAccessClick = async (dashboardId: string, userId?: string) => {
-    if (!dashboardId || !userId) return
-
-    try {
-      const res = await revokeDashboardAccess({
-        dashboardId,
-        targetUserId: userId,
-      }).unwrap()
-
-      toast.success(res?.message ?? 'User access revoked successfully.')
-    } catch (error) {
-      toast.error('Failed to revoke access.', {
-        description: getErrorMessage(error),
-      })
-    }
-  }
-
   async function copyText(text: string) {
     try {
       await navigator.clipboard.writeText(text)
@@ -138,22 +112,6 @@ export default function PropertySharePopover({
 
   return (
     <div>
-      <ConfirmDialog
-        open={openDeleteConfirmDialog}
-        iconContainerClass="bg-destructive"
-        icon={<Trush />}
-        onOpenChange={setOpenDeleteConfirmDialog}
-        title="Revoke Dashboard Access"
-        desc={`Are you sure you want to revoke ${selectedUser?.username}'s access to this dashboard?`}
-      >
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction
-          onClick={() => onRevokeAccessClick(dashboardId, selectedUser?.id)}
-          variant="destructive"
-        >
-          Revoke Access
-        </AlertDialogAction>
-      </ConfirmDialog>
       <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
           <Button onClick={() => setIsPopoverOpen((v) => !v)} variant="outline">
@@ -242,15 +200,15 @@ export default function PropertySharePopover({
                     <PropertryAccessUserListItem
                       currentUserRole={role}
                       grantedByRole={item.grantedByRole}
-                      onRemove={() => {
-                        if (isRevokeDashboardAccessLoading) return
-
-                        setSelectedUser(item.user)
-                        setOpenDeleteConfirmDialog(true)
-                      }}
                       key={item.accessId}
-                      name={item.user.username}
+                      username={item.user.username}
                       email={item.user.email}
+                      accessId={item.accessId}
+                      userId={item.user.id}
+                      dashboardId={dashboardId}
+                      expiresAt={item.expiresAt}
+                      itemName={item.user.username}
+                      mode="dashboard"
                     />
                   ))}
                 </section>
@@ -263,48 +221,39 @@ export default function PropertySharePopover({
   )
 }
 
-interface PropertryAccessUserListItemProps {
-  name: string
+interface PropertryAccessUserListItemProps extends AccessListTileActionsProps {
+  username: string
   email: string
-  onRemove: () => void
   grantedByRole: IAuthUserRole
   currentUserRole: IAuthUserRole | null
 }
 
 export const PropertryAccessUserListItem = ({
-  name,
+  username,
   email,
-  onRemove,
   grantedByRole,
   currentUserRole,
+  ...props
 }: PropertryAccessUserListItemProps) => {
   const isGrantedByAdmin = RoleUtils.isAdmin(grantedByRole)
   const isCurrentUserPM = RoleUtils.isPropertyManager(currentUserRole)
   const disableBtn = isGrantedByAdmin && isCurrentUserPM
 
   return (
-    <div className="flex justify-between py-1">
-      <div>
-        <h6 className="text-sm font-medium">{name}</h6>
-        <p className="text-gray-black-300 text-xs">{email}</p>
-      </div>
-
-      {disableBtn ? null : (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="relative -right-3" variant="ghost">
-              <EllipsisVerticalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuItem disabled={disableBtn} onClick={onRemove}>
-                Remove
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )}
-    </div>
+    <ListTile
+      title={username}
+      subTitle={
+        <div className="flex justify-between">
+          <span>{email}</span>
+          {props.expiresAt ? (
+            <span>
+              <span className="font-medium">Access expires: </span>
+              <span>{props.expiresAt ? formatDate(props.expiresAt) : null}</span>
+            </span>
+          ) : null}
+        </div>
+      }
+      tailing={disableBtn ? null : <AccessListTileActions {...props} />}
+    />
   )
 }
