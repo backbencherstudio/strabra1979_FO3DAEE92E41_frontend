@@ -23,13 +23,14 @@ import { Popover, PopoverContent, PopoverHeader, PopoverTrigger } from '@/compon
 import { routes } from '@/constant'
 import { getErrorMessage } from '@/lib/farmatters'
 import { isArrayEmpty } from '@/lib/utils'
-import { IAccessUser, IPropertyDashboardDetails } from '@/types'
+import { IAccessUser, IAuthUserRole, IPropertyDashboardDetails, RoleUtils } from '@/types'
 import { useForm } from '@tanstack/react-form'
 import { EllipsisVerticalIcon } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import z from 'zod'
 import ConfirmDialog from '../ConfirmDialog/ConfirmDialog'
+import { useAuth } from '@/redux/features/auth/useAuth'
 
 type PropertyViewAccess = 'authorized-viewer' | 'only-me'
 
@@ -52,6 +53,8 @@ export default function PropertySharePopover({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [openDeleteConfirmDialog, setOpenDeleteConfirmDialog] = useState(false)
   const [selectedUser, setSelectedUser] = useState<IAccessUser | undefined>(undefined)
+
+  const { role } = useAuth()
 
   const { data: { data: dashboardAccessData } = {}, isLoading: isLoadingAccessList } =
     useGetPropertyDashboardAccessListQuery(dashboardId, { skip: !isPopoverOpen })
@@ -237,6 +240,8 @@ export default function PropertySharePopover({
                 <section className="divide-hover-50 mt-3 divide-y">
                   {dashboardAccessData?.accessList.map((item) => (
                     <PropertryAccessUserListItem
+                      currentUserRole={role}
+                      grantedByRole={item.grantedByRole}
                       onRemove={() => {
                         if (isRevokeDashboardAccessLoading) return
 
@@ -262,13 +267,21 @@ interface PropertryAccessUserListItemProps {
   name: string
   email: string
   onRemove: () => void
+  grantedByRole: IAuthUserRole
+  currentUserRole: IAuthUserRole | null
 }
 
 export const PropertryAccessUserListItem = ({
   name,
   email,
   onRemove,
+  grantedByRole,
+  currentUserRole,
 }: PropertryAccessUserListItemProps) => {
+  const isGrantedByAdmin = RoleUtils.isAdmin(grantedByRole)
+  const isCurrentUserPM = RoleUtils.isPropertyManager(currentUserRole)
+  const disableBtn = isGrantedByAdmin && isCurrentUserPM
+
   return (
     <div className="flex justify-between py-1">
       <div>
@@ -276,18 +289,22 @@ export const PropertryAccessUserListItem = ({
         <p className="text-gray-black-300 text-xs">{email}</p>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="relative -right-3" variant="ghost">
-            <EllipsisVerticalIcon />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuGroup>
-            <DropdownMenuItem onClick={onRemove}>Remove</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {disableBtn ? null : (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="relative -right-3" variant="ghost">
+              <EllipsisVerticalIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuItem disabled={disableBtn} onClick={onRemove}>
+                Remove
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   )
 }

@@ -33,6 +33,7 @@ import {
 import { PopoverAnchor } from '@/components/ui/popover'
 import { Spinner } from '@/components/ui/spinner'
 import { formatDate, getErrorMessage } from '@/lib/farmatters'
+import { IAuthUserRole, RoleUtils } from '@/types'
 import { EllipsisVertical } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -45,6 +46,7 @@ type AccessListItem = {
   userId: string
   avatar: string | null
   expiresAt: string | null
+  grantedByRole: IAuthUserRole | null
 }
 
 interface ViewAccessDialogProps extends React.ComponentProps<typeof Dialog> {
@@ -95,6 +97,8 @@ function ViewAccessDialogContent({
   } = useGetPropertyDashboardAccessListQuery(dashboardId as string, { skip: !shouldFetchDashboard })
 
   usePaginatedQuery({ meta_data: isUserMode ? metaUser : metaDashboard })
+  console.log('userAccessData')
+  console.table(dashboardAccessData?.accessList)
 
   const isLoadingData = isLoadingDashboardData || isLoadingUserData
 
@@ -103,6 +107,7 @@ function ViewAccessDialogContent({
       case 'dashboard':
         return (dashboardAccessData?.accessList ?? []).map((item) => ({
           dashboardId: dashboardId!,
+          grantedByRole: item.grantedByRole,
           userId: item.user.id,
           accessId: item.accessId,
           title: item.user.username,
@@ -114,6 +119,7 @@ function ViewAccessDialogContent({
       case 'user':
         return (userAccessData ?? []).map((item) => ({
           dashboardId: item.property.dashboardId,
+          grantedByRole: null,
           userId: userId!,
           accessId: item.accessId,
           title: item.property.name,
@@ -253,48 +259,52 @@ function ViewAccessDialogContent({
             </div>
           ) : Array.isArray(formattedAccessList) && formattedAccessList.length ? (
             <ul className="divide-y">
-              {formattedAccessList?.map((item) => (
-                <ListTile
-                  key={item.accessId}
-                  leading={<UserAvatar src={item?.avatar ?? undefined} name={item?.title} />}
-                  title={item?.title}
-                  subTitle={
-                    <div className="flex justify-between">
-                      <span>{item?.subtitle}</span>
-                      {item.expiresAt ? (
-                        <span>
-                          <span className="font-medium">Access expires: </span>
-                          <span>{item.expiresAt ? formatDate(item.expiresAt) : null}</span>
-                        </span>
-                      ) : null}
-                    </div>
-                  }
-                  tailing={
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <EllipsisVertical />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => {
-                            handDatePickerOpen(item.expiresAt, item.userId, item.dashboardId)
-                          }}
+              {formattedAccessList?.map((item) => {
+                return (
+                  <ListTile
+                    key={item.accessId}
+                    leading={<UserAvatar src={item?.avatar ?? undefined} name={item?.title} />}
+                    title={item?.title}
+                    subTitle={
+                      <div className="flex justify-between">
+                        <span>{item?.subtitle}</span>
+                        {item.expiresAt ? (
+                          <span>
+                            <span className="font-medium">Access expires:</span>
+                            <span>{item.expiresAt ? formatDate(item.expiresAt) : null}</span>
+                          </span>
+                        ) : null}
+                      </div>
+                    }
+                    tailing={
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          disabled={RoleUtils.isAdmin(item.grantedByRole)}
+                          asChild
                         >
-                          Set access expiration date
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem
-                          onClick={() => onRevokeAccessClick(item?.userId, item.dashboardId)}
-                        >
-                          Revoke access
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  }
-                />
-              ))}
+                          <Button variant="ghost" size="icon">
+                            <EllipsisVertical />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handDatePickerOpen(item.expiresAt, item.userId, item.dashboardId)
+                            }
+                          >
+                            Set access expiration date
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onRevokeAccessClick(item?.userId, item.dashboardId)}
+                          >
+                            Revoke access
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    }
+                  />
+                )
+              })}
             </ul>
           ) : (
             <EmptyMessage>

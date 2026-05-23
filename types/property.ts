@@ -77,6 +77,7 @@ export interface IDashboardAccessItem {
   accessId: string
   grantedAt: string
   expiresAt: string | null
+  grantedByRole: IAuthUserRole
   user: IAccessUser
 }
 
