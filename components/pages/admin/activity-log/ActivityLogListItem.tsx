@@ -24,17 +24,19 @@ const ActivityLogListItem = ({ log, hideRole = false }: ActivityLogItemProps) =>
       </div>
 
       {/* Text Content */}
-      <div className="flex-1">
-        <h3 className="text-gray-black-400 text-sm leading-snug">{message}</h3>
-        <p className="mt-1 text-xs text-gray-400">{formatTimeAndDate(created_at)}</p>
-      </div>
-
-      {/* Role Badge */}
-      {!hideRole ? (
-        <div className="shrink-0">
-          <RoleBadge role={actor_role} />
+      <div className="flex flex-1 flex-col gap-x-3 gap-y-0.5 lg:flex-row">
+        <div className="space-y-0.5">
+          <h3 className="text-gray-black-400 text-sm leading-snug">{message}</h3>
+          <p className="row-start-2 text-xs text-gray-400">{formatTimeAndDate(created_at)}</p>
         </div>
-      ) : null}
+
+        {/* Role Badge */}
+        {!hideRole ? (
+          <div className="">
+            <RoleBadge role={actor_role} />
+          </div>
+        ) : null}
+      </div>
     </li>
   )
 }
@@ -52,7 +54,9 @@ function RoleBadge({ role }: { role: IAuthUserRole }) {
   const color = colors[role] ?? colors.ADMIN
 
   return (
-    <p className={cn('inline-block rounded-full px-2 py-1 text-[10px] text-black', color)}>
+    <p
+      className={cn('inline-flex rounded-full px-2 py-1 text-center text-[10px] text-black', color)}
+    >
       {role}
     </p>
   )

@@ -47,11 +47,12 @@ export default function SharedPropertyCardListActions({
   return (
     <div
       className={cn('flex items-center justify-between gap-4', {
-        'flex-col items-stretch': showActionButton,
+        'flex-col items-stretch sm:flex-row sm:items-center': showSearch,
+        'flex-col! items-stretch!': showActionButton,
       })}
     >
       <section className="flex items-center justify-between">
-        <SectionTitle className={cn('text-[#051218] md:text-2xl', titleClassName)}>
+        <SectionTitle className={cn('text-lg text-[#051218] md:text-2xl', titleClassName)}>
           {title}
         </SectionTitle>
 
@@ -68,7 +69,7 @@ export default function SharedPropertyCardListActions({
       </section>
 
       <section className="flex justify-end">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 max-md:flex-1">
           {showSearch ? (
             <InputGroup className="h-10.5 bg-transparent">
               <InputGroupInput

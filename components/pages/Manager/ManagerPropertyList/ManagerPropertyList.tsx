@@ -20,6 +20,8 @@ import {
   SharedPropertyCardListContextProvider,
   useSharedPropertyCardListContext,
 } from '../../Viewer/SharedPropertyCardListActions/SharedPropertyCardListContext'
+import EmptyMessage from '@/components/reusable/EmptyMessage/EmptyMessage'
+import { isArrayEmpty } from '@/lib/utils'
 
 export default function ManagerPropertyList() {
   return (
@@ -55,34 +57,40 @@ function ManagerPropertyListContent() {
         />
 
         <div className="grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
-            : properties.map((p) => (
-                <PropertyCard
-                  hasAccess
-                  key={p.id}
-                  id={p.id}
-                  slug={
-                    p?.dashboard?.id
-                      ? routes.manager.propertyDetail.build({ dashboardId: p?.dashboard?.id })
-                      : '#'
-                  }
-                  propertyName={p.name}
-                  dashboardId={p?.dashboard?.id}
-                  address={naIfEmpty(p.address)}
-                  score={p?.dashboard?.latestInspection?.overallScore}
-                >
-                  <PropertyCardInfoList
-                    items={[
-                      { label: 'Type', value: naIfEmpty(p.propertyType) },
-                      {
-                        label: 'Next Inspection',
-                        value: naIfEmpty(p.nextInspectionDate, formatDate),
-                      },
-                    ]}
-                  />
-                </PropertyCard>
-              ))}
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
+          ) : isArrayEmpty(properties) ? (
+            <EmptyMessage className="col-span-full">
+              You’re not assigned to any properties yet. Once assigned, they will appear here.
+            </EmptyMessage>
+          ) : (
+            properties.map((p) => (
+              <PropertyCard
+                hasAccess
+                key={p.id}
+                id={p.id}
+                slug={
+                  p?.dashboard?.id
+                    ? routes.manager.propertyDetail.build({ dashboardId: p?.dashboard?.id })
+                    : '#'
+                }
+                propertyName={p.name}
+                dashboardId={p?.dashboard?.id}
+                address={naIfEmpty(p.address)}
+                score={p?.dashboard?.latestInspection?.overallScore}
+              >
+                <PropertyCardInfoList
+                  items={[
+                    { label: 'Type', value: naIfEmpty(p.propertyType) },
+                    {
+                      label: 'Next Inspection',
+                      value: naIfEmpty(p.nextInspectionDate, formatDate),
+                    },
+                  ]}
+                />
+              </PropertyCard>
+            ))
+          )}
         </div>
 
         <PaginationControls />

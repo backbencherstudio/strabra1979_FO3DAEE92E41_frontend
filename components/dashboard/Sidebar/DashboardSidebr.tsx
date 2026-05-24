@@ -114,7 +114,7 @@ export function NavMain({ items, replaceRoute, className, linkClassName }: NavMa
   }
 
   return (
-    <SidebarGroupContent className="flex flex-col gap-2">
+    <SidebarGroupContent className="flex overflow-x-auto flex-col gap-2">
       <SidebarMenu className={cn(className)}>
         {items.map((item) => {
           const isActive =
@@ -137,8 +137,8 @@ export function NavMain({ items, replaceRoute, className, linkClassName }: NavMa
                   }}
                   href={item.href}
                 >
-                  <span>{item.icon && <item.icon className="size-6" />}</span>
-                  <span className="text-base font-medium">{item.label}</span>
+                  <span>{item.icon && <item.icon className="size-4 md:size-6" />}</span>
+                  <span className="text-sm font-medium md:text-base">{item.label}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

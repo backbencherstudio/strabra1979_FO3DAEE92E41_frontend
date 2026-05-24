@@ -87,20 +87,24 @@ function ActivityLogHomeContent() {
           setPage(1)
         }}
       >
-        <div className="flex items-center gap-1">
-          <TabsList className="gap-4 bg-transparent">
-            {tabs.map((item) => (
-              <TabsTrigger
-                key={item.id}
-                value={item.id}
-                className="data-[state=active]:text-medium data-[state=active]:bg-foundation-light-blue rounded-lg data-[state=active]:font-medium data-[state=active]:text-black"
-              >
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        <div className="flex gap-1">
+          <div className="overflow-x-auto overflow-y-hidden">
+            <TabsList className="bg-transparent">
+              {tabs.map((item) => (
+                <TabsTrigger
+                  key={item.id}
+                  value={item.id}
+                  className="data-[state=active]:text-medium data-[state=active]:bg-foundation-light-blue rounded-lg data-[state=active]:font-medium data-[state=active]:text-black"
+                >
+                  {item.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
-          <div>{isFetching ? <Spinner /> : null}</div>
+          <div className="flex w-5 items-start justify-center pt-3">
+            {isFetching ? <Spinner /> : null}
+          </div>
         </div>
 
         {tabs.map((item) => (

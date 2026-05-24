@@ -6,6 +6,7 @@ import StatsList from '@/components/dashboard/StatItem/StatsList'
 import { CubeIcon } from '@/components/icons/CubeIcon'
 import { HouseIcon } from '@/components/icons/HouseIcon'
 import { InformationSquare } from '@/components/icons/InformationIcon'
+import EmptyMessage from '@/components/reusable/EmptyMessage/EmptyMessage'
 import PropertyCard, {
   PropertyCardInfoList,
   PropertyCardSkeleton,
@@ -15,6 +16,7 @@ import CustomTable from '@/components/reusable/table/CustomTable'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/constant'
 import { formatDate, naIfEmpty } from '@/lib/farmatters'
+import { isArrayEmpty } from '@/lib/utils'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
@@ -80,33 +82,39 @@ export default function ManagerHome() {
         </div>
 
         <div className="mt-4.5 grid gap-x-5 gap-y-4.5 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {isLoading
-            ? Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)
-            : data?.data?.properties?.map((p) => (
-                <PropertyCard
-                  key={p.id}
-                  id={p.id}
-                  hasAccess
-                  slug={
-                    p?.dashboardId
-                      ? routes.manager.propertyDetail.build({ dashboardId: p?.dashboardId })
-                      : '#'
-                  }
-                  propertyName={p.name}
-                  address={naIfEmpty(p.address)}
-                  score={p?.roofHealth?.overallScore ?? 0}
-                >
-                  <PropertyCardInfoList
-                    items={[
-                      { label: 'Type', value: naIfEmpty(p.propertyType) },
-                      {
-                        label: 'Next Inspection',
-                        value: naIfEmpty(p.nextInspectionDate, formatDate),
-                      },
-                    ]}
-                  />
-                </PropertyCard>
-              ))}
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, i) => <PropertyCardSkeleton key={i} />)
+          ) : isArrayEmpty(data?.data?.properties) ? (
+            <EmptyMessage className="col-span-full">
+              You’re not assigned to any properties yet. Once assigned, they will appear here.
+            </EmptyMessage>
+          ) : (
+            data?.data?.properties?.map((p) => (
+              <PropertyCard
+                key={p.id}
+                id={p.id}
+                hasAccess
+                slug={
+                  p?.dashboardId
+                    ? routes.manager.propertyDetail.build({ dashboardId: p?.dashboardId })
+                    : '#'
+                }
+                propertyName={p.name}
+                address={naIfEmpty(p.address)}
+                score={p?.roofHealth?.overallScore ?? 0}
+              >
+                <PropertyCardInfoList
+                  items={[
+                    { label: 'Type', value: naIfEmpty(p.propertyType) },
+                    {
+                      label: 'Next Inspection',
+                      value: naIfEmpty(p.nextInspectionDate, formatDate),
+                    },
+                  ]}
+                />
+              </PropertyCard>
+            ))
+          )}
         </div>
       </SectionCard>
 
