@@ -43,7 +43,7 @@ const propertiesApi = baseApi.injectEndpoints({
         'Folders',
         'ActivityLog',
         'Overview',
-        'InspectionManagement'
+        'InspectionManagement',
       ],
     }),
 
@@ -136,7 +136,7 @@ const propertiesApi = baseApi.injectEndpoints({
         url: `/properties/dashboard/${dashboardId}/access/users/${targetUserId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['AccessList'],
+      invalidatesTags: ['AccessList', 'PropertyList', 'Overview'],
     }),
     setAccessExpiration: builder.mutation<SetAccessExpirationResponse, SetAccessExpirationPayload>({
       query: ({ dashboardId, userId, accessExpiresAt }) => ({
